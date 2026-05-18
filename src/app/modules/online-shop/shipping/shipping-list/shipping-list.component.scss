@@ -1,0 +1,67 @@
+.shipping-content {
+  margin-bottom: 0;
+}
+
+.shipping-box {
+  padding: 0;
+  margin-bottom: 20px;
+}
+
+.country-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+
+  li {
+    padding: 34px 20px;
+    border: 1px solid #eee;
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    display: flex;
+    font-size: 16px;
+    text-transform: capitalize;
+    align-items: center;
+    gap: 10px;
+    line-height: 1;
+    width: calc(25% - 12px);
+    justify-content: space-between;
+
+    @media (max-width: 991px) {
+      width: calc(33.333% - 12px);
+    }
+
+    @media (max-width: 767px) {
+      width: calc(50% - 12px);
+    }
+
+    @media (max-width: 480px) {
+      width: 100%;
+    }
+
+    .country-name {
+      flex: 1;
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-weight: 600;
+      color: #585858;
+    }
+
+    .country-actions {
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+
+      a {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px;
+      }
+    }
+  }
+}
+
+.no-data-added.no-shipping {
+  padding: 80px 0;
+}

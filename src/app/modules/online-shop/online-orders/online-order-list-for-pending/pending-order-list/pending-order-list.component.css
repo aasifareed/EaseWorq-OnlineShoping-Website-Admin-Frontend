@@ -1,0 +1,52 @@
+
+
+@media (min-width: 1200px) {
+    .custom-margin-top {
+          margin-top: -1.8% !important;
+        }
+  
+    }
+  
+  
+    [dir="rtl"] {
+ 
+      .search{
+        margin-right: 0% !important;
+      }
+    
+      .Restore-Window_Rest{
+        margin-right: -1% !important;
+      }
+
+      .orderDeliveryStatusdd{
+        width: 100%;margin-top: -5%;
+      }
+    }
+  
+    [dir="ltr"] {
+    
+      .search{
+        margin-left: 0% !important;
+      }
+    
+      .Restore-Window_Rest{
+        margin-left: 0% !important;
+      }
+
+      .orderDeliveryStatusdd{
+        width: 60%;margin-top: -5%;
+      }
+    }
+  
+    .table-container {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 10px; /* Adjust margin as needed */
+    }
+    
+    .page-size-selector {
+      display: flex;
+      align-items: center;
+    }
+  
+  

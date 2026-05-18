@@ -1,0 +1,55 @@
+<div [dir]="globalDataService.getdir()">
+  <div class="breadcrumb">
+  </div>
+
+  <div class="row" style="margin-top: -3%; margin-right: -35px; margin-left: -35px;">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body" style="padding: 0%;">
+          <div class="tabs">
+            <ul class="tabs__links">
+              <li>
+                <button
+                  type="button"
+                  class="tabs__link"
+                  [ngClass]="activeIndex === 0 ? 'active' : ''"
+                  (click)="changeTab(0)"
+                >
+                  <span class="tabs__link__text" data-text="0">
+                    <i class="fa fa-tags fontAwesome_Li_Class" style="color: black;"></i>
+                    <span style="margin-left: 3%;">{{ 'Statuses' | translate }}</span>
+                  </span>
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  class="tabs__link"
+                  [ngClass]="activeIndex === 1 ? 'active' : ''"
+                  (click)="changeTab(1)"
+                >
+                  <span class="tabs__link__text" data-text="1">
+                    <i class="fa fa-exchange-alt fontAwesome_Li_Class" style="color: black;"></i>
+                    <span style="margin-left: 3%;">{{ 'Status Events' | translate }}</span>
+                  </span>
+                </button>
+              </li>
+            </ul>
+
+            <ul class="tabs__contents">
+              <li>
+                <div class="tabs__content active">
+                  <div
+                    class="separator-breadcrumb border-top"
+                    style="margin-bottom: 0.5rem !important;"
+                  ></div>
+                  <router-outlet></router-outlet>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

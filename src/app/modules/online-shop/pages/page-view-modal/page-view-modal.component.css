@@ -1,0 +1,29 @@
+.page-view-modal .modal-header {
+  align-items: flex-start;
+  padding: 1.25rem 1.5rem 0.75rem;
+  border-bottom: 1px solid #e8eaed;
+}
+
+.page-view-modal .modal-body {
+  padding: 1.25rem 1.5rem;
+  max-height: 65vh;
+  overflow-y: auto;
+}
+
+.page-preview {
+  color: #3c4043;
+  line-height: 1.6;
+  font-size: 0.9375rem;
+}
+
+.page-preview :deep(img) {
+  max-width: 100%;
+  height: auto;
+}
+
+.page-preview :deep(h1),
+.page-preview :deep(h2),
+.page-preview :deep(h3) {
+  color: #202124;
+  margin-top: 1rem;
+}

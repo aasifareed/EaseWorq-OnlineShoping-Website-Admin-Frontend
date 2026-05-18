@@ -1,0 +1,77 @@
+<div class="shipping-country-content px-3 pb-3" *ngIf="!loading && country">
+  <div class="row mb-3 align-items-center">
+    <div class="col">
+      <h1 class="mb-0">{{ country.countryName }}</h1>
+    </div>
+    <div class="col-auto">
+      <button type="button" class="btn btn-outline-primary" (click)="openAddRuleModal()">
+        <i class="fa fa-plus fontAwesome_Li_Class" style="color: black;"></i>
+        {{ 'Add Shipping Rule' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <div class="shipping-accordion" *ngIf="country.shippingRules?.length">
+    <ngb-accordion [closeOthers]="true" class="variant-accordion">
+      <ngb-panel *ngFor="let rule of country.shippingRules" [id]="'rule-' + rule.id">
+        <ng-template ngbPanelTitle>
+          <span class="rule-title">{{ rule.name }}</span>
+          <span class="panel-actions float-right">
+            <a
+              href="javascript:void(0)"
+              class="me-2"
+              title="{{ 'Edit' | translate }}"
+              (click)="$event.stopPropagation(); openAddRuleModal(rule)"
+            >
+              <i class="fa fa-pencil fontAwesome_Li_Class" style="color: black;"></i>
+            </a>
+            <a
+              href="javascript:void(0)"
+              title="{{ 'Delete' | translate }}"
+              (click)="$event.stopPropagation(); deleteRule(rule)"
+            >
+              <i class="fa fa-trash fontAwesome_Li_Class" style="color: black;"></i>
+            </a>
+          </span>
+        </ng-template>
+        <ng-template ngbPanelContent>
+          <div class="row rule-details">
+            <div class="col-md-6">
+              <p class="mb-2">
+                <strong>{{ 'Rule Type' | translate }}:</strong>
+                {{ getRuleTypeLabel(rule.ruleType) }}
+              </p>
+              <p class="mb-2">
+                <strong>{{ 'Minimum' | translate }}:</strong> {{ rule.min }}
+              </p>
+              <p class="mb-0">
+                <strong>{{ 'Maximum' | translate }}:</strong> {{ rule.max }}
+              </p>
+            </div>
+            <div class="col-md-6">
+              <p class="mb-2">
+                <strong>{{ 'Shipping Type' | translate }}:</strong>
+                {{ getShippingTypeLabel(rule.shippingType) }}
+              </p>
+              <p class="mb-0" *ngIf="rule.shippingType !== 'free'">
+                <strong>{{ 'Amount' | translate }}:</strong>
+                {{ rule.amount }}{{ rule.shippingType === 'percentage' ? '%' : '' }}
+              </p>
+            </div>
+          </div>
+        </ng-template>
+      </ngb-panel>
+    </ngb-accordion>
+  </div>
+
+  <div *ngIf="!country.shippingRules?.length" class="no-data-added text-center py-5">
+    <h4 class="text-muted">{{ 'No Data Found' | translate }}</h4>
+    <p class="text-muted mb-3">{{ 'Add a shipping rule for this country.' | translate }}</p>
+    <button type="button" class="btn btn-outline-primary" (click)="openAddRuleModal()">
+      <i class="fa fa-plus fontAwesome_Li_Class" style="color: black;"></i>
+      {{ 'Add Shipping Rule' | translate }}
+    </button>
+  </div>
+</div>
+
+<div *ngIf="loading" class="text-center py-5 px-3">{{ 'Loading' | translate }}...</div>

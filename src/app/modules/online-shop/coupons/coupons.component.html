@@ -1,0 +1,144 @@
+<div [dir]="globalDataService.getdir()">
+  <div class="breadcrumb"></div>
+
+  <div class="row" style="margin-top: -3%; margin-right: -35px; margin-left: -35px;">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body" style="padding: 0%;">
+          <div class="tabs">
+            <ul class="tabs__links">
+              <li>
+                <button type="button" class="tabs__link active">
+                  <span class="tabs__link__text" data-text="0">
+                    <i class="fa fa-ticket fontAwesome_Li_Class" style="color: black;"></i>
+                    <span style="margin-left: 3%;">{{ 'Coupons' | translate }}</span>
+                  </span>
+                </button>
+              </li>
+            </ul>
+
+            <ul class="tabs__contents">
+              <li>
+                <div class="tabs__content active">
+                  <div
+                    class="separator-breadcrumb border-top"
+                    style="margin-bottom: 0.5rem !important;"
+                  ></div>
+
+                  <div class="gridAboveHeight">
+                    <h1 style="margin-top: 0%;">{{ 'Coupons' | translate }}</h1>
+                    <hr class="mt-0 mb-0" />
+                    <div class="row">
+                      <div class="col-xl-3 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                          <input
+                            style="margin-top: 7%;"
+                            [formControl]="searchControl"
+                            class="form-control form-control-rounded"
+                            type="text"
+                            [placeholder]="'Search' | translate"
+                          />
+                        </div>
+                      </div>
+
+                      <div class="col-xl-7 col-lg-6 col-md-6 col-sm-6 col-xs-6"></div>
+
+                      <div
+                        class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-6 form-group add_New"
+                        style="margin-top: 1.7%"
+                      >
+                        <button type="button" class="btn btn-primary" (click)="openAddModal()">
+                          <i class="i-Add"></i>
+                          {{ 'Add Coupon' | translate }}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row" style="margin-right: -16px; margin-left: -16px;">
+                    <div class="col-md-12">
+                      <div class="card mb-3">
+                        <ngx-datatable
+                          [ngStyle]="{ height: gridHeight, 'box-shadow': 'none' }"
+                          class="material fullscreen"
+                          [columnMode]="ColumnMode.force"
+                          [headerHeight]="45"
+                          [footerHeight]="30"
+                          [rowHeight]="40"
+                          [rows]="filteredData"
+                          [scrollbarH]="true"
+                          [loadingIndicator]="loadingIndicator"
+                          [externalPaging]="true"
+                          [count]="page.totalElements"
+                          [offset]="page.pageNumber"
+                          [limit]="page.size"
+                          (page)="setPage($event)"
+                        >
+                          <ngx-datatable-column [name]="'Title' | translate" prop="title" [minWidth]="180">
+                            <ng-template ngx-datatable-cell-template let-row="row">
+                              <span [title]="row.title">{{ row.title }}</span>
+                            </ng-template>
+                          </ngx-datatable-column>
+
+                          <ngx-datatable-column [name]="'Code' | translate" prop="code" [minWidth]="120">
+                            <ng-template ngx-datatable-cell-template let-row="row">
+                              <code class="coupon-code">{{ row.code }}</code>
+                            </ng-template>
+                          </ngx-datatable-column>
+
+                          <ngx-datatable-column [name]="'Type' | translate" prop="type" [minWidth]="120">
+                            <ng-template ngx-datatable-cell-template let-row="row">
+                              {{ getTypeLabel(row.type) }}
+                            </ng-template>
+                          </ngx-datatable-column>
+
+                          <ngx-datatable-column [name]="'Value' | translate" [minWidth]="90">
+                            <ng-template ngx-datatable-cell-template let-row="row">
+                              {{ formatAmount(row) }}
+                            </ng-template>
+                          </ngx-datatable-column>
+
+                          <ngx-datatable-column [name]="'Created At' | translate" prop="creationTime" [minWidth]="170">
+                            <ng-template ngx-datatable-cell-template let-row="row">
+                              {{ formatDate(row.creationTime) }}
+                            </ng-template>
+                          </ngx-datatable-column>
+
+                          <ngx-datatable-column [name]="'Status' | translate" [minWidth]="100" [sortable]="false">
+                            <ng-template ngx-datatable-cell-template let-row="row">
+                              <label class="status-switch mb-0">
+                                <input type="checkbox" [checked]="row.isActive" (change)="onStatusToggle(row, $event)" />
+                                <span class="status-switch__slider"></span>
+                              </label>
+                            </ng-template>
+                          </ngx-datatable-column>
+
+                          <ngx-datatable-column
+                            [name]="'Action' | translate"
+                            [minWidth]="120"
+                            [sortable]="false"
+                            [canAutoResize]="false"
+                          >
+                            <ng-template ngx-datatable-cell-template let-row="row">
+                              <button type="button" class="btn btn-primary btn-sm mr-1" (click)="openEditModal(row)">
+                                <i class="fa fa-pencil fontAwesome_Li_Class" style="color: white;"></i>
+                                {{ 'Edit' | translate }}
+                              </button>
+                              <button type="button" class="btn btn-danger btn-sm" (click)="deleteCoupon(row)">
+                                <i class="fa fa-trash fontAwesome_Li_Class" style="color: white;"></i>
+                              </button>
+                            </ng-template>
+                          </ngx-datatable-column>
+                        </ngx-datatable>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

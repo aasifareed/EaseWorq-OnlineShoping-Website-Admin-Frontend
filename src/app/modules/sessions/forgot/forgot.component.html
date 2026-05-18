@@ -1,0 +1,163 @@
+<div [dir]="globalDataService.getdir()">
+
+  <div class="card o-hidden loginTransparent"
+      [@animate]="{value:'*',params:{y:'120px',opacity:'0',delay:'100ms', duration: '400ms'}}">
+      <div class="row">
+          <div class="col-md-12">
+              <div class="p-5">
+                  <div style="margin-top: -10%;" class="auth-logo text-center">
+                      <img src="{{globalDataService.getLogoPicture()}}" alt="">
+                  </div>
+                  <div class="text-left">
+                      <h1 class="mb-2 text-25">{{"forgot_Password_Password_header" | translate}}</h1>
+                      <hr class="loginHr" />
+                  </div>
+  
+                  <form [formGroup]="form" class="loginForm">
+                    <div class="form-group">
+                      <label for="phoneNumber">Phone Number (with country code, e.g. +92XXXXXXXXXX)</label>
+                      <input id="phoneNumber" formControlName="phoneNumber" class="form-control" type="text" placeholder="+92XXXXXXXXXX">
+                    </div>
+                    <button (click)="onSubmit()" [disabled]="form.invalid" class="btn btn-primary btn-block btn-rounded mt-3 loginBtn">{{"forgot_Password_Get_Verification_Code_Button" | translate}}</button>                  
+                  </form>
+              </div>
+          </div>
+          <div class="col-md-6 text-center"></div>
+          <div class="col-md-6 text-center" style="padding-right: 10%;margin-bottom: 2%;margin-top: -5%;">
+              <a href="" class="btn btn-outline-primary btn-outline-google btn-block btn-icon-text btn-rounded" routerLink="/sessions/signin">
+                <i class="i-Mail-with-At-Sign"></i>
+                {{"forgot_Password_SignIn_Button" | translate}}
+              </a>
+          </div>
+              
+            
+  
+      </div>
+  </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 
+<div class="card o-hidden loginTransparent"
+[@animate]="{value:'*',params:{y:'120px',opacity:'0',delay:'100ms', duration: '400ms'}}">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="p-4">
+          <div class="auth-logo text-center mb-4">
+            <img src="{{globalDataService.getLogoPicture()}}" alt="">
+          </div>
+          <div>
+
+            <h1 class="mb-3 text-18">Forgot Password</h1>
+            <form [formGroup]="form">
+              <div class="form-group">
+                <label for="email">Email address</label>
+                <input id="email" formControlName="emailAddress" class="form-control form-control-rounded" type="email">
+              </div>
+              <button (click)="onSubmit()" [disabled]="form.invalid" class="btn btn-primary btn-block btn-rounded mt-3">Get Verification Code</button>
+              
+            </form>
+
+          </div>
+
+        </div>
+      </div>
+      <div class="col-md-6 text-center " style="background-size: cover;background-image: url(./assets/images/photo-long-3.jpg)">
+        <div class="pr-3 auth-right">
+          <button class="btn btn-outline-primary btn-outline-google btn-block btn-icon-text btn-rounded" routerLink="/sessions/signin">
+            <i class="i-Mail-with-At-Sign"></i>
+            Sign in 
+          </button>
+          
+        </div>
+      </div>
+    </div>
+  </div> -->
+
+      <!-- <button class="btn btn-outline-primary btn-outline-email btn-block btn-icon-text btn-rounded" routerLink="/sessions/signup">
+        <i class="i-Mail-with-At-Sign"></i>
+        Sign up 
+      </button> -->

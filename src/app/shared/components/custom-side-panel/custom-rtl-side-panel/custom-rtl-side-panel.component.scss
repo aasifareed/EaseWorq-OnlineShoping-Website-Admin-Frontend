@@ -1,0 +1,34 @@
+.side-panel-body {
+    width: 100%;
+    min-height: 600px;
+    padding: 20px 10px;
+}
+
+
+.customizer-body.side-panel-body {
+    /* Set a fixed height for the div */
+    height: 300px;
+    /* Add overflow-y to enable vertical scrolling */
+    overflow-y: auto;
+  }
+  
+  /* Webkit browsers (Chrome, Safari) */
+  .customizer-body.side-panel-body::-webkit-scrollbar {
+    width: 12px; /* Set the width of the scrollbar */
+  }
+  
+  .customizer-body.side-panel-body::-webkit-scrollbar-thumb {
+    border-radius: 6px; /* Set the border radius of the scrollbar thumb */
+  }
+  
+
+  
+  /* Edge */
+  .customizer-body.side-panel-body {
+    scrollbar-width: thin; /* Set the width of the scrollbar */
+  }
+  
+  .customizer-body.side-panel-body::-ms-scrollbar-thumb {
+    border-radius: 6px; /* Set the border radius of the scrollbar thumb in Edge */
+  }
+  

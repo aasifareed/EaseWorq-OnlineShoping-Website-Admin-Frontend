@@ -1,0 +1,148 @@
+
+
+<span *ngIf="navService.sidebarState.sidenavOpen">
+
+  <div [ngClass]="{ open: navService.sidebarState.sidenavOpen }" class="sidebar-left rtl-ps-none"
+  [perfectScrollbar]="{ suppressScrollX: true }">
+  <div class="logo">
+    <img src="{{globalService.getLogoPicture()}}" alt="" />
+  </div>
+  <ul class="navigation-left">
+    <li [ngClass]="{ active: item.active }" (click)="onClickChangeActiveFlag(item)" class="nav-item lvl1"
+      *ngFor="let item of nav">
+      <div class="nav-item-hold" routerLink="{{ item.state }}" (click)="closeChildNav()"
+        *ngIf="!item.disabled && item.type === 'link'">
+        <div class="nav-icon-container">
+          <i  class="fontAwesome_Li_Class" *ngIf="item.icontType==inconsTypeEnum.ICons_FontAwesome && !item.icon.startsWith('assets/images/')" style="color: white; font-size: 24px;" [class]="item.icon + ' fa-3x'"></i>
+
+          <img *ngIf="item.icon.startsWith('assets/images/')" [src]="item.icon" alt="icon" class="nav-icon-image" style="width: 48px; height: 48px;">
+
+          <i *ngIf="item.icontType !=inconsTypeEnum.ICons_FontAwesome && !item.icon.startsWith('assets/images/')"  [class]="'nav-icon ' + item.icon"></i>
+        </div>
+        <span class="nav-text" >{{ item.name | translate}}</span>
+      </div>
+      <div class="nav-item-hold" (mouseenter)="selectItem(item)" *ngIf="!item.disabled && item.type === 'dropDown'">
+        <div class="nav-icon-container">
+          <i class="fontAwesome_Li_Class" *ngIf="item.icontType==inconsTypeEnum.ICons_FontAwesome && !item.icon.startsWith('assets/images/')" style="color: white; font-size: 24px;" [class]="item.icon + ' fa-3x'"></i>
+
+          <img *ngIf="item.icon.startsWith('assets/images/')" [src]="item.icon" alt="icon" class="nav-icon-image" style="width: 48px; height: 48px;">
+
+          <i *ngIf="item.icontType !=inconsTypeEnum.ICons_FontAwesome && !item.icon.startsWith('assets/images/')"  [class]="'nav-icon ' + item.icon"></i>
+        </div>
+        <span class="nav-text" >{{ item.name  | translate}}</span>
+      </div>
+      <div class="nav-item-hold" *ngIf="!item.disabled && item.type === 'extLink'">
+        <a [href]="item.state" target="_blank">
+          <div class="nav-icon-container">
+            <i class="fontAwesome_Li_Class" *ngIf="item.icontType==inconsTypeEnum.ICons_FontAwesome && !item.icon.startsWith('assets/images/')" style="color: white; font-size: 24px;" [class]="item.icon + ' fa-3x'"></i>
+
+            <img *ngIf="item.icon.startsWith('assets/images/')" [src]="item.icon" alt="icon" class="nav-icon-image" style="width: 48px; height: 48px;">
+
+            <i *ngIf="item.icontType !=inconsTypeEnum.ICons_FontAwesome && !item.icon.startsWith('assets/images/')"  [class]="'nav-icon ' + item.icon"></i>
+          </div>
+          <span class="nav-text" >{{ item.name | translate }}</span>
+        </a>
+      </div>
+
+      <div class="triangle" *ngIf="!item.disabled"></div>
+    </li>
+  </ul>
+</div>
+
+  <div *ngIf="navService.sidebarState.sidenavOpen && navService.sidebarState.childnavOpen" [ngClass]="{ open: navService.sidebarState.childnavOpen  }" class="sidebar-left-secondary rtl-ps-none"
+  [perfectScrollbar]="{ suppressScrollX: true }" (mouseleave)="closeChildNav()">
+  <header>
+    <h6>Apps</h6>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+  </header>
+  <ng-container *ngTemplateOutlet="menuTemplate; context: { parentItem: navService.selectedItem }"></ng-container>
+</div>
+</span>
+
+
+<!--Show Icons Only -->
+<span *ngIf="!navService.sidebarState.sidenavOpen">
+  <div [ngClass]="{ open: !navService.sidebarState.sidenavOpen  }"  class="sidebar-left rtl-ps-none"
+  [perfectScrollbar]="{ suppressScrollX: true }">
+  <div class="logo">
+    <img src="{{globalService.getLogoPicture()}}" alt="" />
+  </div>
+  <ul class="navigation-left" style="width: 80px;">
+    <li [ngClass]="{ active: item.active }" (click)="onClickChangeActiveFlag(item)" class="nav-item lvl1"
+      *ngFor="let item of nav">
+      <div [title]="item.title | translate" class="nav-item-hold" style="padding-top: 15%;" routerLink="{{ item.state }}" (click)="closeChildNav()"
+        *ngIf="!item.disabled && item.type === 'link'">
+        <i  class="fontAwesome_Li_Class" *ngIf="item.icontType==inconsTypeEnum.ICons_FontAwesome && !item.icon.startsWith('assets/images/')" style="color: white; font-size: 24px;" [class]="item.icon + ' fa-3x'"></i>
+
+        <img *ngIf="item.icon.startsWith('assets/images/')" [src]="item.icon" alt="icon" class="nav-icon-image" style="width: 40px; height: 40px;">
+
+        <i *ngIf="item.icontType !=inconsTypeEnum.ICons_FontAwesome && !item.icon.startsWith('assets/images/')"  [class]="'nav-icon ' + item.icon"></i>
+
+      </div>
+      <div class="nav-item-hold" style="padding-top: 15%;" (mouseenter)="selectItem(item)" *ngIf="!item.disabled && item.type === 'dropDown'">
+        <i class="fontAwesome_Li_Class" *ngIf="item.icontType==inconsTypeEnum.ICons_FontAwesome && !item.icon.startsWith('assets/images/')" style="color: white; font-size: 24px;" [class]="item.icon + ' fa-3x'"></i>
+
+        <img *ngIf="item.icon.startsWith('assets/images/')" [src]="item.icon" alt="icon" class="nav-icon-image" style="width: 40px; height: 40px;">
+
+        <i *ngIf="item.icontType !=inconsTypeEnum.ICons_FontAwesome && !item.icon.startsWith('assets/images/')"  [class]="'nav-icon ' + item.icon"></i>
+      </div>
+      <div class="nav-item-hold" style="padding-top: 15%;" *ngIf="!item.disabled && item.type === 'extLink'">
+        <a [href]="item.state" target="_blank">
+          <i class="fontAwesome_Li_Class" *ngIf="item.icontType==inconsTypeEnum.ICons_FontAwesome && !item.icon.startsWith('assets/images/')" style="color: white; font-size: 24px;" [class]="item.icon + ' fa-3x'"></i>
+
+          <img *ngIf="item.icon.startsWith('assets/images/')" [src]="item.icon" alt="icon" class="nav-icon-image" style="width: 40px; height: 40px;">
+
+          <i *ngIf="item.icontType !=inconsTypeEnum.ICons_FontAwesome && !item.icon.startsWith('assets/images/')"  [class]="'nav-icon ' + item.icon"></i>
+
+        </a>
+      </div>
+
+      <div class="triangle" *ngIf="!item.disabled"></div>
+    </li>
+  </ul>
+</div>
+
+<div *ngIf="!navService.sidebarState.sidenavOpen && navService.sidebarState.childnavOpen" [ngClass]="{ open: navService.sidebarState.childnavOpen}" style="left: 5% !important;" class="sidebar-left-secondary icons-only rtl-ps-none"
+  [perfectScrollbar]="{ suppressScrollX: true }" (mouseleave)="closeChildNav()">
+  <header>
+    <h6>Apps</h6>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+  </header>
+  <ng-container *ngTemplateOutlet="menuTemplate; context: { parentItem: navService.selectedItem }"></ng-container>
+</div>
+
+</span>
+
+<!-- Show Icons Only -->
+
+
+
+
+
+
+
+<ng-template #menuTemplate let-parentItem="parentItem">
+  <ul class="childNav" appDropdown>
+    <li *ngFor="let item of parentItem?.sub" appDropdownLink class="nav-item">
+      <a routerLink="{{ item.state }}" *ngIf="item.type === 'link'" class="" routerLinkActive="open">
+        <i *ngIf="item.icontType==inconsTypeEnum.ICons_FontAwesome && !item.icon.startsWith('assets/images/')" [class]="'nav-icon ' + item.icon"></i>
+        <img *ngIf="item.icon.startsWith('assets/images/')" [src]="item.icon" alt="icon" class="nav-icon-image" style="width: 20px; height: 20px; margin-right: 8px;">
+        <i *ngIf="item.icontType !=inconsTypeEnum.ICons_FontAwesome && !item.icon.startsWith('assets/images/')" [class]="'nav-icon ' + item.icon"></i>
+        <span class="item-name lvl1" >{{ item.name | translate }}</span>
+      </a>
+
+      <div *ngIf="item.type === 'dropDown'">
+        <a appDropdownToggle [ngClass]="{ open: item.active }" routerLinkActive="open">
+          <i *ngIf="item.icontType==inconsTypeEnum.ICons_FontAwesome && !item.icon.startsWith('assets/images/')" [class]="'nav-icon ' + item.icon"></i>
+          <img *ngIf="item.icon.startsWith('assets/images/')" [src]="item.icon" alt="icon" class="nav-icon-image" style="width: 20px; height: 20px; margin-right: 8px;">
+          <i *ngIf="item.icontType !=inconsTypeEnum.ICons_FontAwesome && !item.icon.startsWith('assets/images/')" [class]="'nav-icon ' + item.icon"></i>
+          <span class="item-name" >{{ item.name  | translate}}</span>
+          <i class="dd-arrow i-Arrow-Down"></i>
+        </a>
+        <ng-container *ngTemplateOutlet="menuTemplate; context: { parentItem: item }"></ng-container>
+      </div>
+    </li>
+  </ul>
+</ng-template>
+
+<div [ngClass]="{ open: navService.sidebarState.childnavOpen }" class="sidebar-overlay" (click)="closeChildNav()"></div>

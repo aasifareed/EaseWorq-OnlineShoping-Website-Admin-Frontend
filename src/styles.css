@@ -1,0 +1,2177 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import '../node_modules/primeng/resources/themes/saga-blue/theme.css';
+@import '../node_modules/primeng/resources/primeng.min.css';
+@import '../node_modules/primeicons/primeicons.css';
+@import '../node_modules/quill/dist/quill.core.css';
+@import '../node_modules/quill/dist/quill.snow.css';
+
+
+.ngx-datatable.scroll-vertical .datatable-body {
+  overflow-x: auto;
+}
+
+/* .layout-sidebar-large .sidebar-left .navigation-left .nav-item .nav-item-hold .nav-text {
+    font-size: 11px;
+} */
+
+.card-icon-bg .card-body .content {
+  max-width: 150px;
+}
+
+.expandBtn {
+  margin: 0 -5px;
+}
+
+.ngx-datatable .datatable-body .datatable-row-detail {
+  overflow-y: auto !important;
+}
+
+
+.ngx-datatable.fixed-row .datatable-scroll .datatable-body-row .datatable-body-cell,
+.ngx-datatable.fixed-row .datatable-scroll .datatable-body-row .datatable-body-group-cell {
+  white-space: initial !important;
+}
+
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #f5f5f5;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  background-color: #f5f5f5;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #1e284b;
+}
+
+
+
+/* Prevent body scroll when modal is open */
+body.modal-open {
+  overflow: hidden !important;
+}
+
+/* Do not show full-screen loader over ng-bootstrap modals */
+body.modal-open .loadscreen {
+  display: none !important;
+}
+
+/* Modal specific scrollbar overrides */
+.modal-open .modal-body::-webkit-scrollbar {
+  width: 8px !important;
+  background-color: #f5f5f5 !important;
+}
+
+.modal-open .modal-body::-webkit-scrollbar-track {
+  background: #f1f1f1 !important;
+  border-radius: 4px !important;
+  box-shadow: none !important;
+}
+
+.modal-open .modal-body::-webkit-scrollbar-thumb {
+  background: #c1c1c1 !important;
+  border-radius: 4px !important;
+}
+
+.green {
+  color: #4caf50;
+}
+
+.red {
+  color: #d22346;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.userName {
+  color: #21243d;
+  font-size: 15px;
+  padding: 5px;
+  padding-top: 10px;
+}
+
+.m-b-20 {
+  margin-bottom: 20px;
+}
+
+.m-t-20 {
+  margin-top: 20px;
+}
+
+.card-header .btn-link {
+  font-size: 17px;
+}
+
+.checklist .nav-tabs .nav-item .nav-link.active {
+  border-bottom: 2px solid #ffb822 !important;
+  background: none !important;
+}
+
+@media only screen and (max-width: 450px) {
+  .userName {
+    display: none;
+  }
+}
+
+.user .dropdown-toggle::after {
+  top: calc(60% - 2px) !important;
+  right: -15px !important;
+}
+
+.m-10 {
+  margin: 10px;
+}
+
+.m-5 {
+  margin: 5px;
+}
+
+.p-r-5 {
+  padding-right: 5px;
+}
+
+.m-l-3 {
+  margin-left: 3px;
+}
+
+.m-l-5 {
+  margin-left: 5px;
+}
+
+.m-l-20 {
+  margin-left: 20px;
+}
+
+@media (min-width: 1024px) {
+  .auth-layout-wrap .auth-content {
+    min-width: 550px;
+  }
+}
+
+.auth-layout-wrap .auth-content {
+  width: 550px !important;
+}
+
+.auth-logo img {
+  width: 100px !important;
+  height: 100px !important;
+  /* margin-bottom: 30px; */
+}
+
+.loginHr {
+  border-top: solid 5px #1e284b;
+  border-radius: 5px;
+  margin-top: 5px;
+  width: 20%;
+  margin-left: 0;
+}
+
+.table-title {
+  font-weight: bold;
+  font-size: medium;
+  color: #034489;
+}
+
+.loginForm .form-group {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.loginForm .form-group label {
+  position: relative;
+  font-size: 17px;
+  color: #026aa1;
+}
+
+.loginForm .form-group input {
+  position: relative;
+  padding: 20px 7px;
+  font-size: 15px;
+}
+
+.loginBtn {
+  font-size: 20px;
+  margin-top: 50px !important;
+}
+
+.loginTransparent {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.layout-sidebar-large .sidebar-left-secondary,
+.layout-sidebar-large .sidebar-left {
+  background: linear-gradient(90deg,
+      rgb(24 9 81) 0%,
+      rgb(49 38 93) 35%,
+      rgb(73 58 131) 100%);
+  background-image: url(assets/images/sideNavPattern.png);
+}
+
+.layout-sidebar-large .sidebar-left-secondary {
+  border: none !important;
+}
+
+.layout-sidebar-large .sidebar-left .navigation-left .nav-item.lvl1 {
+  transition: all ease-in-out 0.1s;
+}
+
+.layout-sidebar-large .sidebar-left .navigation-left .nav-item.lvl1:hover {
+  background: #d1bd06;
+}
+
+.layout-sidebar-large .sidebar-left .navigation-left .nav-item .nav-item-hold .nav-icon,
+.layout-sidebar-large .sidebar-left .navigation-left .nav-item .nav-item-hold .feather {
+  color: #fff;
+}
+
+.layout-sidebar-large .sidebar-left .navigation-left .nav-item .nav-item-hold .nav-text {
+  color: #fff;
+}
+
+.layout-sidebar-large .sidebar-left .navigation-left .nav-item {
+  border: none !important;
+}
+
+.layout-sidebar-large .sidebar-left-secondary {
+  background: #fff !important;
+}
+
+.layout-sidebar-large .sidebar-left-secondary .childNav li.nav-item a .item-name {
+  color: #026aa1;
+}
+
+.layout-sidebar-large .sidebar-left .navigation-left .nav-item.active .triangle {
+  border-color: transparent transparent #d1bd06 transparent;
+}
+
+.ngx-datatable .datatable-header .datatable-header-cell .datatable-header-cell-template-wrap {
+  color: #180951;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.availableProductList .ngx-datatable  .datatable-header .datatable-header-cell .datatable-header-cell-template-wrap {
+  color: #180951;
+  font-size: 10px !important;
+  font-weight: bold;
+}
+
+.availableProductList .ngx-datatable .datatable-header .datatable-header-cell{
+  margin-top: 0%;
+  padding: 5px 
+}
+
+.availableProductList .ngx-datatable.material .datatable-body .datatable-body-row .datatable-body-cell{
+  font-size: 10px !important;
+  margin-top: 0px;
+  padding: 5px 
+}
+
+ .ngx-datatable .datatable-header{
+  background-color: #180951 !important;
+}
+
+ .ngx-datatable .datatable-header .datatable-header-cell{
+  background-color: #180951 !important;
+}
+
+ .ngx-datatable .datatable-header .datatable-header-cell .datatable-header-cell-template-wrap{
+  color: white !important;
+  margin-top: 1px;
+  font-size: 10px !important;
+}
+
+.ProductListCartViewGrid .ngx-datatable  .datatable-header .datatable-header-cell .datatable-header-cell-template-wrap {
+  color: #180951;
+  font-size: 10px !important;
+  font-weight: bold;
+}
+.ProductListCartViewGrid .ngx-datatable .datatable-header .datatable-header-cell{
+  margin-top: 0%;
+  padding: 5px 
+}
+
+.ProductListCartViewGrid .ngx-datatable.material .datatable-body .datatable-body-row .datatable-body-cell{
+  font-size: 10px !important;
+  margin-top: 0px;
+  padding: 5px;
+}
+
+
+
+
+
+.datatable-row-even {
+  background-color: #f7f7f7;
+}
+
+.show .card-body {
+  padding: 0 !important;
+}
+
+.nav-tabs .nav-item .nav-link.active {
+  border-bottom: 4px solid #026aa1;
+  background: #e2f4fd;
+}
+
+.nav-tabs .nav-item .nav-link:not(.disabled) {
+  color: inherit;
+}
+
+.nav-tabs .nav-item .nav-link {
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.language {
+  margin-top: 20px;
+}
+
+.language a {
+  cursor: pointer;
+  margin: 0 25px;
+  font-size: 17px;
+}
+
+.btn i {
+  margin: 0 2px;
+}
+
+.languageMenu {
+  position: relative;
+  width: 100%;
+  text-align: center;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.languageMenu li {
+  position: relative;
+  margin: 5px 0;
+}
+
+.languageMenu li a {
+  font-size: 15px;
+  cursor: pointer;
+  display: block;
+}
+
+.languageMenu li a img {
+  width: 50px;
+}
+
+.datatable-body-cell-label .btn {
+  margin: 0 5px;
+}
+
+.expandBtn {
+  margin: 0 -15px !important;
+}
+
+.selectedLanguage {
+  background: #026aa1 !important;
+  color: #fff !important;
+  padding: 5px;
+  border-radius: 3px;
+}
+
+.languageImage {
+  width: 40px;
+  margin: 0 10px;
+}
+
+.langBtn {
+  font-size: 15px;
+  font-weight: bold;
+  color: #016eaa !important;
+  cursor: pointer;
+  width: 105%;
+  height: 35px;
+  padding-top: 1%;
+}
+
+.layout-sidebar-large .main-header .header-part-right .user {
+  margin-right: 0 !important;
+}
+
+.gradient i,
+.gradient p {
+  color: #fff !important;
+}
+
+.gradient strong {
+  margin: 0 5px;
+}
+
+.dark-blue {
+  background: rgb(49, 85, 160);
+  background: -moz-linear-gradient(90deg,
+      rgba(49, 85, 160, 1) 0%,
+      rgba(23, 97, 160, 1) 35%,
+      rgba(8, 103, 159, 1) 100%);
+  background: -webkit-linear-gradient(90deg,
+      rgba(49, 85, 160, 1) 0%,
+      rgba(23, 97, 160, 1) 35%,
+      rgba(8, 103, 159, 1) 100%);
+  background: linear-gradient(90deg,
+      rgba(49, 85, 160, 1) 0%,
+      rgba(23, 97, 160, 1) 35%,
+      rgba(8, 103, 159, 1) 100%);
+  filter: progid: DXImageTransform.Microsoft.gradient(startColorstr="#3155a0", endColorstr="#08679f", GradientType=1);
+}
+
+.dark-gray {
+  background: rgb(139, 159, 183);
+  background: -moz-linear-gradient(90deg,
+      rgba(139, 159, 183, 1) 0%,
+      rgba(118, 132, 155, 1) 35%,
+      rgba(118, 132, 155, 1) 100%);
+  background: -webkit-linear-gradient(90deg,
+      rgba(139, 159, 183, 1) 0%,
+      rgba(118, 132, 155, 1) 35%,
+      rgba(118, 132, 155, 1) 100%);
+  background: linear-gradient(90deg,
+      rgba(139, 159, 183, 1) 0%,
+      rgba(118, 132, 155, 1) 35%,
+      rgba(118, 132, 155, 1) 100%);
+  filter: progid: DXImageTransform.Microsoft.gradient(startColorstr="#8b9fb7", endColorstr="#76849b", GradientType=1);
+}
+
+.light-blue {
+  background: rgb(2, 187, 224);
+  background: -moz-linear-gradient(90deg,
+      rgba(2, 187, 224, 1) 0%,
+      rgba(12, 189, 226, 1) 35%,
+      rgba(37, 195, 229, 1) 100%);
+  background: -webkit-linear-gradient(90deg,
+      rgba(2, 187, 224, 1) 0%,
+      rgba(12, 189, 226, 1) 35%,
+      rgba(37, 195, 229, 1) 100%);
+  background: linear-gradient(90deg,
+      rgba(2, 187, 224, 1) 0%,
+      rgba(12, 189, 226, 1) 35%,
+      rgba(37, 195, 229, 1) 100%);
+  filter: progid: DXImageTransform.Microsoft.gradient(startColorstr="#02bbe0", endColorstr="#25c3e5", GradientType=1);
+}
+
+.dark-blue2 {
+  background: rgb(0, 107, 166);
+  background: -moz-linear-gradient(90deg,
+      rgba(0, 107, 166, 1) 0%,
+      rgba(0, 107, 166, 1) 35%,
+      rgba(2, 119, 183, 1) 100%);
+  background: -webkit-linear-gradient(90deg,
+      rgba(0, 107, 166, 1) 0%,
+      rgba(0, 107, 166, 1) 35%,
+      rgba(2, 119, 183, 1) 100%);
+  background: linear-gradient(90deg,
+      rgba(0, 107, 166, 1) 0%,
+      rgba(0, 107, 166, 1) 35%,
+      rgba(2, 119, 183, 1) 100%);
+  filter: progid: DXImageTransform.Microsoft.gradient(startColorstr="#006ba6", endColorstr="#0277b7", GradientType=1);
+}
+
+.testMap {
+  width: 100%;
+  height: 450px;
+  border-radius: 10px;
+}
+
+.mapContainer {
+  box-shadow: 0 0 7px #00283e;
+  border-radius: 10px;
+  margin-bottom: 70px;
+}
+
+.layout-sidebar-large .main-header {
+  padding: 0 5px;
+}
+
+.layout-sidebar-large .main-header .logo img {
+  width: 60px !important;
+  height: 60px !important;
+}
+
+.insideChecklist {
+  padding: 0.75rem 2rem;
+  box-shadow: 0 0 5px #ccc;
+  margin-bottom: 10px;
+}
+
+.insideChecklist h6 {
+  color: #0080c3;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.insideChecklist p {
+  color: #989898;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.btnChecklist button {
+  margin: 0 5px;
+}
+
+.insideChecklist h5 {
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #7d7d7d;
+  font-size: 15px;
+}
+
+.attachmentContainer {
+  max-width: 300px;
+  display: inline-block;
+}
+
+.attachmentImage {
+  width: 70px;
+  margin: 5px;
+  box-shadow: 0 0 5px #686969;
+  border-radius: 5px;
+}
+
+.role {
+  font-size: 10px;
+  font-weight: bold;
+  color: #029ffd;
+  /* padding: 0 3px;
+    border-radius: 3px;
+    background: rgb(255 184 34);
+    background: linear-gradient(90deg, #d08d00 0%, #ffb822 35%, rgb(255 184 34) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#d08d00",endColorstr="#d08d00",GradientType=1); */
+}
+
+.layout-sidebar-large .main-header {
+  box-shadow: 0 0 10px #b3b3b3 !important;
+}
+
+/* .esri-popup__main-container,
+.layout-sidebar-large .main-header {
+    background-image: url(assets/images/pattern.png);
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: 50% 60%;
+} */
+
+.esri-popup__header {
+  background: #d7c100;
+}
+
+.esri-popup__header-title {
+  color: black !important;
+}
+
+/* .esri-popup__footer {
+    background: #d7c100;
+} */
+
+/* .esri-popup__button {
+    color: #fff !important;
+} */
+
+.esri-popup__content {
+  margin: 15px 0;
+}
+
+.esri-ui,
+.esri-view .esri-view-surface {
+  border-radius: 0 !important;
+}
+
+/* new tab Design  */
+
+
+.none {
+  display: none !important;
+}
+
+.card-title strong {
+  font-weight: bold !important;
+  margin: 0 5px;
+}
+
+.bg-c-green {
+  background: linear-gradient(45deg, #2aac48, #44e676) !important;
+}
+
+.label {
+  border-radius: 4px;
+  font-size: 75%;
+  padding: 4px 7px;
+  margin-right: 5px;
+  font-weight: 400;
+  color: #fff !important;
+  /* width: 150px; */
+  text-align: center !important;
+}
+
+.dashboardCard .card {
+  height: 130px;
+  min-height: 130px;
+}
+
+.dashboardCard .card .card-body {
+  padding: 1rem 0.5rem;
+}
+
+ng-select>div {
+  outline: initial !important;
+  background: #f8f9fa !important;
+  border: 1px solid #ced4da !important;
+  color: #163c50 !important;
+  display: block !important;
+  width: 100% !important;
+  font-size: 0.813rem !important;
+  border-radius: 0.25rem;
+}
+
+ng-select>div:focus {
+  color: #236080 !important;
+  background-color: #fff !important;
+  border-color: #26b2fc !important;
+  box-shadow: 0 0 0 0.2rem rgba(2, 106, 161, 0.25) !important;
+}
+
+ng-select>div>div.multiple>div.option {
+  background-color: #027dc1 !important;
+  border: 1px solid #037abc !important;
+  color: #fff !important;
+}
+
+ng-select>div>div.multiple>div.option span.deselect-option {
+  color: #fff !important;
+}
+
+.text-15 {
+  font-size: 15px;
+}
+
+.modal-dialog {
+  max-width: 80% !important;
+}
+
+.m-t-24 {
+  margin-top: 24px;
+}
+
+.m-t-10 {
+  margin-top: 10px;
+}
+
+.btnResetNote {
+  background: #000;
+  padding: 5px;
+  color: #fff;
+}
+
+.ngx-datatable.material.single-selection .datatable-body-row.active,
+.ngx-datatable.material.single-selection .datatable-body-row.active .datatable-row-group,
+.ngx-datatable.material.multi-selection .datatable-body-row.active,
+.ngx-datatable.material.multi-selection .datatable-body-row.active .datatable-row-group,
+.ngx-datatable.material.multi-click-selection .datatable-body-row.active,
+.ngx-datatable.material.multi-click-selection .datatable-body-row.active .datatable-row-group {
+  background-color: rgba(215, 193, 0, 0.45) !important;
+}
+
+.card-body .card-title {
+  color: #232323;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+.card-body .card-title i {
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.ticketHeader {
+  margin-bottom: 20px;
+}
+
+.ticketHeader h6 {
+  font-size: 12px;
+  color: #3d3e40;
+  margin-bottom: 4px;
+}
+
+.ticketHeader p {
+  outline: initial !important;
+  background: #f8f9fa;
+  border: 1px solid #ced4da;
+  color: #151617;
+  display: block;
+  width: 100%;
+  height: calc(1.9695rem + 2px);
+  padding: 0.375rem 0.75rem;
+  font-size: 0.813rem;
+  line-height: 1.5;
+  border-radius: 0.25rem;
+}
+
+.ticketDetailsModal {
+  max-width: 75% !important;
+  margin: 0 auto;
+  overflow: hidden !important;
+}
+
+.smallDialog {
+  max-width: 20% !important;
+  margin: 0 auto;
+  overflow: hidden !important;
+}
+
+.ticketDetailsModal .modal-dialog .modal-body {
+  overflow-y: auto;
+  max-height: 800px;
+}
+
+.m-l-5 {
+  margin-left: 5px;
+}
+
+.m-r-5 {
+  margin-right: 5px;
+}
+
+.insideChecklist {
+  padding: 0.75rem 2rem;
+  box-shadow: 0 0 5px #ccc;
+  margin-bottom: 10px;
+}
+
+.insideChecklist h6 {
+  color: #0080c3;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.insideChecklist p {
+  color: #989898;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.btnChecklist button {
+  margin: 0 5px;
+}
+
+.insideChecklist h5 {
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #7d7d7d;
+  font-size: 15px;
+}
+
+.customModalClass .modal-dialog {
+  max-width: 80% !important;
+}
+
+.customModalClass-w-30 .modal-dialog {
+  max-width: 60% !important;
+  max-height: 80vh !important;
+}
+
+
+/* Receipt Images Modal Styling */
+.receipt-images-modal .modal-dialog {
+  max-width: 650px !important;
+}
+
+.receipt-images-modal .modal-content {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+
+
+.customRoleModalClass{
+  max-height: 92vh !important;
+  overflow-y: hidden !important;
+}
+.customRoleModalClass .modal-dialog {
+  max-width: 80% !important;
+  
+}
+
+
+.addProductModalClassFromNewMakeSale .modal-dialog {
+  max-width: 1700px !important;
+  width: 95% !important;
+}
+
+@media (min-width: 1920px) {
+  .addProductModalClassFromNewMakeSale .modal-dialog {
+    max-width: 1700px !important;
+    width: 95% !important;
+  }
+}
+
+@media (min-width: 1366px) and (max-width: 1919px) {
+  .addProductModalClassFromNewMakeSale .modal-dialog {
+    max-width: 1500px !important;
+    width: 95% !important;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1365px) {
+  .addProductModalClassFromNewMakeSale .modal-dialog {
+    max-width: 1300px !important;
+    width: 95% !important;
+  }
+}
+
+@media (max-width: 991px) {
+  .addProductModalClassFromNewMakeSale .modal-dialog {
+    max-width: 95% !important;
+    width: 95% !important;
+  }
+}
+
+.card-title strong {
+  font-weight: bold !important;
+  margin: 0 5px;
+}
+
+.tableFixHead {
+  overflow-y: auto;
+  max-height: 600px;
+  margin-top: 20px;
+}
+
+.tableFixHead thead th {
+  position: sticky;
+  top: -1px;
+  background: #fff;
+  z-index: 99;
+}
+
+.tableFixHead tbody tr td,
+.tableFixHead tbody tr td label {
+  cursor: pointer;
+}
+
+.label-danger {
+  border-radius: 4px;
+  font-size: 15px;
+  font-weight: bold;
+  padding: 0 5px;
+  margin-right: 5px;
+  border: solid 2px #f00;
+  color: #f00 !important;
+  width: 100px;
+  text-align: center;
+}
+
+.filter-panel {
+  background-color: #1e284b;
+  display: flex;
+  top: 5vh;
+  right: 50px;
+  position: absolute;
+  z-index: 1;
+  border-radius: 10px;
+  padding: 10px 20px;
+  opacity: 0.95;
+}
+
+.filter-panel label {
+  color: #fff !important;
+}
+
+.tc-legend-panel {
+  background-color: #293253;
+  top: 18vh;
+  right: 50px;
+  position: absolute;
+  z-index: 1;
+  border-radius: 10px;
+  padding: 10px 20px;
+  opacity: 0.95;
+  width: auto;
+  text-align: left;
+}
+
+.tc-legend-panel h6 {
+  color: #fff;
+}
+
+.tc-legend-panel ul {
+  margin-bottom: 0 !important;
+  padding: 0 !important;
+}
+
+.tc-legend-panel ul li {
+  list-style: none;
+}
+
+.legendItem {
+  width: 100%;
+  margin: 10px auto;
+}
+
+.legendItem label {
+  vertical-align: super;
+  margin: 0 10px;
+  color: #fff;
+}
+
+.legendItem span {
+  position: relative;
+}
+
+.slider-container {
+  position: absolute !important;
+  bottom: 250px;
+  right: 87px;
+  width: 90%;
+  background: rgba(255, 255, 255, 0.7);
+  padding: 10px 20px;
+  border-radius: 5px;
+  color: black;
+}
+
+.rangeWrapper .esri-widget-buton {
+  margin-top: 13px;
+}
+
+.dayMonthContainer {
+  position: relative;
+}
+
+.dayMonthContainer .sliderValue {
+  display: block;
+  font-size: 20px;
+}
+
+.dayMonthContainer .Month {
+  font-size: 12px;
+}
+
+.minMax span:last-child {
+  float: right;
+}
+
+.esri-time-slider__layout--wide .esri-time-slider__time-extent,
+.esri-time-slider__layout--compact .esri-time-slider__time-extent,
+.esri-time-slider__layout--wide .esri-time-slider__max,
+.esri-time-slider__layout--compact .esri-time-slider__max-date {
+  display: none !important;
+}
+
+.esri-ui-manual-container>.esri-component {
+  position: absolute;
+  left: 5%;
+  right: 5%;
+  bottom: 20px;
+}
+
+/* #mapContainer {
+    position: absolute;
+    left: 0%;
+    right: 5%;
+    bottom: 20px;
+} */
+
+.tabs {
+  --tab-links-height: 44px;
+  --tab-links-bg: linear-gradient(135deg, #e5eaf1 0%, #b9c5d8 100%);
+  --tab-links-overlay: linear-gradient(135deg,
+      #1e284b 0%,
+      #293664 48%,
+      #40549b 100%);
+  --tab-link-bg: linear-gradient(90deg,
+      transparent 70%,
+      rgba(255, 255, 255, 0.2) 100%);
+  width: 100%;
+  /* margin-top: 20px; */
+}
+
+.tabs .tabs__links {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: var(--tab-links-height);
+  background: var(--tab-links-bg);
+  list-style-type: none;
+  overflow-y: auto;
+  height: 62px !important;
+}
+
+@media screen and (max-width: 750px) {
+  .tabs .tabs__links {
+    height: calc(var(--tab-links-height) / 2);
+  }
+}
+
+.tabs .tabs__links li {
+  flex: 1;
+}
+
+.tabs .tabs__links li .tabs__link {
+  all: unset;
+  position: relative;
+  height: var(--tab-links-height);
+  width: 100%;
+  background: var(--tab-link-bg);
+  cursor: pointer;
+  overflow: hidden;
+  transition: 0.3s;
+}
+
+@media screen and (max-width: 750px) {
+  .tabs .tabs__links li .tabs__link {
+    height: calc(var(--tab-links-height) / 2);
+    font-size: 12px;
+  }
+}
+
+.tabs .tabs__links li .tabs__link::before {
+  position: absolute;
+  content: "";
+  top: 0;
+  left: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  background: var(--tab-links-overlay);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: 0.3s ease-in-out;
+}
+
+.tabs .tabs__links li .tabs__link .tabs__link__text {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0.6;
+  transition: 0.5s;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.tabs .tabs__links li .tabs__link .tabs__link__text::before {
+  position: absolute;
+  content: attr(data-text);
+  top: 160%;
+  z-index: -1;
+  font-size: 40px;
+  font-weight: 600;
+  color: white;
+  opacity: 0.1;
+  transition: 1.2s ease-out;
+}
+
+@media screen and (max-width: 750px) {
+  .tabs .tabs__links li .tabs__link .tabs__link__text::before {
+    display: none;
+  }
+}
+
+.tabs .tabs__links li .tabs__link:hover::before {
+  transform: scaleY(1);
+}
+
+.tabs .tabs__links li .tabs__link:hover .tabs__link__text {
+  color: white;
+  opacity: 1;
+}
+
+.tabs .tabs__links li .tabs__link:hover .tabs__link__text::before {
+  transform: translateY(-300%);
+}
+
+.tabs .tabs__links li .tabs__link.active {
+  transform: scaleY(1.4);
+  background: white;
+}
+
+.tabs .tabs__links li .tabs__link.active::before {
+  transform: scaleY(0.05);
+}
+
+.tabs .tabs__links li .tabs__link.active .tabs__link__text {
+  transform: scaleY(0.714);
+}
+
+.tabs .tabs__links li .tabs__link.active .tabs__link__text,
+.tabs .tabs__links li .tabs__link.active:hover .tabs__link__text {
+  background: var(--tab-links-overlay);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  opacity: 1;
+}
+
+.tabs .tabs__contents {
+  position: relative;
+  margin-top: 0;
+  padding: 5px 0;
+  background: white;
+  list-style-type: none;
+  transition: 1s;
+}
+
+/* .tabs .tabs__contents::after {
+  position: absolute;
+  content: "";
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 5px;
+  z-index: 100;
+  background: var(--tab-links-overlay);
+} */
+
+.tabs .tabs__contents .tabs__content {
+  display: none;
+  min-height: 200px;
+  font-weight: 300;
+  line-height: 1.8;
+  opacity: 0;
+  /* transform: translateY(30%); */
+  -webkit-animation: fadeIn 0.6s forwards;
+  animation: fadeIn 0.6s forwards;
+}
+
+.tabs .tabs__contents .tabs__content.active {
+  display: block;
+}
+
+@-webkit-keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+.main-map .esri-view {
+  height: 100vh;
+}
+
+.radar-map .esri-view {
+  height: 85vh;
+}
+
+.with-list-map .esri-view {
+  height: 70vh !important;
+}
+
+
+.accident-location-map .esri-view {
+  height: 45vh !important;
+}
+
+.popup-map .esri-view {
+  height: 70vh !important;
+}
+
+.esri-attribution__sources {
+  display: none !important;
+}
+
+.esri-attribution__powered-by {
+  display: none !important;
+}
+
+.disabled-card {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.esri-sketch__panel {
+  flex-direction: column !important;
+}
+
+.esri-sketch__section {
+  flex-direction: column !important;
+}
+
+.esri-sketch__tool-section {
+  border-right: none !important;
+}
+
+.esri-sketch__info-count-section {
+  display: none !important;
+}
+
+.weather {
+  margin-bottom: 20px;
+}
+
+.ticket-request-detail .nav-tabs {
+  border: 0;
+  border-bottom: 1px solid darkgray !important;
+}
+
+.ticket-status {
+  padding: 10px 5px 2px 8px;
+  border: 1px solid lightgray;
+  border-radius: 8px;
+}
+
+.ticket-status p {
+  margin-bottom: 0.2rem !important;
+  padding-top: 5px;
+}
+
+.ticket-status .comment {
+  margin-bottom: 0.4rem;
+  display: inline-block;
+  width: calc(100% - 10px);
+  line-height: 1.4em;
+  color: #666;
+}
+
+.ticket-status .comment b.a {
+  color: rgba(0, 0, 0, 0.75);
+}
+
+.inline-radio-button label {
+  padding-bottom: 0.3rem !important;
+  margin: -0.2rem 0rem 0rem 0.3rem;
+}
+
+.inline-radio-button input[type="radio"],
+input[type="checkbox"] {
+  box-sizing: border-box;
+  padding: 1px !important;
+}
+
+.logged-status {
+  background: linear-gradient(45deg, #4c4b4b, #9e9e9e);
+}
+
+.active-status {
+  background: linear-gradient(45deg, #4caf50, #00e809);
+}
+
+.assigned-status {
+  background: linear-gradient(45deg, #795548, #ff6933);
+}
+.in-progress-status {
+  background: linear-gradient(45deg, #756a04, #d1bd06);
+}
+.waiting-customer-status {
+  background: linear-gradient(45deg, #005c5f, #10c8cd);
+}
+.waiting-3rdParty-status {
+  background: linear-gradient(45deg, #04719e, #79bedb);
+}
+.waiting-resolution-status {
+  background: linear-gradient(45deg, #242d49, #3399ff);
+}
+
+.resolevd-status {
+  background: linear-gradient(45deg, #2196f3, #7fd4fb);
+}
+.completed-status {
+  background: linear-gradient(45deg, #052fc1, #1e284b);
+}
+
+.closed-status {
+  background: linear-gradient(45deg, #4a0101, #ff0000);
+}
+
+.on-hold-status {
+  background: linear-gradient(45deg, #d68104, #ff9800);
+}
+.archive-status {
+  background: linear-gradient(45deg, #6f7dad, #1e284b);
+}
+.approved-status {
+  background: linear-gradient(45deg, #94c0d4,#4f9bda );
+}
+.rejected-status {
+  background: linear-gradient(45deg, #ee346c,#795548 );
+}
+/* .requested-Status{
+  background: linear-gradient(45deg, #9c27b0, #d639f1 ); 
+} */
+.generalReportInfo {
+  border-top: solid 3px #180951;
+}
+
+.generalReportInfo label {
+  font-size: 15px;
+  color: #676767;
+}
+
+.generalReportInfo h4 {
+  font-size: 15px;
+  font-weight: bold;
+  color: #180951;
+}
+
+.generalReportInfo h3 {
+  font-size: 15px;
+  color: #676767;
+}
+
+.cardItem {
+  background: white;
+  cursor: pointer;
+  border-radius: 5px;
+  position: relative;
+  padding: 33px 30px;
+  /* height: 165px; */
+  color: #f00;
+  box-shadow: 0 0 10px #ccc;
+  background-position: 0 30%;
+  background-size: 43%;
+  transition: all ease-in-out 0.5s;
+  display: flex;
+  margin-bottom: 30px;
+}
+
+.cardItem1::after {
+  content: "";
+  background: linear-gradient(45deg, #f00, #60adff);
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 0;
+  clip-path: circle(0% at 0% 0%);
+  transition: all 0.5s ease-in;
+}
+ 
+.cardItem:hover {
+  transform: scale(1.06);
+  box-shadow: 0 0 10px rgb(161, 161, 161);
+}
+
+.cardItem:hover::after {
+  clip-path: circle(100%);
+}
+
+.cardItem:hover .content {
+  color: #242d49;
+}
+
+.cardBackground {
+  background-repeat: no-repeat !important;
+  background-size: 30% !important;
+  background-position: center right !important;
+  background-origin: content-box !important;
+  background-color: #fff !important;
+}
+
+.injuries {
+  background: url(assets/images/first-aid-kit.svg);
+  border-left: 5px solid #b3113b;
+}
+.injuries .counter-value, .injuries .content-v-item-name {
+  color: #b3113b;
+}
+.vehicles {
+  background: url(assets/images/fender-bender.svg);
+  border-left: 5px solid #5aaae7;
+}
+.vehicles .counter-value, .vehicles .content-v-item-name {
+  color: #5aaae7;
+}
+.witnesses {
+  background: url(assets/images/witness.svg);
+  border-left: 5px solid #6e83b7;
+}
+.witnesses .counter-value, .witnesses .content-v-item-name {
+  color: #6e83b7;
+}
+.assets {
+  background: url(assets/images/street-sign.svg);
+  border-left: 5px solid #b57f5f;
+}
+.assets .counter-value, .assets .content-v-item-name {
+  color: #b57f5f;
+}
+
+.cardBackground .counter-value {
+  font-size: 42px;
+}
+
+.content-v-item-name{
+  font-weight: bold;
+}
+
+.accedientImage{
+  border-radius: 5px;
+  box-shadow: 0 0 5px #ccc;
+  /* min-width: 100px; */
+}
+
+.comment-box {
+  margin-bottom: 15px;
+  z-index: 0;
+}
+.comment-box .comment-block {
+  margin-right: 0;
+  margin-left: 0;
+  margin-top: 1.5rem;
+}
+.comment-box .comment-header {
+  padding: 8px 0.9em;
+  border: 1px solid #ccc;
+  border-color: rgba(0, 0, 0, 0.2);
+  border-radius: 5px 5px 0 0;
+  background: #c3d9ff;
+}
+.comment-header:before {
+  position: absolute;
+  top: 7px;
+  right: -8px;
+  content: "";
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-left: 8px solid #9cadcc;
+  display: inline-block;
+}
+.comment-body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px !important;
+  line-height: 1.428571429;
+  color: #333333;
+  background-color: #ffffff;
+  margin: 0;
+  padding: 0.9em;
+  word-wrap: break-word;
+  overflow-x: auto;
+}
+.comment-box .comment-body {
+  border: 1px solid #ddd;
+  border-top: none;
+  border-bottom: 2px solid #aaa;
+  border-radius: 0 0 5px 5px;
+}
+.comment-body :last-child,
+.comment-body > div {
+  margin-bottom: 0 !important;
+}
+
+.comment-body div,
+.comment-body p,
+.comment-body ul,
+.comment-body ol,
+.comment-body table,
+.comment-body dl,
+.comment-body blockquote,
+.comment-body pre {
+  font-size: 14px;
+  line-height: 1.5rem;
+}
+.icon-right {
+  display: inline;
+  width: max-content;
+  height: auto;
+  line-height: normal;
+  vertical-align: baseline;
+  background-image: none;
+  background-position: 0% 0%;
+  background-repeat: repeat;
+  margin-top: 0;
+  float: right;
+}
+.icon-right.span {
+  width: min-content;
+  border: 1px solid #aaa;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  background: #0f7daf;
+  cursor: pointer;
+  background: linear-gradient(0, rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1));
+}
+.icon-right.span :hover {
+  background: #218fc2;
+  color: black;
+}
+.disabled-custom {
+  pointer-events: none !important;
+  opacity: 0.65 !important;
+}
+.addlink {
+  color: #0f30d2;
+  text-decoration: none;
+  text-transform: uppercase;
+  padding-left: 0.5rem;
+  font-size: 0.85rem;
+  margin-top: -5px;
+}
+.addlink i {
+  margin: 0.3rem;
+}
+.addlink:hover {
+  color: #e0e963;
+}
+.addlink:active {
+  color: #132166;
+}
+.addlink:visited {
+  color: #3c53ca;
+}
+.display-attachment {
+  color: #132166;
+  font-size: 1.3 rem;
+}
+.target-resolution {
+  /* background: linear-gradient(45deg, #59ce8c, #8bd8ad); */
+  color: #ffff;
+  float: right;
+  font-size: 0.9rem;
+  padding: 0.3rem 0.3rem 0.3rem 0.3rem;
+}
+.target-resolution span {
+  font-size: 0.8rem;
+}
+.disabled-controls select:not(.enabled) {
+  pointer-events: none !important;
+  background-color: #eee !important;
+  opacity: 1 !important;
+}
+.disabled-controls input:not(.ng2-tag-input__text-input):not() {
+  pointer-events: none !important;
+  background-color: #eee !important;
+  opacity: 1 !important;
+}
+.disabled-controls textarea {
+  pointer-events: none !important;
+  background-color: #eee !important;
+  opacity: 1 !important;
+}
+
+.imageSize {
+  height: 100px;
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+.image-size-drawing {
+  height: 100px;
+  
+  margin-bottom: 5px;
+}
+.disabled-tag-input {
+  pointer-events: none !important;
+  background-color: #eee !important;
+  opacity: 1 !important;
+}
+.disabled-tag-input input {
+  pointer-events: none !important;
+  background-color: #eee !important;
+  opacity: 1 !important;
+}
+.disabled-tag-input tag-input-form {
+  display: none;
+}
+.success-checkmark::before {
+  content: '✔';
+  position: absolute;
+  left: 8px;
+  width: 20px;
+  height: 20px;
+  font-size: 0.9rem;
+  text-align: center;
+  background: #1c9c4f;
+  border-radius: 50%;
+  color: #fff;
+}
+
+.datatable-scroll{
+  display: inherit !important;
+  width:100% !important
+}
+
+.loading-div, .spinner-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1055;
+}
+
+.spinner-overlay .spinner-border {
+  width: 3rem;
+  height: 3rem;
+}
+
+.uploadVideoEvidenceModalCss .modal-dialog{
+  width: 50% !important;
+}
+
+
+.uploadExpenseDocumentModalCss .modal-dialog{
+  width: 50% !important;
+}
+
+.small-barcode-modal .modal-dialog{
+width: 30% !important;
+}
+
+.AddUpdateLockScreen .modal-dialog{
+  width: 30% !important;
+  }
+
+  /* Till assign user: cap width to content max; vw scales with zoom so no side gutters */
+  .assignTillToUserModalCss .modal-dialog {
+    max-width: min(920px, 96vw) !important;
+    width: min(92vw, 920px) !important;
+    max-height: 90vh !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .assignTillToUserModalCss .modal-content {
+    width: 100%;
+    max-width: 100%;
+    max-height: 90vh;
+    border: none;
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+
+    .orderDetailsModalCss .modal-dialog{
+      width: 70% !important;
+      }
+
+.startTillModalCss .modal-dialog{
+    width: 60% !important;
+    }
+
+    .closeTillModalCss .modal-dialog{
+    width: 60% !important;
+    }
+
+  .lockScreenModalPopUp .modal-dialog{
+    width: 30% !important;
+    margin-top: 5%;
+    }
+
+  .forgetPasswordForLockScreen .modal-dialog{
+    width: 30% !important;
+    }
+
+.uploadExpenseDocumentModalCss{
+  z-index: 10000 !important;
+}
+
+
+/* .esri-widget__table{
+  background-color: white;
+} */
+
+
+.onTime-Response {
+  background:#9e9e9e;
+  height: 25px;
+}
+
+.NotOnTime-Response {
+  background: red;
+  height: 25px
+}
+
+
+.onTime-Resolution {
+  background:#9e9e9e;
+  height: 25px;
+}
+
+.NotOnTime-Resolution {
+  background: red;
+  height: 25px
+}
+
+.ngx-datatable.material .datatable-body-row:hover {
+  color: transparent !important ;
+  background-color: transparent !important ;
+}
+
+
+
+.card {
+  border: 1px solid #ccc; 
+  border-radius: 5px; 
+  padding: 10px;
+}
+
+
+.form-control.is-invalid{
+  border: 2px solid !important;
+}
+
+
+
+.custom-swal-container {
+  margin-right: 37% !important;
+}
+
+
+
+
+.cursor-all-scroll {
+  cursor: move;
+}
+
+
+
+
+.ngx-datatable .datatable-row-group{
+  margin-top: -5px;
+}
+
+
+.ngx-datatable .datatable-header{
+  margin-top: -10px;
+  border-color: #1e284b !important;
+}
+
+
+
+
+.ngx-datatable .datatable-footer{
+  overflow:hidden !important;
+}
+
+
+
+
+
+app-new-product-list-cart-view .ngx-datatable  .datatable-body-cell-label{
+  margin-top: -16px !important;
+}
+
+
+app-new-product-list-cart-view .ngx-datatable .datatable-header-cell-template-wrap{
+  margin-top: -2px !important;
+  font-size: 13px !important;
+  font-weight: bold !important;
+}
+
+
+app-new-product-list-cart-view .ngx-datatable .datatable-row-group{
+  margin-top: 1px !important;
+}
+
+.datatable-header-cell-template-wrap
+app-new-product-list-cart-view .ngx-datatable .datatable-header{
+  margin-top: 0px !important;
+}
+
+
+
+ app-new-product-list-cart-view .ngx-datatable .datatable-row-group {
+  border-bottom: 1px solid #ccc !important;
+} 
+
+
+.ngx-datatable.material .datatable-header .datatable-header-cell{
+  padding: 1rem 0rem 1rem 0rem;
+}
+
+.ngx-datatable.material .datatable-body .datatable-body-row .datatable-body-cell{
+  padding: 1rem 0rem 1rem 0rem;
+}
+
+[dir="rtl"] {  
+
+  /* *{
+    font-style: oblique;
+  } */
+
+  .ngx-datatable .datatable-header .datatable-header-cell .datatable-header-cell-template-wrap{
+    white-space: normal;
+    word-wrap: break-word;
+    margin-right: 5px;
+  }
+
+
+  .ngx-datatable .datatable-footer .datatable-pager .pager, .ngx-datatable .datatable-footer .datatable-pager .pager li{
+    float: left;
+  }
+
+    [title="[object Object]"] {
+  display: none;
+}
+}
+
+[dir="ltr"] {
+  .ngx-datatable .datatable-header .datatable-header-cell .datatable-header-cell-template-wrap{
+    white-space: normal;
+    word-wrap: break-word;
+    margin-left: 5px;
+  }
+}
+
+
+.datatable-body-cell-label .btn {
+  margin: -10px 5px 0px 0px !important;
+}
+
+.datatable-body-row {
+  /* border-bottom: 1.5px solid rgb(212, 212, 212) !important; */
+  .datatable-body-cell-label{
+    height: 100% !important;
+    /* display: flex !important;
+    align-items: center !important; */
+    margin-left: 5px !important;
+    /* line-height: 40px !important; */
+  }
+}
+
+/* .selected-row {
+  background-color: yellow !important;
+} */
+
+
+.dropdown-list{
+  margin-top: 2px !important;
+}
+
+
+[dir="rtl"] {
+  .fontAwesome_Li_Class
+  {
+      margin-left: 5% !important;
+  }
+  }
+
+
+.posBillTemplateModalClassFromNewMakeSale .modal-dialog{
+  width: 48% !important;
+}
+
+.posBillTemplateModalClassFromNewMakeSale .modal-dialog .modal-body {
+  overflow-y: auto;
+  max-height: 660px;
+}
+
+.addCashDepositFormModalCss .modal-dialog{
+  width: 50% !important;
+}
+
+
+.androidPdfOptionModalClassFromNewMakeSale .modal-dialog {
+  width: 50% !important;
+  margin: 1.75rem auto;
+}
+
+
+.storeToWarehouseStockTransferFormModalCss .modal-dialog{
+  width: 50% !important;
+}
+
+.addCashWithdrawFormModalCss .modal-dialog{
+  width: 50% !important;
+}
+
+.addCompanyInHandCashModalCss .modal-dialog{
+  width: 50% !important;
+}
+
+.storeToStoreTransferFormModalCss .modal-dialog{
+  width: 50% !important;
+}
+.depositCompanyCashModalCss .modal-dialog{
+  width: 50% !important;
+}
+
+.tenant-setup-modal-popup .modal-dialog{
+  width: 70% !important;
+  top: -4% !important;
+}
+
+
+.tillDepositModalClassFromNewMakeSale .modal-dialog{
+  width: 30% !important;
+}
+
+.assignTillToAccountModalCss .modal-dialog{
+  max-width: 500px !important;
+  width: 500px !important;
+}
+
+.updateOrderDueDateModalCss .modal-dialog{
+  width: 30% !important;
+}
+  .receipt-container{
+    width: 700px !important;
+  }
+
+  .multiselect-item-checkbox input[disabled] + div {
+  color: #999 !important;
+  cursor: not-allowed;
+  background-color: #f4f4f4;
+}
+
+
+.miscellaneousPaymentModalClassFromNewMakeSale .modal-dialog{
+  width: 50% !important;
+}
+
+.openWithDrawFromCompanyCashModalCss .modal-dialog{
+  width: 50% !important;
+}
+
+
+/* Salesman Products modal: table + pagination visible, reduced height */
+.salesman-products-modal .modal-body {
+  overflow-y: auto;
+}
+
+
+/* Salesman Products modal: legendary popup + flex layout */
+.salesman-products-modal .modal-dialog {
+  max-width: 96%;
+}
+
+.salesman-products-modal .modal-content {
+  height: 88vh !important;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 24px 48px rgba(30, 58, 95, 0.15), 0 8px 24px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.salesman-products-modal .modal-header {
+  flex-shrink: 0;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%);
+  color: #fff;
+  border-bottom: none;
+  align-items: center;
+}
+
+.salesman-products-modal .modal-header .modal-title {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #fff !important;
+}
+
+.salesman-products-modal .modal-header .close {
+  padding: 0;
+  margin: 0 0 0 0.75rem;
+  opacity: 1;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+  border: none;
+  border-radius: 8px;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.salesman-products-modal .modal-header .close:hover {
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+}
+
+.salesman-products-modal .modal-body {
+  flex: 1 1 auto;
+  min-height: 40vh;
+  max-height: calc(90vh - 140px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0;
+  padding-bottom: 0.5rem;
+}
+
+.salesman-products-modal .modal-footer {
+  flex-shrink: 0;
+  padding: 1rem 1.25rem;
+  border-top: 1px solid #e8ecf0;
+  background: #fafbfc;
+  gap: 0.75rem;
+}
+
+.salesman-products-modal .modal-footer .btn-primary {
+  background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%);
+  border: none;
+  color: #fff;
+  border-radius: 10px;
+  font-weight: 500;
+  box-shadow: 0 2px 6px rgba(30, 58, 95, 0.25);
+}
+
+.salesman-products-modal .modal-footer .btn-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #254366 0%, #36587a 100%);
+  box-shadow: 0 4px 12px rgba(30, 58, 95, 0.3);
+  color: #fff;
+}
+
+.salesman-products-modal .modal-footer .btn-outline-secondary {
+  background: #fff;
+  border: 1px solid #d1d9e2;
+  color: #4a5568;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+.salesman-products-modal .modal-footer .btn-outline-secondary:hover:not(:disabled) {
+  background: #f7f8fa;
+  border-color: #b8c4ce;
+  color: #2d3748;
+}
+
+/* Available Products (Assign products) modal: polished popup + flex layout */
+.assign-products-modal .modal-dialog {
+  max-width: 96%;
+}
+
+.assign-products-modal .modal-content {
+  height: 88vh !important;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 24px 48px rgba(30, 58, 95, 0.15), 0 8px 24px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.assign-products-modal .modal-body {
+  flex: 1 1 auto;
+  min-height: 40vh;
+  max-height: calc(88vh - 140px);
+  overflow: hidden;
+}
+
+.assign-products-modal .modal-footer {
+  flex-shrink: 0;
+}
+
+/* ========== Add Markup modal ========== */
+.markup-modal-window .modal-dialog {
+  max-width: 420px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
+.markup-modal-window .modal-content {
+  border: none;
+  border-radius: 12px;
+}
+
+.markup-modal-window .markup-modal-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  border-bottom: none;
+  padding: 1rem 1.25rem;
+}
+
+.markup-modal-window .markup-modal-header .modal-title {
+  font-weight: 600;
+  font-size: 1.15rem;
+}
+
+.markup-modal-window .markup-modal-header .close {
+  color: #fff;
+  opacity: 0.9;
+  text-shadow: none;
+}
+
+.markup-modal-window .markup-modal-body {
+  padding: 1.5rem 1.25rem;
+}
+
+.markup-modal-window .markup-product-name {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #eee;
+  font-size: 0.95rem;
+}
+
+.markup-modal-window .markup-field {
+  margin-bottom: 1.25rem;
+}
+
+.markup-modal-window .markup-field label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 0.35rem;
+}
+
+.markup-modal-window .markup-value {
+  font-size: 1.1rem;
+  color: #1e284b;
+  font-weight: 500;
+}
+
+.markup-modal-window .markup-input {
+  border-radius: 8px;
+  border: 1px solid #d0d0d0;
+  padding: 0.5rem 0.75rem;
+}
+
+.markup-modal-window .markup-preview {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.markup-modal-window .markup-preview-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.markup-modal-window .markup-preview-row.new-price {
+  margin-bottom: 0;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px dashed #dee2e6;
+  font-size: 1rem;
+  color: #1e284b;
+}
+
+.markup-modal-window .markup-modal-footer {
+  border-top: 1px solid #eee;
+  padding: 1rem 1.25rem;
+  gap: 0.5rem;
+}

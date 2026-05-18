@@ -1,0 +1,177 @@
+<div class="main-header" [dir]="globalDataService.getdir()">
+    <!-- Left Section: Logo and Menu Toggle -->
+    <div class="header-left">
+        <ng-template #disabledLink>
+            <div class="logo cursor" *ngIf="!linkEnabled">
+                <img src="{{globalDataService.getLogoPicture()}}" alt="">
+            </div>
+        </ng-template>
+        <div *ngIf="linkEnabled; else disabledLink" class="logo cursor">
+            <img src="{{globalDataService.getLogoPicture()}}" alt="">
+        </div>
+        
+        <div class="menu-toggle" (click)="toggelSidebar()">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+
+    <!-- Right Section: User Controls -->
+    <div class="header-right">
+
+        <!--<div class="toggle toggle--switch">
+            <input type="checkbox" id="toggle--switch" (change)="changeMode()" class="toggle--checkbox"
+                   [checked]="customizer.isDarkMode">
+            <label class="toggle--btn" for="toggle--switch">
+                <span class="toggle--feature" data-label-on="Light"
+                      data-label-off="Dark"></span>
+            </label>
+        </div>-->
+        <!-- <i class="i-Magnifi-Glass1 header-icon" role="button" (click)="searchService.searchOpen = true"></i> -->
+        <i fullScreenWindow id="fullScreenIcon" class="i-Full-Screen header-icon d-none d-sm-inline-block" role="button"></i>
+        
+        <!-- <div ngbDropdown [placement]="'bottom-right'" class="d-none d-sm-inline-block"> -->
+        <!-- <i ngbDropdownToggle class="i-Gear text-muted header-icon" role="button"></i> -->
+        <!-- <img ngbDropdownToggle role="button" src="../../../../../../assets/images/ar-en.png" class="languageImage"/> -->
+        
+        <div id="topBarStores" *ngIf="_customUserStoreService.customeStores && _customUserStoreService.customeStores.length > 0">
+            <ng-select [ngClass]="'ng-select'" [(ngModel)]="_customUserStoreService.selectedStore"
+            [ngModelOptions]="{standalone: true}" [allowClear]="true"
+            *ngIf="_customUserStoreService.customeStores && _customUserStoreService.customeStores.length > 0" 
+            [options]="_customUserStoreService.customeStores" 
+            [multiple]="_customUserStoreService.allowMultipleStores">
+        </ng-select>
+        </div>
+
+        <div id="topBarLanguages">
+            <select class="form-control langBtn mr-5" [(ngModel)]="source" (change)="languagesForDropDownValueChanged()">
+                <option *ngFor="let language of languagesForDropDown" [value]="language.name">{{ language.displayName }}</option>
+            </select>
+        </div>
+
+
+        <!-- <a (click)="toggleDir('ar')" *ngIf="!arSelected" class="langBtn">العربية</a>
+        <a (click)="toggleDir('en')" *ngIf="!enSelected" class="langBtn">English</a> -->
+
+        <!-- <div ngbDropdownMenu class="menu-icon-grid-dropdown">
+            
+            <div class="menu-icon-grid">
+                <ul class="languageMenu">
+                    <li><a (click)="toggleDir('ar')" [ngClass]="(arSelected)?'selectedLanguage':''">العربية</a></li>
+                    <li><a (click)="toggleDir('en')" [ngClass]="(enSelected)?'selectedLanguage':''">English</a></li>
+                </ul>
+            </div>
+        </div> -->
+        <!-- </div> -->
+        <!-- <app-language-changer></app-language-changer> -->
+        <!-- WhatsApp: icon with real-time notification badge -->
+        <div ngbDropdown [placement]="'bottom-right'" class="d-inline-block">
+            <div class="badge-top-container" ngbDropdownToggle>
+                <span class="badge badge-danger whatsapp-badge" *ngIf="signalRService.whatsAppNotifications?.length > 0">
+                    {{ signalRService.whatsAppNotifications.length > 99 ? '99+' : signalRService.whatsAppNotifications.length }}
+                </span>
+                <i class="fa fa-whatsapp text-success header-icon fontAwesome_Li_Class" style="margin-right: 8px; font-size: 18px;" aria-hidden="true" title="WhatsApp"></i>
+            </div>
+            <div ngbDropdownMenu class="whatsapp-dropdown">
+                <div class="dropdown-header" *ngIf="signalRService.whatsAppNotifications?.length > 0">{{ 'WhatsApp Messages' | translate }}</div>
+                <button type="button" class="dropdown-item" *ngFor="let n of signalRService.whatsAppNotifications" (click)="openWhatsAppChat(n.phoneNumber)">
+                    <span class="text-truncate d-block">{{ n.phoneNumber }}</span>
+                    <small class="text-muted" *ngIf="n.text">{{ n.text | excerpt:25 }}</small>
+                </button>
+                <a class="dropdown-item" *ngIf="signalRService.whatsAppNotifications?.length === 0" routerLink="/online-shop/online-orders">
+                    {{ 'WhatsApp' | translate }}
+                </a>
+            </div>
+        </div>
+        <div *ngIf="signalRService.signalrNotifications?.length>0" ngbDropdown [placement]="'bottom-right'">
+            <div class="badge-top-container">
+                <span class="badge badge-primary">{{signalRService.signalrNotifications.length}}</span>
+                <i ngbDropdownToggle class="i-Bell text-muted header-icon" role="button"></i>
+            </div>
+            <div ngbDropdownMenu class="notification-dropdown rtl-ps-none" perfectScrollbar>
+                <div class="dropdown-item d-flex" *ngFor="let item of signalRService.signalrNotifications" (click)="readNotification(item)">
+                    <div class="notification-icon">
+                        <i class="{{item.icon}} text-{{item.status}} mr-1"></i>
+                    </div>
+                    <div class="notification-details flex-grow-1">
+                        <p class="m-0 d-flex align-items-center">
+                            <span>{{item.title}}</span>
+                            <span *ngIf="item.badge"
+                                class="badge badge-pill badge-{{item.status}} ml-1 mr-1">{{item.badge}}</span>
+                            <span class="flex-grow-1"></span>
+                            <span class="text-small text-muted ml-auto">{{item.time | relativeTime}}</span>
+                        </p>
+                        <p class="text-small text-muted m-0">{{item.text | excerpt:30}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="globalDataService.getdir()=='ltr'" ngbDropdown [placement]="'bottom-right'" class="user col align-self-end">
+            <img src="{{authService.getcurrentUserProfilePicture()}}" id="userDropdown" ngbDropdownToggle alt="">
+            <label class="userName" ngbDropdownToggle>{{fullName}}</label>
+            <div ngbDropdownMenu aria-labelledby="userDropdown" class="header-account-dropdown">
+                <div class="dropdown-header">
+                    <i class="i-Lock-User mr-1"></i> {{fullName}} <sup class="role">{{userRole}}</sup>
+                </div>
+                <!-- <button class="dropdown-item">Account settings</button>
+                <button class="dropdown-item">Billing history</button> -->
+                <button class="dropdown-item" (click)="signout()" translate><i class="i-Lock-2"></i> SignOut</button>
+            </div>
+        </div>
+
+
+        <div *ngIf="globalDataService.getdir()=='rtl'" ngbDropdown [placement]="'bottom-right'" class="user col align-self-end" id="userProfileDropdown">
+            
+            <label class="userName" ngbDropdownToggle>{{fullName}}</label>
+            <div ngbDropdownMenu aria-labelledby="userDropdown" class="header-account-dropdown">
+                <div class="dropdown-header">
+                    <i class="i-Lock-User mr-1"></i> {{fullName}} <sup class="role">{{userRole}}</sup>
+                </div>
+                <!-- <button class="dropdown-item">Account settings</button>
+                <button class="dropdown-item">Billing history</button> -->
+                <button class="dropdown-item" (click)="signout()" translate><i class="i-Lock-2"></i> SignOut</button>
+            </div>
+
+            <img src="{{authService.getcurrentUserProfilePicture()}}" id="userDropdown" ngbDropdownToggle alt="">
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<ng-template #detailsModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-title">{{sourceId? 'Task Details':'New Task' }}</h4>
+        <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title"
+            (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+
+        <app-create-officertask [id]="sourceId" [isTaskGroup]="isTaskGroup"></app-create-officertask>
+    </div>
+    <div class="modal-footer">
+
+    </div>
+</ng-template>
+
+
+  <ng-template #GroupTaskdetailsModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-title">Task Details</h4>
+        <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title"
+            (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <app-group-officer-task-detail [officerTask]="officerTask" [modal]="modal"></app-group-officer-task-detail>
+    </div>
+    <div class="modal-footer">
+    </div>
+</ng-template>

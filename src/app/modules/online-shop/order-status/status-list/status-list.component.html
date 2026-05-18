@@ -1,0 +1,150 @@
+<div [dir]="globalDataService.getdir()">
+
+  <!-- Search and Filters - Only visible with VIEW permission -->
+  <div class="gridAboveHeight">
+    <h1 style="margin-top: 0%;">{{'Statuses' | translate}}</h1>
+
+    <hr class="mt-0 mb-0" />
+    <div class="row">
+      <div class="col-xl-3 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="form-group">
+          <input style="margin-top: 7%;" id="email" placeholder="{{'Search' | translate}}" [formControl]="searchControl"
+            class="form-control form-control-rounded" type="text">
+        </div>
+      </div>
+
+
+      <div class="col-xl-5 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="row">
+          <div class="form-group col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
+
+            <label for="FromDate">{{'From' | translate}}</label>
+            <input type="date" class="form-control" [max]="filter.ToDate" id="FromDate" [(ngModel)]="filter.FromDate">
+          </div>
+          <div class="form-group  col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <label for="ToDate">{{'To' | translate}}</label>
+            <input type="date" class="form-control" [min]="filter.FromDate" id="ToDate" [(ngModel)]="filter.ToDate">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-1 col-lg-4 col-md-4 col-sm-4 col-xs-4 form-group search" style="margin-top: 1.7%">
+
+        <button class="btn btn-primary" (click)="search()">
+          <i class="i-File-Search"></i>
+          {{'Search' | translate}}
+        </button>
+      </div>
+
+      <div class="col-xl-1 col-lg-4 col-md-4 col-sm-4 col-xs-4 form-group Restore-Window_Rest" style="margin-top: 1.7%">
+        <button class="btn btn-primary" (click)="resetSearch()"><i class="i-Restore-Window">
+            {{'Reset' | translate}}
+          </i> </button>
+      </div>
+
+
+
+      <div class="col-xl-1 col-lg-4 col-md-4 col-sm-4 col-xs-4 form-group add_New" style="margin-top: 1.7%">
+        <button class="btn btn-primary" (click)="AddNew()">
+          <i class="i-Add"></i>
+          {{'Add New' | translate}}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section for users WITHOUT View permission -->
+  <div>
+    <!-- Action Buttons Section - Above the info message -->
+    <!-- <div class="gridAboveHeight">
+      <div class="row" style="margin: 20px 0;">
+        <div class="col-12" style="text-align: right;">
+          <div
+            style="display: inline-block; margin-left: 10px;">
+            <button class="btn btn-primary" (click)="AddNew()">
+              <i class="fa fa-plus fontAwesome_Li_Class" style="margin-right: 5px;" aria-hidden="true"></i>
+              {{'Add New' | translate}}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div> -->
+
+    <!-- Info Message -->
+    <!-- <div class="alert alert-info" style="margin: 20px;">
+      <i class="fa fa-lock lock-icon fontAwesome_Li_Class" style="margin-right: 8px; font-size: 18px;"
+        aria-hidden="true"></i>
+      <strong>Note:</strong> You do not have permission to view the section list. Contact your administrator if you need
+      view access.
+    </div>
+  </div> -->
+
+    <!-- Datatable - Only visible with VIEW child permission -->
+    <div class="row" style="margin-right: -16px; margin-left: -16px;">
+      <div class="col-md-12">
+        <div class="card mb-3">
+
+          <ngx-datatable [ngStyle]="{'height':gridHeight,'box-shadow': 'none'}" class="material fullscreen"
+            [columnMode]="ColumnMode.force" [headerHeight]="45" [footerHeight]="30" [rowHeight]="40"
+            [rows]="filteredData" [scrollbarH]="true" [selectAllRowsOnPage]="false"
+            [loadingIndicator]="loadingIndicator" [externalPaging]="true" [count]="page.totalElements"
+            [offset]="page.pageNumber" [limit]="page.size" (page)="setPage($event)" (sort)="onSort($event)"
+            [selected]="selected" [selectionType]="SelectionType.single" (select)="onSelect($event)"
+            (activate)="onDblClickRow($event)">
+
+            <ngx-datatable-column [minWidth]="240" [name]="'Name' | translate" prop="Name">
+              <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                <span title="{{ row.statusName }}">{{ row.statusName | nullEmptyToDash }}</span>
+              </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column [minWidth]="240" [name]="'Display Name' | translate" prop="Disable Name">
+              <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                <span title="{{ row.displayName }}">{{ row.displayName | nullEmptyToDash }}</span>
+              </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column [minWidth]="240" [name]="'StatusCode' | translate" prop="Status Code">
+              <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                <span title="{{ row.statusCode }}">{{ row.statusCode | nullEmptyToDash }}</span>
+              </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column [name]="'Color Code'" [width]="80">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+
+                <span class="badge"
+                  style="font-size: 14px;border-radius: 15px; display: block !important; width: 100px;"
+                  [style.background-color]="row.colorCode" [style.color]="getTextColor(row.colorCode)">
+                  {{ row.colorCode }}
+                </span>
+              </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column [width]="250" [name]="'Order Number' | translate " prop="Order Number">
+              <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                <span title="{{ row.orderNumber }}">{{ row.orderNumber | nullEmptyToDash }}</span>
+              </ng-template>
+            </ngx-datatable-column>
+
+
+
+
+
+            <ngx-datatable-column [sortable]="false" name="{{'Action' | translate}}">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <button class="btn btn-primary btn-form-margin" (click)="editRow(row)">
+                  <i class="i-Edit"></i>
+                  {{'Edit' | translate}}
+                </button>
+              </ng-template>
+            </ngx-datatable-column>
+
+
+          </ngx-datatable>
+        </div>
+
+      </div>
+    </div>
+
+  </div>

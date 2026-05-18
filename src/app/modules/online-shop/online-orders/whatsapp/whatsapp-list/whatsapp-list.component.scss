@@ -1,0 +1,124 @@
+.whatsapp-module {
+  padding: 0.5rem 0;
+}
+
+.whatsapp-layout {
+  min-height: 400px;
+}
+
+.user-list-col {
+  border-right: 1px solid #e0e0e0;
+  background: #fff;
+  border-radius: 8px 0 0 8px;
+  overflow: hidden;
+}
+
+.user-list-header {
+  padding: 16px;
+  background: #075e54;
+  color: #fff;
+
+  h5 {
+    color: #fff;
+  }
+}
+
+.user-list-body {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.user-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background 0.15s;
+
+  &:hover {
+    background: #f5f5f5;
+  }
+
+  &.active {
+    background: #e8f5e9;
+  }
+}
+
+.user-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  flex-shrink: 0;
+
+  i {
+    font-size: 24px;
+    color: #666;
+  }
+}
+
+.user-info {
+  min-width: 0;
+}
+
+.user-phone {
+  font-weight: 600;
+  word-break: break-all;
+}
+
+.user-preview {
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+}
+
+.user-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+  font-size: 12px;
+}
+
+.user-time {
+  color: #999;
+}
+
+.unread-badge {
+  font-size: 11px;
+}
+
+.chat-col {
+  background: #fff;
+  border-radius: 0 8px 8px 0;
+  padding: 0;
+  min-height: 400px;
+}
+
+@media (max-width: 767px) {
+  .user-list-col.d-md-block {
+    border-radius: 8px;
+  }
+
+  .chat-col.d-block {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 10;
+    border-radius: 8px;
+    min-height: 100%;
+  }
+}
+
+.empty-list {
+  font-size: 14px;
+}

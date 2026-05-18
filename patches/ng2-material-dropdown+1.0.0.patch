@@ -1,0 +1,1574 @@
+diff --git a/node_modules/ng2-material-dropdown/fesm2015/ng2-material-dropdown.js b/node_modules/ng2-material-dropdown/fesm2015/ng2-material-dropdown.js
+new file mode 100644
+index 0000000..0065f51
+--- /dev/null
++++ b/node_modules/ng2-material-dropdown/fesm2015/ng2-material-dropdown.js
+@@ -0,0 +1,876 @@
++import { Component, Output, Input, EventEmitter, ElementRef, Injectable, Renderer2, ContentChildren, HostListener, ContentChild, NgModule } from '@angular/core';
++import { trigger, style, transition, animate, keyframes, state } from '@angular/animations';
++import { CommonModule } from '@angular/common';
++
++/**
++ * @fileoverview added by tsickle
++ * @suppress {checkTypes} checked by tsc
++ */
++import * as ɵngcc0 from '@angular/core';
++import * as ɵngcc1 from '@angular/common';
++
++function Ng2DropdownButton_span_3_Template(rf, ctx) { if (rf & 1) {
++    ɵngcc0.ɵɵelementStart(0, "span", 3);
++    ɵngcc0.ɵɵnamespaceSVG();
++    ɵngcc0.ɵɵelementStart(1, "svg", 4);
++    ɵngcc0.ɵɵelement(2, "path", 5);
++    ɵngcc0.ɵɵelement(3, "g");
++    ɵngcc0.ɵɵelement(4, "g");
++    ɵngcc0.ɵɵelement(5, "g");
++    ɵngcc0.ɵɵelement(6, "g");
++    ɵngcc0.ɵɵelement(7, "g");
++    ɵngcc0.ɵɵelement(8, "g");
++    ɵngcc0.ɵɵelementEnd();
++    ɵngcc0.ɵɵelementEnd();
++} }
++const _c0 = ["*"];
++function Ng2DropdownMenu_div_3_Template(rf, ctx) { if (rf & 1) {
++    const _r2 = ɵngcc0.ɵɵgetCurrentView();
++    ɵngcc0.ɵɵelementStart(0, "div", 2);
++    ɵngcc0.ɵɵlistener("click", function Ng2DropdownMenu_div_3_Template_div_click_0_listener() { ɵngcc0.ɵɵrestoreView(_r2); const ctx_r1 = ɵngcc0.ɵɵnextContext(); return ctx_r1.hide(); });
++    ɵngcc0.ɵɵelementEnd();
++} }
++const _c1 = [[["ng2-dropdown-button"]], [["ng2-dropdown-menu"]]];
++const _c2 = ["ng2-dropdown-button", "ng2-dropdown-menu"];
++class Ng2DropdownButton {
++    /**
++     * @param {?} element
++     */
++    constructor(element) {
++        this.element = element;
++        this.onMenuToggled = new EventEmitter();
++        this.showCaret = true;
++    }
++    /**
++     * \@name toggleMenu
++     * @desc emits event to toggle menu
++     * @return {?}
++     */
++    toggleMenu() {
++        this.onMenuToggled.emit(true);
++    }
++    /**
++     * \@name getPosition
++     * @desc returns position of the button
++     * @return {?}
++     */
++    getPosition() {
++        return this.element.nativeElement.getBoundingClientRect();
++    }
++}
++Ng2DropdownButton.ɵfac = function Ng2DropdownButton_Factory(t) { return new (t || Ng2DropdownButton)(ɵngcc0.ɵɵdirectiveInject(ɵngcc0.ElementRef)); };
++Ng2DropdownButton.ɵcmp = ɵngcc0.ɵɵdefineComponent({ type: Ng2DropdownButton, selectors: [["ng2-dropdown-button"]], inputs: { showCaret: "showCaret" }, outputs: { onMenuToggled: "onMenuToggled" }, ngContentSelectors: _c0, decls: 4, vars: 1, consts: [["type", "button", "tabindex", "0s", 1, "ng2-dropdown-button", 3, "click"], [1, "ng2-dropdown-button__label"], ["class", "ng2-dropdown-button__caret", 4, "ngIf"], [1, "ng2-dropdown-button__caret"], ["enable-background", "new 0 0 32 32", "height", "16px", "id", "\u0421\u043B\u043E\u0439_1", "version", "1.1", "viewBox", "0 0 32 32", "width", "16px", 0, "xml", "space", "preserve", "xmlns", "http://www.w3.org/2000/svg", 0, "xmlns", "xlink", "http://www.w3.org/1999/xlink"], ["d", "M24.285,11.284L16,19.571l-8.285-8.288c-0.395-0.395-1.034-0.395-1.429,0  c-0.394,0.395-0.394,1.035,0,1.43l8.999,9.002l0,0l0,0c0.394,0.395,1.034,0.395,1.428,0l8.999-9.002  c0.394-0.395,0.394-1.036,0-1.431C25.319,10.889,24.679,10.889,24.285,11.284z", "fill", "#121313", "id", "Expand_More"]], template: function Ng2DropdownButton_Template(rf, ctx) { if (rf & 1) {
++        ɵngcc0.ɵɵprojectionDef();
++        ɵngcc0.ɵɵelementStart(0, "button", 0);
++        ɵngcc0.ɵɵlistener("click", function Ng2DropdownButton_Template_button_click_0_listener() { return ctx.toggleMenu(); });
++        ɵngcc0.ɵɵelementStart(1, "span", 1);
++        ɵngcc0.ɵɵprojection(2);
++        ɵngcc0.ɵɵelementEnd();
++        ɵngcc0.ɵɵtemplate(3, Ng2DropdownButton_span_3_Template, 9, 0, "span", 2);
++        ɵngcc0.ɵɵelementEnd();
++    } if (rf & 2) {
++        ɵngcc0.ɵɵadvance(3);
++        ɵngcc0.ɵɵproperty("ngIf", ctx.showCaret);
++    } }, directives: [ɵngcc1.NgIf], styles: [".ng2-dropdown-button[_ngcontent-%COMP%]{font-family:Roboto,\"Helvetica Neue\",Helvetica,Arial;background:#fff;padding:.45rem .25rem;font-size:14px;letter-spacing:.08rem;color:#444;outline:0;cursor:pointer;font-weight:400;border:none;border-bottom:1px solid #efefef;text-align:left;min-width:100px;width:100%;display:flex;flex-direction:row;max-width:150px}.ng2-dropdown-button[_ngcontent-%COMP%]:hover{color:#222}.ng2-dropdown-button[_ngcontent-%COMP%]:active, .ng2-dropdown-button[_ngcontent-%COMP%]:focus{color:#222;border-bottom:2px solid #2196f3}.ng2-dropdown-button__label[_ngcontent-%COMP%]{flex:1 1 95%}.ng2-dropdown-button__caret[_ngcontent-%COMP%]{width:12px;height:12px;display:flex;flex:1 1 6%}.ng2-dropdown-button--icon[_nghost-%COMP%]   .ng2-dropdown-button[_ngcontent-%COMP%], .ng2-dropdown-button--icon   [_nghost-%COMP%]   .ng2-dropdown-button[_ngcontent-%COMP%]{border:none;min-width:40px;width:40px;border-radius:100%;transition:all .2s;text-align:center;height:40px;padding:.5em}.ng2-dropdown-button--icon[_nghost-%COMP%]   .ng2-dropdown-button[_ngcontent-%COMP%]:active, .ng2-dropdown-button--icon   [_nghost-%COMP%]   .ng2-dropdown-button[_ngcontent-%COMP%]:active{background:rgba(0,0,0,.2)}"] });
++/** @nocollapse */
++Ng2DropdownButton.ctorParameters = () => [
++    { type: ElementRef, },
++];
++Ng2DropdownButton.propDecorators = {
++    "onMenuToggled": [{ type: Output },],
++    "showCaret": [{ type: Input },],
++};
++/*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(Ng2DropdownButton, [{
++        type: Component,
++        args: [{
++                selector: 'ng2-dropdown-button',
++                styles: [`.ng2-dropdown-button{font-family:Roboto,"Helvetica Neue",Helvetica,Arial;background:#fff;padding:.45rem .25rem;font-size:14px;letter-spacing:.08rem;color:#444;outline:0;cursor:pointer;font-weight:400;border:none;border-bottom:1px solid #efefef;text-align:left;min-width:100px;width:100%;display:flex;flex-direction:row;max-width:150px}.ng2-dropdown-button:hover{color:#222}.ng2-dropdown-button:active,.ng2-dropdown-button:focus{color:#222;border-bottom:2px solid #2196f3}.ng2-dropdown-button__label{flex:1 1 95%}.ng2-dropdown-button__caret{width:12px;height:12px;display:flex;flex:1 1 6%}:host-context(.ng2-dropdown-button--icon) .ng2-dropdown-button{border:none;min-width:40px;width:40px;border-radius:100%;transition:all .2s;text-align:center;height:40px;padding:.5em}:host-context(.ng2-dropdown-button--icon) .ng2-dropdown-button:active{background:rgba(0,0,0,.2)}`],
++                template: `<button class='ng2-dropdown-button' type="button" (click)="toggleMenu()" tabindex="0s">
++    <span class="ng2-dropdown-button__label">
++        <ng-content></ng-content>
++    </span>
++
++    <span class="ng2-dropdown-button__caret" *ngIf="showCaret">
++        <svg enable-background="new 0 0 32 32" height="16px" id="Слой_1" version="1.1" viewBox="0 0 32 32" width="16px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M24.285,11.284L16,19.571l-8.285-8.288c-0.395-0.395-1.034-0.395-1.429,0  c-0.394,0.395-0.394,1.035,0,1.43l8.999,9.002l0,0l0,0c0.394,0.395,1.034,0.395,1.428,0l8.999-9.002  c0.394-0.395,0.394-1.036,0-1.431C25.319,10.889,24.679,10.889,24.285,11.284z" fill="#121313" id="Expand_More"/><g/><g/><g/><g/><g/><g/></svg>
++    </span>
++</button>
++`
++            }]
++    }], function () { return [{ type: ɵngcc0.ElementRef }]; }, { onMenuToggled: [{
++            type: Output
++        }], showCaret: [{
++            type: Input
++        }] }); })();
++
++/**
++ * @fileoverview added by tsickle
++ * @suppress {checkTypes} checked by tsc
++ */
++const /** @type {?} */ KEYS = {
++    BACKSPACE: 9,
++    PREV: 38,
++    NEXT: 40,
++    ENTER: 13,
++    ESCAPE: 27
++};
++/**
++ * \@name onSwitchNext
++ * @param index
++ * @param items
++ * @param state
++ */
++const /** @type {?} */ onSwitchNext = (index, items, state$$1) => {
++    if (index < items.length - 1) {
++        state$$1.select(items[index + 1], true);
++    }
++};
++/**
++ * \@name onSwitchPrev
++ * @param index
++ * @param items
++ * @param state
++ */
++const /** @type {?} */ onSwitchPrev = (index, items, state$$1) => {
++    if (index > 0) {
++        state$$1.select(items[index - 1], true);
++    }
++};
++/**
++ * \@name onBackspace
++ * @param index
++ * @param items
++ * @param state
++ */
++const /** @type {?} */ onBackspace = (index, items, state$$1) => {
++    if (index < items.length - 1) {
++        state$$1.select(items[index + 1], true);
++    }
++    else {
++        state$$1.select(items[0], true);
++    }
++};
++/**
++ * @this {?}
++ * @return {?}
++ */
++function onEscape() {
++    this.hide();
++}
++/**
++ * \@name onItemClicked
++ * @param index
++ * @param items
++ * @param state
++ */
++const /** @type {?} */ onItemClicked = (index, items, state$$1) => {
++    return state$$1.selectedItem ? state$$1.selectedItem.click() : undefined;
++};
++const /** @type {?} */ ACTIONS = {
++    [KEYS.BACKSPACE]: onBackspace,
++    [KEYS.PREV]: onSwitchPrev,
++    [KEYS.NEXT]: onSwitchNext,
++    [KEYS.ENTER]: onItemClicked,
++    [KEYS.ESCAPE]: onEscape
++};
++/**
++ * @param {?} event
++ * @return {?}
++ */
++function arrowKeysHandler(event) {
++    if ([38, 40].indexOf(event.keyCode) > -1) {
++        event.preventDefault();
++    }
++}
++
++/**
++ * @fileoverview added by tsickle
++ * @suppress {checkTypes} checked by tsc
++ */
++class Ng2DropdownState {
++    constructor() {
++        this.onItemSelected = new EventEmitter();
++        this.onItemClicked = new EventEmitter();
++        this.onItemDestroyed = new EventEmitter();
++    }
++    /**
++     * \@name selectedItem
++     * @desc getter for _selectedItem
++     * @return {?}
++     */
++    get selectedItem() {
++        return this._selectedItem;
++    }
++    /**
++     * \@name selects a menu item and emits event
++     * @param {?} item
++     * @param {?=} dispatchEvent
++     * @return {?}
++     */
++    select(item, dispatchEvent = true) {
++        this._selectedItem = item;
++        if (!dispatchEvent || !item) {
++            return;
++        }
++        item.focus();
++        this.onItemSelected.emit(item);
++    }
++    /**
++     * \@name unselect
++     * @desc sets _selectedItem as undefined
++     * @return {?}
++     */
++    unselect() {
++        this._selectedItem = undefined;
++    }
++}
++
++/**
++ * @fileoverview added by tsickle
++ * @suppress {checkTypes} checked by tsc
++ */
++class DropdownStateService {
++    constructor() {
++        this.menuState = {
++            isVisible: /** @type {?} */ (false),
++            /**
++             * @return {?}
++             */
++            toString() {
++                return this.isVisible === true ? 'visible' : 'hidden';
++            }
++        };
++        this.dropdownState = new Ng2DropdownState();
++    }
++}
++DropdownStateService.ɵfac = function DropdownStateService_Factory(t) { return new (t || DropdownStateService)(); };
++DropdownStateService.ɵprov = ɵngcc0.ɵɵdefineInjectable({ token: DropdownStateService, factory: DropdownStateService.ɵfac });
++/*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(DropdownStateService, [{
++        type: Injectable
++    }], function () { return []; }, null); })();
++
++/**
++ * @fileoverview added by tsickle
++ * @suppress {checkTypes} checked by tsc
++ */
++class Ng2MenuItem {
++    /**
++     * @param {?} state
++     * @param {?} element
++     * @param {?} renderer
++     */
++    constructor(state$$1, element, renderer) {
++        this.state = state$$1;
++        this.element = element;
++        this.renderer = renderer;
++        /**
++         * \@preventClose
++         * @desc if true, clicking on the item won't close the dropdown
++         */
++        this.preventClose = false;
++    }
++    /**
++     * @return {?}
++     */
++    ngOnDestroy() {
++        this.state.dropdownState.onItemDestroyed.emit(this);
++    }
++    /**
++     * \@name isSelected
++     * @desc returns current selected item
++     * @return {?}
++     */
++    get isSelected() {
++        return this === this.state.dropdownState.selectedItem;
++    }
++    /**
++     * \@name click
++     * @desc emits select event
++     * @param {?=} $event
++     * @return {?}
++     */
++    select($event) {
++        this.state.dropdownState.select(this, true);
++        if ($event) {
++            $event.stopPropagation();
++            $event.preventDefault();
++        }
++    }
++    /**
++     * \@name click
++     * @desc emits click event
++     * @return {?}
++     */
++    click() {
++        this.state.dropdownState.onItemClicked.emit(this);
++    }
++    /**
++     * \@name focus
++     * @return {?}
++     */
++    focus() {
++        if (this.element.nativeElement.children[0]) {
++            this.element.nativeElement.children[0].focus();
++        }
++    }
++}
++Ng2MenuItem.ɵfac = function Ng2MenuItem_Factory(t) { return new (t || Ng2MenuItem)(ɵngcc0.ɵɵdirectiveInject(DropdownStateService), ɵngcc0.ɵɵdirectiveInject(ɵngcc0.ElementRef), ɵngcc0.ɵɵdirectiveInject(ɵngcc0.Renderer2)); };
++Ng2MenuItem.ɵcmp = ɵngcc0.ɵɵdefineComponent({ type: Ng2MenuItem, selectors: [["ng2-menu-item"]], inputs: { preventClose: "preventClose", value: "value" }, ngContentSelectors: _c0, decls: 2, vars: 2, consts: [["role", "button", "tabindex", "0", 1, "ng2-menu-item", 3, "keydown.enter", "click", "mouseover"]], template: function Ng2MenuItem_Template(rf, ctx) { if (rf & 1) {
++        ɵngcc0.ɵɵprojectionDef();
++        ɵngcc0.ɵɵelementStart(0, "div", 0);
++        ɵngcc0.ɵɵlistener("keydown.enter", function Ng2MenuItem_Template_div_keydown_enter_0_listener() { return ctx.click(); })("click", function Ng2MenuItem_Template_div_click_0_listener() { return ctx.click(); })("mouseover", function Ng2MenuItem_Template_div_mouseover_0_listener() { return ctx.select(); });
++        ɵngcc0.ɵɵprojection(1);
++        ɵngcc0.ɵɵelementEnd();
++    } if (rf & 2) {
++        ɵngcc0.ɵɵclassProp("ng2-menu-item--selected", ctx.isSelected);
++    } }, styles: [".ng2-menu-item[_ngcontent-%COMP%]{font-family:Roboto,\"Helvetica Neue\",Helvetica,Arial;background:#fff;color:rgba(0,0,0,.87);cursor:pointer;font-size:.9em;text-transform:none;font-weight:400;letter-spacing:.03em;height:48px;line-height:48px;padding:.3em 1.25rem;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;transition:background .25s}.ng2-menu-item--selected[_ngcontent-%COMP%]{background:rgba(158,158,158,.2);outline:0}.ng2-menu-item[_ngcontent-%COMP%]:focus{outline:0}.ng2-menu-item[_ngcontent-%COMP%]:active{background:rgba(158,158,158,.4)}ng2-menu-item[_nghost-%COMP%]     [ng2-menu-item-icon]{vertical-align:middle;font-size:28px;width:1.5em;height:30px;color:rgba(0,0,0,.44)}"] });
++/** @nocollapse */
++Ng2MenuItem.ctorParameters = () => [
++    { type: DropdownStateService, },
++    { type: ElementRef, },
++    { type: ɵngcc0.Renderer2, },
++];
++Ng2MenuItem.propDecorators = {
++    "preventClose": [{ type: Input },],
++    "value": [{ type: Input },],
++};
++/*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(Ng2MenuItem, [{
++        type: Component,
++        args: [{
++                selector: 'ng2-menu-item',
++                styles: [`.ng2-menu-item{font-family:Roboto,"Helvetica Neue",Helvetica,Arial;background:#fff;color:rgba(0,0,0,.87);cursor:pointer;font-size:.9em;text-transform:none;font-weight:400;letter-spacing:.03em;height:48px;line-height:48px;padding:.3em 1.25rem;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;transition:background .25s}.ng2-menu-item--selected{background:rgba(158,158,158,.2);outline:0}.ng2-menu-item:focus{outline:0}.ng2-menu-item:active{background:rgba(158,158,158,.4)}:host(ng2-menu-item) /deep/ [ng2-menu-item-icon]{vertical-align:middle;font-size:28px;width:1.5em;height:30px;color:rgba(0,0,0,.44)}`],
++                template: `<div class='ng2-menu-item'
++     role="button"
++     tabindex="0"
++     [class.ng2-menu-item--selected]="isSelected"
++     (keydown.enter)="click()"
++     (click)="click()"
++     (mouseover)="select()">
++        <ng-content></ng-content>
++</div>
++`
++            }]
++    }], function () { return [{ type: DropdownStateService }, { type: ɵngcc0.ElementRef }, { type: ɵngcc0.Renderer2 }]; }, { preventClose: [{
++            type: Input
++        }], value: [{
++            type: Input
++        }] }); })();
++
++/**
++ * @fileoverview added by tsickle
++ * @suppress {checkTypes} checked by tsc
++ */
++class Ng2DropdownMenu {
++    /**
++     * @param {?} state
++     * @param {?} element
++     * @param {?} renderer
++     */
++    constructor(state$$1, element, renderer) {
++        this.state = state$$1;
++        this.element = element;
++        this.renderer = renderer;
++        /**
++         * \@name width
++         */
++        this.width = 4;
++        /**
++         * \@description if set to true, the first element of the dropdown will be automatically focused
++         * \@name focusFirstElement
++         */
++        this.focusFirstElement = true;
++        /**
++         * \@name appendToBody
++         */
++        this.appendToBody = true;
++        /**
++         * \@name zIndex
++         */
++        this.zIndex = 1000;
++        this.listeners = {
++            arrowHandler: undefined,
++            handleKeypress: undefined
++        };
++    }
++    /**
++     * \@name show
++     * \@shows menu and selects first item
++     * @param {?=} position
++     * @param {?=} dynamic
++     * @return {?}
++     */
++    show(position, dynamic = true) {
++        const /** @type {?} */ dc = typeof document !== 'undefined' ? document : undefined;
++        const /** @type {?} */ wd = typeof window !== 'undefined' ? window : undefined;
++        if (!this.state.menuState.isVisible) {
++            // setting handlers
++            this.listeners.handleKeypress = this.renderer.listen(dc.body, 'keydown', this.handleKeypress.bind(this));
++            this.listeners.arrowHandler = this.renderer.listen(wd, 'keydown', arrowKeysHandler);
++        }
++        // update state
++        this.state.menuState.isVisible = true;
++        if (position) {
++            this.updatePosition(position, dynamic);
++        }
++    }
++    /**
++     * \@name hide
++     * @desc hides menu
++     * @return {?}
++     */
++    hide() {
++        this.state.menuState.isVisible = false;
++        // reset selected item state
++        this.state.dropdownState.unselect();
++        // call function to unlisten
++        this.listeners.arrowHandler ? this.listeners.arrowHandler() : undefined;
++        this.listeners.handleKeypress ? this.listeners.handleKeypress() : undefined;
++    }
++    /**
++     * \@name updatePosition
++     * @desc updates the menu position every time it is toggled
++     * @param {?} position {ClientRect}
++     * @param {?} dynamic {boolean}
++     * @return {?}
++     */
++    updatePosition(position, dynamic) {
++        this.position = position;
++        this.updateOnChange(dynamic);
++    }
++    /**
++     * \@name handleKeypress
++     * @desc executes functions on keyPress based on the key pressed
++     * @param {?} $event
++     * @return {?}
++     */
++    handleKeypress($event) {
++        const /** @type {?} */ key = $event.keyCode;
++        const /** @type {?} */ items = this.items.toArray();
++        const /** @type {?} */ index = items.indexOf(this.state.dropdownState.selectedItem);
++        if (!ACTIONS.hasOwnProperty(key)) {
++            return;
++        }
++        ACTIONS[key].call(this, index, items, this.state.dropdownState);
++    }
++    /**
++     * \@name getMenuElement
++     * @return {?}
++     */
++    getMenuElement() {
++        return this.element.nativeElement.children[0];
++    }
++    /**
++     * \@name calcPositionOffset
++     * @param {?} position
++     * @return {?}
++     */
++    calcPositionOffset(position) {
++        const /** @type {?} */ wd = typeof window !== 'undefined' ? window : undefined;
++        const /** @type {?} */ dc = typeof document !== 'undefined' ? document : undefined;
++        if (!wd || !dc || !position) {
++            return;
++        }
++        const /** @type {?} */ element = this.getMenuElement();
++        const /** @type {?} */ supportPageOffset = wd.pageXOffset !== undefined;
++        const /** @type {?} */ isCSS1Compat = ((dc.compatMode || '') === 'CSS1Compat');
++        const /** @type {?} */ x = supportPageOffset ? wd.pageXOffset : isCSS1Compat ?
++            dc.documentElement.scrollLeft : dc.body.scrollLeft;
++        const /** @type {?} */ y = supportPageOffset ? wd.pageYOffset : isCSS1Compat ?
++            dc.documentElement.scrollTop : dc.body.scrollTop;
++        let { top, left } = this.applyOffset(`${position.top + (this.appendToBody ? y - 15 : 0)}px`, `${position.left + x - 5}px`);
++        const /** @type {?} */ clientWidth = element.clientWidth;
++        const /** @type {?} */ clientHeight = element.clientHeight;
++        const /** @type {?} */ marginFromBottom = parseInt(top) + clientHeight + (this.appendToBody ? 0 : y - 15);
++        const /** @type {?} */ marginFromRight = parseInt(left) + clientWidth;
++        const /** @type {?} */ windowScrollHeight = wd.innerHeight + wd.scrollY;
++        const /** @type {?} */ windowScrollWidth = wd.innerWidth + wd.scrollX;
++        if (marginFromBottom >= windowScrollHeight) {
++            top = `${parseInt(top.replace('px', '')) - clientHeight}px`;
++        }
++        if (marginFromRight >= windowScrollWidth) {
++            const /** @type {?} */ marginRight = marginFromRight - windowScrollWidth + 30;
++            left = `${parseInt(left.replace('px', '')) - marginRight}px`;
++        }
++        return { top, left };
++    }
++    /**
++     * @param {?} top
++     * @param {?} left
++     * @return {?}
++     */
++    applyOffset(top, left) {
++        if (!this.offset) {
++            return { top, left };
++        }
++        const /** @type {?} */ offset = this.offset.split(' ');
++        if (!offset[1]) {
++            offset[1] = '0';
++        }
++        top = `${parseInt(top.replace('px', '')) + parseInt(offset[0])}px`;
++        left = `${parseInt(left.replace('px', '')) + parseInt(offset[1])}px`;
++        return { top, left };
++    }
++    /**
++     * @return {?}
++     */
++    ngOnInit() {
++        const /** @type {?} */ dc = typeof document !== 'undefined' ? document : undefined;
++        if (this.appendToBody) {
++            // append menu element to the body
++            dc.body.appendChild(this.element.nativeElement);
++        }
++    }
++    /**
++     * @param {?=} dynamic
++     * @return {?}
++     */
++    updateOnChange(dynamic = true) {
++        const /** @type {?} */ element = this.getMenuElement();
++        const /** @type {?} */ position = this.calcPositionOffset(this.position);
++        if (position) {
++            this.renderer.setStyle(element, 'top', position.top.toString());
++            this.renderer.setStyle(element, 'left', position.left.toString());
++        }
++        // select first item unless user disabled this option
++        if (this.focusFirstElement &&
++            this.items.first &&
++            !this.state.dropdownState.selectedItem) {
++            this.state.dropdownState.select(this.items.first, false);
++        }
++    }
++    /**
++     * @return {?}
++     */
++    ngOnDestroy() {
++        const /** @type {?} */ elem = this.element.nativeElement;
++        elem.parentNode.removeChild(elem);
++        if (this.listeners.handleKeypress) {
++            this.listeners.handleKeypress();
++        }
++    }
++}
++Ng2DropdownMenu.ɵfac = function Ng2DropdownMenu_Factory(t) { return new (t || Ng2DropdownMenu)(ɵngcc0.ɵɵdirectiveInject(DropdownStateService), ɵngcc0.ɵɵdirectiveInject(ɵngcc0.ElementRef), ɵngcc0.ɵɵdirectiveInject(ɵngcc0.Renderer2)); };
++Ng2DropdownMenu.ɵcmp = ɵngcc0.ɵɵdefineComponent({ type: Ng2DropdownMenu, selectors: [["ng2-dropdown-menu"]], contentQueries: function Ng2DropdownMenu_ContentQueries(rf, ctx, dirIndex) { if (rf & 1) {
++        ɵngcc0.ɵɵcontentQuery(dirIndex, Ng2MenuItem, false);
++    } if (rf & 2) {
++        var _t;
++        ɵngcc0.ɵɵqueryRefresh(_t = ɵngcc0.ɵɵloadQuery()) && (ctx.items = _t);
++    } }, inputs: { width: "width", focusFirstElement: "focusFirstElement", appendToBody: "appendToBody", zIndex: "zIndex", offset: "offset" }, ngContentSelectors: _c0, decls: 4, vars: 12, consts: [[1, "ng2-dropdown-menu__options-container"], ["class", "ng2-dropdown-backdrop", 3, "click", 4, "ngIf"], [1, "ng2-dropdown-backdrop", 3, "click"]], template: function Ng2DropdownMenu_Template(rf, ctx) { if (rf & 1) {
++        ɵngcc0.ɵɵprojectionDef();
++        ɵngcc0.ɵɵelementStart(0, "div");
++        ɵngcc0.ɵɵelementStart(1, "div", 0);
++        ɵngcc0.ɵɵprojection(2);
++        ɵngcc0.ɵɵelementEnd();
++        ɵngcc0.ɵɵelementEnd();
++        ɵngcc0.ɵɵtemplate(3, Ng2DropdownMenu_div_3_Template, 1, 0, "div", 1);
++    } if (rf & 2) {
++        ɵngcc0.ɵɵclassMapInterpolate1("ng2-dropdown-menu ng2-dropdown-menu---width--", ctx.width, "");
++        ɵngcc0.ɵɵstyleProp("z-index", ctx.zIndex);
++        ɵngcc0.ɵɵclassProp("ng2-dropdown-menu--inside-element", !ctx.appendToBody)("ng2-dropdown-menu--open", ctx.state.menuState.isVisible);
++        ɵngcc0.ɵɵproperty("@fade", ctx.state.menuState.toString());
++        ɵngcc0.ɵɵadvance(1);
++        ɵngcc0.ɵɵproperty("@opacity", ctx.state.menuState.toString());
++        ɵngcc0.ɵɵadvance(2);
++        ɵngcc0.ɵɵproperty("ngIf", ctx.state.menuState.isVisible);
++    } }, directives: [ɵngcc1.NgIf], styles: ["[_nghost-%COMP%]{display:block}.ng2-dropdown-menu[_ngcontent-%COMP%]{overflow-y:auto;box-shadow:0 1px 2px 0 rgba(0,0,0,.3);position:absolute;padding:.5em 0;background:#fff;border-radius:1px;max-height:400px;width:260px;min-height:0;display:block}.ng2-dropdown-menu.ng2-dropdown-menu--inside-element[_ngcontent-%COMP%]{position:fixed}.ng2-dropdown-menu.ng2-dropdown-menu--width--2[_ngcontent-%COMP%]{width:200px}.ng2-dropdown-menu.ng2-dropdown-menu--width--4[_ngcontent-%COMP%]{width:260px}.ng2-dropdown-menu.ng2-dropdown-menu--width--6[_ngcontent-%COMP%]{width:320px}.ng2-dropdown-backdrop[_ngcontent-%COMP%]{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;overflow:hidden}[_nghost-%COMP%]     .ng2-menu-divider{height:1px;min-height:1px;max-height:1px;width:100%;display:block;background:#f9f9f9}"], data: { animation: [
++            trigger('fade', [
++                state('visible', style({ display: 'block', opacity: 1, height: '*', width: '*' })),
++                state('hidden', style({ display: 'none', opacity: 0, overflow: 'hidden', height: 0, width: 0 })),
++                transition('hidden => visible', [
++                    animate('250ms ease-in', style({ opacity: 1, height: '*', width: '*' }))
++                ]),
++                transition('visible => hidden', [
++                    animate('350ms ease-out', style({ opacity: 0, width: 0, height: 0 }))
++                ])
++            ]),
++            trigger('opacity', [
++                transition('hidden => visible', [
++                    animate('450ms ease-in', keyframes([
++                        style({ opacity: 0, offset: 0 }),
++                        style({ opacity: 1, offset: 1 }),
++                    ]))
++                ]),
++                transition('visible => hidden', [
++                    animate('250ms ease-out', keyframes([
++                        style({ opacity: 1, offset: 0 }),
++                        style({ opacity: 0.5, offset: 0.3 }),
++                        style({ opacity: 0, offset: 1 }),
++                    ]))
++                ])
++            ])
++        ] } });
++/** @nocollapse */
++Ng2DropdownMenu.ctorParameters = () => [
++    { type: DropdownStateService, },
++    { type: ElementRef, },
++    { type: ɵngcc0.Renderer2, },
++];
++Ng2DropdownMenu.propDecorators = {
++    "width": [{ type: Input },],
++    "focusFirstElement": [{ type: Input },],
++    "offset": [{ type: Input },],
++    "appendToBody": [{ type: Input },],
++    "zIndex": [{ type: Input },],
++    "items": [{ type: ContentChildren, args: [Ng2MenuItem,] },],
++};
++/*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(Ng2DropdownMenu, [{
++        type: Component,
++        args: [{
++                selector: 'ng2-dropdown-menu',
++                styles: [`:host{display:block}.ng2-dropdown-menu{overflow-y:auto;box-shadow:0 1px 2px 0 rgba(0,0,0,.3);position:absolute;padding:.5em 0;background:#fff;border-radius:1px;max-height:400px;width:260px;min-height:0;display:block}.ng2-dropdown-menu.ng2-dropdown-menu--inside-element{position:fixed}.ng2-dropdown-menu.ng2-dropdown-menu--width--2{width:200px}.ng2-dropdown-menu.ng2-dropdown-menu--width--4{width:260px}.ng2-dropdown-menu.ng2-dropdown-menu--width--6{width:320px}.ng2-dropdown-backdrop{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;overflow:hidden}:host /deep/ .ng2-menu-divider{height:1px;min-height:1px;max-height:1px;width:100%;display:block;background:#f9f9f9}`],
++                template: `<!-- MENU -->
++<div class='ng2-dropdown-menu ng2-dropdown-menu---width--{{ width }}'
++     [class.ng2-dropdown-menu--inside-element]="!appendToBody"
++     [class.ng2-dropdown-menu--open]="state.menuState.isVisible"
++     [style.z-index]="zIndex"
++     [@fade]="state.menuState.toString()">
++        <div class="ng2-dropdown-menu__options-container"
++             [@opacity]="state.menuState.toString()">
++            <ng-content></ng-content>
++        </div>
++</div>
++
++<!-- BACKDROP -->
++<div class="ng2-dropdown-backdrop" *ngIf="state.menuState.isVisible" (click)="hide()"></div>
++`,
++                animations: [
++                    trigger('fade', [
++                        state('visible', style({ display: 'block', opacity: 1, height: '*', width: '*' })),
++                        state('hidden', style({ display: 'none', opacity: 0, overflow: 'hidden', height: 0, width: 0 })),
++                        transition('hidden => visible', [
++                            animate('250ms ease-in', style({ opacity: 1, height: '*', width: '*' }))
++                        ]),
++                        transition('visible => hidden', [
++                            animate('350ms ease-out', style({ opacity: 0, width: 0, height: 0 }))
++                        ])
++                    ]),
++                    trigger('opacity', [
++                        transition('hidden => visible', [
++                            animate('450ms ease-in', keyframes([
++                                style({ opacity: 0, offset: 0 }),
++                                style({ opacity: 1, offset: 1 }),
++                            ]))
++                        ]),
++                        transition('visible => hidden', [
++                            animate('250ms ease-out', keyframes([
++                                style({ opacity: 1, offset: 0 }),
++                                style({ opacity: 0.5, offset: 0.3 }),
++                                style({ opacity: 0, offset: 1 }),
++                            ]))
++                        ])
++                    ])
++                ]
++            }]
++    }], function () { return [{ type: DropdownStateService }, { type: ɵngcc0.ElementRef }, { type: ɵngcc0.Renderer2 }]; }, { width: [{
++            type: Input
++        }], focusFirstElement: [{
++            type: Input
++        }], appendToBody: [{
++            type: Input
++        }], zIndex: [{
++            type: Input
++        }], offset: [{
++            type: Input
++        }], items: [{
++            type: ContentChildren,
++            args: [Ng2MenuItem]
++        }] }); })();
++
++/**
++ * @fileoverview added by tsickle
++ * @suppress {checkTypes} checked by tsc
++ */
++class Ng2Dropdown {
++    /**
++     * @param {?} state
++     */
++    constructor(state$$1) {
++        this.state = state$$1;
++        this.dynamicUpdate = true;
++        // outputs
++        this.onItemClicked = new EventEmitter();
++        this.onItemSelected = new EventEmitter();
++        this.onShow = new EventEmitter();
++        this.onHide = new EventEmitter();
++    }
++    /**
++     * @return {?}
++     */
++    ngOnInit() {
++        this.state.dropdownState.onItemClicked.subscribe(item => {
++            this.onItemClicked.emit(item);
++            if (item.preventClose) {
++                return;
++            }
++            this.hide.call(this);
++        });
++        if (this.button) {
++            this.button.onMenuToggled.subscribe(() => {
++                this.toggleMenu();
++            });
++        }
++        this.state.dropdownState.onItemSelected.subscribe(item => {
++            this.onItemSelected.emit(item);
++        });
++        this.state.dropdownState.onItemDestroyed.subscribe((item) => {
++            let /** @type {?} */ newSelectedItem;
++            const /** @type {?} */ items = this.menu.items.toArray();
++            if (item !== this.state.dropdownState.selectedItem) {
++                return;
++            }
++            if (this.menu.focusFirstElement) {
++                newSelectedItem = item === items[0] && items.length > 1 ? items[1] : items[0];
++            }
++            this.state.dropdownState.select(newSelectedItem);
++        });
++    }
++    /**
++     * \@name toggleMenu
++     * @desc toggles menu visibility
++     * @param {?=} position
++     * @return {?}
++     */
++    toggleMenu(position = this.button.getPosition()) {
++        this.state.menuState.isVisible ? this.hide() : this.show(position);
++    }
++    /**
++     * - hides dropdown
++     * \@name hide
++     * @return {?}
++     */
++    hide() {
++        this.menu.hide();
++        this.onHide.emit(this);
++    }
++    /**
++     * - shows dropdown
++     * \@name show
++     * @param {?=} position
++     * @return {?}
++     */
++    show(position = this.button.getPosition()) {
++        this.menu.show(position, this.dynamicUpdate);
++        this.onShow.emit(this);
++    }
++    /**
++     * \@name scrollListener
++     * @return {?}
++     */
++    scrollListener() {
++        if (this.button && this.dynamicUpdate) {
++            this.menu.updatePosition(this.button.getPosition(), true);
++        }
++    }
++}
++Ng2Dropdown.ɵfac = function Ng2Dropdown_Factory(t) { return new (t || Ng2Dropdown)(ɵngcc0.ɵɵdirectiveInject(DropdownStateService)); };
++Ng2Dropdown.ɵcmp = ɵngcc0.ɵɵdefineComponent({ type: Ng2Dropdown, selectors: [["ng2-dropdown"]], contentQueries: function Ng2Dropdown_ContentQueries(rf, ctx, dirIndex) { if (rf & 1) {
++        ɵngcc0.ɵɵcontentQuery(dirIndex, Ng2DropdownButton, true);
++        ɵngcc0.ɵɵcontentQuery(dirIndex, Ng2DropdownMenu, true);
++    } if (rf & 2) {
++        var _t;
++        ɵngcc0.ɵɵqueryRefresh(_t = ɵngcc0.ɵɵloadQuery()) && (ctx.button = _t.first);
++        ɵngcc0.ɵɵqueryRefresh(_t = ɵngcc0.ɵɵloadQuery()) && (ctx.menu = _t.first);
++    } }, hostBindings: function Ng2Dropdown_HostBindings(rf, ctx) { if (rf & 1) {
++        ɵngcc0.ɵɵlistener("scroll", function Ng2Dropdown_scroll_HostBindingHandler() { return ctx.scrollListener(); }, false, ɵngcc0.ɵɵresolveWindow);
++    } }, inputs: { dynamicUpdate: "dynamicUpdate" }, outputs: { onItemClicked: "onItemClicked", onItemSelected: "onItemSelected", onShow: "onShow", onHide: "onHide" }, features: [ɵngcc0.ɵɵProvidersFeature([DropdownStateService])], ngContentSelectors: _c2, decls: 3, vars: 0, consts: [[1, "ng2-dropdown-container"]], template: function Ng2Dropdown_Template(rf, ctx) { if (rf & 1) {
++        ɵngcc0.ɵɵprojectionDef(_c1);
++        ɵngcc0.ɵɵelementStart(0, "div", 0);
++        ɵngcc0.ɵɵprojection(1);
++        ɵngcc0.ɵɵprojection(2, 1);
++        ɵngcc0.ɵɵelementEnd();
++    } }, encapsulation: 2 });
++/** @nocollapse */
++Ng2Dropdown.ctorParameters = () => [
++    { type: DropdownStateService, },
++];
++Ng2Dropdown.propDecorators = {
++    "button": [{ type: ContentChild, args: [Ng2DropdownButton,] },],
++    "menu": [{ type: ContentChild, args: [Ng2DropdownMenu,] },],
++    "dynamicUpdate": [{ type: Input },],
++    "onItemClicked": [{ type: Output },],
++    "onItemSelected": [{ type: Output },],
++    "onShow": [{ type: Output },],
++    "onHide": [{ type: Output },],
++    "scrollListener": [{ type: HostListener, args: ['window:scroll',] },],
++};
++/*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(Ng2Dropdown, [{
++        type: Component,
++        args: [{
++                selector: 'ng2-dropdown',
++                template: `<div class="ng2-dropdown-container">
++    <ng-content select="ng2-dropdown-button"></ng-content>
++    <ng-content select="ng2-dropdown-menu"></ng-content>
++</div>
++`,
++                providers: [DropdownStateService]
++            }]
++    }], function () { return [{ type: DropdownStateService }]; }, { dynamicUpdate: [{
++            type: Input
++        }], onItemClicked: [{
++            type: Output
++        }], onItemSelected: [{
++            type: Output
++        }], onShow: [{
++            type: Output
++        }], onHide: [{
++            type: Output
++        }], 
++    /**
++     * \@name scrollListener
++     * @return {?}
++     */
++    scrollListener: [{
++            type: HostListener,
++            args: ['window:scroll']
++        }], button: [{
++            type: ContentChild,
++            args: [Ng2DropdownButton]
++        }], menu: [{
++            type: ContentChild,
++            args: [Ng2DropdownMenu]
++        }] }); })();
++
++/**
++ * @fileoverview added by tsickle
++ * @suppress {checkTypes} checked by tsc
++ */
++class Ng2DropdownModule {
++}
++Ng2DropdownModule.ɵmod = ɵngcc0.ɵɵdefineNgModule({ type: Ng2DropdownModule });
++Ng2DropdownModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function Ng2DropdownModule_Factory(t) { return new (t || Ng2DropdownModule)(); }, imports: [[
++            CommonModule
++        ]] });
++(function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(Ng2DropdownModule, { declarations: function () { return [Ng2Dropdown, Ng2MenuItem, Ng2DropdownButton, Ng2DropdownMenu]; }, imports: function () { return [CommonModule]; }, exports: function () { return [Ng2MenuItem, Ng2DropdownButton, Ng2DropdownMenu, Ng2Dropdown]; } }); })();
++/*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(Ng2DropdownModule, [{
++        type: NgModule,
++        args: [{
++                exports: [
++                    Ng2MenuItem,
++                    Ng2DropdownButton,
++                    Ng2DropdownMenu,
++                    Ng2Dropdown
++                ],
++                declarations: [
++                    Ng2Dropdown,
++                    Ng2MenuItem,
++                    Ng2DropdownButton,
++                    Ng2DropdownMenu,
++                ],
++                imports: [
++                    CommonModule
++                ]
++            }]
++    }], null, null); })();
++
++/**
++ * @fileoverview added by tsickle
++ * @suppress {checkTypes} checked by tsc
++ */
++
++/**
++ * @fileoverview added by tsickle
++ * @suppress {checkTypes} checked by tsc
++ */
++
++export { Ng2Dropdown, Ng2DropdownMenu, Ng2MenuItem, Ng2DropdownButton, Ng2DropdownModule, DropdownStateService };
++
++//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoibmcyLW1hdGVyaWFsLWRyb3Bkb3duLmpzIiwic291cmNlcyI6WyJuZzItbWF0ZXJpYWwtZHJvcGRvd24vc3JjL21vZHVsZXMvY29tcG9uZW50cy9idXR0b24vbmcyLWRyb3Bkb3duLWJ1dHRvbi50cyIsIm5nMi1tYXRlcmlhbC1kcm9wZG93bi9zcmMvbW9kdWxlcy9jb21wb25lbnRzL21lbnUvYWN0aW9ucy50cyIsIm5nMi1tYXRlcmlhbC1kcm9wZG93bi9zcmMvbW9kdWxlcy9zZXJ2aWNlcy9uZzItZHJvcGRvd24tc3RhdGUudHMiLCJuZzItbWF0ZXJpYWwtZHJvcGRvd24vc3JjL21vZHVsZXMvc2VydmljZXMvZHJvcGRvd24tc3RhdGUuc2VydmljZS50cyIsIm5nMi1tYXRlcmlhbC1kcm9wZG93bi9zcmMvbW9kdWxlcy9jb21wb25lbnRzL21lbnUtaXRlbS9uZzItbWVudS1pdGVtLnRzIiwibmcyLW1hdGVyaWFsLWRyb3Bkb3duL3NyYy9tb2R1bGVzL2NvbXBvbmVudHMvbWVudS9uZzItZHJvcGRvd24tbWVudS50cyIsIm5nMi1tYXRlcmlhbC1kcm9wZG93bi9zcmMvbW9kdWxlcy9jb21wb25lbnRzL2Ryb3Bkb3duL25nMi1kcm9wZG93bi50cyIsIm5nMi1tYXRlcmlhbC1kcm9wZG93bi9zcmMvbW9kdWxlcy9uZzItZHJvcGRvd24ubW9kdWxlLnRzIl0sIm5hbWVzIjpbInN0YXRlIl0sIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0FBQUE7QUFFRTtBQUFRO0FBRUc7QUFDVixJQXFCQyxZQUFvQixPQUFtQjtBQUFJLFFBQXZCLFlBQU8sR0FBUCxPQUFPLENBQVk7QUFBQyw2QkFIZ0IsSUFBSSxZQUFZLEVBQVc7QUFDdkYseUJBQXlDLElBQUk7QUFDN0MsS0FDK0M7QUFDL0M7QUFDTztBQUVQO0FBQ0E7QUFDVztBQUFRLElBQVIsVUFBVTtBQUFLLFFBQ2xCLElBQUksQ0FBQyxhQUFhLENBQUMsSUFBSSxDQUFDLElBQUksQ0FB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STtBQUFDOztBUG5DQSxBQTBCQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBSEEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBRUEsQUFNQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFPQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQWpDQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQVNBLEFBQ0EsQUFoQkEsQUFBQSxBQWtCQSxBQUFBLEFBQ0EsQUFBQSxBQ3BCQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBUUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFDQSxBQUFBLEFBUUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0FBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQ0EsQUFBQSxBQVFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0FBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFDQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUNBLEFBQUEsQUFFQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFRQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUFBLEFBQUEsQUFDQSxBQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFFQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBRUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFDQSxBQzVFQSxBQUdBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQVFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFPQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFFQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUNBLEFBRUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBRUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFPQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFFQSxBQ3hDQSxBQUtBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUNBLEFBRUEsQUFBQSxBQUFBLEFBQUEsQUFUQSxBQUFBLEFDSEEsQUFxQ0EsQUFBQUEsQUFBQSxBQUNBLEFBQ0EsQUFGQSxBQUFBLEFBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFWQSxBQUFBLEFBVUEsQUFFQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQU9BLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFPQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFFQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBT0EsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFNQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBcEVBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBU0EsQUFDQSxBQWZBLEFBQUEsQUFKQSxBQUFBLEFBREEsQUFBQSxBQTBCQSxBQUFBLEFBTUEsQUFBQSxBQ25DQSxBQXFIQSxBQUFBQSxBQUFBLEFBQ0EsQUFDQSxBQUZBLEFBQUEsQUFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQXRDQSxBQUFBLEFBTUEsQUFBQSxBQVdBLEFBQUEsQUFLQSxBQUFBLEFBU0EsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFJQSxBQU1BLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBRUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUVBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFHQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBRUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBT0EsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFHQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUdBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFTQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFRQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUVBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUNBLEFBRUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBTUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBT0EsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBRUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFDQSxBQUVBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUVBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUVBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUVBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBRUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFFQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFFQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFFQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBRUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBRUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUdBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBRUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFFQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBRUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUVBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFHQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFFQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFHQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUVBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBR0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFHQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUVBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUExUUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFjQSxBQUNBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQ0EsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUNBLEFBQUEsQUFDQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUNBLEFBQUEsQUFDQSxBQUNBLEFBdkRBLEFBQUEsQUFuQkEsQUFBQSxBQUNBLEFBQUEsQUE4RUEsQUFBQSxBQU1BLEFBQUEsQUFNQSxBQUFBLEFBS0EsQUFBQSxBQUtBLEFBQUEsQUFLQSxBQUFBLEFBQUEsQUFBQSxBQzVHQSxBQW9DQSxBQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBQSxBQUFBLEFBQUEsQUFSQSxBQUFBLEFBR0EsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFFQSxBQUVBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUVBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFDQSxBQUVBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBRUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQ0EsQUFFQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUVBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUVBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFDQSxBQUVBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFFQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFPQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBT0EsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQVFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFPQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUEvRkEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFJQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBWEEsQUFBQSxBQWNBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFFQSxBQUFBLEFBR0EsQUFBQSxBQUNBLEFBQUEsQUFDQSxBQUFBLEFBQ0EsQUFBQSxBQXVFQSxBQUFBLEFBQUEsQUFBQSxBQ3pHQSxBQVNBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFDQSxBQUFBLEFBQ0EsQUFBQSxBQUNBLEFBQUEsQUFDQSxBQUNBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFDQSxBQUFBLEFBQ0EsQUFBQSxBQUNBLEFBQUEsQUFDQSxBQUNBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFDQSxBQUNBIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHtcbiAgICBDb21wb25lbnQsXG4gICAgT3V0cHV0LFxuICAgIElucHV0LFxuICAgIEV2ZW50RW1pdHRlcixcbiAgICBFbGVtZW50UmVmXG59IGZyb20gJ0Bhbmd1bGFyL2NvcmUnO1xuXG5AQ29tcG9uZW50KHtcbiAgICBzZWxlY3RvcjogJ25nMi1kcm9wZG93bi1idXR0b24nLFxuICAgIHN0eWxlczogW2AubmcyLWRyb3Bkb3duLWJ1dHRvbntmb250LWZhbWlseTpSb2JvdG8sXCJIZWx2ZXRpY2EgTmV1ZVwiLEhlbHZldGljYSxBcmlhbDtiYWNrZ3JvdW5kOiNmZmY7cGFkZGluZzouNDVyZW0gLjI1cmVtO2ZvbnQtc2l6ZToxNHB4O2xldHRlci1zcGFjaW5nOi4wOHJlbTtjb2xvcjojNDQ0O291dGxpbmU6MDtjdXJzb3I6cG9pbnRlcjtmb250LXdlaWdodDo0MDA7Ym9yZGVyOm5vbmU7Ym9yZGVyLWJvdHRvbToxcHggc29saWQgI2VmZWZlZjt0ZXh0LWFsaWduOmxlZnQ7bWluLXdpZHRoOjEwMHB4O3dpZHRoOjEwMCU7ZGlzcGxheTpmbGV4O2ZsZXgtZGlyZWN0aW9uOnJvdzttYXgtd2lkdGg6MTUwcHh9Lm5nMi1kcm9wZG93bi1idXR0b246aG92ZXJ7Y29sb3I6IzIyMn0ubmcyLWRyb3Bkb3duLWJ1dHRvbjphY3RpdmUsLm5nMi1kcm9wZG93bi1idXR0b246Zm9jdXN7Y29sb3I6IzIyMjtib3JkZXItYm90dG9tOjJweCBzb2xpZCAjMjE5NmYzfS5uZzItZHJvcGRvd24tYnV0dG9uX19sYWJlbHtmbGV4OjEgMSA5NSV9Lm5nMi1kcm9wZG93bi1idXR0b25fX2NhcmV0e3dpZHRoOjEycHg7aGVpZ2h0OjEycHg7ZGlzcGxheTpmbGV4O2ZsZXg6MSAxIDYlfTpob3N0LWNvbnRleHQoLm5nMi1kcm9wZG93bi1idXR0b24tLWljb24pIC5uZzItZHJvcGRvd24tYnV0dG9ue2JvcmRlcjpub25lO21pbi13aWR0aDo0MHB4O3dpZHRoOjQwcHg7Ym9yZGVyLXJhZGl1czoxMDAlO3RyYW5zaXRpb246YWxsIC4yczt0ZXh0LWFsaWduOmNlbnRlcjtoZWlnaHQ6NDBweDtwYWRkaW5nOi41ZW19Omhvc3QtY29udGV4dCgubmcyLWRyb3Bkb3duLWJ1dHRvbi0taWNvbikgLm5nMi1kcm9wZG93bi1idXR0b246YWN0aXZle2JhY2tncm91bmQ6cmdiYSgwLDAsMCwuMil9YF0sXG4gICAgdGVtcGxhdGU6IGA8YnV0dG9uIGNsYXNzPSduZzItZHJvcGRvd24tYnV0dG9uJyB0eXBlPVwiYnV0dG9uXCIgKGNsaWNrKT1cInRvZ2dsZU1lbnUoKVwiIHRhYmluZGV4PVwiMHNcIj5cbiAgICA8c3BhbiBjbGFzcz1cIm5nMi1kcm9wZG93bi1idXR0b25fX2xhYmVsXCI+XG4gICAgICAgIDxuZy1jb250ZW50PjwvbmctY29udGVudD5cbiAgICA8L3NwYW4+XG5cbiAgICA8c3BhbiBjbGFzcz1cIm5nMi1kcm9wZG93bi1idXR0b25fX2NhcmV0XCIgKm5nSWY9XCJzaG93Q2FyZXRcIj5cbiAgICAgICAgPHN2ZyBlbmFibGUtYmFja2dyb3VuZD1cIm5ldyAwIDAgMzIgMzJcIiBoZWlnaHQ9XCIxNnB4XCIgaWQ9XCLDkMKhw5DCu8OQwr7DkMK5XzFcIiB2ZXJzaW9uPVwiMS4xXCIgdmlld0JveD1cIjAgMCAzMiAzMlwiIHdpZHRoPVwiMTZweFwiIHhtbDpzcGFjZT1cInByZXNlcnZlXCIgeG1sbnM9XCJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Z1wiIHhtbG5zOnhsaW5rPVwiaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGlua1wiPjxwYXRoIGQ9XCJNMjQuMjg1LDExLjI4NEwxNiwxOS41NzFsLTguMjg1LTguMjg4Yy0wLjM5NS0wLjM5NS0xLjAzNC0wLjM5NS0xLjQyOSwwICBjLTAuMzk0LDAuMzk1LTAuMzk0LDEuMDM1LDAsMS40M2w4Ljk5OSw5LjAwMmwwLDBsMCwwYzAuMzk0LDAuMzk1LDEuMDM0LDAuMzk1LDEuNDI4LDBsOC45OTktOS4wMDIgIGMwLjM5NC0wLjM5NSwwLjM5NC0xLjAzNiwwLTEuNDMxQzI1LjMxOSwxMC44ODksMjQuNjc5LDEwLjg4OSwyNC4yODUsMTEuMjg0elwiIGZpbGw9XCIjMTIxMzEzXCIgaWQ9XCJFeHBhbmRfTW9yZVwiLz48Zy8+PGcvPjxnLz48Zy8+PGcvPjxnLz48L3N2Zz5cbiAgICA8L3NwYW4+XG48L2J1dHRvbj5cbmBcbn0pXG5leHBvcnQgY2xhc3MgTmcyRHJvcGRvd25CdXR0b24ge1xuICAgIEBPdXRwdXQoKSBwdWJsaWMgb25NZW51VG9nZ2xlZDogRXZlbnRFbWl0dGVyPGJvb2xlYW4+ID0gbmV3IEV2ZW50RW1pdHRlcjxib29sZWFuPigpO1xuICAgIEBJbnB1dCgpIHB1YmxpYyBzaG93Q2FyZXQ6IGJvb2xlYW4gPSB0cnVlO1xuXG4gICAgY29uc3RydWN0b3IocHJpdmF0ZSBlbGVtZW50OiBFbGVtZW50UmVmKSB7fVxuXG4gICAgLyoqXG4gICAgICogQG5hbWUgdG9nZ2xlTWVudVxuICAgICAqIEBkZXNjIGVtaXRzIGV2ZW50IHRvIHRvZ2dsZSBtZW51XG4gICAgICovXG4gICAgcHVibGljIHRvZ2dsZU1lbnUoKTogdm9pZCB7XG4gICAgICAgIHRoaXMub25NZW51VG9nZ2xlZC5lbWl0KHRydWUpO1xuICAgIH1cblxuICAgIC8qKlxuICAgICAqIEBuYW1lIGdldFBvc2l0aW9uXG4gICAgICogQGRlc2MgcmV0dXJucyBwb3NpdGlvbiBvZiB0aGUgYnV0dG9uXG4gICAgICovXG4gICAgcHVibGljIGdldFBvc2l0aW9uKCk6IENsaWVudFJlY3Qge1xuICAgICAgcmV0dXJuIHRoaXMuZWxlbWVudC5uYXRpdmVFbGVtZW50LmdldEJvdW5kaW5nQ2xpZW50UmVjdCgpO1xuICAgIH1cbn1cbiIsImltcG9ydCB7IE5nMk1lbnVJdGVtIH0gZnJvbSAnLi4vbWVudS1pdGVtL25nMi1tZW51LWl0ZW0nO1xuaW1wb3J0IHsgTmcyRHJvcGRvd25NZW51IH0gZnJvbSAnLi9uZzItZHJvcGRvd24tbWVudSc7XG5pbXBvcnQgeyBOZzJEcm9wZG93blN0YXRlIH0gZnJvbSAnLi4vLi4vc2VydmljZXMvbmcyLWRyb3Bkb3duLXN0YXRlJztcblxuY29uc3QgS0VZUyA9IHtcbiAgICBCQUNLU1BBQ0U6IDksXG4gICAgUFJFVjogMzgsXG4gICAgTkVYVDogNDAsXG4gICAgRU5URVI6IDEzLFxuICAgIEVTQ0FQRTogMjdcbn07XG5cbi8qKlxuICogQG5hbWUgb25Td2l0Y2hOZXh0XG4gKiBAcGFyYW0gaW5kZXhcbiAqIEBwYXJhbSBpdGVtc1xuICogQHBhcmFtIHN0YXRlXG4gKi9cbmNvbnN0IG9uU3dpdGNoTmV4dCA9IChpbmRleDogbnVtYmVyLCBpdGVtczogTmcyTWVudUl0ZW1bXSwgc3RhdGU6IE5nMkRyb3Bkb3duU3RhdGUpID0+IHtcbiAgICBpZiAoaW5kZXggPCBpdGVtcy5sZW5ndGggLSAxKSB7XG4gICAgICAgIHN0YXRlLnNlbGVjdChpdGVtc1tpbmRleCArIDFdLCB0cnVlKTtcbiAgICB9XG59O1xuXG4vKipcbiAqIEBuYW1lIG9uU3dpdGNoUHJldlxuICogQHBhcmFtIGluZGV4XG4gKiBAcGFyYW0gaXRlbXNcbiAqIEBwYXJhbSBzdGF0ZVxuICovXG5jb25zdCBvblN3aXRjaFByZXYgPSAoaW5kZXg6IG51bWJlciwgaXRlbXM6IE5nMk1lbnVJdGVtW10sIHN0YXRlOiBOZzJEcm9wZG93blN0YXRlKSA9PiB7XG4gICAgaWYgKGluZGV4ID4gMCkge1xuICAgICAgICBzdGF0ZS5zZWxlY3QoaXRlbXNbaW5kZXggLSAxXSwgdHJ1ZSk7XG4gICAgfVxufTtcblxuLyoqXG4gKiBAbmFtZSBvbkJhY2tzcGFjZVxuICogQHBhcmFtIGluZGV4XG4gKiBAcGFyYW0gaXRlbXNcbiAqIEBwYXJhbSBzdGF0ZVxuICovXG5jb25zdCBvbkJhY2tzcGFjZSA9IChpbmRleDogbnVtYmVyLCBpdGVtczogTmcyTWVudUl0ZW1bXSwgc3RhdGU6IE5nMkRyb3Bkb3duU3RhdGUpID0+IHtcbiAgICBpZiAoaW5kZXggPCBpdGVtcy5sZW5ndGggLSAxKSB7XG4gICAgICAgIHN0YXRlLnNlbGVjdChpdGVtc1tpbmRleCArIDFdLCB0cnVlKTtcbiAgICB9IGVsc2Uge1xuICAgICAgICBzdGF0ZS5zZWxlY3QoaXRlbXNbMF0sIHRydWUpO1xuICAgIH1cbn07XG5cbmZ1bmN0aW9uIG9uRXNjYXBlKHRoaXM6IE5nMkRyb3Bkb3duTWVudSkge1xuICAgIHRoaXMuaGlkZSgpO1xufTtcblxuLyoqXG4gKiBAbmFtZSBvbkl0ZW1DbGlja2VkXG4gKiBAcGFyYW0gaW5kZXhcbiAqIEBwYXJhbSBpdGVtc1xuICogQHBhcmFtIHN0YXRlXG4gKi9cbmNvbnN0IG9uSXRlbUNsaWNrZWQgPSAoaW5kZXg6IG51bWJlciwgaXRlbXM6IE5nMk1lbnVJdGVtW10sIHN0YXRlOiBOZzJEcm9wZG93blN0YXRlKSA9PiB7XG4gICAgcmV0dXJuIHN0YXRlLnNlbGVjdGVkSXRlbSA/IHN0YXRlLnNlbGVjdGVkSXRlbS5jbGljaygpIDogdW5kZWZpbmVkO1xufTtcblxuZXhwb3J0IGNvbnN0IEFDVElPTlMgPSB7XG4gICAgW0tFWVMuQkFDS1NQQUNFXTogb25CYWNrc3BhY2UsXG4gICAgW0tFWVMuUFJFVl06IG9uU3dpdGNoUHJldixcbiAgICBbS0VZUy5ORVhUXTogb25Td2l0Y2hOZXh0LFxuICAgIFtLRVlTLkVOVEVSXTogb25JdGVtQ2xpY2tlZCxcbiAgICBbS0VZUy5FU0NBUEVdOiBvbkVzY2FwZVxufTtcblxuZXhwb3J0IGZ1bmN0aW9uIGFycm93S2V5c0hhbmRsZXIoZXZlbnQpOiB2b2lkIHtcbiAgICBpZiAoWzM4LCA0MF0uaW5kZXhPZihldmVudC5rZXlDb2RlKSA+IC0xKSB7XG4gICAgICAgIGV2ZW50LnByZXZlbnREZWZhdWx0KCk7XG4gICAgfVxufVxuIiwiaW1wb3J0IHsgRXZlbnRFbWl0dGVyIH0gZnJvbSAnQGFuZ3VsYXIvY29yZSc7XG5pbXBvcnQgeyBOZzJNZW51SXRlbSB9IGZyb20gJy4uL2NvbXBvbmVudHMvbWVudS1pdGVtL25nMi1tZW51LWl0ZW0nO1xuZXhwb3J0IGNsYXNzIE5nMkRyb3Bkb3duU3RhdGUge1xuICAgIHB1YmxpYyBvbkl0ZW1TZWxlY3RlZDogRXZlbnRFbWl0dGVyPE5nMk1lbnVJdGVtPiA9IG5ldyBFdmVudEVtaXR0ZXI8TmcyTWVudUl0ZW0+KCk7XG4gICAgcHVibGljIG9uSXRlbUNsaWNrZWQ6IEV2ZW50RW1pdHRlcjxOZzJNZW51SXRlbT4gPSBuZXcgRXZlbnRFbWl0dGVyPE5nMk1lbnVJdGVtPigpO1xuICAgIHB1YmxpYyBvbkl0ZW1EZXN0cm95ZWQ6IEV2ZW50RW1pdHRlcjxOZzJNZW51SXRlbT4gPSBuZXcgRXZlbnRFbWl0dGVyPE5nMk1lbnVJdGVtPigpO1xuXG4gICAgcHJpdmF0ZSBfc2VsZWN0ZWRJdGVtOiBOZzJNZW51SXRlbTtcblxuICAgIC8qKlxuICAgICAqIEBuYW1lIHNlbGVjdGVkSXRlbVxuICAgICAqIEBkZXNjIGdldHRlciBmb3IgX3NlbGVjdGVkSXRlbVxuICAgICAqL1xuICAgIHB1YmxpYyBnZXQgc2VsZWN0ZWRJdGVtKCk6IE5nMk1lbnVJdGVtIHtcbiAgICAgICAgcmV0dXJuIHRoaXMuX3NlbGVjdGVkSXRlbTtcbiAgICB9XG5cbiAgICAvKipcbiAgICAgKiBAbmFtZSBzZWxlY3RzIGEgbWVudSBpdGVtIGFuZCBlbWl0cyBldmVudFxuICAgICAqIEBwYXJhbSBpdGVtXG4gICAgICovXG4gICAgcHVibGljIHNlbGVjdChpdGVtOiBOZzJNZW51SXRlbSB8IHVuZGVmaW5lZCwgZGlzcGF0Y2hFdmVudCA9IHRydWUpOiB2b2lkIHtcbiAgICAgICAgdGhpcy5fc2VsZWN0ZWRJdGVtID0gaXRlbTtcblxuICAgICAgICBpZiAoIWRpc3BhdGNoRXZlbnQgfHwgIWl0ZW0pIHtcbiAgICAgICAgICAgIHJldHVybjtcbiAgICAgICAgfVxuXG4gICAgICAgIGl0ZW0uZm9jdXMoKTtcblxuICAgICAgICB0aGlzLm9uSXRlbVNlbGVjdGVkLmVtaXQoaXRlbSk7XG4gICAgfVxuXG4gICAgLyoqXG4gICAgICogQG5hbWUgdW5zZWxlY3RcbiAgICAgKiBAZGVzYyBzZXRzIF9zZWxlY3RlZEl0ZW0gYXMgdW5kZWZpbmVkXG4gICAgICovXG4gICAgcHVibGljIHVuc2VsZWN0KCk6IHZvaWQge1xuICAgICAgICB0aGlzLl9zZWxlY3RlZEl0ZW0gPSB1bmRlZmluZWQ7XG4gICAgfVxufVxuIiwiaW1wb3J0IHsgSW5qZWN0YWJsZSB9IGZyb20gJ0Bhbmd1bGFyL2NvcmUnO1xuaW1wb3J0IHsgTmcyRHJvcGRvd25TdGF0ZSB9IGZyb20gJy4vbmcyLWRyb3Bkb3duLXN0YXRlJztcblxuQEluamVjdGFibGUoKVxuZXhwb3J0IGNsYXNzIERyb3Bkb3duU3RhdGVTZXJ2aWNlIHtcbiAgICBwdWJsaWMgbWVudVN0YXRlID0ge1xuICAgICAgICBpc1Zpc2libGU6IDxib29sZWFuPmZhbHNlLFxuICAgICAgICB0b1N0cmluZygpOiBzdHJpbmcge1xuICAgICAgICAgICAgcmV0dXJuIHRoaXMuaXNWaXNpYmxlID09PSB0cnVlID8gJ3Zpc2libGUnIDogJ2hpZGRlbic7XG4gICAgICAgIH1cbiAgICB9O1xuXG4gICAgcHVibGljIGRyb3Bkb3duU3RhdGU6IE5nMkRyb3Bkb3duU3RhdGUgPSBuZXcgTmcyRHJvcGRvd25TdGF0ZSgpO1xufVxuIiwiaW1wb3J0IHtcbiAgICBDb21wb25lbnQsXG4gICAgSW5wdXQsXG4gICAgUmVuZGVyZXIsXG4gICAgRWxlbWVudFJlZixcbiAgICBPbkRlc3Ryb3lcbn0gZnJvbSAnQGFuZ3VsYXIvY29yZSc7XG5cbmltcG9ydCB7IERyb3Bkb3duU3RhdGVTZXJ2aWNlIH0gZnJvbSAnLi4vLi4vc2VydmljZXMvZHJvcGRvd24tc3RhdGUuc2VydmljZSc7XG5cbkBDb21wb25lbnQoe1xuICAgIHNlbGVjdG9yOiAnbmcyLW1lbnUtaXRlbScsXG4gICAgc3R5bGVzOiBbYC5uZzItbWVudS1pdGVte2ZvbnQtZmFtaWx5OlJvYm90byxcIkhlbHZldGljYSBOZXVlXCIsSGVsdmV0aWNhLEFyaWFsO2JhY2tncm91bmQ6I2ZmZjtjb2xvcjpyZ2JhKDAsMCwwLC44Nyk7Y3Vyc29yOnBvaW50ZXI7Zm9udC1zaXplOi45ZW07dGV4dC10cmFuc2Zvcm06bm9uZTtmb250LXdlaWdodDo0MDA7bGV0dGVyLXNwYWNpbmc6LjAzZW07aGVpZ2h0OjQ4cHg7bGluZS1oZWlnaHQ6NDhweDtwYWRkaW5nOi4zZW0gMS4yNXJlbTt0ZXh0LW92ZXJmbG93OmVsbGlwc2lzO3doaXRlLXNwYWNlOm5vd3JhcDtvdmVyZmxvdzpoaWRkZW47dHJhbnNpdGlvbjpiYWNrZ3JvdW5kIC4yNXN9Lm5nMi1tZW51LWl0ZW0tLXNlbGVjdGVke2JhY2tncm91bmQ6cmdiYSgxNTgsMTU4LDE1OCwuMik7b3V0bGluZTowfS5uZzItbWVudS1pdGVtOmZvY3Vze291dGxpbmU6MH0ubmcyLW1lbnUtaXRlbTphY3RpdmV7YmFja2dyb3VuZDpyZ2JhKDE1OCwxNTgsMTU4LC40KX06aG9zdChuZzItbWVudS1pdGVtKSAvZGVlcC8gW25nMi1tZW51LWl0ZW0taWNvbl17dmVydGljYWwtYWxpZ246bWlkZGxlO2ZvbnQtc2l6ZToyOHB4O3dpZHRoOjEuNWVtO2hlaWdodDozMHB4O2NvbG9yOnJnYmEoMCwwLDAsLjQ0KX1gXSxcbiAgICB0ZW1wbGF0ZTogYDxkaXYgY2xhc3M9J25nMi1tZW51LWl0ZW0nXG4gICAgIHJvbGU9XCJidXR0b25cIlxuICAgICB0YWJpbmRleD1cIjBcIlxuICAgICBbY2xhc3MubmcyLW1lbnUtaXRlbS0tc2VsZWN0ZWRdPVwiaXNTZWxlY3RlZFwiXG4gICAgIChrZXlkb3duLmVudGVyKT1cImNsaWNrKClcIlxuICAgICAoY2xpY2spPVwiY2xpY2soKVwiXG4gICAgIChtb3VzZW92ZXIpPVwic2VsZWN0KClcIj5cbiAgICAgICAgPG5nLWNvbnRlbnQ+PC9uZy1jb250ZW50PlxuPC9kaXY+XG5gXG59KVxuZXhwb3J0IGNsYXNzIE5nMk1lbnVJdGVtIGltcGxlbWVudHMgT25EZXN0cm95IHtcbiAgICAvKipcbiAgICAgKiBAcHJldmVudENsb3NlXG4gICAgICogQGRlc2MgaWYgdHJ1ZSwgY2xpY2tpbmcgb24gdGhlIGl0ZW0gd29uJ3QgY2xvc2UgdGhlIGRyb3Bkb3duXG4gICAgICovXG4gICAgQElucHV0KCkgcHVibGljIHByZXZlbnRDbG9zZTogYm9vbGVhbiA9IGZhbHNlO1xuXG4gICAgLyoqXG4gICAgICogQG5hbWUgdmFsdWVcbiAgICAgKiBAZGVzYyBhbnkgdmFsdWUgYXNzb2NpYXRlZCB0byB0aGUgaXRlbVxuICAgICAqL1xuICAgIEBJbnB1dCgpIHB1YmxpYyB2YWx1ZTogYW55O1xuXG4gICAgY29uc3RydWN0b3IocHJpdmF0ZSBzdGF0ZTogRHJvcGRvd25TdGF0ZVNlcnZpY2UsXG4gICAgICAgICAgICAgICAgcHJpdmF0ZSBlbGVtZW50OiBFbGVtZW50UmVmLFxuICAgICAgICAgICAgICAgIHByaXZhdGUgcmVuZGVyZXI6IFJlbmRlcmVyKSB7fVxuXG4gICAgcHVibGljIG5nT25EZXN0cm95KCk6IHZvaWQge1xuICAgICAgICB0aGlzLnN0YXRlLmRyb3Bkb3duU3RhdGUub25JdGVtRGVzdHJveWVkLmVtaXQodGhpcyk7XG4gICAgfVxuXG4gICAgLyoqXG4gICAgICogQG5hbWUgaXNTZWxlY3RlZFxuICAgICAqIEBkZXNjIHJldHVybnMgY3VycmVudCBzZWxlY3RlZCBpdGVtXG4gICAgICovXG4gICAgcHVibGljIGdldCBpc1NlbGVjdGVkKCk6IGJvb2xlYW4ge1xuICAgICAgICByZXR1cm4gdGhpcyA9PT0gdGhpcy5zdGF0ZS5kcm9wZG93blN0YXRlLnNlbGVjdGVkSXRlbTtcbiAgICB9XG5cbiAgICAvKipcbiAgICAgKiBAbmFtZSBjbGlja1xuICAgICAqIEBkZXNjIGVtaXRzIHNlbGVjdCBldmVudFxuICAgICAqL1xuICAgIHB1YmxpYyBzZWxlY3QoJGV2ZW50Pyk6IHZvaWQge1xuICAgICAgICB0aGlzLnN0YXRlLmRyb3Bkb3duU3RhdGUuc2VsZWN0KHRoaXMsIHRydWUpO1xuXG4gICAgICAgIGlmICgkZXZlbnQpIHtcbiAgICAgICAgICAgICRldmVudC5zdG9wUHJvcGFnYXRpb24oKTtcbiAgICAgICAgICAgICRldmVudC5wcmV2ZW50RGVmYXVsdCgpO1xuICAgICAgICB9XG4gICAgfVxuXG4gICAgLyoqXG4gICAgICogQG5hbWUgY2xpY2tcbiAgICAgKiBAZGVzYyBlbWl0cyBjbGljayBldmVudFxuICAgICAqL1xuICAgIHB1YmxpYyBjbGljaygpOiB2b2lkIHtcbiAgICAgICAgdGhpcy5zdGF0ZS5kcm9wZG93blN0YXRlLm9uSXRlbUNsaWNrZWQuZW1pdCh0aGlzKTtcbiAgICB9XG5cbiAgICAvKipcbiAgICAgKiBAbmFtZSBmb2N1c1xuICAgICAqL1xuICAgIHB1YmxpYyBmb2N1cygpIHtcbiAgICAgICAgdGhpcy5yZW5kZXJlci5pbnZva2VFbGVtZW50TWV0aG9kKHRoaXMuZWxlbWVudC5uYXRpdmVFbGVtZW50LmNoaWxkcmVuWzBdLCAnZm9jdXMnKTtcbiAgICB9XG59XG4iLCJpbXBvcnQge1xuICAgIENvbXBvbmVudCxcbiAgICBFbGVtZW50UmVmLFxuICAgIFJlbmRlcmVyLFxuICAgIENvbnRlbnRDaGlsZHJlbixcbiAgICBRdWVyeUxpc3QsXG4gICAgSW5wdXRcbn0gZnJvbSAnQGFuZ3VsYXIvY29yZSc7XG5cbmltcG9ydCB7XG4gICAgdHJpZ2dlcixcbiAgICBzdHlsZSxcbiAgICB0cmFuc2l0aW9uLFxuICAgIGFuaW1hdGUsXG4gICAga2V5ZnJhbWVzLFxuICAgIHN0YXRlXG59IGZyb20gJ0Bhbmd1bGFyL2FuaW1hdGlvbnMnO1xuXG5pbXBvcnQgeyBBQ1RJT05TLCBhcnJvd0tleXNIYW5kbGVyIH0gZnJvbSAnLi9hY3Rpb25zJztcblxuaW1wb3J0IHsgTmcyTWVudUl0ZW0gfSBmcm9tICcuLi9tZW51LWl0ZW0vbmcyLW1lbnUtaXRlbSc7XG5pbXBvcnQgeyBEcm9wZG93blN0YXRlU2VydmljZSB9IGZyb20gJy4uLy4uL3NlcnZpY2VzL2Ryb3Bkb3duLXN0YXRlLnNlcnZpY2UnO1xuXG5AQ29tcG9uZW50KHtcbiAgICBzZWxlY3RvcjogJ25nMi1kcm9wZG93bi1tZW51JyxcbiAgICBzdHlsZXM6IFtgOmhvc3R7ZGlzcGxheTpibG9ja30ubmcyLWRyb3Bkb3duLW1lbnV7b3ZlcmZsb3cteTphdXRvO2JveC1zaGFkb3c6MCAxcHggMnB4IDAgcmdiYSgwLDAsMCwuMyk7cG9zaXRpb246YWJzb2x1dGU7cGFkZGluZzouNWVtIDA7YmFja2dyb3VuZDojZmZmO2JvcmRlci1yYWRpdXM6MXB4O21heC1oZWlnaHQ6NDAwcHg7d2lkdGg6MjYwcHg7bWluLWhlaWdodDowO2Rpc3BsYXk6YmxvY2t9Lm5nMi1kcm9wZG93bi1tZW51Lm5nMi1kcm9wZG93bi1tZW51LS1pbnNpZGUtZWxlbWVudHtwb3NpdGlvbjpmaXhlZH0ubmcyLWRyb3Bkb3duLW1lbnUubmcyLWRyb3Bkb3duLW1lbnUtLXdpZHRoLS0ye3dpZHRoOjIwMHB4fS5uZzItZHJvcGRvd24tbWVudS5uZzItZHJvcGRvd24tbWVudS0td2lkdGgtLTR7d2lkdGg6MjYwcHh9Lm5nMi1kcm9wZG93bi1tZW51Lm5nMi1kcm9wZG93bi1tZW51LS13aWR0aC0tNnt3aWR0aDozMjBweH0ubmcyLWRyb3Bkb3duLWJhY2tkcm9we3Bvc2l0aW9uOmZpeGVkO3RvcDowO2xlZnQ6MDt3aWR0aDoxMDAlO2hlaWdodDoxMDAlO3otaW5kZXg6MTtvdmVyZmxvdzpoaWRkZW59Omhvc3QgL2RlZXAvIC5uZzItbWVudS1kaXZpZGVye2hlaWdodDoxcHg7bWluLWhlaWdodDoxcHg7bWF4LWhlaWdodDoxcHg7d2lkdGg6MTAwJTtkaXNwbGF5OmJsb2NrO2JhY2tncm91bmQ6I2Y5ZjlmOX1gXSxcbiAgICB0ZW1wbGF0ZTogYDwhLS0gTUVOVSAtLT5cbjxkaXYgY2xhc3M9J25nMi1kcm9wZG93bi1tZW51IG5nMi1kcm9wZG93bi1tZW51LS0td2lkdGgtLXt7IHdpZHRoIH19J1xuICAgICBbY2xhc3MubmcyLWRyb3Bkb3duLW1lbnUtLWluc2lkZS1lbGVtZW50XT1cIiFhcHBlbmRUb0JvZHlcIlxuICAgICBbY2xhc3MubmcyLWRyb3Bkb3duLW1lbnUtLW9wZW5dPVwic3RhdGUubWVudVN0YXRlLmlzVmlzaWJsZVwiXG4gICAgIFtzdHlsZS56LWluZGV4XT1cInpJbmRleFwiXG4gICAgIFtAZmFkZV09XCJzdGF0ZS5tZW51U3RhdGUudG9TdHJpbmcoKVwiPlxuICAgICAgICA8ZGl2IGNsYXNzPVwibmcyLWRyb3Bkb3duLW1lbnVfX29wdGlvbnMtY29udGFpbmVyXCJcbiAgICAgICAgICAgICBbQG9wYWNpdHldPVwic3RhdGUubWVudVN0YXRlLnRvU3RyaW5nKClcIj5cbiAgICAgICAgICAgIDxuZy1jb250ZW50PjwvbmctY29udGVudD5cbiAgICAgICAgPC9kaXY+XG48L2Rpdj5cblxuPCEtLSBCQUNLRFJPUCAtLT5cbjxkaXYgY2xhc3M9XCJuZzItZHJvcGRvd24tYmFja2Ryb3BcIiAqbmdJZj1cInN0YXRlLm1lbnVTdGF0ZS5pc1Zpc2libGVcIiAoY2xpY2spPVwiaGlkZSgpXCI+PC9kaXY+XG5gLFxuICAgIGFuaW1hdGlvbnM6IFtcbiAgICAgICAgdHJpZ2dlcignZmFkZScsIFtcbiAgICAgICAgICAgIHN0YXRlKCd2aXNpYmxlJywgc3R5bGUoXG4gICAgICAgICAgICAgICAge2Rpc3BsYXk6ICdibG9jaycsIG9wYWNpdHk6IDEsIGhlaWdodDogJyonLCB3aWR0aDogJyonfVxuICAgICAgICAgICAgKSksXG4gICAgICAgICAgICBzdGF0ZSgnaGlkZGVuJywgc3R5bGUoXG4gICAgICAgICAgICAgICAge2Rpc3BsYXk6ICdub25lJywgb3BhY2l0eTogMCwgb3ZlcmZsb3c6ICdoaWRkZW4nLCBoZWlnaHQ6IDAsIHdpZHRoOiAwfVxuICAgICAgICAgICAgKSksXG4gICAgICAgICAgICB0cmFuc2l0aW9uKCdoaWRkZW4gPT4gdmlzaWJsZScsIFtcbiAgICAgICAgICAgICAgICBhbmltYXRlKCcyNTBtcyBlYXNlLWluJyxcbiAgICAgICAgICAgICAgICAgICAgc3R5bGUoe29wYWNpdHk6IDEsIGhlaWdodDogJyonLCB3aWR0aDogJyonfSlcbiAgICAgICAgICAgICAgICApXG4gICAgICAgICAgICBdKSxcbiAgICAgICAgICAgIHRyYW5zaXRpb24oJ3Zpc2libGUgPT4gaGlkZGVuJywgW1xuICAgICAgICAgICAgICAgIGFuaW1hdGUoJzM1MG1zIGVhc2Utb3V0JyxcbiAgICAgICAgICAgICAgICAgICAgc3R5bGUoe29wYWNpdHk6IDAsIHdpZHRoOiAwLCBoZWlnaHQ6IDB9KVxuICAgICAgICAgICAgICAgIClcbiAgICAgICAgICAgIF0pXG4gICAgICAgIF0pLFxuICAgICAgICB0cmlnZ2VyKCdvcGFjaXR5JywgW1xuICAgICAgICAgICAgdHJhbnNpdGlvbignaGlkZGVuID0+IHZpc2libGUnLCBbXG4gICAgICAgICAgICAgICAgYW5pbWF0ZSgnNDUwbXMgZWFzZS1pbicsIGtleWZyYW1lcyhbXG4gICAgICAgICAgICAgICAgICAgIHN0eWxlKHtvcGFjaXR5OiAwLCBvZmZzZXQ6IDB9KSxcbiAgICAgICAgICAgICAgICAgICAgc3R5bGUoe29wYWNpdHk6IDEsIG9mZnNldDogMX0pLFxuICAgICAgICAgICAgICAgIF0pKVxuICAgICAgICAgICAgXSksXG4gICAgICAgICAgICB0cmFuc2l0aW9uKCd2aXNpYmxlID0+IGhpZGRlbicsIFtcbiAgICAgICAgICAgICAgICBhbmltYXRlKCcyNTBtcyBlYXNlLW91dCcsIGtleWZyYW1lcyhbXG4gICAgICAgICAgICAgICAgICAgIHN0eWxlKHtvcGFjaXR5OiAxLCBvZmZzZXQ6IDB9KSxcbiAgICAgICAgICAgICAgICAgICAgc3R5bGUoe29wYWNpdHk6IDAuNSwgb2Zmc2V0OiAwLjN9KSxcbiAgICAgICAgICAgICAgICAgICAgc3R5bGUoe29wYWNpdHk6IDAsIG9mZnNldDogMX0pLFxuICAgICAgICAgICAgICAgIF0pKVxuICAgICAgICAgICAgXSlcbiAgICAgICAgXSlcbiAgICBdXG59KVxuZXhwb3J0IGNsYXNzIE5nMkRyb3Bkb3duTWVudSB7XG4gICAgLyoqXG4gICAgICogQG5hbWUgd2lkdGhcbiAgICAgKi9cbiAgICBASW5wdXQoKSBwdWJsaWMgd2lkdGg6IG51bWJlciA9IDQ7XG5cbiAgICAvKipcbiAgICAgKiBAZGVzY3JpcHRpb24gaWYgc2V0IHRvIHRydWUsIHRoZSBmaXJzdCBlbGVtZW50IG9mIHRoZSBkcm9wZG93biB3aWxsIGJlIGF1dG9tYXRpY2FsbHkgZm9jdXNlZFxuICAgICAqIEBuYW1lIGZvY3VzRmlyc3RFbGVtZW50XG4gICAgICovXG4gICAgQElucHV0KCkgcHVibGljIGZvY3VzRmlyc3RFbGVtZW50OiBib29sZWFuID0gdHJ1ZTtcblxuICAgIC8qKlxuICAgICAqIEBkZXNjcmlwdGlvbiBzZXRzIGRyb3Bkb3duIG9mZnNldCBmcm9tIHRoZSBidXR0b25cbiAgICAgKiBAbmFtZSBvZmZzZXQge3N0cmluZ30gZm9sbG93IGZvcm1hdCAnPG51bWJlcj4gPG51bWJlcj4nIGV4LiAnMCAyMCdcbiAgICAgKi9cbiAgICBASW5wdXQoKSBwdWJsaWMgb2Zmc2V0OiBzdHJpbmc7XG5cbiAgICAvKipcbiAgICAgKiBAbmFtZSBhcHBlbmRUb0JvZHlcbiAgICAgKi9cbiAgICBASW5wdXQoKSBwdWJsaWMgYXBwZW5kVG9Cb2R5OiBib29sZWFuID0gdHJ1ZTtcblxuICAgIC8qKlxuICAgICAqIEBuYW1lIHpJbmRleFxuICAgICAqL1xuICAgIEBJbnB1dCgpIHB1YmxpYyB6SW5kZXggPSAxMDAwO1xuXG4gICAgLyoqXG4gICAgICogQG5hbWUgaXRlbXNcbiAgICAgKi9cbiAgICBAQ29udGVudENoaWxkcmVuKE5nMk1lbnVJdGVtKSBwdWJsaWMgaXRlbXM6IFF1ZXJ5TGlzdDxOZzJNZW51SXRlbT47XG5cbiAgICBwcml2YXRlIHBvc2l0aW9uOiBDbGllbnRSZWN0O1xuXG4gICAgcHJpdmF0ZSBsaXN0ZW5lcnMgPSB7XG4gICAgICAgIGFycm93SGFuZGxlcjogdW5kZWZpbmVkLFxuICAgICAgICBoYW5kbGVLZXlwcmVzczogdW5kZWZpbmVkXG4gICAgfTtcblxuICAgIGNvbnN0cnVjdG9yKHB1YmxpYyBzdGF0ZTogRHJvcGRvd25TdGF0ZVNlcnZpY2UsXG4gICAgICAgICAgICAgICAgcHJpdmF0ZSBlbGVtZW50OiBFbGVtZW50UmVmLFxuICAgICAgICAgICAgICAgIHByaXZhdGUgcmVuZGVyZXI6IFJlbmRlcmVyKSB7fVxuXG4gICAgLyoqXG4gICAgICogQG5hbWUgc2hvd1xuICAgICAqIEBzaG93cyBtZW51IGFuZCBzZWxlY3RzIGZpcnN0IGl0ZW1cbiAgICAgKi9cbiAgICBwdWJsaWMgc2hvdyhwb3NpdGlvbj86IENsaWVudFJlY3QsIGR5bmFtaWMgPSB0cnVlKTogdm9pZCB7XG4gICAgICAgIGNvbnN0IGRjID0gdHlwZW9mIGRvY3VtZW50ICE9PSAndW5kZWZpbmVkJyA/IGRvY3VtZW50IDogdW5kZWZpbmVkO1xuICAgICAgICBjb25zdCB3ZCA9IHR5cGVvZiB3aW5kb3cgIT09ICd1bmRlZmluZWQnID8gd2luZG93IDogdW5kZWZpbmVkO1xuXG4gICAgICAgIGlmICghdGhpcy5zdGF0ZS5tZW51U3RhdGUuaXNWaXNpYmxlKSB7XG4gICAgICAgICAgICAvLyBzZXR0aW5nIGhhbmRsZXJzXG4gICAgICAgICAgICB0aGlzLmxpc3RlbmVycy5oYW5kbGVLZXlwcmVzcyA9IHRoaXMucmVuZGVyZXIubGlzdGVuKGRjLmJvZHksICdrZXlkb3duJywgdGhpcy5oYW5kbGVLZXlwcmVzcy5iaW5kKHRoaXMpKTtcbiAgICAgICAgICAgIHRoaXMubGlzdGVuZXJzLmFycm93SGFuZGxlciA9IHRoaXMucmVuZGVyZXIubGlzdGVuKHdkLCAna2V5ZG93bicsIGFycm93S2V5c0hhbmRsZXIpO1xuICAgICAgICB9XG5cbiAgICAgICAgLy8gdXBkYXRlIHN0YXRlXG4gICAgICAgIHRoaXMuc3RhdGUubWVudVN0YXRlLmlzVmlzaWJsZSA9IHRydWU7XG5cbiAgICAgICAgaWYgKHBvc2l0aW9uKSB7XG4gICAgICAgICAgICB0aGlzLnVwZGF0ZVBvc2l0aW9uKHBvc2l0aW9uLCBkeW5hbWljKTtcbiAgICAgICAgfVxuICAgIH1cblxuICAgIC8qKlxuICAgICAqIEBuYW1lIGhpZGVcbiAgICAgKiBAZGVzYyBoaWRlcyBtZW51XG4gICAgICovXG4gICAgcHVibGljIGhpZGUoKTogdm9pZCB7XG4gICAgICAgIHRoaXMuc3RhdGUubWVudVN0YXRlLmlzVmlzaWJsZSA9IGZhbHNlO1xuXG4gICAgICAgIC8vIHJlc2V0IHNlbGVjdGVkIGl0ZW0gc3RhdGVcbiAgICAgICAgdGhpcy5zdGF0ZS5kcm9wZG93blN0YXRlLnVuc2VsZWN0KCk7XG5cbiAgICAgICAgLy8gY2FsbCBmdW5jdGlvbiB0byB1bmxpc3RlblxuICAgICAgICB0aGlzLmxpc3RlbmVycy5hcnJvd0hhbmRsZXIgPyB0aGlzLmxpc3RlbmVycy5hcnJvd0hhbmRsZXIoKSA6IHVuZGVmaW5lZDtcbiAgICAgICAgdGhpcy5saXN0ZW5lcnMuaGFuZGxlS2V5cHJlc3MgPyB0aGlzLmxpc3RlbmVycy5oYW5kbGVLZXlwcmVzcygpIDogdW5kZWZpbmVkO1xuICAgIH1cblxuICAgIC8qKlxuICAgICAqIEBuYW1lIHVwZGF0ZVBvc2l0aW9uXG4gICAgICogQGRlc2MgdXBkYXRlcyB0aGUgbWVudSBwb3NpdGlvbiBldmVyeSB0aW1lIGl0IGlzIHRvZ2dsZWRcbiAgICAgKiBAcGFyYW0gcG9zaXRpb24ge0NsaWVudFJlY3R9XG4gICAgICogQHBhcmFtIGR5bmFtaWMge2Jvb2xlYW59XG4gICAgICovXG4gICAgcHVibGljIHVwZGF0ZVBvc2l0aW9uKHBvc2l0aW9uOiBDbGllbnRSZWN0LCBkeW5hbWljOiBib29sZWFuKTogdm9pZCB7XG4gICAgICAgIHRoaXMucG9zaXRpb24gPSBwb3NpdGlvbjtcbiAgICAgICAgdGhpcy51cGRhdGVPbkNoYW5nZShkeW5hbWljKTtcbiAgICB9XG5cbiAgICAvKipcbiAgICAgKiBAbmFtZSBoYW5kbGVLZXlwcmVzc1xuICAgICAqIEBkZXNjIGV4ZWN1dGVzIGZ1bmN0aW9ucyBvbiBrZXlQcmVzcyBiYXNlZCBvbiB0aGUga2V5IHByZXNzZWRcbiAgICAgKiBAcGFyYW0gJGV2ZW50XG4gICAgICovXG4gICAgcHVibGljIGhhbmRsZUtleXByZXNzKCRldmVudCk6IHZvaWQge1xuICAgICAgICBjb25zdCBrZXkgPSAkZXZlbnQua2V5Q29kZTtcbiAgICAgICAgY29uc3QgaXRlbXMgPSB0aGlzLml0ZW1zLnRvQXJyYXkoKTtcbiAgICAgICAgY29uc3QgaW5kZXggPSBpdGVtcy5pbmRleE9mKHRoaXMuc3RhdGUuZHJvcGRvd25TdGF0ZS5zZWxlY3RlZEl0ZW0pO1xuXG4gICAgICAgIGlmICghQUNUSU9OUy5oYXNPd25Qcm9wZXJ0eShrZXkpKSB7XG4gICAgICAgICAgICByZXR1cm47XG4gICAgICAgIH1cblxuICAgICAgICBBQ1RJT05TW2tleV0uY2FsbCh0aGlzLCBpbmRleCwgaXRlbXMsIHRoaXMuc3RhdGUuZHJvcGRvd25TdGF0ZSk7XG4gICAgfVxuXG4gICAgLyoqXG4gICAgICogQG5hbWUgZ2V0TWVudUVsZW1lbnRcbiAgICAgKi9cbiAgICBwcml2YXRlIGdldE1lbnVFbGVtZW50KCk6IEVsZW1lbnQge1xuICAgICAgICByZXR1cm4gdGhpcy5lbGVtZW50Lm5hdGl2ZUVsZW1lbnQuY2hpbGRyZW5bMF07XG4gICAgfVxuXG4gICAgLyoqXG4gICAgICogQG5hbWUgY2FsY1Bvc2l0aW9uT2Zmc2V0XG4gICAgICogQHBhcmFtIHBvc2l0aW9uXG4gICAgICovXG4gICAgcHJpdmF0ZSBjYWxjUG9zaXRpb25PZmZzZXQocG9zaXRpb24pOiB7IHRvcDogc3RyaW5nLCBsZWZ0OiBzdHJpbmcgfSB7XG4gICAgICAgIGNvbnN0IHdkID0gdHlwZW9mIHdpbmRvdyAhPT0gJ3VuZGVmaW5lZCcgPyB3aW5kb3cgOiB1bmRlZmluZWQ7XG4gICAgICAgIGNvbnN0IGRjID0gdHlwZW9mIGRvY3VtZW50ICE9PSAndW5kZWZpbmVkJyA/IGRvY3VtZW50IDogdW5kZWZpbmVkO1xuXG4gICAgICAgIGlmICghd2QgfHwgIWRjIHx8ICFwb3NpdGlvbikge1xuICAgICAgICAgICAgcmV0dXJuO1xuICAgICAgICB9XG5cbiAgICAgICAgY29uc3QgZWxlbWVudCA9IHRoaXMuZ2V0TWVudUVsZW1lbnQoKTtcbiAgICAgICAgY29uc3Qgc3VwcG9ydFBhZ2VPZmZzZXQgPSB3ZC5wYWdlWE9mZnNldCAhPT0gdW5kZWZpbmVkO1xuICAgICAgICBjb25zdCBpc0NTUzFDb21wYXQgPSAoKGRjLmNvbXBhdE1vZGUgfHwgJycpID09PSAnQ1NTMUNvbXBhdCcpO1xuXG4gICAgICAgIGNvbnN0IHggPSBzdXBwb3J0UGFnZU9mZnNldCA/IHdkLnBhZ2VYT2Zmc2V0IDogaXNDU1MxQ29tcGF0ID9cbiAgICAgICAgICAgIGRjLmRvY3VtZW50RWxlbWVudC5zY3JvbGxMZWZ0IDogZGMuYm9keS5zY3JvbGxMZWZ0O1xuXG4gICAgICAgIGNvbnN0IHkgPSBzdXBwb3J0UGFnZU9mZnNldCA/IHdkLnBhZ2VZT2Zmc2V0IDogaXNDU1MxQ29tcGF0ID9cbiAgICAgICAgICAgIGRjLmRvY3VtZW50RWxlbWVudC5zY3JvbGxUb3AgOiBkYy5ib2R5LnNjcm9sbFRvcDtcblxuICAgICAgICBsZXQgeyB0b3AsIGxlZnQgfSA9IHRoaXMuYXBwbHlPZmZzZXQoXG4gICAgICAgICAgICBgJHtwb3NpdGlvbi50b3AgKyAodGhpcy5hcHBlbmRUb0JvZHkgPyB5IC0gMTUgOiAwKX1weGAsXG4gICAgICAgICAgICBgJHtwb3NpdGlvbi5sZWZ0ICsgeCAtIDV9cHhgXG4gICAgICAgICk7XG5cbiAgICAgICAgY29uc3QgY2xpZW50V2lkdGggPSBlbGVtZW50LmNsaWVudFdpZHRoO1xuICAgICAgICBjb25zdCBjbGllbnRIZWlnaHQgPSBlbGVtZW50LmNsaWVudEhlaWdodDtcblxuICAgICAgICBjb25zdCBtYXJnaW5Gcm9tQm90dG9tID0gcGFyc2VJbnQodG9wKSArIGNsaWVudEhlaWdodCArICh0aGlzLmFwcGVuZFRvQm9keSA/IDAgOiB5IC0gMTUpO1xuICAgICAgICBjb25zdCBtYXJnaW5Gcm9tUmlnaHQgPSBwYXJzZUludChsZWZ0KSArIGNsaWVudFdpZHRoO1xuXG4gICAgICAgIGNvbnN0IHdpbmRvd1Njcm9sbEhlaWdodCA9IHdkLmlubmVySGVpZ2h0ICsgd2Quc2Nyb2xsWTtcbiAgICAgICAgY29uc3Qgd2luZG93U2Nyb2xsV2lkdGggPSB3ZC5pbm5lcldpZHRoICsgd2Quc2Nyb2xsWDtcblxuICAgICAgICBpZiAobWFyZ2luRnJvbUJvdHRvbSA+PSB3aW5kb3dTY3JvbGxIZWlnaHQpIHtcbiAgICAgICAgICAgIHRvcCA9IGAke3BhcnNlSW50KHRvcC5yZXBsYWNlKCdweCcsICcnKSkgLSBjbGllbnRIZWlnaHR9cHhgO1xuICAgICAgICB9XG5cbiAgICAgICAgaWYgKG1hcmdpbkZyb21SaWdodCA+PSB3aW5kb3dTY3JvbGxXaWR0aCkge1xuICAgICAgICAgICAgY29uc3QgbWFyZ2luUmlnaHQgPSBtYXJnaW5Gcm9tUmlnaHQgLSB3aW5kb3dTY3JvbGxXaWR0aCArIDMwO1xuICAgICAgICAgICAgbGVmdCA9IGAke3BhcnNlSW50KGxlZnQucmVwbGFjZSgncHgnLCAnJykpIC0gbWFyZ2luUmlnaHR9cHhgO1xuICAgICAgICB9XG5cbiAgICAgICAgcmV0dXJuIHsgdG9wLCBsZWZ0IH07XG4gICAgfVxuXG4gICAgcHJpdmF0ZSBhcHBseU9mZnNldCh0b3A6IHN0cmluZywgbGVmdDogc3RyaW5nKTogeyB0b3A6IHN0cmluZywgbGVmdDogc3RyaW5nIH0ge1xuICAgICAgICBpZiAoIXRoaXMub2Zmc2V0KSB7XG4gICAgICAgICAgICByZXR1cm4geyB0b3AsIGxlZnQgfTtcbiAgICAgICAgfVxuXG4gICAgICAgIGNvbnN0IG9mZnNldCA9IHRoaXMub2Zmc2V0LnNwbGl0KCcgJyk7XG5cbiAgICAgICAgaWYgKCFvZmZzZXRbMV0pIHtcbiAgICAgICAgICAgIG9mZnNldFsxXSA9ICcwJztcbiAgICAgICAgfVxuXG4gICAgICAgIHRvcCA9IGAke3BhcnNlSW50KHRvcC5yZXBsYWNlKCdweCcsICcnKSkgKyBwYXJzZUludChvZmZzZXRbMF0pfXB4YDtcbiAgICAgICAgbGVmdCA9IGAke3BhcnNlSW50KGxlZnQucmVwbGFjZSgncHgnLCAnJykpICsgcGFyc2VJbnQob2Zmc2V0WzFdKX1weGA7XG5cbiAgICAgICAgcmV0dXJuIHsgdG9wLCBsZWZ0IH07XG4gICAgfVxuXG4gICAgcHVibGljIG5nT25Jbml0KCkge1xuICAgICAgICBjb25zdCBkYyA9IHR5cGVvZiBkb2N1bWVudCAhPT0gJ3VuZGVmaW5lZCcgPyBkb2N1bWVudCA6IHVuZGVmaW5lZDtcbiAgICAgICAgaWYgKHRoaXMuYXBwZW5kVG9Cb2R5KSB7XG4gICAgICAgICAgICAvLyBhcHBlbmQgbWVudSBlbGVtZW50IHRvIHRoZSBib2R5XG4gICAgICAgICAgICBkYy5ib2R5LmFwcGVuZENoaWxkKHRoaXMuZWxlbWVudC5uYXRpdmVFbGVtZW50KTtcbiAgICAgICAgfVxuICAgIH1cblxuICAgIHB1YmxpYyB1cGRhdGVPbkNoYW5nZShkeW5hbWljID0gdHJ1ZSkge1xuICAgICAgICBjb25zdCBlbGVtZW50ID0gdGhpcy5nZXRNZW51RWxlbWVudCgpO1xuICAgICAgICBjb25zdCBwb3NpdGlvbiA9IHRoaXMuY2FsY1Bvc2l0aW9uT2Zmc2V0KHRoaXMucG9zaXRpb24pO1xuXG4gICAgICAgIGlmIChwb3NpdGlvbikge1xuICAgICAgICAgICAgdGhpcy5yZW5kZXJlci5zZXRFbGVtZW50U3R5bGUoZWxlbWVudCwgJ3RvcCcsIHBvc2l0aW9uLnRvcC50b1N0cmluZygpKTtcbiAgICAgICAgICAgIHRoaXMucmVuZGVyZXIuc2V0RWxlbWVudFN0eWxlKGVsZW1lbnQsICdsZWZ0JywgcG9zaXRpb24ubGVmdC50b1N0cmluZygpKTtcbiAgICAgICAgfVxuXG4gICAgICAgIC8vIHNlbGVjdCBmaXJzdCBpdGVtIHVubGVzcyB1c2VyIGRpc2FibGVkIHRoaXMgb3B0aW9uXG4gICAgICAgIGlmICh0aGlzLmZvY3VzRmlyc3RFbGVtZW50ICYmXG4gICAgICAgICAgICB0aGlzLml0ZW1zLmZpcnN0ICYmXG4gICAgICAgICAgICAhdGhpcy5zdGF0ZS5kcm9wZG93blN0YXRlLnNlbGVjdGVkSXRlbSkge1xuICAgICAgICAgICAgdGhpcy5zdGF0ZS5kcm9wZG93blN0YXRlLnNlbGVjdCh0aGlzLml0ZW1zLmZpcnN0LCBmYWxzZSk7XG4gICAgICAgIH1cbiAgICB9XG5cbiAgICBwdWJsaWMgbmdPbkRlc3Ryb3koKSB7XG4gICAgICAgIGNvbnN0IGVsZW0gPSB0aGlzLmVsZW1lbnQubmF0aXZlRWxlbWVudDtcbiAgICAgICAgZWxlbS5wYXJlbnROb2RlLnJlbW92ZUNoaWxkKGVsZW0pO1xuXG4gICAgICAgIGlmICh0aGlzLmxpc3RlbmVycy5oYW5kbGVLZXlwcmVzcykge1xuICAgICAgICAgICAgdGhpcy5saXN0ZW5lcnMuaGFuZGxlS2V5cHJlc3MoKTtcbiAgICAgICAgfVxuICAgIH1cbn1cbiIsImltcG9ydCB7XG4gICAgSG9zdExpc3RlbmVyLFxuICAgIENvbXBvbmVudCxcbiAgICBDb250ZW50Q2hpbGQsXG4gICAgT3V0cHV0LFxuICAgIEV2ZW50RW1pdHRlcixcbiAgICBJbnB1dFxufSBmcm9tICdAYW5ndWxhci9jb3JlJztcblxuaW1wb3J0IHsgTmcyRHJvcGRvd25CdXR0b24gfSBmcm9tICcuLi9idXR0b24vbmcyLWRyb3Bkb3duLWJ1dHRvbic7XG5pbXBvcnQgeyBOZzJEcm9wZG93bk1lbnUgfSBmcm9tICcuLi9tZW51L25nMi1kcm9wZG93bi1tZW51JztcbmltcG9ydCB7IERyb3Bkb3duU3RhdGVTZXJ2aWNlIH0gZnJvbSAnLi4vLi4vc2VydmljZXMvZHJvcGRvd24tc3RhdGUuc2VydmljZSc7XG5pbXBvcnQgeyBOZzJNZW51SXRlbSB9IGZyb20gJy4uL21lbnUtaXRlbS9uZzItbWVudS1pdGVtJztcblxuQENvbXBvbmVudCh7XG4gICAgc2VsZWN0b3I6ICduZzItZHJvcGRvd24nLFxuICAgIHRlbXBsYXRlOiBgPGRpdiBjbGFzcz1cIm5nMi1kcm9wZG93bi1jb250YWluZXJcIj5cbiAgICA8bmctY29udGVudCBzZWxlY3Q9XCJuZzItZHJvcGRvd24tYnV0dG9uXCI+PC9uZy1jb250ZW50PlxuICAgIDxuZy1jb250ZW50IHNlbGVjdD1cIm5nMi1kcm9wZG93bi1tZW51XCI+PC9uZy1jb250ZW50PlxuPC9kaXY+XG5gLFxuICAgIHByb3ZpZGVyczogWyBEcm9wZG93blN0YXRlU2VydmljZSBdXG59KVxuZXhwb3J0IGNsYXNzIE5nMkRyb3Bkb3duIHtcbiAgICAvLyBnZXQgY2hpbGRyZW4gY29tcG9uZW50c1xuICAgIEBDb250ZW50Q2hpbGQoTmcyRHJvcGRvd25CdXR0b24pIHB1YmxpYyBidXR0b246IE5nMkRyb3Bkb3duQnV0dG9uO1xuICAgIEBDb250ZW50Q2hpbGQoTmcyRHJvcGRvd25NZW51KSBwdWJsaWMgbWVudTogTmcyRHJvcGRvd25NZW51O1xuXG4gICAgQElucHV0KCkgcHVibGljIGR5bmFtaWNVcGRhdGUgPSB0cnVlO1xuXG4gICAgLy8gb3V0cHV0c1xuICAgIEBPdXRwdXQoKSBwdWJsaWMgb25JdGVtQ2xpY2tlZDogRXZlbnRFbWl0dGVyPHN0cmluZz4gPSBuZXcgRXZlbnRFbWl0dGVyPHN0cmluZz4oKTtcbiAgICBAT3V0cHV0KCkgcHVibGljIG9uSXRlbVNlbGVjdGVkOiBFdmVudEVtaXR0ZXI8c3RyaW5nPiA9IG5ldyBFdmVudEVtaXR0ZXI8c3RyaW5nPigpO1xuICAgIEBPdXRwdXQoKSBwdWJsaWMgb25TaG93OiBFdmVudEVtaXR0ZXI8TmcyRHJvcGRvd24+ID0gbmV3IEV2ZW50RW1pdHRlcjxOZzJEcm9wZG93bj4oKTtcbiAgICBAT3V0cHV0KCkgcHVibGljIG9uSGlkZTogRXZlbnRFbWl0dGVyPE5nMkRyb3Bkb3duPiA9IG5ldyBFdmVudEVtaXR0ZXI8TmcyRHJvcGRvd24+KCk7XG5cbiAgICBjb25zdHJ1Y3Rvcihwcml2YXRlIHN0YXRlOiBEcm9wZG93blN0YXRlU2VydmljZSkge31cblxuICAgIHB1YmxpYyBuZ09uSW5pdCgpIHtcbiAgICAgICAgdGhpcy5zdGF0ZS5kcm9wZG93blN0YXRlLm9uSXRlbUNsaWNrZWQuc3Vic2NyaWJlKGl0ZW0gPT4ge1xuICAgICAgICAgICAgdGhpcy5vbkl0ZW1DbGlja2VkLmVtaXQoaXRlbSk7XG5cbiAgICAgICAgICAgIGlmIChpdGVtLnByZXZlbnRDbG9zZSkge1xuICAgICAgICAgICAgICAgIHJldHVybjtcbiAgICAgICAgICAgIH1cblxuICAgICAgICAgICAgdGhpcy5oaWRlLmNhbGwodGhpcyk7XG4gICAgICAgIH0pO1xuXG4gICAgICAgIGlmICh0aGlzLmJ1dHRvbikge1xuICAgICAgICAgICAgdGhpcy5idXR0b24ub25NZW51VG9nZ2xlZC5zdWJzY3JpYmUoKCkgPT4ge1xuICAgICAgICAgICAgICAgIHRoaXMudG9nZ2xlTWVudSgpO1xuICAgICAgICAgICAgfSk7XG4gICAgICAgIH1cblxuICAgICAgICB0aGlzLnN0YXRlLmRyb3Bkb3duU3RhdGUub25JdGVtU2VsZWN0ZWQuc3Vic2NyaWJlKGl0ZW0gPT4ge1xuICAgICAgICAgICAgdGhpcy5vbkl0ZW1TZWxlY3RlZC5lbWl0KGl0ZW0pO1xuICAgICAgICB9KTtcblxuICAgICAgICB0aGlzLnN0YXRlLmRyb3Bkb3duU3RhdGUub25JdGVtRGVzdHJveWVkLnN1YnNjcmliZSgoaXRlbTogTmcyTWVudUl0ZW0pID0+IHtcbiAgICAgICAgICAgIGxldCBuZXdTZWxlY3RlZEl0ZW06IE5nMk1lbnVJdGVtIHwgdW5kZWZpbmVkO1xuICAgICAgICAgICAgY29uc3QgaXRlbXMgPSB0aGlzLm1lbnUuaXRlbXMudG9BcnJheSgpO1xuXG4gICAgICAgICAgICBpZiAoaXRlbSAhPT0gdGhpcy5zdGF0ZS5kcm9wZG93blN0YXRlLnNlbGVjdGVkSXRlbSkge1xuICAgICAgICAgICAgICAgIHJldHVybjtcbiAgICAgICAgICAgIH1cblxuICAgICAgICAgICAgaWYgKHRoaXMubWVudS5mb2N1c0ZpcnN0RWxlbWVudCkge1xuICAgICAgICAgICAgICAgIG5ld1NlbGVjdGVkSXRlbSA9IGl0ZW0gPT09IGl0ZW1zWzBdICYmIGl0ZW1zLmxlbmd0aCA+IDEgPyBpdGVtc1sxXSA6IGl0ZW1zWzBdO1xuICAgICAgICAgICAgfVxuXG4gICAgICAgICAgICB0aGlzLnN0YXRlLmRyb3Bkb3duU3RhdGUuc2VsZWN0KG5ld1NlbGVjdGVkSXRlbSk7XG4gICAgICAgIH0pO1xuICAgIH1cblxuICAgIC8qKlxuICAgICAqIEBuYW1lIHRvZ2dsZU1lbnVcbiAgICAgKiBAZGVzYyB0b2dnbGVzIG1lbnUgdmlzaWJpbGl0eVxuICAgICAqL1xuICAgIHB1YmxpYyB0b2dnbGVNZW51KHBvc2l0aW9uID0gdGhpcy5idXR0b24uZ2V0UG9zaXRpb24oKSk6IHZvaWQge1xuICAgICAgICB0aGlzLnN0YXRlLm1lbnVTdGF0ZS5pc1Zpc2libGUgPyB0aGlzLmhpZGUoKSA6IHRoaXMuc2hvdyhwb3NpdGlvbik7XG4gICAgfVxuXG4gICAgLyoqXG4gICAgICogLSBoaWRlcyBkcm9wZG93blxuICAgICAqIEBuYW1lIGhpZGVcbiAgICAgKi9cbiAgICBwdWJsaWMgaGlkZSgpOiB2b2lkIHtcbiAgICAgICAgdGhpcy5tZW51LmhpZGUoKTtcbiAgICAgICAgdGhpcy5vbkhpZGUuZW1pdCh0aGlzKTtcbiAgICB9XG5cbiAgICAvKipcbiAgICAgKiAtIHNob3dzIGRyb3Bkb3duXG4gICAgICogQG5hbWUgc2hvd1xuICAgICAqIEBwYXJhbSBwb3NpdGlvblxuICAgICAqL1xuICAgIHB1YmxpYyBzaG93KHBvc2l0aW9uID0gdGhpcy5idXR0b24uZ2V0UG9zaXRpb24oKSk6IHZvaWQge1xuICAgICAgICB0aGlzLm1lbnUuc2hvdyhwb3NpdGlvbiwgdGhpcy5keW5hbWljVXBkYXRlKTtcbiAgICAgICAgdGhpcy5vblNob3cuZW1pdCh0aGlzKTtcbiAgICB9XG5cbiAgICAvKipcbiAgICAgKiBAbmFtZSBzY3JvbGxMaXN0ZW5lclxuICAgICAqL1xuICAgIEBIb3N0TGlzdGVuZXIoJ3dpbmRvdzpzY3JvbGwnKVxuICAgIHB1YmxpYyBzY3JvbGxMaXN0ZW5lcigpIHtcbiAgICAgICAgaWYgKHRoaXMuYnV0dG9uICYmIHRoaXMuZHluYW1pY1VwZGF0ZSkge1xuICAgICAgICAgICAgdGhpcy5tZW51LnVwZGF0ZVBvc2l0aW9uKHRoaXMuYnV0dG9uLmdldFBvc2l0aW9uKCksIHRydWUpO1xuICAgICAgICB9XG4gICAgfVxufVxuIiwiaW1wb3J0IHsgTmcyRHJvcGRvd24gfSBmcm9tICcuL2NvbXBvbmVudHMvZHJvcGRvd24vbmcyLWRyb3Bkb3duJztcbmltcG9ydCB7IE5nMkRyb3Bkb3duTWVudSB9IGZyb20gJy4vY29tcG9uZW50cy9tZW51L25nMi1kcm9wZG93bi1tZW51JztcbmltcG9ydCB7IE5nMkRyb3Bkb3duQnV0dG9uIH0gZnJvbSAnLi9jb21wb25lbnRzL2J1dHRvbi9uZzItZHJvcGRvd24tYnV0dG9uJztcbmltcG9ydCB7IE5nMk1lbnVJdGVtIH0gZnJvbSAnLi9jb21wb25lbnRzL21lbnUtaXRlbS9uZzItbWVudS1pdGVtJztcblxuaW1wb3J0IHsgTmdNb2R1bGUgfSBmcm9tICdAYW5ndWxhci9jb3JlJztcbmltcG9ydCB7IENvbW1vbk1vZHVsZSB9IGZyb20gJ0Bhbmd1bGFyL2NvbW1vbic7XG5pbXBvcnQgeyBEcm9wZG93blN0YXRlU2VydmljZSB9IGZyb20gJy4vc2VydmljZXMvZHJvcGRvd24tc3RhdGUuc2VydmljZSc7XG5cbkBOZ01vZHVsZSh7XG4gICAgZXhwb3J0czogW1xuICAgICAgICBOZzJNZW51SXRlbSxcbiAgICAgICAgTmcyRHJvcGRvd25CdXR0b24sXG4gICAgICAgIE5nMkRyb3Bkb3duTWVudSxcbiAgICAgICAgTmcyRHJvcGRvd25cbiAgICBdLFxuICAgIGRlY2xhcmF0aW9uczogW1xuICAgICAgICBOZzJEcm9wZG93bixcbiAgICAgICAgTmcyTWVudUl0ZW0sXG4gICAgICAgIE5nMkRyb3Bkb3duQnV0dG9uLFxuICAgICAgICBOZzJEcm9wZG93bk1lbnUsXG4gICAgXSxcbiAgICBpbXBvcnRzOiBbXG4gICAgICAgIENvbW1vbk1vZHVsZVxuICAgIF1cbn0pXG5leHBvcnQgY2xhc3MgTmcyRHJvcGRvd25Nb2R1bGUge31cblxuZXhwb3J0IHtcbiAgICBOZzJEcm9wZG93bixcbiAgICBOZzJEcm9wZG93bk1lbnUsXG4gICAgTmcyTWVudUl0ZW0sXG4gICAgTmcyRHJvcGRvd25CdXR0b24sXG4gICAgRHJvcGRvd25TdGF0ZVNlcnZpY2Vcbn1cbiJdfQ==
+\ No newline at end of file
+diff --git a/node_modules/ng2-material-dropdown/fesm2015/ng2-material-dropdown.mjs b/node_modules/ng2-material-dropdown/fesm2015/ng2-material-dropdown.mjs
+deleted file mode 100644
+index 93731bb..0000000
+--- a/node_modules/ng2-material-dropdown/fesm2015/ng2-material-dropdown.mjs
++++ /dev/null
+@@ -1,677 +0,0 @@
+-import * as i0 from '@angular/core';
+-import { EventEmitter, Component, Output, Input, Injectable, ContentChildren, ContentChild, HostListener, NgModule } from '@angular/core';
+-import * as i1 from '@angular/common';
+-import { CommonModule } from '@angular/common';
+-import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
+-
+-class Ng2DropdownButton {
+-    constructor(element) {
+-        this.element = element;
+-        this.onMenuToggled = new EventEmitter();
+-        this.showCaret = true;
+-    }
+-    /**
+-     * @name toggleMenu
+-     * @desc emits event to toggle menu
+-     */
+-    toggleMenu() {
+-        this.onMenuToggled.emit(true);
+-    }
+-    /**
+-     * @name getPosition
+-     * @desc returns position of the button
+-     */
+-    getPosition() {
+-        return this.element.nativeElement.getBoundingClientRect();
+-    }
+-}
+-Ng2DropdownButton.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "13.0.3", ngImport: i0, type: Ng2DropdownButton, deps: [{ token: i0.ElementRef }], target: i0.ɵɵFactoryTarget.Component });
+-Ng2DropdownButton.ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "12.0.0", version: "13.0.3", type: Ng2DropdownButton, selector: "ng2-dropdown-button", inputs: { showCaret: "showCaret" }, outputs: { onMenuToggled: "onMenuToggled" }, ngImport: i0, template: "<button class='ng2-dropdown-button' type=\"button\" (click)=\"toggleMenu()\" tabindex=\"0s\">\n    <span class=\"ng2-dropdown-button__label\">\n        <ng-content></ng-content>\n    </span>\n\n    <span class=\"ng2-dropdown-button__caret\" *ngIf=\"showCaret\">\n        <svg enable-background=\"new 0 0 32 32\" height=\"16px\" id=\"\u0421\u043B\u043E\u0439_1\" version=\"1.1\" viewBox=\"0 0 32 32\" width=\"16px\" xml:space=\"preserve\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"><path d=\"M24.285,11.284L16,19.571l-8.285-8.288c-0.395-0.395-1.034-0.395-1.429,0  c-0.394,0.395-0.394,1.035,0,1.43l8.999,9.002l0,0l0,0c0.394,0.395,1.034,0.395,1.428,0l8.999-9.002  c0.394-0.395,0.394-1.036,0-1.431C25.319,10.889,24.679,10.889,24.285,11.284z\" fill=\"#121313\" id=\"Expand_More\"/><g/><g/><g/><g/><g/><g/></svg>\n    </span>\n</button>\n", styles: [".ng2-dropdown-button{font-family:Roboto,Helvetica Neue,Helvetica,Arial;background:#fff;padding:.45rem .25rem;font-size:14px;letter-spacing:.08rem;color:#444;outline:0;cursor:pointer;font-weight:400;border:none;border-bottom:1px solid #efefef;text-align:left;min-width:100px;width:100%;display:flex;flex-direction:row;max-width:150px}.ng2-dropdown-button:hover{color:#222}.ng2-dropdown-button:active,.ng2-dropdown-button:focus{color:#222;border-bottom:2px solid #2196F3}.ng2-dropdown-button__label{flex:1 1 95%}.ng2-dropdown-button__caret{width:12px;height:12px;display:flex;flex:1 1 6%}:host-context(.ng2-dropdown-button--icon) .ng2-dropdown-button{border:none;min-width:40px;width:40px;border-radius:100%;transition:all .2s;text-align:center;height:40px;padding:.5em}:host-context(.ng2-dropdown-button--icon) .ng2-dropdown-button:active{background:rgba(0,0,0,.2)}\n"], directives: [{ type: i1.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }] });
+-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.3", ngImport: i0, type: Ng2DropdownButton, decorators: [{
+-            type: Component,
+-            args: [{ selector: 'ng2-dropdown-button', template: "<button class='ng2-dropdown-button' type=\"button\" (click)=\"toggleMenu()\" tabindex=\"0s\">\n    <span class=\"ng2-dropdown-button__label\">\n        <ng-content></ng-content>\n    </span>\n\n    <span class=\"ng2-dropdown-button__caret\" *ngIf=\"showCaret\">\n        <svg enable-background=\"new 0 0 32 32\" height=\"16px\" id=\"\u0421\u043B\u043E\u0439_1\" version=\"1.1\" viewBox=\"0 0 32 32\" width=\"16px\" xml:space=\"preserve\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"><path d=\"M24.285,11.284L16,19.571l-8.285-8.288c-0.395-0.395-1.034-0.395-1.429,0  c-0.394,0.395-0.394,1.035,0,1.43l8.999,9.002l0,0l0,0c0.394,0.395,1.034,0.395,1.428,0l8.999-9.002  c0.394-0.395,0.394-1.036,0-1.431C25.319,10.889,24.679,10.889,24.285,11.284z\" fill=\"#121313\" id=\"Expand_More\"/><g/><g/><g/><g/><g/><g/></svg>\n    </span>\n</button>\n", styles: [".ng2-dropdown-button{font-family:Roboto,Helvetica Neue,Helvetica,Arial;background:#fff;padding:.45rem .25rem;font-size:14px;letter-spacing:.08rem;color:#444;outline:0;cursor:pointer;font-weight:400;border:none;border-bottom:1px solid #efefef;text-align:left;min-width:100px;width:100%;display:flex;flex-direction:row;max-width:150px}.ng2-dropdown-button:hover{color:#222}.ng2-dropdown-button:active,.ng2-dropdown-button:focus{color:#222;border-bottom:2px solid #2196F3}.ng2-dropdown-button__label{flex:1 1 95%}.ng2-dropdown-button__caret{width:12px;height:12px;display:flex;flex:1 1 6%}:host-context(.ng2-dropdown-button--icon) .ng2-dropdown-button{border:none;min-width:40px;width:40px;border-radius:100%;transition:all .2s;text-align:center;height:40px;padding:.5em}:host-context(.ng2-dropdown-button--icon) .ng2-dropdown-button:active{background:rgba(0,0,0,.2)}\n"] }]
+-        }], ctorParameters: function () { return [{ type: i0.ElementRef }]; }, propDecorators: { onMenuToggled: [{
+-                type: Output
+-            }], showCaret: [{
+-                type: Input
+-            }] } });
+-
+-const KEYS = {
+-    BACKSPACE: 9,
+-    PREV: 38,
+-    NEXT: 40,
+-    ENTER: 13,
+-    ESCAPE: 27
+-};
+-/**
+- * @name onSwitchNext
+- * @param index
+- * @param items
+- * @param state
+- */
+-const onSwitchNext = (index, items, state) => {
+-    if (index < items.length - 1) {
+-        state.select(items[index + 1], true);
+-    }
+-};
+-/**
+- * @name onSwitchPrev
+- * @param index
+- * @param items
+- * @param state
+- */
+-const onSwitchPrev = (index, items, state) => {
+-    if (index > 0) {
+-        state.select(items[index - 1], true);
+-    }
+-};
+-/**
+- * @name onBackspace
+- * @param index
+- * @param items
+- * @param state
+- */
+-const onBackspace = (index, items, state) => {
+-    if (index < items.length - 1) {
+-        state.select(items[index + 1], true);
+-    }
+-    else {
+-        state.select(items[0], true);
+-    }
+-};
+-function onEscape() {
+-    this.hide();
+-}
+-;
+-/**
+- * @name onItemClicked
+- * @param index
+- * @param items
+- * @param state
+- */
+-const onItemClicked = (index, items, state) => {
+-    return state.selectedItem ? state.selectedItem.click() : undefined;
+-};
+-const ACTIONS = {
+-    [KEYS.BACKSPACE]: onBackspace,
+-    [KEYS.PREV]: onSwitchPrev,
+-    [KEYS.NEXT]: onSwitchNext,
+-    [KEYS.ENTER]: onItemClicked,
+-    [KEYS.ESCAPE]: onEscape
+-};
+-function arrowKeysHandler(event) {
+-    if ([38, 40].indexOf(event.keyCode) > -1) {
+-        event.preventDefault();
+-    }
+-}
+-
+-class Ng2DropdownState {
+-    constructor() {
+-        this.onItemSelected = new EventEmitter();
+-        this.onItemClicked = new EventEmitter();
+-        this.onItemDestroyed = new EventEmitter();
+-    }
+-    /**
+-     * @name selectedItem
+-     * @desc getter for _selectedItem
+-     */
+-    get selectedItem() {
+-        return this._selectedItem;
+-    }
+-    /**
+-     * @name selects a menu item and emits event
+-     * @param item
+-     */
+-    select(item, dispatchEvent = true) {
+-        this._selectedItem = item;
+-        if (!dispatchEvent || !item) {
+-            return;
+-        }
+-        item.focus();
+-        this.onItemSelected.emit(item);
+-    }
+-    /**
+-     * @name unselect
+-     * @desc sets _selectedItem as undefined
+-     */
+-    unselect() {
+-        this._selectedItem = undefined;
+-    }
+-}
+-
+-class DropdownStateService {
+-    constructor() {
+-        this.menuState = {
+-            isVisible: false,
+-            toString() {
+-                return this.isVisible === true ? 'visible' : 'hidden';
+-            }
+-        };
+-        this.dropdownState = new Ng2DropdownState();
+-    }
+-}
+-DropdownStateService.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "13.0.3", ngImport: i0, type: DropdownStateService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+-DropdownStateService.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "13.0.3", ngImport: i0, type: DropdownStateService });
+-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.3", ngImport: i0, type: DropdownStateService, decorators: [{
+-            type: Injectable
+-        }] });
+-
+-class Ng2MenuItem {
+-    constructor(state, element) {
+-        this.state = state;
+-        this.element = element;
+-        /**
+-         * @preventClose
+-         * @desc if true, clicking on the item won't close the dropdown
+-         */
+-        this.preventClose = false;
+-    }
+-    ngOnDestroy() {
+-        this.state.dropdownState.onItemDestroyed.emit(this);
+-    }
+-    /**
+-     * @name isSelected
+-     * @desc returns current selected item
+-     */
+-    get isSelected() {
+-        return this === this.state.dropdownState.selectedItem;
+-    }
+-    /**
+-     * @name click
+-     * @desc emits select event
+-     */
+-    select($event) {
+-        this.state.dropdownState.select(this, true);
+-        if ($event) {
+-            $event.stopPropagation();
+-            $event.preventDefault();
+-        }
+-    }
+-    /**
+-     * @name click
+-     * @desc emits click event
+-     */
+-    click() {
+-        this.state.dropdownState.onItemClicked.emit(this);
+-    }
+-    /**
+-     * @name focus
+-     */
+-    focus() {
+-        this.element.nativeElement.children[0].focus();
+-    }
+-}
+-Ng2MenuItem.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "13.0.3", ngImport: i0, type: Ng2MenuItem, deps: [{ token: DropdownStateService }, { token: i0.ElementRef }], target: i0.ɵɵFactoryTarget.Component });
+-Ng2MenuItem.ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "12.0.0", version: "13.0.3", type: Ng2MenuItem, selector: "ng2-menu-item", inputs: { preventClose: "preventClose", value: "value" }, ngImport: i0, template: `
+-        <div
+-            class="ng2-menu-item"
+-            role="button"
+-            tabindex="0"
+-            [class.ng2-menu-item--selected]="isSelected"
+-            (keydown.enter)="click()"
+-            (click)="click()"
+-            (mouseover)="select()"
+-        >
+-            <ng-content></ng-content>
+-        </div>
+-    `, isInline: true, styles: [".ng2-menu-item{font-family:Roboto,Helvetica Neue,Helvetica,Arial;background:#fff;color:#000000de;cursor:pointer;font-size:.9em;text-transform:none;font-weight:400;letter-spacing:.03em;height:48px;line-height:48px;padding:.3em 1.25rem;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;transition:background .25s}.ng2-menu-item--selected{background:rgba(158,158,158,.2);outline:0}.ng2-menu-item:focus{outline:0}.ng2-menu-item:active{background:rgba(158,158,158,.4)}:host(ng2-menu-item) ::ng-deep [ng2-menu-item-icon]{vertical-align:middle;font-size:28px;width:1.5em;height:30px;color:#00000070}\n"] });
+-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.3", ngImport: i0, type: Ng2MenuItem, decorators: [{
+-            type: Component,
+-            args: [{ selector: 'ng2-menu-item', template: `
+-        <div
+-            class="ng2-menu-item"
+-            role="button"
+-            tabindex="0"
+-            [class.ng2-menu-item--selected]="isSelected"
+-            (keydown.enter)="click()"
+-            (click)="click()"
+-            (mouseover)="select()"
+-        >
+-            <ng-content></ng-content>
+-        </div>
+-    `, styles: [".ng2-menu-item{font-family:Roboto,Helvetica Neue,Helvetica,Arial;background:#fff;color:#000000de;cursor:pointer;font-size:.9em;text-transform:none;font-weight:400;letter-spacing:.03em;height:48px;line-height:48px;padding:.3em 1.25rem;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;transition:background .25s}.ng2-menu-item--selected{background:rgba(158,158,158,.2);outline:0}.ng2-menu-item:focus{outline:0}.ng2-menu-item:active{background:rgba(158,158,158,.4)}:host(ng2-menu-item) ::ng-deep [ng2-menu-item-icon]{vertical-align:middle;font-size:28px;width:1.5em;height:30px;color:#00000070}\n"] }]
+-        }], ctorParameters: function () { return [{ type: DropdownStateService }, { type: i0.ElementRef }]; }, propDecorators: { preventClose: [{
+-                type: Input
+-            }], value: [{
+-                type: Input
+-            }] } });
+-
+-class Ng2DropdownMenu {
+-    constructor(dropdownState, element, renderer) {
+-        this.dropdownState = dropdownState;
+-        this.element = element;
+-        this.renderer = renderer;
+-        /**
+-         * @name width
+-         */
+-        this.width = 4;
+-        /**
+-         * @description if set to true, the first element of the dropdown will be automatically focused
+-         * @name focusFirstElement
+-         */
+-        this.focusFirstElement = true;
+-        /**
+-         * @name appendToBody
+-         */
+-        this.appendToBody = true;
+-        /**
+-         * @name zIndex
+-         */
+-        this.zIndex = 1000;
+-        this.listeners = {
+-            arrowHandler: undefined,
+-            handleKeypress: undefined
+-        };
+-    }
+-    /**
+-     * @name show
+-     * @shows menu and selects first item
+-     */
+-    show(position, dynamic = true) {
+-        const dc = typeof document !== 'undefined' ? document : undefined;
+-        const wd = typeof window !== 'undefined' ? window : undefined;
+-        if (!this.dropdownState.menuState.isVisible) {
+-            // setting handlers
+-            this.listeners.handleKeypress = this.renderer.listen(dc.body, 'keydown', this.handleKeypress.bind(this));
+-            this.listeners.arrowHandler = this.renderer.listen(wd, 'keydown', arrowKeysHandler);
+-        }
+-        // update state
+-        this.dropdownState.menuState.isVisible = true;
+-        if (position) {
+-            this.updatePosition(position, dynamic);
+-        }
+-    }
+-    /**
+-     * @name hide
+-     * @desc hides menu
+-     */
+-    hide() {
+-        this.dropdownState.menuState.isVisible = false;
+-        // reset selected item state
+-        this.dropdownState.dropdownState.unselect();
+-        // call function to unlisten
+-        this.listeners.arrowHandler && this.listeners.arrowHandler();
+-        this.listeners.handleKeypress && this.listeners.handleKeypress();
+-    }
+-    /**
+-     * @name updatePosition
+-     * @desc updates the menu position every time it is toggled
+-     * @param position {ClientRect}
+-     * @param dynamic {boolean}
+-     */
+-    updatePosition(position, dynamic) {
+-        this.position = position;
+-        this.updateOnChange(dynamic);
+-    }
+-    /**
+-     * @name handleKeypress
+-     * @desc executes functions on keyPress based on the key pressed
+-     * @param $event
+-     */
+-    handleKeypress($event) {
+-        const key = $event.keyCode;
+-        const items = this.items.toArray();
+-        const index = items.indexOf(this.dropdownState.dropdownState.selectedItem);
+-        if (!ACTIONS.hasOwnProperty(key)) {
+-            return;
+-        }
+-        ACTIONS[key].call(this, index, items, this.dropdownState.dropdownState);
+-    }
+-    /**
+-     * @name getMenuElement
+-     */
+-    getMenuElement() {
+-        return this.element.nativeElement.children[0];
+-    }
+-    /**
+-     * @name calcPositionOffset
+-     * @param position
+-     */
+-    calcPositionOffset(position) {
+-        const wd = typeof window !== 'undefined' ? window : undefined;
+-        const dc = typeof document !== 'undefined' ? document : undefined;
+-        if (!wd || !dc || !position) {
+-            return;
+-        }
+-        const element = this.getMenuElement();
+-        const supportPageOffset = wd.pageXOffset !== undefined;
+-        const isCSS1Compat = (dc.compatMode || '') === 'CSS1Compat';
+-        const x = supportPageOffset
+-            ? wd.pageXOffset
+-            : isCSS1Compat
+-                ? dc.documentElement.scrollLeft
+-                : dc.body.scrollLeft;
+-        const y = supportPageOffset
+-            ? wd.pageYOffset
+-            : isCSS1Compat
+-                ? dc.documentElement.scrollTop
+-                : dc.body.scrollTop;
+-        let { top, left } = this.applyOffset(`${position.top + (this.appendToBody ? y - 15 : 0)}px`, `${position.left + x - 5}px`);
+-        const clientWidth = element.clientWidth;
+-        const clientHeight = element.clientHeight;
+-        const marginFromBottom = parseInt(top) + clientHeight + (this.appendToBody ? 0 : y - 15);
+-        const marginFromRight = parseInt(left) + clientWidth;
+-        const windowScrollHeight = wd.innerHeight + wd.scrollY;
+-        const windowScrollWidth = wd.innerWidth + wd.scrollX;
+-        if (marginFromBottom >= windowScrollHeight) {
+-            top = `${parseInt(top.replace('px', '')) - clientHeight}px`;
+-        }
+-        if (marginFromRight >= windowScrollWidth) {
+-            const marginRight = marginFromRight - windowScrollWidth + 30;
+-            left = `${parseInt(left.replace('px', '')) - marginRight}px`;
+-        }
+-        return { top, left };
+-    }
+-    applyOffset(top, left) {
+-        if (!this.offset) {
+-            return { top, left };
+-        }
+-        const offset = this.offset.split(' ');
+-        if (!offset[1]) {
+-            offset[1] = '0';
+-        }
+-        top = `${parseInt(top.replace('px', '')) + parseInt(offset[0])}px`;
+-        left = `${parseInt(left.replace('px', '')) + parseInt(offset[1])}px`;
+-        return { top, left };
+-    }
+-    ngOnInit() {
+-        const dc = typeof document !== 'undefined' ? document : undefined;
+-        if (this.appendToBody) {
+-            // append menu element to the body
+-            dc.body.appendChild(this.element.nativeElement);
+-        }
+-    }
+-    updateOnChange(dynamic = true) {
+-        const element = this.getMenuElement();
+-        const position = this.calcPositionOffset(this.position);
+-        if (position) {
+-            this.renderer.setStyle(element, 'top', position.top.toString());
+-            this.renderer.setStyle(element, 'left', position.left.toString());
+-        }
+-        // select first item unless user disabled this option
+-        if (this.focusFirstElement &&
+-            this.items.first &&
+-            !this.dropdownState.dropdownState.selectedItem) {
+-            this.dropdownState.dropdownState.select(this.items.first, false);
+-        }
+-    }
+-    ngOnDestroy() {
+-        const elem = this.element.nativeElement;
+-        elem.parentNode.removeChild(elem);
+-        if (this.listeners.handleKeypress) {
+-            this.listeners.handleKeypress();
+-        }
+-    }
+-}
+-Ng2DropdownMenu.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "13.0.3", ngImport: i0, type: Ng2DropdownMenu, deps: [{ token: DropdownStateService }, { token: i0.ElementRef }, { token: i0.Renderer2 }], target: i0.ɵɵFactoryTarget.Component });
+-Ng2DropdownMenu.ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "12.0.0", version: "13.0.3", type: Ng2DropdownMenu, selector: "ng2-dropdown-menu", inputs: { width: "width", focusFirstElement: "focusFirstElement", offset: "offset", appendToBody: "appendToBody", zIndex: "zIndex" }, queries: [{ propertyName: "items", predicate: Ng2MenuItem, descendants: true }], ngImport: i0, template: `
+-        <!-- MENU -->
+-        <div
+-            class="ng2-dropdown-menu ng2-dropdown-menu---width--{{ width }}"
+-            [class.ng2-dropdown-menu--inside-element]="!appendToBody"
+-            [class.ng2-dropdown-menu--open]="dropdownState.menuState.isVisible"
+-            [style.z-index]="zIndex"
+-            [@fade]="dropdownState.menuState.toString()"
+-        >
+-            <div
+-                class="ng2-dropdown-menu__options-container"
+-                [@opacity]="dropdownState.menuState.toString()"
+-            >
+-                <ng-content></ng-content>
+-            </div>
+-        </div>
+-
+-        <!-- BACKDROP -->
+-        <div
+-            class="ng2-dropdown-backdrop"
+-            *ngIf="dropdownState.menuState.isVisible"
+-            (click)="hide()"
+-        ></div>
+-    `, isInline: true, styles: [":host{display:block}.ng2-dropdown-menu{overflow-y:auto;box-shadow:0 1px 2px #0000004d;position:absolute;padding:.5em 0;background:#fff;border-radius:1px;max-height:400px;width:260px;min-height:0;display:block}.ng2-dropdown-menu.ng2-dropdown-menu--inside-element{position:fixed}.ng2-dropdown-menu.ng2-dropdown-menu--width--2{width:200px}.ng2-dropdown-menu.ng2-dropdown-menu--width--4{width:260px}.ng2-dropdown-menu.ng2-dropdown-menu--width--6{width:320px}.ng2-dropdown-backdrop{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;overflow:hidden}:host ::ng-deep .ng2-menu-divider{height:1px;min-height:1px;max-height:1px;width:100%;display:block;background:#f9f9f9}\n"], directives: [{ type: i1.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }], animations: [
+-        trigger('fade', [
+-            state('visible', style({ opacity: 1, height: '*', width: '*' })),
+-            state('hidden', style({ opacity: 0, overflow: 'hidden', height: 0, width: 0 })),
+-            transition('hidden => visible', [
+-                animate('250ms ease-in', style({ opacity: 1, height: '*', width: '*' }))
+-            ]),
+-            transition('visible => hidden', [
+-                animate('350ms ease-out', style({ opacity: 0, width: 0, height: 0 }))
+-            ])
+-        ]),
+-        trigger('opacity', [
+-            transition('hidden => visible', [
+-                animate('450ms ease-in', keyframes([
+-                    style({ opacity: 0, offset: 0 }),
+-                    style({ opacity: 1, offset: 1 })
+-                ]))
+-            ]),
+-            transition('visible => hidden', [
+-                animate('250ms ease-out', keyframes([
+-                    style({ opacity: 1, offset: 0 }),
+-                    style({ opacity: 0.5, offset: 0.3 }),
+-                    style({ opacity: 0, offset: 1 })
+-                ]))
+-            ])
+-        ])
+-    ] });
+-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.3", ngImport: i0, type: Ng2DropdownMenu, decorators: [{
+-            type: Component,
+-            args: [{ selector: 'ng2-dropdown-menu', template: `
+-        <!-- MENU -->
+-        <div
+-            class="ng2-dropdown-menu ng2-dropdown-menu---width--{{ width }}"
+-            [class.ng2-dropdown-menu--inside-element]="!appendToBody"
+-            [class.ng2-dropdown-menu--open]="dropdownState.menuState.isVisible"
+-            [style.z-index]="zIndex"
+-            [@fade]="dropdownState.menuState.toString()"
+-        >
+-            <div
+-                class="ng2-dropdown-menu__options-container"
+-                [@opacity]="dropdownState.menuState.toString()"
+-            >
+-                <ng-content></ng-content>
+-            </div>
+-        </div>
+-
+-        <!-- BACKDROP -->
+-        <div
+-            class="ng2-dropdown-backdrop"
+-            *ngIf="dropdownState.menuState.isVisible"
+-            (click)="hide()"
+-        ></div>
+-    `, animations: [
+-                        trigger('fade', [
+-                            state('visible', style({ opacity: 1, height: '*', width: '*' })),
+-                            state('hidden', style({ opacity: 0, overflow: 'hidden', height: 0, width: 0 })),
+-                            transition('hidden => visible', [
+-                                animate('250ms ease-in', style({ opacity: 1, height: '*', width: '*' }))
+-                            ]),
+-                            transition('visible => hidden', [
+-                                animate('350ms ease-out', style({ opacity: 0, width: 0, height: 0 }))
+-                            ])
+-                        ]),
+-                        trigger('opacity', [
+-                            transition('hidden => visible', [
+-                                animate('450ms ease-in', keyframes([
+-                                    style({ opacity: 0, offset: 0 }),
+-                                    style({ opacity: 1, offset: 1 })
+-                                ]))
+-                            ]),
+-                            transition('visible => hidden', [
+-                                animate('250ms ease-out', keyframes([
+-                                    style({ opacity: 1, offset: 0 }),
+-                                    style({ opacity: 0.5, offset: 0.3 }),
+-                                    style({ opacity: 0, offset: 1 })
+-                                ]))
+-                            ])
+-                        ])
+-                    ], styles: [":host{display:block}.ng2-dropdown-menu{overflow-y:auto;box-shadow:0 1px 2px #0000004d;position:absolute;padding:.5em 0;background:#fff;border-radius:1px;max-height:400px;width:260px;min-height:0;display:block}.ng2-dropdown-menu.ng2-dropdown-menu--inside-element{position:fixed}.ng2-dropdown-menu.ng2-dropdown-menu--width--2{width:200px}.ng2-dropdown-menu.ng2-dropdown-menu--width--4{width:260px}.ng2-dropdown-menu.ng2-dropdown-menu--width--6{width:320px}.ng2-dropdown-backdrop{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;overflow:hidden}:host ::ng-deep .ng2-menu-divider{height:1px;min-height:1px;max-height:1px;width:100%;display:block;background:#f9f9f9}\n"] }]
+-        }], ctorParameters: function () { return [{ type: DropdownStateService }, { type: i0.ElementRef }, { type: i0.Renderer2 }]; }, propDecorators: { width: [{
+-                type: Input
+-            }], focusFirstElement: [{
+-                type: Input
+-            }], offset: [{
+-                type: Input
+-            }], appendToBody: [{
+-                type: Input
+-            }], zIndex: [{
+-                type: Input
+-            }], items: [{
+-                type: ContentChildren,
+-                args: [Ng2MenuItem, { descendants: true }]
+-            }] } });
+-
+-class Ng2Dropdown {
+-    constructor(state) {
+-        this.state = state;
+-        this.dynamicUpdate = true;
+-        // outputs
+-        this.onItemClicked = new EventEmitter();
+-        this.onItemSelected = new EventEmitter();
+-        this.onShow = new EventEmitter();
+-        this.onHide = new EventEmitter();
+-    }
+-    ngOnInit() {
+-        this.state.dropdownState.onItemClicked.subscribe(item => {
+-            this.onItemClicked.emit(item);
+-            if (item.preventClose) {
+-                return;
+-            }
+-            this.hide.call(this);
+-        });
+-        if (this.button) {
+-            this.button.onMenuToggled.subscribe(() => {
+-                this.toggleMenu();
+-            });
+-        }
+-        this.state.dropdownState.onItemSelected.subscribe(item => {
+-            this.onItemSelected.emit(item);
+-        });
+-        this.state.dropdownState.onItemDestroyed.subscribe((item) => {
+-            let newSelectedItem;
+-            const items = this.menu.items.toArray();
+-            if (item !== this.state.dropdownState.selectedItem) {
+-                return;
+-            }
+-            if (this.menu.focusFirstElement) {
+-                newSelectedItem =
+-                    item === items[0] && items.length > 1
+-                        ? items[1]
+-                        : items[0];
+-            }
+-            this.state.dropdownState.select(newSelectedItem);
+-        });
+-    }
+-    /**
+-     * @name toggleMenu
+-     * @desc toggles menu visibility
+-     */
+-    toggleMenu(position = this.button.getPosition()) {
+-        this.state.menuState.isVisible ? this.hide() : this.show(position);
+-    }
+-    /**
+-     * - hides dropdown
+-     * @name hide
+-     */
+-    hide() {
+-        this.menu.hide();
+-        this.onHide.emit(this);
+-    }
+-    /**
+-     * - shows dropdown
+-     * @name show
+-     * @param position
+-     */
+-    show(position = this.button.getPosition()) {
+-        this.menu.show(position, this.dynamicUpdate);
+-        this.onShow.emit(this);
+-    }
+-    /**
+-     * @name scrollListener
+-     */
+-    scrollListener() {
+-        if (this.button && this.dynamicUpdate) {
+-            this.menu.updatePosition(this.button.getPosition(), true);
+-        }
+-    }
+-}
+-Ng2Dropdown.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "13.0.3", ngImport: i0, type: Ng2Dropdown, deps: [{ token: DropdownStateService }], target: i0.ɵɵFactoryTarget.Component });
+-Ng2Dropdown.ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "12.0.0", version: "13.0.3", type: Ng2Dropdown, selector: "ng2-dropdown", inputs: { dynamicUpdate: "dynamicUpdate" }, outputs: { onItemClicked: "onItemClicked", onItemSelected: "onItemSelected", onShow: "onShow", onHide: "onHide" }, host: { listeners: { "window:scroll": "scrollListener()" } }, providers: [DropdownStateService], queries: [{ propertyName: "button", first: true, predicate: Ng2DropdownButton, descendants: true, static: true }, { propertyName: "menu", first: true, predicate: Ng2DropdownMenu, descendants: true, static: true }], ngImport: i0, template: `
+-        <div class="ng2-dropdown-container">
+-            <ng-content select="ng2-dropdown-button"></ng-content>
+-            <ng-content select="ng2-dropdown-menu"></ng-content>
+-        </div>
+-    `, isInline: true });
+-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.3", ngImport: i0, type: Ng2Dropdown, decorators: [{
+-            type: Component,
+-            args: [{
+-                    selector: 'ng2-dropdown',
+-                    template: `
+-        <div class="ng2-dropdown-container">
+-            <ng-content select="ng2-dropdown-button"></ng-content>
+-            <ng-content select="ng2-dropdown-menu"></ng-content>
+-        </div>
+-    `,
+-                    providers: [DropdownStateService]
+-                }]
+-        }], ctorParameters: function () { return [{ type: DropdownStateService }]; }, propDecorators: { button: [{
+-                type: ContentChild,
+-                args: [Ng2DropdownButton, { static: true }]
+-            }], menu: [{
+-                type: ContentChild,
+-                args: [Ng2DropdownMenu, { static: true }]
+-            }], dynamicUpdate: [{
+-                type: Input
+-            }], onItemClicked: [{
+-                type: Output
+-            }], onItemSelected: [{
+-                type: Output
+-            }], onShow: [{
+-                type: Output
+-            }], onHide: [{
+-                type: Output
+-            }], scrollListener: [{
+-                type: HostListener,
+-                args: ['window:scroll']
+-            }] } });
+-
+-class Ng2DropdownModule {
+-}
+-Ng2DropdownModule.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "13.0.3", ngImport: i0, type: Ng2DropdownModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+-Ng2DropdownModule.ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "12.0.0", version: "13.0.3", ngImport: i0, type: Ng2DropdownModule, declarations: [Ng2Dropdown,
+-        Ng2MenuItem,
+-        Ng2DropdownButton,
+-        Ng2DropdownMenu], imports: [CommonModule], exports: [Ng2MenuItem,
+-        Ng2DropdownButton,
+-        Ng2DropdownMenu,
+-        Ng2Dropdown] });
+-Ng2DropdownModule.ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "13.0.3", ngImport: i0, type: Ng2DropdownModule, imports: [[
+-            CommonModule
+-        ]] });
+-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.3", ngImport: i0, type: Ng2DropdownModule, decorators: [{
+-            type: NgModule,
+-            args: [{
+-                    exports: [
+-                        Ng2MenuItem,
+-                        Ng2DropdownButton,
+-                        Ng2DropdownMenu,
+-                        Ng2Dropdown
+-                    ],
+-                    declarations: [
+-                        Ng2Dropdown,
+-                        Ng2MenuItem,
+-                        Ng2DropdownButton,
+-                        Ng2DropdownMenu,
+-                    ],
+-                    imports: [
+-                        CommonModule
+-                    ]
+-                }]
+-        }] });
+-
+-/**
+- * Generated bundle index. Do not edit.
+- */
+-
+-export { DropdownStateService, Ng2Dropdown, Ng2DropdownButton, Ng2DropdownMenu, Ng2DropdownModule, Ng2MenuItem };
+-//# sourceMappingURL=ng2-material-dropdown.mjs.map
+diff --git a/node_modules/ng2-material-dropdown/fesm2015/ng2-material-dropdown.mjs.map b/node_modules/ng2-material-dropdown/fesm2015/ng2-material-dropdown.mjs.map
+deleted file mode 100644
+index b6945c1..0000000
+--- a/node_modules/ng2-material-dropdown/fesm2015/ng2-material-dropdown.mjs.map
++++ /dev/null
+@@ -1 +0,0 @@
+-{"version":3,"file":"ng2-material-dropdown.mjs","sources":["../../src/modules/components/button/ng2-dropdown-button.ts","../../src/modules/components/button/template.html","../../src/modules/components/menu/actions.ts","../../src/modules/services/ng2-dropdown-state.ts","../../src/modules/services/dropdown-state.service.ts","../../src/modules/components/menu-item/ng2-menu-item.ts","../../src/modules/components/menu/ng2-dropdown-menu.ts","../../src/modules/components/dropdown/ng2-dropdown.ts","../../src/modules/ng2-dropdown.module.ts","../../ng2-material-dropdown.ts"],"sourcesContent":["import {\n    Component,\n    Output,\n    Input,\n    EventEmitter,\n    ElementRef\n} from '@angular/core';\n\n@Component({\n    selector: 'ng2-dropdown-button',\n    styleUrls: [ './style.scss' ],\n    templateUrl: './template.html'\n})\nexport class Ng2DropdownButton {\n    @Output() public onMenuToggled: EventEmitter<boolean> = new EventEmitter<boolean>();\n    @Input() public showCaret: boolean = true;\n\n    constructor(private element: ElementRef) {}\n\n    /**\n     * @name toggleMenu\n     * @desc emits event to toggle menu\n     */\n    public toggleMenu(): void {\n        this.onMenuToggled.emit(true);\n    }\n\n    /**\n     * @name getPosition\n     * @desc returns position of the button\n     */\n    public getPosition(): ClientRect {\n      return this.element.nativeElement.getBoundingClientRect();\n    }\n}\n","<button class='ng2-dropdown-button' type=\"button\" (click)=\"toggleMenu()\" tabindex=\"0s\">\n    <span class=\"ng2-dropdown-button__label\">\n        <ng-content></ng-content>\n    </span>\n\n    <span class=\"ng2-dropdown-button__caret\" *ngIf=\"showCaret\">\n        <svg enable-background=\"new 0 0 32 32\" height=\"16px\" id=\"Слой_1\" version=\"1.1\" viewBox=\"0 0 32 32\" width=\"16px\" xml:space=\"preserve\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"><path d=\"M24.285,11.284L16,19.571l-8.285-8.288c-0.395-0.395-1.034-0.395-1.429,0  c-0.394,0.395-0.394,1.035,0,1.43l8.999,9.002l0,0l0,0c0.394,0.395,1.034,0.395,1.428,0l8.999-9.002  c0.394-0.395,0.394-1.036,0-1.431C25.319,10.889,24.679,10.889,24.285,11.284z\" fill=\"#121313\" id=\"Expand_More\"/><g/><g/><g/><g/><g/><g/></svg>\n    </span>\n</button>\n","import { Ng2MenuItem } from '../menu-item/ng2-menu-item';\nimport { Ng2DropdownMenu } from './ng2-dropdown-menu';\nimport { Ng2DropdownState } from '../../services/ng2-dropdown-state';\n\nconst KEYS = {\n    BACKSPACE: 9,\n    PREV: 38,\n    NEXT: 40,\n    ENTER: 13,\n    ESCAPE: 27\n};\n\n/**\n * @name onSwitchNext\n * @param index\n * @param items\n * @param state\n */\nconst onSwitchNext = (index: number, items: Ng2MenuItem[], state: Ng2DropdownState) => {\n    if (index < items.length - 1) {\n        state.select(items[index + 1], true);\n    }\n};\n\n/**\n * @name onSwitchPrev\n * @param index\n * @param items\n * @param state\n */\nconst onSwitchPrev = (index: number, items: Ng2MenuItem[], state: Ng2DropdownState) => {\n    if (index > 0) {\n        state.select(items[index - 1], true);\n    }\n};\n\n/**\n * @name onBackspace\n * @param index\n * @param items\n * @param state\n */\nconst onBackspace = (index: number, items: Ng2MenuItem[], state: Ng2DropdownState) => {\n    if (index < items.length - 1) {\n        state.select(items[index + 1], true);\n    } else {\n        state.select(items[0], true);\n    }\n};\n\nfunction onEscape(this: Ng2DropdownMenu) {\n    this.hide();\n};\n\n/**\n * @name onItemClicked\n * @param index\n * @param items\n * @param state\n */\nconst onItemClicked = (index: number, items: Ng2MenuItem[], state: Ng2DropdownState) => {\n    return state.selectedItem ? state.selectedItem.click() : undefined;\n};\n\nexport const ACTIONS = {\n    [KEYS.BACKSPACE]: onBackspace,\n    [KEYS.PREV]: onSwitchPrev,\n    [KEYS.NEXT]: onSwitchNext,\n    [KEYS.ENTER]: onItemClicked,\n    [KEYS.ESCAPE]: onEscape\n};\n\nexport function arrowKeysHandler(event): void {\n    if ([38, 40].indexOf(event.keyCode) > -1) {\n        event.preventDefault();\n    }\n}\n","import { EventEmitter } from '@angular/core';\nimport { Ng2MenuItem } from '../components/menu-item/ng2-menu-item';\nexport class Ng2DropdownState {\n    public onItemSelected: EventEmitter<Ng2MenuItem> = new EventEmitter<\n        Ng2MenuItem\n    >();\n    public onItemClicked: EventEmitter<Ng2MenuItem> = new EventEmitter<\n        Ng2MenuItem\n    >();\n    public onItemDestroyed: EventEmitter<Ng2MenuItem> = new EventEmitter<\n        Ng2MenuItem\n    >();\n\n    private _selectedItem: Ng2MenuItem;\n\n    /**\n     * @name selectedItem\n     * @desc getter for _selectedItem\n     */\n    public get selectedItem(): Ng2MenuItem {\n        return this._selectedItem;\n    }\n\n    /**\n     * @name selects a menu item and emits event\n     * @param item\n     */\n    public select(item: Ng2MenuItem | undefined, dispatchEvent = true): void {\n        this._selectedItem = item;\n\n        if (!dispatchEvent || !item) {\n            return;\n        }\n\n        item.focus();\n\n        this.onItemSelected.emit(item);\n    }\n\n    /**\n     * @name unselect\n     * @desc sets _selectedItem as undefined\n     */\n    public unselect(): void {\n        this._selectedItem = undefined;\n    }\n}\n","import { Injectable } from '@angular/core';\nimport { Ng2DropdownState } from './ng2-dropdown-state';\n\n@Injectable()\nexport class DropdownStateService {\n    public menuState = {\n        isVisible: false,\n        toString(): string {\n            return this.isVisible === true ? 'visible' : 'hidden';\n        }\n    };\n\n    public dropdownState = new Ng2DropdownState();\n}\n","import { Component, Input, ElementRef, OnDestroy } from '@angular/core';\nimport { DropdownStateService } from '../../services/dropdown-state.service';\n\n@Component({\n    selector: 'ng2-menu-item',\n    styleUrls: ['./style.scss'],\n    template: `\n        <div\n            class=\"ng2-menu-item\"\n            role=\"button\"\n            tabindex=\"0\"\n            [class.ng2-menu-item--selected]=\"isSelected\"\n            (keydown.enter)=\"click()\"\n            (click)=\"click()\"\n            (mouseover)=\"select()\"\n        >\n            <ng-content></ng-content>\n        </div>\n    `\n})\nexport class Ng2MenuItem implements OnDestroy {\n    /**\n     * @preventClose\n     * @desc if true, clicking on the item won't close the dropdown\n     */\n    @Input() public preventClose = false;\n\n    /**\n     * @name value\n     * @desc any value associated to the item\n     */\n    @Input() public value: any;\n\n    constructor(\n        private state: DropdownStateService,\n        private element: ElementRef\n    ) {}\n\n    public ngOnDestroy(): void {\n        this.state.dropdownState.onItemDestroyed.emit(this);\n    }\n\n    /**\n     * @name isSelected\n     * @desc returns current selected item\n     */\n    public get isSelected(): boolean {\n        return this === this.state.dropdownState.selectedItem;\n    }\n\n    /**\n     * @name click\n     * @desc emits select event\n     */\n    public select($event?): void {\n        this.state.dropdownState.select(this, true);\n\n        if ($event) {\n            $event.stopPropagation();\n            $event.preventDefault();\n        }\n    }\n\n    /**\n     * @name click\n     * @desc emits click event\n     */\n    public click(): void {\n        this.state.dropdownState.onItemClicked.emit(this);\n    }\n\n    /**\n     * @name focus\n     */\n    public focus() {\n        this.element.nativeElement.children[0].focus();\n    }\n}\n","import {\n    Component,\n    ElementRef,\n    Renderer2,\n    ContentChildren,\n    QueryList,\n    Input\n} from '@angular/core';\n\nimport {\n    trigger,\n    style,\n    transition,\n    animate,\n    keyframes,\n    state\n} from '@angular/animations';\n\nimport { ACTIONS, arrowKeysHandler } from './actions';\n\nimport { Ng2MenuItem } from '../menu-item/ng2-menu-item';\nimport { DropdownStateService } from '../../services/dropdown-state.service';\n\n@Component({\n    selector: 'ng2-dropdown-menu',\n    styleUrls: ['./style.scss'],\n    template: `\n        <!-- MENU -->\n        <div\n            class=\"ng2-dropdown-menu ng2-dropdown-menu---width--{{ width }}\"\n            [class.ng2-dropdown-menu--inside-element]=\"!appendToBody\"\n            [class.ng2-dropdown-menu--open]=\"dropdownState.menuState.isVisible\"\n            [style.z-index]=\"zIndex\"\n            [@fade]=\"dropdownState.menuState.toString()\"\n        >\n            <div\n                class=\"ng2-dropdown-menu__options-container\"\n                [@opacity]=\"dropdownState.menuState.toString()\"\n            >\n                <ng-content></ng-content>\n            </div>\n        </div>\n\n        <!-- BACKDROP -->\n        <div\n            class=\"ng2-dropdown-backdrop\"\n            *ngIf=\"dropdownState.menuState.isVisible\"\n            (click)=\"hide()\"\n        ></div>\n    `,\n    animations: [\n        trigger('fade', [\n            state('visible', style({ opacity: 1, height: '*', width: '*' })),\n            state(\n                'hidden',\n                style({ opacity: 0, overflow: 'hidden', height: 0, width: 0 })\n            ),\n            transition('hidden => visible', [\n                animate(\n                    '250ms ease-in',\n                    style({ opacity: 1, height: '*', width: '*' })\n                )\n            ]),\n            transition('visible => hidden', [\n                animate(\n                    '350ms ease-out',\n                    style({ opacity: 0, width: 0, height: 0 })\n                )\n            ])\n        ]),\n        trigger('opacity', [\n            transition('hidden => visible', [\n                animate(\n                    '450ms ease-in',\n                    keyframes([\n                        style({ opacity: 0, offset: 0 }),\n                        style({ opacity: 1, offset: 1 })\n                    ])\n                )\n            ]),\n            transition('visible => hidden', [\n                animate(\n                    '250ms ease-out',\n                    keyframes([\n                        style({ opacity: 1, offset: 0 }),\n                        style({ opacity: 0.5, offset: 0.3 }),\n                        style({ opacity: 0, offset: 1 })\n                    ])\n                )\n            ])\n        ])\n    ]\n})\nexport class Ng2DropdownMenu {\n    /**\n     * @name width\n     */\n    @Input() public width = 4;\n\n    /**\n     * @description if set to true, the first element of the dropdown will be automatically focused\n     * @name focusFirstElement\n     */\n    @Input() public focusFirstElement = true;\n\n    /**\n     * @description sets dropdown offset from the button\n     * @name offset {string} follow format '<number> <number>' ex. '0 20'\n     */\n    @Input() public offset: string;\n\n    /**\n     * @name appendToBody\n     */\n    @Input() public appendToBody = true;\n\n    /**\n     * @name zIndex\n     */\n    @Input() public zIndex = 1000;\n\n    /**\n     * @name items\n     */\n    @ContentChildren(Ng2MenuItem, { descendants: true })\n    public items!: QueryList<Ng2MenuItem>;\n\n    private position: ClientRect;\n\n    private listeners = {\n        arrowHandler: undefined,\n        handleKeypress: undefined\n    };\n\n    constructor(\n        public dropdownState: DropdownStateService,\n        private element: ElementRef,\n        private renderer: Renderer2\n    ) {}\n\n    /**\n     * @name show\n     * @shows menu and selects first item\n     */\n    public show(position?: ClientRect, dynamic = true): void {\n        const dc = typeof document !== 'undefined' ? document : undefined;\n        const wd = typeof window !== 'undefined' ? window : undefined;\n\n        if (!this.dropdownState.menuState.isVisible) {\n            // setting handlers\n            this.listeners.handleKeypress = this.renderer.listen(\n                dc.body,\n                'keydown',\n                this.handleKeypress.bind(this)\n            );\n            this.listeners.arrowHandler = this.renderer.listen(\n                wd,\n                'keydown',\n                arrowKeysHandler\n            );\n        }\n\n        // update state\n        this.dropdownState.menuState.isVisible = true;\n\n        if (position) {\n            this.updatePosition(position, dynamic);\n        }\n    }\n\n    /**\n     * @name hide\n     * @desc hides menu\n     */\n    public hide(): void {\n        this.dropdownState.menuState.isVisible = false;\n\n        // reset selected item state\n        this.dropdownState.dropdownState.unselect();\n\n        // call function to unlisten\n        this.listeners.arrowHandler && this.listeners.arrowHandler();\n        this.listeners.handleKeypress && this.listeners.handleKeypress();\n    }\n\n    /**\n     * @name updatePosition\n     * @desc updates the menu position every time it is toggled\n     * @param position {ClientRect}\n     * @param dynamic {boolean}\n     */\n    public updatePosition(position: ClientRect, dynamic: boolean): void {\n        this.position = position;\n        this.updateOnChange(dynamic);\n    }\n\n    /**\n     * @name handleKeypress\n     * @desc executes functions on keyPress based on the key pressed\n     * @param $event\n     */\n    public handleKeypress($event): void {\n        const key = $event.keyCode;\n        const items = this.items.toArray();\n        const index = items.indexOf(\n            this.dropdownState.dropdownState.selectedItem\n        );\n\n        if (!ACTIONS.hasOwnProperty(key)) {\n            return;\n        }\n\n        ACTIONS[key].call(this, index, items, this.dropdownState.dropdownState);\n    }\n\n    /**\n     * @name getMenuElement\n     */\n    private getMenuElement(): Element {\n        return this.element.nativeElement.children[0];\n    }\n\n    /**\n     * @name calcPositionOffset\n     * @param position\n     */\n    private calcPositionOffset(position): { top: string; left: string } {\n        const wd = typeof window !== 'undefined' ? window : undefined;\n        const dc = typeof document !== 'undefined' ? document : undefined;\n\n        if (!wd || !dc || !position) {\n            return;\n        }\n\n        const element = this.getMenuElement();\n        const supportPageOffset = wd.pageXOffset !== undefined;\n        const isCSS1Compat = (dc.compatMode || '') === 'CSS1Compat';\n\n        const x = supportPageOffset\n            ? wd.pageXOffset\n            : isCSS1Compat\n            ? dc.documentElement.scrollLeft\n            : dc.body.scrollLeft;\n\n        const y = supportPageOffset\n            ? wd.pageYOffset\n            : isCSS1Compat\n            ? dc.documentElement.scrollTop\n            : dc.body.scrollTop;\n\n        let { top, left } = this.applyOffset(\n            `${position.top + (this.appendToBody ? y - 15 : 0)}px`,\n            `${position.left + x - 5}px`\n        );\n\n        const clientWidth = element.clientWidth;\n        const clientHeight = element.clientHeight;\n\n        const marginFromBottom =\n            parseInt(top) + clientHeight + (this.appendToBody ? 0 : y - 15);\n        const marginFromRight = parseInt(left) + clientWidth;\n\n        const windowScrollHeight = wd.innerHeight + wd.scrollY;\n        const windowScrollWidth = wd.innerWidth + wd.scrollX;\n\n        if (marginFromBottom >= windowScrollHeight) {\n            top = `${parseInt(top.replace('px', '')) - clientHeight}px`;\n        }\n\n        if (marginFromRight >= windowScrollWidth) {\n            const marginRight = marginFromRight - windowScrollWidth + 30;\n            left = `${parseInt(left.replace('px', '')) - marginRight}px`;\n        }\n\n        return { top, left };\n    }\n\n    private applyOffset(\n        top: string,\n        left: string\n    ): { top: string; left: string } {\n        if (!this.offset) {\n            return { top, left };\n        }\n\n        const offset = this.offset.split(' ');\n\n        if (!offset[1]) {\n            offset[1] = '0';\n        }\n\n        top = `${parseInt(top.replace('px', '')) + parseInt(offset[0])}px`;\n        left = `${parseInt(left.replace('px', '')) + parseInt(offset[1])}px`;\n\n        return { top, left };\n    }\n\n    public ngOnInit() {\n        const dc = typeof document !== 'undefined' ? document : undefined;\n        if (this.appendToBody) {\n            // append menu element to the body\n            dc.body.appendChild(this.element.nativeElement);\n        }\n    }\n\n    public updateOnChange(dynamic = true) {\n        const element = this.getMenuElement();\n        const position = this.calcPositionOffset(this.position);\n\n        if (position) {\n            this.renderer.setStyle(element, 'top', position.top.toString());\n            this.renderer.setStyle(element, 'left', position.left.toString());\n        }\n\n        // select first item unless user disabled this option\n        if (\n            this.focusFirstElement &&\n            this.items.first &&\n            !this.dropdownState.dropdownState.selectedItem\n        ) {\n            this.dropdownState.dropdownState.select(this.items.first, false);\n        }\n    }\n\n    public ngOnDestroy() {\n        const elem = this.element.nativeElement;\n        elem.parentNode.removeChild(elem);\n\n        if (this.listeners.handleKeypress) {\n            this.listeners.handleKeypress();\n        }\n    }\n}\n","import {\n    HostListener,\n    Component,\n    ContentChild,\n    Output,\n    EventEmitter,\n    Input\n} from '@angular/core';\n\nimport { Ng2DropdownButton } from '../button/ng2-dropdown-button';\nimport { Ng2DropdownMenu } from '../menu/ng2-dropdown-menu';\nimport { DropdownStateService } from '../../services/dropdown-state.service';\nimport { Ng2MenuItem } from '../menu-item/ng2-menu-item';\n\n@Component({\n    selector: 'ng2-dropdown',\n    template: `\n        <div class=\"ng2-dropdown-container\">\n            <ng-content select=\"ng2-dropdown-button\"></ng-content>\n            <ng-content select=\"ng2-dropdown-menu\"></ng-content>\n        </div>\n    `,\n    providers: [DropdownStateService]\n})\nexport class Ng2Dropdown {\n    // get children components\n    @ContentChild(Ng2DropdownButton, {static: true})\n    public button!: Ng2DropdownButton;\n    @ContentChild(Ng2DropdownMenu, {static: true})\n    public menu!: Ng2DropdownMenu;\n\n    @Input() public dynamicUpdate = true;\n\n    // outputs\n    @Output() public onItemClicked = new EventEmitter<Ng2MenuItem>();\n    @Output() public onItemSelected = new EventEmitter<Ng2MenuItem>();\n    @Output() public onShow = new EventEmitter<Ng2Dropdown>();\n    @Output() public onHide = new EventEmitter<Ng2Dropdown>();\n\n    constructor(private state: DropdownStateService) {\n    }\n\n    public ngOnInit() {\n        this.state.dropdownState.onItemClicked.subscribe(item => {\n            this.onItemClicked.emit(item);\n\n            if (item.preventClose) {\n                return;\n            }\n\n            this.hide.call(this);\n        });\n\n        if (this.button) {\n            this.button.onMenuToggled.subscribe(() => {\n                this.toggleMenu();\n            });\n        }\n\n        this.state.dropdownState.onItemSelected.subscribe(item => {\n            this.onItemSelected.emit(item);\n        });\n\n        this.state.dropdownState.onItemDestroyed.subscribe(\n            (item: Ng2MenuItem) => {\n                let newSelectedItem: Ng2MenuItem | undefined;\n                const items = this.menu.items.toArray();\n\n                if (item !== this.state.dropdownState.selectedItem) {\n                    return;\n                }\n\n                if (this.menu.focusFirstElement) {\n                    newSelectedItem =\n                        item === items[0] && items.length > 1\n                            ? items[1]\n                            : items[0];\n                }\n\n                this.state.dropdownState.select(newSelectedItem);\n            }\n        );\n    }\n\n    /**\n     * @name toggleMenu\n     * @desc toggles menu visibility\n     */\n    public toggleMenu(position = this.button.getPosition()): void {\n        this.state.menuState.isVisible ? this.hide() : this.show(position);\n    }\n\n    /**\n     * - hides dropdown\n     * @name hide\n     */\n    public hide(): void {\n        this.menu.hide();\n        this.onHide.emit(this);\n    }\n\n    /**\n     * - shows dropdown\n     * @name show\n     * @param position\n     */\n    public show(position = this.button.getPosition()): void {\n        this.menu.show(position, this.dynamicUpdate);\n        this.onShow.emit(this);\n    }\n\n    /**\n     * @name scrollListener\n     */\n    @HostListener('window:scroll')\n    public scrollListener() {\n        if (this.button && this.dynamicUpdate) {\n            this.menu.updatePosition(this.button.getPosition(), true);\n        }\n    }\n}\n","import { Ng2Dropdown } from './components/dropdown/ng2-dropdown';\nimport { Ng2DropdownMenu } from './components/menu/ng2-dropdown-menu';\nimport { Ng2DropdownButton } from './components/button/ng2-dropdown-button';\nimport { Ng2MenuItem } from './components/menu-item/ng2-menu-item';\n\nimport { NgModule } from '@angular/core';\nimport { CommonModule } from '@angular/common';\nimport { DropdownStateService } from './services/dropdown-state.service';\n\n@NgModule({\n    exports: [\n        Ng2MenuItem,\n        Ng2DropdownButton,\n        Ng2DropdownMenu,\n        Ng2Dropdown\n    ],\n    declarations: [\n        Ng2Dropdown,\n        Ng2MenuItem,\n        Ng2DropdownButton,\n        Ng2DropdownMenu,\n    ],\n    imports: [\n        CommonModule\n    ]\n})\nexport class Ng2DropdownModule {}\n\nexport {\n    Ng2Dropdown,\n    Ng2DropdownMenu,\n    Ng2MenuItem,\n    Ng2DropdownButton,\n    DropdownStateService\n}\n","/**\n * Generated bundle index. Do not edit.\n */\n\nexport * from './index';\n"],"names":[],"mappings":"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"}
+\ No newline at end of file

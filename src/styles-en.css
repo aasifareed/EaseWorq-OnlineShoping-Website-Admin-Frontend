@@ -1,0 +1,220 @@
+.esri-widget--button {
+    background-color: #fff !important;
+    color: #1e284b !important;
+}
+
+.esri-layer-list {
+    background: #fff !important;
+    border-radius: 10px;
+}
+
+.esri-layer-list__item {
+    /* background: linear-gradient(179deg, #42414e, #666669); */
+    background: #fff;
+    border-radius: 10px;
+}
+
+.esri-layer-list__item-toggle,
+.esri-layer-list__item-title {
+    color: #181820 !important;
+}
+
+.esri-time-slider__layout--wide .esri-time-slider__min,
+.esri-time-slider__layout--wide .esri-time-slider__max {
+    background: #fff;
+}
+
+
+/* .esri-widget__table{
+    background-color: white;
+} */
+
+
+.topBarContainer {
+    background: #fff;
+}
+
+.topBarContainer h6 {
+    color: #1e284b;
+}
+
+.topBarContainer h6 sup {
+    color: #ead551;
+}
+
+.topBarContainer .adminDiv h5 {
+    color: #1e284b;
+}
+
+.topBarContainer .adminDiv a {
+    color: #1e284b;
+}
+
+.topBarContainer .userDiv label {
+    color: #1e284b;
+}
+
+.topBarContainer .userDiv label i {
+    color: #fff;
+}
+
+.topBarContainer .userDiv .logout {
+    background: #f44336;
+    color: #fff;
+}
+
+.leftBoxesContainer .leftBox {
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 5px #c1c1c1;
+}
+
+.leftBoxesContainer .leftBox h6 {
+    color: #1e284b;
+}
+
+.bottomCardContainer {
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 5px #c1c1c1;
+}
+
+.box {
+    background: linear-gradient(179deg, #e0e0e0, #e6e6e6);
+}
+
+.box::after {
+    background: linear-gradient(45deg, #ab9300, #ffea6b);
+}
+
+.content i {
+    color: rgba(30, 40, 75, 1);
+}
+
+.content label {
+    color: rgba(30, 40, 75, 1);
+}
+
+.topCardContainer {
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.brandContainer {
+    background: rgba(199, 199, 199, 0.4);
+}
+
+.clientName {
+    color: #1e284b;
+}
+
+.ownerName {
+    color: #1e284b;
+}
+
+.disabledIcon {
+    color: #fff;
+}
+
+.submenu {
+    background: #132a3a;
+}
+
+.submenu li a {
+    color: #fff;
+}
+
+.submenu::after {
+    border-top: 10px solid #132a3a;
+}
+
+.submenu li:hover {
+    background: linear-gradient(45deg, #ab9300, #ffea6b);
+}
+
+#mydiv {
+    background-color: #f1f1f1;
+    border: 1px solid #d3d3d3;
+}
+
+#mydivheader {
+    background-color: #2196f3;
+    color: #fff;
+}
+
+.leftModal {
+    background: #fefcfb;
+    box-shadow: 0 0 5px #ccc;
+}
+
+.leftModal .closeModal {
+    color: #132a3a;
+}
+
+.leftModal .leftModalHeader {
+    border-bottom: solid 1px #7d7d7d;
+}
+
+.leftModal .leftModalHeader label {
+    color: #132a3a;
+}
+
+/* .leftModal .leftModalBody .leftModalItem {
+  border-right: solid 1px #7d7d7d;
+} */
+
+.leftModal .leftModalBody .leftModalItem h5 {
+    color: #132a3a;
+}
+
+.leftModal .leftModalBody .leftModalItem h6 {
+    color: #132a3a;
+}
+
+.toggle--switch .toggle--btn {
+    color: #fff;
+    background: linear-gradient(90deg,
+            #2196f3 0%,
+            #caecfb 50%,
+            #132a3a 50%,
+            #132a3a 200%);
+    box-shadow: inset 0 0px 22px -8px #111;
+}
+
+.toggle--switch .toggle--btn:before {
+    border: 2px solid #202027;
+    background-image: linear-gradient(90deg,
+            transparent 50%,
+            rgba(255, 255, 255, 0.15) 100%);
+    background-color: #2b2e3a;
+}
+
+.toggle--switch .toggle--feature {
+    text-shadow: 0 1px 2px #666;
+}
+
+.toggleSideMenu {
+    background: #fff;
+    color: #161e3c;
+}
+
+.toggleBottomMenu {
+    background: #fff;
+    color: #161e3c;
+
+}
+
+.weather h6 {
+    color: #1e284b;
+}
+
+
+.esri-time-slider__slider {
+    background-color: #fff !important;
+}
+
+
+.esri-time-slider__slider .esri-slider {
+    background-color: #fff !important;
+}
+
+.esri-slider__thumb {
+    border: 2px solid #1e284b !important;
+}

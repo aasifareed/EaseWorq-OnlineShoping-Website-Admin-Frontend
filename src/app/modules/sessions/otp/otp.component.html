@@ -1,0 +1,50 @@
+<div class="card o-hidden loginTransparent"
+[@animate]="{value:'*',params:{y:'120px',opacity:'0',delay:'100ms', duration: '400ms'}}">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="p-4">
+          <div class="auth-logo text-center mb-4">
+            <img src="{{globalDataService.getLogoPicture()}}" alt="">
+          </div>
+
+
+            <form (ngSubmit)="onSubmit()" [formGroup]="otpForm">
+            <h3>Enter your Verification Code </h3>
+            <div class="row">
+              <input #oTPCode  formControlName="oTPCode" class="form-control form-control-rounded" type="text">
+            </div>
+              <div class="row" style="margin-top: 4%;"> 
+              <b style="margin-right: 7%;margin-top: 3%;">Time Left</b>
+              <div style="height: 23px;width: 100px;margin-top: 3%;">
+                <countdown #cd [config]="config" (event)="handleEvent($event)" class="custom-style"></countdown>
+              </div>
+            </div>
+          
+            <div class="row"> 
+              <button type="submit" [disabled]="otpForm.invalid" class="btn btn-primary btn-block btn-rounded mt-4">Submit</button>
+              
+            </div>
+
+            </form>
+
+        </div>
+      </div>
+
+      <div class="col-md-6 text-center " style="background-size: cover;background-image: url(./assets/images/photo-long-3.jpg)">
+        <div class="pr-3 auth-right">
+          <!-- <button class="btn btn-outline-primary btn-outline-email btn-block btn-icon-text btn-rounded" routerLink="/sessions/signup">
+            <i class="i-Mail-with-At-Sign"></i>
+            Sign up 
+          </button> -->
+          <button style="margin-top: 20%;" class="btn btn-outline-primary btn-outline-google btn-block btn-icon-text btn-rounded" routerLink="/sessions/signin">
+            <i class="i-Mail-with-At-Sign"></i>
+            Sign in 
+          </button>
+          <h5 style="margin-top:79%;">Didn't get OTP?</h5>
+            <button  (click)="ResendOtp()" [disabled]="disableResendOTPButton" class="btn btn-primary btn-block btn-rounded mt-10">Resend OTP</button>
+
+        </div>
+
+      </div>
+    </div>
+  </div>

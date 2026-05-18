@@ -1,0 +1,11 @@
+
+
+<div class="customizer" [ngStyle]="{width:width+'px', right:right+'px', top:top+'px'}" [ngClass]="{ open: isOpen }">
+  <div *ngIf="showToggle" class="handle" (click)="showHideSidePanel()">
+    <i [ngClass]="!isOpen?'i-Post-Sign':'i-Arrow-Right-2'"></i>
+  </div>
+  <div class="customizer-body side-panel-body" [ngStyle]="{'height':height+'px'}">
+      <ng-content></ng-content>
+  </div>
+</div>
+

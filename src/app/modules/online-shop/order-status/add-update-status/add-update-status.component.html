@@ -1,0 +1,105 @@
+<!-- Modal Header -->
+<div class="modal-header">
+  <h4 class="modal-title">
+    <i class="i-Add mr-2" *ngIf="isAddScreen"></i>
+    <i class="i-Pen-2 mr-2" *ngIf="!isAddScreen"></i>
+    <span *ngIf="isAddScreen">{{'Add Status' | translate}}</span>
+    <span *ngIf="!isAddScreen">{{'Edit Status' | translate}}</span>
+  </h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<!-- Modal Body -->
+<div class="modal-body" [dir]="globalDataService.getdir()">
+  <form [formGroup]="requestForm" class="ticket-request-detail">
+    <div class="row">
+      <!-- StatusName -->
+      <div class="col-md-6 mt-2">
+        <label for="statusName">
+          {{ 'Status Name' | translate }}
+          <span class="text-danger">*</span>
+        </label>
+        <input id="statusName" type="text" class="form-control" formControlName="statusName"
+          placeholder="Enter Status Name" maxlength="30" autofocus autocomplete="off"
+          [ngClass]="{ 'is-invalid': f?.statusName?.invalid && (f?.statusName?.dirty || f?.statusName?.touched) }" />
+      </div>
+
+      <!-- DisplayName -->
+      <div class="col-md-6 mt-2">
+        <label for="displayName">
+          {{ 'Display Name' | translate }}
+          <span class="text-danger">*</span>
+        </label>
+        <input id="displayName" type="text" class="form-control" formControlName="displayName"
+          placeholder="Enter Display Name" maxlength="50" autocomplete="off"
+          [ngClass]="{ 'is-invalid': f?.displayName?.invalid && (f?.displayName?.dirty || f?.displayName?.touched) }" />
+      </div>
+
+      <!-- StatusCode (decimal?) -->
+      <div class="col-md-6 mt-2">
+        <label for="statusCode">
+          {{ 'Status Code' | translate }}
+          <span class="text-danger">*</span>
+        </label>
+        <input id="statusCode" type="text" class="form-control" formControlName="statusCode"
+          placeholder="Enter Status Code"
+          [ngClass]="{ 'is-invalid': f?.statusCode?.invalid && (f?.statusCode?.dirty || f?.statusCode?.touched) }" />
+      </div>
+
+      <!-- OrderNumber (double?) -->
+      <div class="col-md-6 mt-2">
+        <label for="orderNumber">
+          {{ 'Order Number' | translate }}
+          <span class="text-danger">*</span>
+        </label>
+        <input id="orderNumber" type="number" class="form-control" formControlName="orderNumber" min="0"
+          placeholder="Enter Order Number"
+          [ngClass]="{ 'is-invalid': f?.orderNumber?.invalid && (f?.orderNumber?.dirty || f?.orderNumber?.touched) }" />
+      </div>
+
+      <div class="col-12 mt-2">
+        <label for="childStatusIds"> {{ 'Child Statuses' | translate }} </label>
+
+        <ng-multiselect-dropdown [placeholder]="'Select a child Status' | translate" [settings]="dropdownSettings"
+          [data]="childStatuses" formControlName="childStatusIds" [className]="'childStatusIdsDropdown'">
+        </ng-multiselect-dropdown>
+      </div>
+
+
+
+
+
+      <!-- ColorCode -->
+      <div class="col-md-12 mt-2">
+        <label for="colorCode">
+          {{ 'Color Code' | translate }}
+        </label>
+        <input type="color" style="height: 50px !important;" class="form-control" formControlName="colorCode" />
+      </div>
+
+      <!-- Description Field -->
+      <div class="col-12 mt-2">
+        <label for="description">
+          {{ 'Description' | translate}}
+        </label>
+        <textarea id="description" class="form-control" formControlName="description" rows="3"></textarea>
+      </div>
+    </div>
+
+  </form>
+</div>
+
+<!-- Modal Footer -->
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="activeModal.dismiss()">
+    <i class="i-Close-Window mr-2"></i> Close
+  </button>
+  <button *ngIf="isAddScreen" type="button" class="btn btn-success" (click)="submit()">
+    <i class="i-Add mr-2"></i> {{'Submit' | translate}}
+  </button>
+  <button *ngIf="!isAddScreen" type="button" class="btn btn-success" (click)="update()">
+    <i class="i-Yes mr-2"></i> {{'Update' | translate}}
+  </button>
+</div>

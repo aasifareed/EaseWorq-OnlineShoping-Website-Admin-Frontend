@@ -1,0 +1,12 @@
+{
+  "apiBaseUrl": "https://pos-api-qa.shanfusiontech.com/api/services/app",
+  "baseUrl": "https://pos-api-qa.shanfusiontech.com/",
+  "assetUrl": "https://pos-api-qa.shanfusiontech.com/SmartOfficerAttachment",
+  "oauthHost": "//pos-api-qa.shanfusiontech.com",
+  "oauthProtocol": "https",
+  "oauthPort": "",
+  "oauthClientId": "",
+  "oauthSecret": "",
+  "oauthPath": "api/TokenAuth/Authenticate",
+  "production": true
+} 

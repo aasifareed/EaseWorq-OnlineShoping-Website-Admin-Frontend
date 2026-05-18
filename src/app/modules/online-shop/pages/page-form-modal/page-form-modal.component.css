@@ -1,0 +1,43 @@
+.page-form-modal .modal-header {
+  padding: 1.25rem 1.5rem 0;
+}
+
+.page-form-modal .modal-body {
+  padding: 0 1.5rem 1rem;
+}
+
+.page-form-modal .modal-footer {
+  padding: 0 1.5rem 1.25rem;
+}
+
+.page-content-field ::ng-deep .p-editor-container {
+  border-radius: 4px;
+}
+
+.page-content-field ::ng-deep .p-editor-toolbar {
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+.page-content-field ::ng-deep .p-editor-content {
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.page-content-field ::ng-deep .ql-editor {
+  min-height: 220px;
+}
+
+.status-toggle-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  color: #3c4043;
+  cursor: pointer;
+}
+
+.status-toggle-label input {
+  width: 1rem;
+  height: 1rem;
+}

@@ -1,0 +1,35 @@
+<div class="auth-layout-wrap">
+    <ul class="slideshow">
+        <li *ngFor="let image of globalDataService.images; let i = index" [ngStyle]="getStyle(image.url, i)"></li>
+        <!-- <li></li>
+        <li></li>
+        <li></li>
+        <li></li> -->
+    </ul>
+    <div class="overlay">
+
+        <div class="row">
+            <!-- <div class="col-md-7">
+                <div style="margin-top: 40%;margin-left: 3%;margin-right: 6%;">
+                 <app-keyboard
+                  (keyboardChange)="onKeyboardChangeForSignInForm($event)"
+                ></app-keyboard>
+                </div>
+    
+            </div> -->
+    
+            <!-- <div class="col-md-5" style="margin-left: -2%;margin-top: 2%;"> -->
+
+                    <div class="auth-content" style="margin-top: 2%;">
+                        <router-outlet></router-outlet>
+                    </div>
+
+            <!-- </div> -->
+    
+        </div>
+
+    </div> 
+    
+
+
+</div>

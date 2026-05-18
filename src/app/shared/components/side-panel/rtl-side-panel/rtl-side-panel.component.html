@@ -1,0 +1,10 @@
+<div class="customizer"  [ngClass]="{ open: isOpen }">
+        <div class="handle" (click)="isOpen = !isOpen">
+            <i [ngClass]="!isOpen?'i-Post-Sign':'i-Arrow-Right-2'"></i>
+        </div>
+        <div class="customizer-body side-panel-body ">
+            <ng-content></ng-content>
+        </div>
+    </div> 
+
+

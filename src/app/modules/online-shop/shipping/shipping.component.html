@@ -1,0 +1,214 @@
+<div [dir]="globalDataService.getdir()">
+  <div class="breadcrumb"></div>
+
+  <div class="row" style="margin-top: -3%; margin-right: -35px; margin-left: -35px;">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body" style="padding: 0%;">
+          <div class="tabs">
+            <ul class="tabs__links">
+              <li>
+                <button type="button" class="tabs__link active">
+                  <span class="tabs__link__text" data-text="0">
+                    <i class="fa fa-truck fontAwesome_Li_Class" style="color: black;"></i>
+                    <span style="margin-left: 3%;">{{ 'Shipping' | translate }}</span>
+                  </span>
+                </button>
+              </li>
+            </ul>
+
+            <ul class="tabs__contents">
+              <li>
+                <div class="tabs__content active">
+                  <div
+                    class="separator-breadcrumb border-top"
+                    style="margin-bottom: 0.5rem !important;"
+                  ></div>
+
+                  <div class="shipping-toolbar">
+                    <button type="button" class="btn btn-primary" (click)="openSelectCountryModal()">
+                      <i class="i-Add"></i>
+                      {{ 'Select Country' | translate }}
+                    </button>
+                  </div>
+
+                  <div class="shipping-workspace">
+                    <aside class="shipping-sidebar">
+                      <div class="shipping-sidebar__head">
+                        <span class="shipping-sidebar__label">{{ 'Countries' | translate }}</span>
+                        <span class="shipping-sidebar__count" *ngIf="!countriesLoading">{{ countries.length }}</span>
+                      </div>
+
+                      <div class="shipping-sidebar__search">
+                        <i class="fa fa-search fontAwesome_Li_Class search-icon" style="color: black;"></i>
+                        <input
+                          type="text"
+                          class="form-control form-control-rounded"
+                          [formControl]="searchControl"
+                          [placeholder]="'Search countries' | translate"
+                        />
+                      </div>
+
+                      <div class="shipping-sidebar__list" *ngIf="!countriesLoading && filteredCountries.length">
+                        <button
+                          type="button"
+                          class="country-item"
+                          *ngFor="let country of filteredCountries"
+                          [class.country-item--active]="selectedCountryId === country.id"
+                          (click)="selectCountry(country)"
+                        >
+                          <span class="country-item__avatar">
+                            <i class="fa fa-globe fontAwesome_Li_Class" style="color: black;"></i>
+                          </span>
+                          <span class="country-item__body">
+                            <span class="country-item__name">{{ country.countryName }}</span>
+                            <span class="country-item__meta">
+                              {{ country.ruleCount }}
+                              {{ country.ruleCount === 1 ? ('rule' | translate) : ('rules' | translate) }}
+                            </span>
+                          </span>
+                          <span class="country-item__actions" (click)="$event.stopPropagation()">
+                            <button
+                              type="button"
+                              class="country-item__btn"
+                              title="{{ 'Delete' | translate }}"
+                              (click)="deleteCountry(country, $event)"
+                            >
+                              <i class="fa fa-trash fontAwesome_Li_Class" style="color: black;"></i>
+                            </button>
+                          </span>
+                        </button>
+                      </div>
+
+                      <div class="shipping-sidebar__empty" *ngIf="!countriesLoading && !filteredCountries.length">
+                        <i class="fa fa-map-o fontAwesome_Li_Class" style="color: black;"></i>
+                        <p>{{ 'No countries found' | translate }}</p>
+                        <button type="button" class="btn btn-sm btn-primary" (click)="openSelectCountryModal()">
+                          {{ 'Select Country' | translate }}
+                        </button>
+                      </div>
+
+                      <div class="shipping-sidebar__loading text-center py-4" *ngIf="countriesLoading">
+                        <span class="text-muted">{{ 'Loading' | translate }}...</span>
+                      </div>
+                    </aside>
+
+                    <main class="shipping-detail">
+                      <ng-container *ngIf="selectedCountry; else noCountrySelected">
+                        <div class="shipping-detail__toolbar">
+                          <div>
+                            <h2 class="shipping-detail__title">{{ selectedCountry.countryName }}</h2>
+                            <span class="shipping-detail__code">{{ selectedCountry.countryCode }}</span>
+                          </div>
+                          <button
+                            type="button"
+                            class="btn btn-primary"
+                            (click)="openAddRuleModal()"
+                            [disabled]="rulesLoading"
+                          >
+                            <i class="i-Add"></i>
+                            {{ 'Add Shipping Rule' | translate }}
+                          </button>
+                        </div>
+
+                        <div class="shipping-detail__loading text-center py-5" *ngIf="rulesLoading">
+                          <span class="text-muted">{{ 'Loading rules' | translate }}...</span>
+                        </div>
+
+                        <div class="rules-panel" *ngIf="!rulesLoading && selectedCountry.shippingRules?.length">
+                          <div class="row" style="margin-right: -16px; margin-left: -16px;">
+                            <div class="col-md-12">
+                              <div class="card mb-3">
+                                <div class="table-responsive">
+                                  <table class="table table-hover shipping-rules-table mb-0">
+                                    <thead>
+                                      <tr>
+                                        <th>{{ 'Name' | translate }}</th>
+                                        <th>{{ 'Rule Type' | translate }}</th>
+                                        <th>{{ 'Range' | translate }}</th>
+                                        <th>{{ 'Charge Type' | translate }}</th>
+                                        <th>{{ 'Amount' | translate }}</th>
+                                        <th class="text-right">{{ 'Actions' | translate }}</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr *ngFor="let rule of selectedCountry.shippingRules">
+                                        <td class="rule-name">{{ rule.name }}</td>
+                                        <td>
+                                          <span class="badge badge-light">{{ getRuleTypeLabel(rule.ruleType) }}</span>
+                                        </td>
+                                        <td class="text-muted">{{ rule.min }} – {{ rule.max }}</td>
+                                        <td>
+                                          <span class="badge badge-outline">{{
+                                            getShippingTypeLabel(rule.shippingType)
+                                          }}</span>
+                                        </td>
+                                        <td class="fw-semibold">{{ formatAmount(rule) }}</td>
+                                        <td class="text-right rule-actions">
+                                          <button
+                                            type="button"
+                                            class="btn btn-icon"
+                                            title="{{ 'Edit' | translate }}"
+                                            (click)="openAddRuleModal(rule)"
+                                          >
+                                            <i class="fa fa-pencil fontAwesome_Li_Class" style="color: black;"></i>
+                                          </button>
+                                          <button
+                                            type="button"
+                                            class="btn btn-icon"
+                                            title="{{ 'Delete' | translate }}"
+                                            (click)="deleteRule(rule)"
+                                          >
+                                            <i class="fa fa-trash fontAwesome_Li_Class" style="color: black;"></i>
+                                          </button>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div
+                          class="shipping-detail__empty"
+                          *ngIf="!rulesLoading && !selectedCountry.shippingRules?.length"
+                        >
+                          <div class="empty-state">
+                            <i class="fa fa-sliders fontAwesome_Li_Class empty-state__icon" style="color: black;"></i>
+                            <h3>{{ 'No shipping rules yet' | translate }}</h3>
+                            <p>{{ 'Create rules based on order price or weight for this country.' | translate }}</p>
+                            <button type="button" class="btn btn-primary" (click)="openAddRuleModal()">
+                              <i class="i-Add"></i>
+                              {{ 'Add Shipping Rule' | translate }}
+                            </button>
+                          </div>
+                        </div>
+                      </ng-container>
+
+                      <ng-template #noCountrySelected>
+                        <div class="shipping-detail__placeholder">
+                          <div class="empty-state">
+                            <i class="fa fa-hand-pointer-o fontAwesome_Li_Class empty-state__icon" style="color: black;"></i>
+                            <h3>{{ 'Select a country' | translate }}</h3>
+                            <p>
+                              {{
+                                'Choose a country from the list to view and manage its shipping rules.'
+                                  | translate
+                              }}
+                            </p>
+                          </div>
+                        </div>
+                      </ng-template>
+                    </main>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

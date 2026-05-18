@@ -1,0 +1,323 @@
+<div [dir]="globalDataService.getdir()">
+  <div class="breadcrumb"></div>
+
+  <div class="row settings-page-row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body" style="padding: 0%;">
+          <div class="tabs">
+            <ul class="tabs__links">
+              <li>
+                <button type="button" class="tabs__link active">
+                  <span class="tabs__link__text" data-text="0">
+                    <i class="fa fa-cog fontAwesome_Li_Class" style="color: black;"></i>
+                    <span style="margin-left: 3%;">{{ pageTitle | translate }}</span>
+                  </span>
+                </button>
+              </li>
+            </ul>
+
+            <ul class="tabs__contents">
+              <li>
+                <div class="tabs__content active">
+                  <div
+                    class="separator-breadcrumb border-top"
+                    style="margin-bottom: 0.5rem !important;"
+                  ></div>
+
+                  <div class="settings-toolbar" *ngIf="showSaveButton">
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      (click)="save()"
+                      [disabled]="state.loading || state.saving"
+                    >
+                      <i class="fa fa-save mr-1"></i>
+                      {{ state.saving ? ('Saving...' | translate) : ('Save Settings' | translate) }}
+                    </button>
+                  </div>
+
+                  <div class="settings-workspace" [formGroup]="state.form">
+                    <aside class="settings-sidebar">
+                      <div class="settings-sidebar__head">
+                        <span class="settings-sidebar__label">{{ 'Settings' | translate }}</span>
+                      </div>
+
+                      <nav class="settings-sidebar__list">
+                        <button
+                          type="button"
+                          class="settings-nav-item"
+                          *ngFor="let item of navItems"
+                          [class.settings-nav-item--active]="isActive(item)"
+                          (click)="navigate(item)"
+                        >
+                          <span class="settings-nav-item__avatar">
+                            <i class="fa {{ item.icon }} fontAwesome_Li_Class" style="color: black;"></i>
+                          </span>
+                          <span class="settings-nav-item__body">
+                            <span class="settings-nav-item__name">{{ item.label | translate }}</span>
+                            <span class="settings-nav-item__meta" *ngIf="item.readonly">
+                              {{ 'From POS' | translate }}
+                            </span>
+                          </span>
+                        </button>
+                      </nav>
+                    </aside>
+
+                    <main class="settings-main">
+                      <div *ngIf="state.loading" class="text-center py-5">
+                        <i class="fa fa-spinner fa-spin fa-2x text-muted"></i>
+                      </div>
+
+                      <ng-container *ngIf="!state.loading">
+                        <!-- Store information (read-only from POS) -->
+                        <section *ngIf="activeSectionId === 'store-information'" class="settings-panel">
+                          <div class="settings-panel__intro">
+                            <h2 class="settings-panel__title">{{ 'Store Information' | translate }}</h2>
+                            <p class="text-muted mb-0">
+                              {{ 'These details are managed in POS. Update them in your store / company settings.' | translate }}
+                            </p>
+                          </div>
+
+                          <div class="row align-items-start mb-4" *ngIf="state.posInfo?.storeLogoUrl as logoUrl">
+                            <div class="col-auto">
+                              <img [src]="logoUrl" alt="Store logo" class="settings-store-logo" />
+                            </div>
+                          </div>
+
+                          <div class="row">
+                            <div class="col-md-6 form-group">
+                              <label>{{ 'Store name' | translate }}</label>
+                              <input
+                                type="text"
+                                class="form-control"
+                                readonly
+                                [value]="state.displayValue(state.posInfo?.storeName)"
+                              />
+                            </div>
+                            <div class="col-md-6 form-group">
+                              <label>{{ 'Email' | translate }}</label>
+                              <input
+                                type="text"
+                                class="form-control"
+                                readonly
+                                [value]="state.displayValue(state.posInfo?.email)"
+                              />
+                            </div>
+                            <div class="col-md-6 form-group">
+                              <label>{{ 'Phone number' | translate }}</label>
+                              <input
+                                type="text"
+                                class="form-control"
+                                readonly
+                                [value]="state.displayValue(state.posInfo?.phoneNumber)"
+                              />
+                            </div>
+                            <div class="col-md-6 form-group">
+                              <label>{{ 'WhatsApp number' | translate }}</label>
+                              <input
+                                type="text"
+                                class="form-control"
+                                readonly
+                                [value]="state.displayValue(state.posInfo?.whatsAppNumber)"
+                              />
+                            </div>
+                            <div class="col-md-12 form-group">
+                              <label>{{ 'Store address' | translate }}</label>
+                              <textarea
+                                class="form-control"
+                                rows="2"
+                                readonly
+                                [value]="state.displayValue(state.posInfo?.storeAddress)"
+                              ></textarea>
+                            </div>
+                            <div class="col-md-4 form-group">
+                              <label>{{ 'Currency' | translate }}</label>
+                              <input
+                                type="text"
+                                class="form-control"
+                                readonly
+                                [value]="currencyDisplay()"
+                              />
+                            </div>
+                            <div class="col-md-4 form-group">
+                              <label>{{ 'Default language' | translate }}</label>
+                              <input
+                                type="text"
+                                class="form-control"
+                                readonly
+                                [value]="state.displayValue(state.posInfo?.defaultLanguage)"
+                              />
+                            </div>
+                            <div class="col-md-4 form-group">
+                              <label>{{ 'Timezone' | translate }}</label>
+                              <input
+                                type="text"
+                                class="form-control"
+                                readonly
+                                [value]="state.displayValue(state.posInfo?.timezone)"
+                              />
+                            </div>
+                            <div class="col-md-12 form-group mb-0">
+                              <label>{{ 'Tax' | translate }}</label>
+                              <input
+                                type="text"
+                                class="form-control"
+                                readonly
+                                [value]="state.posInfo?.taxEnabled ? state.displayValue(state.posInfo?.taxSummary) : ('Disabled' | translate)"
+                              />
+                            </div>
+                          </div>
+                        </section>
+
+                        <!-- Storefront -->
+                        <section *ngIf="activeSectionId === 'storefront'" class="settings-panel">
+                          <div class="switches-row">
+                            <label class="switch-label">
+                              <input type="checkbox" formControlName="isOnlineShopEnabled" />
+                              {{ 'Online shop enabled' | translate }}
+                            </label>
+                            <label class="switch-label">
+                              <input type="checkbox" formControlName="showOutOfStockProducts" />
+                              {{ 'Show out-of-stock products' | translate }}
+                            </label>
+                            <label class="switch-label">
+                              <input type="checkbox" formControlName="allowGuestCheckout" />
+                              {{ 'Allow guest checkout' | translate }}
+                            </label>
+                          </div>
+                          <div class="row">
+                            <div class="col-md-6 form-group">
+                              <label>{{ 'Store slug' | translate }}</label>
+                              <input type="text" class="form-control" formControlName="storeSlug" />
+                            </div>
+                            <div class="col-md-6 form-group">
+                              <label>{{ 'Domain' | translate }}</label>
+                              <input type="text" class="form-control" formControlName="domain" placeholder="shop.example.com" />
+                            </div>
+                            <div class="col-md-6 form-group">
+                              <label>{{ 'Theme' | translate }}</label>
+                              <select class="form-control" formControlName="themeName">
+                                <option *ngFor="let t of themeOptions" [value]="t.value">{{ t.label }}</option>
+                              </select>
+                            </div>
+                            <div class="col-md-6 form-group">
+                              <label>{{ 'Storefront banner image URL' | translate }}</label>
+                              <input type="text" class="form-control" formControlName="storefrontBannerImageUrl" />
+                            </div>
+                            <div class="col-md-12 form-group">
+                              <label>{{ 'Storefront logo override URL' | translate }}</label>
+                              <input type="text" class="form-control" formControlName="storefrontLogoOverrideUrl" />
+                              <small class="text-muted">{{ 'Optional. Leave empty to use POS store logo.' | translate }}</small>
+                            </div>
+                          </div>
+                        </section>
+
+                        <!-- Delivery -->
+                        <section *ngIf="activeSectionId === 'delivery'" class="settings-panel">
+                          <div class="switches-row">
+                            <label class="switch-label">
+                              <input type="checkbox" formControlName="isDeliveryEnabled" />
+                              {{ 'Enable delivery' | translate }}
+                            </label>
+                            <label class="switch-label">
+                              <input type="checkbox" formControlName="isSameDayDeliveryEnabled" />
+                              {{ 'Same day delivery' | translate }}
+                            </label>
+                          </div>
+                          <div class="row">
+                            <div class="col-md-4 form-group">
+                              <label>{{ 'Default delivery charges' | translate }}</label>
+                              <input type="number" min="0" step="0.01" class="form-control" formControlName="defaultDeliveryCharges" />
+                            </div>
+                            <div class="col-md-4 form-group">
+                              <label>{{ 'Free delivery minimum order' | translate }}</label>
+                              <input type="number" min="0" step="0.01" class="form-control" formControlName="freeDeliveryMinimumOrderAmount" />
+                            </div>
+                            <div class="col-md-4 form-group">
+                              <label>{{ 'Estimated delivery days' | translate }}</label>
+                              <input type="number" min="0" class="form-control" formControlName="estimatedDeliveryDays" />
+                            </div>
+                            <div class="col-md-12 form-group">
+                              <label>{{ 'Delivery time slots (JSON)' | translate }}</label>
+                              <textarea class="form-control" rows="3" formControlName="deliveryTimeSlotsJson"></textarea>
+                              <small class="text-muted">{{ 'Optional. For future use.' | translate }}</small>
+                            </div>
+                          </div>
+                        </section>
+
+                        <!-- Payment -->
+                        <section *ngIf="activeSectionId === 'payment'" class="settings-panel">
+                          <div class="settings-panel__intro mb-3">
+                            <p class="text-muted mb-0">
+                              {{ 'Enable payment methods available on your online storefront checkout.' | translate }}
+                            </p>
+                          </div>
+                          <div class="payment-methods">
+                            <label class="switch-label payment-method">
+                              <input type="checkbox" formControlName="isCashOnDeliveryEnabled" />
+                              <span>
+                                <strong>{{ 'Cash on delivery (COD)' | translate }}</strong>
+                                <small class="d-block text-muted">{{ 'Customer pays when the order is delivered.' | translate }}</small>
+                              </span>
+                            </label>
+                            <label class="switch-label payment-method">
+                              <input type="checkbox" formControlName="isGoPayFastEnabled" />
+                              <span>
+                                <strong>GoPayFast</strong>
+                                <small class="d-block text-muted">
+                                  {{ 'Online payment via GoPayFast (bank transfer, JazzCash, EasyPaisa, card).' | translate }}
+                                </small>
+                              </span>
+                            </label>
+                          </div>
+                        </section>
+
+                        <!-- Invoice -->
+                        <section *ngIf="activeSectionId === 'invoice'" class="settings-panel">
+                          <div class="row">
+                            <div class="col-md-6 form-group">
+                              <label>{{ 'Online order prefix' | translate }}</label>
+                              <input type="text" class="form-control" formControlName="onlineOrderPrefix" />
+                            </div>
+                            <div class="col-md-6 form-group">
+                              <label>{{ 'Online invoice prefix' | translate }}</label>
+                              <input type="text" class="form-control" formControlName="onlineInvoicePrefix" />
+                            </div>
+                            <div class="col-md-12 form-group">
+                              <label>{{ 'Receipt footer text' | translate }}</label>
+                              <textarea class="form-control" rows="3" formControlName="receiptFooterText"></textarea>
+                            </div>
+                          </div>
+                        </section>
+
+                        <!-- SEO -->
+                        <section *ngIf="activeSectionId === 'seo'" class="settings-panel">
+                          <div class="row">
+                            <div class="col-md-12 form-group">
+                              <label>{{ 'Meta title' | translate }}</label>
+                              <input type="text" class="form-control" formControlName="metaTitle" />
+                            </div>
+                            <div class="col-md-12 form-group">
+                              <label>{{ 'Meta description' | translate }}</label>
+                              <textarea class="form-control" rows="3" formControlName="metaDescription"></textarea>
+                            </div>
+                            <div class="col-md-12 form-group">
+                              <label>{{ 'Meta image URL' | translate }}</label>
+                              <input type="text" class="form-control" formControlName="metaImageUrl" />
+                            </div>
+                          </div>
+                        </section>
+                      </ng-container>
+                    </main>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

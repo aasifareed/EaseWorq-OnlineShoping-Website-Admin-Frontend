@@ -1,0 +1,96 @@
+<div class="whatsapp-chatbox" *ngIf="phoneNumber">
+  <div class="chatbox-header">
+    <button type="button" class="btn-back d-md-none" (click)="close()" aria-label="Back">
+      <i class="i-Left"></i>
+    </button>
+    <span class="chatbox-title">{{ phoneNumber }}</span>
+    <button type="button" class="btn-close-header d-none d-md-inline-block" (click)="close()" aria-label="Close">
+      <i class="i-Close"></i>
+    </button>
+  </div>
+
+  <div class="chatbox-messages" #messagesContainer>
+    <div *ngIf="loading" class="text-center py-4">
+      <span class="spinner-border spinner-border-sm"></span>
+      <span class="ml-2">{{ 'Loading...' | translate }}</span>
+    </div>
+    <div *ngIf="!loading && messages.length === 0" class="empty-chat text-muted text-center py-4">
+      {{ 'No messages yet. Start the conversation.' | translate }}
+    </div>
+    <div
+      *ngFor="let msg of messages"
+      class="message-row"
+      [class.inbound]="isInbound(msg)"
+      [class.outbound]="!isInbound(msg)"
+      [class.unread]="msg.isUnread"
+    >
+      <div class="message-bubble">
+        <!-- Image -->
+        <div *ngIf="msg.messageType === 'image' && msg.mediaUrl" class="message-media">
+          <a [href]="msg.mediaUrl" target="_blank" rel="noopener">
+            <img [src]="msg.mediaUrl" alt="Image" class="message-image" loading="lazy" />
+          </a>
+          <div *ngIf="msg.messageText" class="message-text message-caption">{{ msg.messageText }}</div>
+        </div>
+        <!-- Audio / voice note -->
+        <div *ngIf="msg.messageType === 'audio' && msg.mediaUrl" class="message-media">
+          <audio controls class="message-audio" [src]="msg.mediaUrl" preload="metadata"></audio>
+          <div *ngIf="msg.messageText" class="message-text message-caption">{{ msg.messageText }}</div>
+        </div>
+        <!-- Text only -->
+        <div *ngIf="msg.messageType !== 'image' && msg.messageType !== 'audio'" class="message-text">{{ msg.messageText }}</div>
+        <div class="message-meta">
+          <span class="message-time">{{ messageTime(msg) }}</span>
+          <span *ngIf="msg.isUnread" class="unread-dot" title="Unread"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chatbox-input-wrap">
+    <input
+      #fileInput
+      type="file"
+      class="d-none"
+      accept="image/*,audio/*,.ogg,.mp3,.m4a,.wav"
+      (change)="onAttachmentSelected($event)"
+    />
+    <button
+      type="button"
+      class="btn-attach"
+      [disabled]="sending || uploading"
+      (click)="fileInput.click()"
+      [title]="'Attach image or voice note' | translate"
+      aria-label="Attach"
+    >
+      <i class="i-Mail-Attachement"></i>
+      <span *ngIf="uploading" class="attach-spinner spinner-border spinner-border-sm"></span>
+    </button>
+    <textarea
+      #messageInput
+      class="chatbox-input"
+      [(ngModel)]="newMessageText"
+      (keydown)="onKeyDown($event)"
+      [placeholder]="'Type a message...' | translate"
+      rows="1"
+      [disabled]="sending || uploading"
+    ></textarea>
+    <button
+      type="button"
+      class="btn-send"
+      [disabled]="!newMessageText?.trim() || sending"
+      (click)="sendMessage()"
+      aria-label="Send"
+    >
+      <i *ngIf="!sending" class="i-Paper-Plane"></i>
+      <span *ngIf="sending" class="spinner-border spinner-border-sm"></span>
+    </button>
+  </div>
+</div>
+
+<div class="whatsapp-chatbox-placeholder" *ngIf="!phoneNumber">
+  <div class="placeholder-content">
+    <i class="i-Speach-Bubble-3 placeholder-icon"></i>
+    <p class="text-muted">{{ 'Select a conversation or start a new one' | translate }}</p>
+  </div>
+</div>

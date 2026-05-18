@@ -1,0 +1,47 @@
+<div class="shipping-content px-3 pb-3">
+  <div class="row mb-3 align-items-center">
+    <div class="col">
+      <h1 class="mb-0">{{ 'Shipping' | translate }}</h1>
+    </div>
+    <div class="col-auto">
+      <button type="button" class="btn btn-outline-primary" (click)="openSelectCountryModal()">
+        <i class="fa fa-plus fontAwesome_Li_Class" style="color: black;"></i>
+        {{ 'Select Country' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="text-center py-5">
+    <span>{{ 'Loading' | translate }}...</span>
+  </div>
+
+  <div *ngIf="!loading && countries?.length" class="shipping-box">
+    <ul class="country-list list-unstyled mb-0">
+      <li *ngFor="let country of countries">
+        <h5 class="mb-0 country-name" [title]="country.countryName">{{ country.countryName }}</h5>
+        <div class="country-actions">
+          <a
+            href="javascript:void(0)"
+            class="me-2"
+            title="{{ 'Edit' | translate }}"
+            (click)="editCountry(country)"
+          >
+            <i class="fa fa-pencil fontAwesome_Li_Class" style="color: black;"></i>
+          </a>
+          <a
+            href="javascript:void(0)"
+            title="{{ 'Delete' | translate }}"
+            (click)="deleteCountry(country)"
+          >
+            <i class="fa fa-trash fontAwesome_Li_Class" style="color: black;"></i>
+          </a>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div *ngIf="!loading && !countries?.length" class="no-data-added no-shipping text-center py-5">
+    <h4 class="text-muted">{{ 'No Data Found' | translate }}</h4>
+    <p class="text-muted mb-0">{{ 'Add countries to configure shipping rules.' | translate }}</p>
+  </div>
+</div>

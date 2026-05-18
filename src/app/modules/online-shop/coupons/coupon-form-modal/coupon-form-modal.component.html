@@ -1,0 +1,121 @@
+<div class="coupon-modal">
+  <div class="modal-header border-0 pb-0">
+    <h4 class="modal-title fw-semibold">{{ title | translate }}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body pt-2" [formGroup]="form">
+    <nav class="coupon-section-nav">
+      <button
+        type="button"
+        *ngFor="let s of sections"
+        class="coupon-section-nav__btn"
+        [class.active]="activeSection === s.id"
+        (click)="setSection(s.id)"
+      >
+        <i class="fa {{ s.icon }} fontAwesome_Li_Class" style="color: black;"></i>
+        {{ s.label | translate }}
+      </button>
+    </nav>
+
+    <div class="coupon-section" *ngIf="activeSection === 'general'">
+      <div class="form-group">
+        <label>{{ 'Title' | translate }} <span class="text-danger">*</span></label>
+        <input type="text" class="form-control" formControlName="title" [placeholder]="'Enter coupon title' | translate" />
+        <div *ngIf="submitted && f.title.errors" class="text-danger small">{{ 'Title is required' | translate }}</div>
+      </div>
+      <div class="form-group">
+        <label>{{ 'Description' | translate }} <span class="text-danger">*</span></label>
+        <textarea class="form-control" rows="2" formControlName="description"></textarea>
+      </div>
+      <div class="row">
+        <div class="col-md-6 form-group">
+          <label>{{ 'Code' | translate }} <span class="text-danger">*</span></label>
+          <input type="text" class="form-control text-uppercase" formControlName="code" />
+        </div>
+        <div class="col-md-6 form-group">
+          <label>{{ 'Type' | translate }} <span class="text-danger">*</span></label>
+          <select class="form-control" formControlName="type">
+            <option value="">{{ 'Select type' | translate }}</option>
+            <option *ngFor="let t of couponTypes" [value]="t.value">{{ t.label }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group" *ngIf="showAmount">
+        <label>{{ f.type.value === 'percentage' ? ('Percentage' | translate) : ('Amount' | translate) }} *</label>
+        <div class="input-group">
+          <input type="number" class="form-control" formControlName="amount" min="0" [max]="f.type.value === 'percentage' ? 100 : null" />
+          <span class="input-group-append" *ngIf="f.type.value === 'percentage'">
+            <span class="input-group-text">%</span>
+          </span>
+        </div>
+      </div>
+      <div class="form-row switches-row">
+        <label class="switch-label">
+          <input type="checkbox" formControlName="isExpired" />
+          <span>{{ 'Set expiry dates' | translate }}</span>
+        </label>
+        <label class="switch-label">
+          <input type="checkbox" formControlName="isFirstOrder" />
+          <span>{{ 'First order only' | translate }}</span>
+        </label>
+        <label class="switch-label">
+          <input type="checkbox" formControlName="isActive" />
+          <span>{{ 'Active' | translate }}</span>
+        </label>
+      </div>
+      <div class="row" *ngIf="showExpiryDates">
+        <div class="col-md-6 form-group">
+          <label>{{ 'Start Date' | translate }} *</label>
+          <input type="date" class="form-control" formControlName="startDate" />
+        </div>
+        <div class="col-md-6 form-group">
+          <label>{{ 'End Date' | translate }} *</label>
+          <input type="date" class="form-control" formControlName="endDate" />
+        </div>
+      </div>
+    </div>
+
+    <div class="coupon-section" *ngIf="activeSection === 'restriction'">
+      <label class="switch-label mb-3">
+        <input type="checkbox" formControlName="isApplyAll" />
+        <span>{{ 'Apply to all products' | translate }}</span>
+      </label>
+      <div class="form-group">
+        <label>{{ 'Minimum spend' | translate }} <span class="text-danger">*</span></label>
+        <input type="number" class="form-control" formControlName="minSpend" min="0" />
+        <small class="text-muted">{{ 'Minimum order value required to use this coupon.' | translate }}</small>
+      </div>
+      <div class="form-group">
+        <label>{{ 'Maximum spend' | translate }}</label>
+        <input type="number" class="form-control" formControlName="maxSpend" min="0" />
+      </div>
+    </div>
+
+    <div class="coupon-section" *ngIf="activeSection === 'usage'">
+      <label class="switch-label mb-3">
+        <input type="checkbox" formControlName="isUnlimited" />
+        <span>{{ 'Unlimited usage' | translate }}</span>
+      </label>
+      <div class="row" *ngIf="showUsageLimits">
+        <div class="col-md-6 form-group">
+          <label>{{ 'Usage per coupon' | translate }}</label>
+          <input type="number" class="form-control" formControlName="usagePerCoupon" min="1" />
+        </div>
+        <div class="col-md-6 form-group">
+          <label>{{ 'Usage per customer' | translate }}</label>
+          <input type="number" class="form-control" formControlName="usagePerCustomer" min="1" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer border-0">
+    <button type="button" class="btn btn-outline-secondary" (click)="close()">{{ 'Cancel' | translate }}</button>
+    <button type="button" class="btn btn-primary" [disabled]="isLoading" (click)="submit()">
+      {{ (couponId ? 'Update' : 'Save') | translate }}
+    </button>
+  </div>
+</div>

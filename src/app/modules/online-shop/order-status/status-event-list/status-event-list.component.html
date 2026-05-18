@@ -1,0 +1,82 @@
+<div [dir]="globalDataService.getdir()">
+  <div class="gridAboveHeight">
+    <h1 style="margin-top: 0;">{{ 'Status Events' | translate }}</h1>
+    <hr class="mt-0 mb-0" />
+    <div class="row">
+      <div class="col-xl-3 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="form-group">
+          <input
+            style="margin-top: 7%;"
+            class="form-control form-control-rounded"
+            type="text"
+            [formControl]="searchControl"
+            placeholder="{{ 'Search' | translate }}"
+          />
+        </div>
+      </div>
+      <div class="col-xl-1 col-lg-4 col-md-4 col-sm-4 col-xs-4 form-group add_New" style="margin-top: 1.7%; margin-left: auto;">
+        <button class="btn btn-primary" type="button" (click)="openStatusEventDialog()">
+          <i class="i-Add"></i>
+          {{ 'Add New' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" style="margin-right: -16px; margin-left: -16px;">
+    <div class="col-md-12">
+      <div class="card mb-3">
+        <ngx-datatable
+          [ngStyle]="{ height: gridHeight, 'box-shadow': 'none' }"
+          class="material fullscreen"
+          [columnMode]="ColumnMode.force"
+          [headerHeight]="45"
+          [footerHeight]="30"
+          [rowHeight]="40"
+          [rows]="filteredData"
+          [scrollbarH]="true"
+          [loadingIndicator]="loadingIndicator"
+          [externalPaging]="true"
+          [count]="page.totalElements"
+          [offset]="page.pageNumber"
+          [limit]="page.size"
+          (page)="setPage($event)"
+          (sort)="onSort($event)"
+        >
+          <ngx-datatable-column [minWidth]="200" [name]="'Current Status' | translate">
+            <ng-template ngx-datatable-cell-template let-row="row">
+              <span [title]="row.currentStatusName || 'All'">
+                {{ row.currentStatusName || ('All' | translate) }}
+              </span>
+            </ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column [minWidth]="220" [name]="'Event' | translate">
+            <ng-template ngx-datatable-cell-template let-row="row">
+              <span [title]="row.event">{{ formatEventLabel(row.event) }}</span>
+            </ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column [minWidth]="200" [name]="'New Status' | translate">
+            <ng-template ngx-datatable-cell-template let-row="row">
+              <span title="{{ row.newStatusName }}">{{ row.newStatusName | nullEmptyToDash }}</span>
+            </ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column [sortable]="false" [name]="'Action' | translate">
+            <ng-template ngx-datatable-cell-template let-row="row">
+              <button class="btn btn-primary btn-form-margin" type="button" (click)="openStatusEventDialog(row)">
+                <i class="i-Edit"></i>
+                {{ 'Edit' | translate }}
+              </button>
+              <button class="btn btn-danger btn-sm ms-1" type="button" (click)="delete(row.id)">
+                <i class="i-Close-Window"></i>
+                {{ 'Delete' | translate }}
+              </button>
+            </ng-template>
+          </ngx-datatable-column>
+        </ngx-datatable>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,212 @@
+<div [dir]="globalDataService.getdir()">
+
+  <div class="gridAboveHeightInSaleOrderHistory">
+    <h1>{{'online_Shipped_Order_Grid_Header' | translate}}</h1>
+
+    <hr class="mt-0 mb-0" />
+
+
+    <div class="row">
+      <div class="col-xl-3 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="form-group">
+          <input id="email" style="margin-top: 7%;"
+            placeholder="{{'online_Shipped_Order_Grid_Search_Placeholder' | translate}}" [formControl]="searchControl"
+            class="form-control form-control-rounded" type="text">
+        </div>
+      </div>
+
+
+      <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="row">
+          <div class="form-group col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
+
+            <label for="FromDate">{{'online_Shipped_Order_Grid_From' | translate}}:</label>
+            <input type="date" class="form-control" [max]="filter.ToDate" id="FromDate" [(ngModel)]="filter.FromDate">
+          </div>
+          <div class="form-group col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <label for="ToDate">{{'online_Shipped_Order_Grid_To' | translate}}:</label>
+            <input type="date" class="form-control" [min]="filter.FromDate" id="ToDate" [(ngModel)]="filter.ToDate">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-1 col-lg-4 col-md-4 col-sm-4 col-xs-4 form-group search" style="margin-top: 1.7%">
+
+        <button class="btn btn-primary btn-form-margin" (click)="search()">
+          <i class="i-File-Search"></i>
+          {{'online_Shipped_Order_Grid_Search_Button' | translate}}
+        </button>
+      </div>
+
+      <div class="col-xl-1 col-lg-4 col-md-4 col-sm-4 col-xs-4 form-group Restore-Window_Rest" style="margin-top: 1.7%">
+        <button class="btn btn-primary btn-form-margin" (click)="resetSearch()"><i class="i-Restore-Window">
+            {{'online_Shipped_Order_Grid_Reset_Button' | translate}}
+          </i> </button>
+      </div>
+
+    </div>
+
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card mb-3">
+          <ngx-datatable [ngStyle]="{'height':gridHeight,'box-shadow': 'none'}" class="material fullscreen"
+            [columnMode]="ColumnMode.force" [headerHeight]="45" [footerHeight]="30" [rowHeight]="40" [scrollbarH]="true"
+            [rows]="filteredData" [summaryRow]="true" [summaryPosition]="'bottom'" [summaryHeight]="45"
+            [selectAllRowsOnPage]="false" [loadingIndicator]="loadingIndicator" [externalPaging]="true"
+            [count]="page.totalElements" [offset]="page.pageNumber" [limit]="page.size" (page)="setPage($event)"
+            (sort)="onSort($event)" #orderDetailTable>
+            <ngx-datatable-row-detail #myDetailRow [rowHeight]="'auto'" (toggle)="orderDetailToggle($event)">
+              <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
+                <table class="table table-stripped row-detail">
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <!-- <th>{{'online_Shipped_Order_Detail_Grid_Product_Number' | translate}}</th> -->
+                      <th>{{'online_Shipped_Order_Detail_Grid_Product_Name' | translate}}</th>
+                      <th>{{'online_Shipped_Order_Detail_Grid_Total_Amount' | translate}}</th>
+                      <th>{{'online_Shipped_Order_Detail_Grid_Quantity' | translate}}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let order of orderDetail">
+                      <td></td>
+                      <!-- <td>{{ order.originalProductId}}</td> -->
+                      <td>{{ order.productName | titlecase}}</td>
+                      <td>{{globalDataService.getCurrencySymbol()}} {{ order.productOrderTotalAmount}}</td>
+                      <td>{{ order.productOrderQuantity}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </ng-template>
+            </ngx-datatable-row-detail>
+
+            <ngx-datatable-column [width]="50" [resizeable]="false" [sortable]="false" [draggable]="false"
+              [canAutoResize]="false">
+              <ng-template let-row="row" let-expanded="expanded" ngx-datatable-cell-template>
+                <span style="cursor: pointer" [class.datatable-icon-right]="!expanded"
+                  [class.datatable-icon-down]="expanded" title="Expand/Collapse Row" (click)="toggleExpandRow(row)">
+                </span>
+              </ng-template>
+            </ngx-datatable-column>
+
+            <!-- <ngx-datatable-column name="orderId" [width]="200">
+         <ng-template ngx-datatable-header-template>
+          {{'online_Shipped_Order_Grid_Order_Number' | translate}}
+         </ng-template>
+        </ngx-datatable-column> -->
+
+            <ngx-datatable-column name="orderNumber" [width]="200">
+              <ng-template ngx-datatable-header-template>
+                {{'online_Pending_Order_Grid_Order_Number' | translate}}
+              </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="storeName" [width]="150">
+              <ng-template ngx-datatable-header-template>
+                {{'online_Shipped_Order_Grid_Store_Name' | translate}}
+              </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="customerName" [width]="200">
+              <ng-template ngx-datatable-header-template>
+                {{'online_Shipped_Order_Grid_Customer_Name' | translate}}
+              </ng-template>
+            </ngx-datatable-column>
+
+
+            <!-- <ngx-datatable-column name="orderDeliveryStatusName">
+            <ng-template ngx-datatable-header-template>
+              {{'Order Delivery Status' | translate}}
+            </ng-template>
+            <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+               {{ row.orderDeliveryStatusName}}
+            </ng-template>
+            </ngx-datatable-column> -->
+
+
+            <ngx-datatable-column [width]="180" name="orderDeliveryStatus" prop="orderDeliveryStatus"
+              [summaryFunc]="null">
+              <ng-template ngx-datatable-header-template>
+                {{'online_Shipped_Order_Grid_Status' | translate}}
+              </ng-template>
+              <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+
+                <select class="form-control orderDeliveryStatusdd" style="" [value]="row.orderDeliveryStatus"
+                  placeholder="Select Order Delivery Status"
+                  (change)="orderDeliveryStatusUpdateInRowDetails($event, row)" name="orderDeliveryStatus">
+                  <!-- <option value=""></option> -->
+                  <option *ngFor="let status of orderDeliveryStatusList" [value]="status.value">{{ status.name }}
+                  </option>
+                </select>
+
+              </ng-template>
+            </ngx-datatable-column>
+
+
+            <ngx-datatable-column name="totalAmount" [width]="200" [summaryTemplate]="totalAmountTemplate">
+              <ng-template ngx-datatable-header-template>
+                {{'online_Shipped_Order_Grid_Total_Amount' | translate}}
+              </ng-template>
+              <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                {{globalDataService.getCurrencySymbol()}} {{ row.totalAmount}}
+              </ng-template>
+            </ngx-datatable-column>
+
+
+            <ngx-datatable-column name="totalPaidAmount" [width]="200" [summaryTemplate]="paidAmountTemplate">
+              <ng-template ngx-datatable-header-template>
+                {{'online_Shipped_Order_Grid_Paid_Amount' | translate}}
+              </ng-template>
+              <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                {{globalDataService.getCurrencySymbol()}} {{ row.totalPaidAmount}}
+              </ng-template>
+            </ngx-datatable-column>
+
+
+            <ngx-datatable-column name="remainingAmount" [width]="200" [summaryTemplate]="remaningAmountTemplate">
+              <ng-template ngx-datatable-header-template>
+                {{'online_Shipped_Order_Grid_Remaining_Amount' | translate}}
+              </ng-template>
+              <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                {{globalDataService.getCurrencySymbol()}} {{ row.remainingAmount}}
+              </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="date">
+              <ng-template ngx-datatable-header-template>
+                {{'online_Shipped_Order_Grid_Order_Date' | translate}}
+              </ng-template>
+              <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                {{ row.date | date:'MM-dd-yyyy'}}
+              </ng-template>
+            </ngx-datatable-column>
+
+          </ngx-datatable>
+
+
+          <ng-template #totalAmountTemplate>
+            {{this.globalDataService.getCurrencySymbol() }} {{ totalAmountSum.toFixed(2) }}
+          </ng-template>
+
+          <ng-template #paidAmountTemplate>
+            {{this.globalDataService.getCurrencySymbol() }} {{ paidAmountSum.toFixed(2) }}
+          </ng-template>
+
+          <ng-template #remaningAmountTemplate>
+            {{this.globalDataService.getCurrencySymbol() }} {{ remaningAmountSum.toFixed(2) }}
+          </ng-template>
+
+
+        </div>
+      </div>
+
+    </div>
+
+
+  </div>
+
+
+
+
+</div>

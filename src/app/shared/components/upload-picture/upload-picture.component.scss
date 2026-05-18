@@ -1,0 +1,328 @@
+// Legendary Modal Wrapper
+.legendary-modal-wrapper {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  max-width: 920px;
+  margin: 0 auto;
+}
+
+// ========== HEADER ==========
+.legendary-header {
+  background: linear-gradient(135deg, #1e284b 0%, #2c3e5f 100%);
+  padding: 24px 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 200px;
+    height: 200px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .header-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    z-index: 1;
+  }
+
+  .header-icon-wrapper {
+    width: 56px;
+    height: 56px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: scale(1.05) rotate(5deg);
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .header-icon {
+      font-size: 28px;
+      color: #ffffff;
+      animation: pulse 2s ease-in-out infinite;
+    }
+  }
+
+  .header-text {
+    .modal-title {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.5px;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .modal-subtitle {
+      margin: 4px 0 0 0;
+      font-size: 13px;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.85);
+      letter-spacing: 0.2px;
+    }
+  }
+
+  .legendary-close {
+    background: rgba(255, 255, 255, 0.25);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 1;
+    padding: 0;
+    outline: none;
+
+    .close-icon {
+      color: #ffffff;
+      font-size: 32px;
+      font-weight: 300;
+      line-height: 1;
+      display: block;
+      opacity: 1;
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.4);
+      transform: rotate(90deg);
+      border-color: rgba(255, 255, 255, 0.7);
+    }
+
+    &:active {
+      transform: scale(0.95) rotate(90deg);
+    }
+
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+    }
+  }
+}
+
+// ========== BODY ==========
+.legendary-body {
+  padding: 32px 28px;
+  background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%);
+  min-height: 200px;
+}
+
+// ========== FOOTER ==========
+.legendary-footer {
+  padding: 20px 28px;
+  background: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+// ========== ANIMATIONS ==========
+@keyframes float {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  33% {
+    transform: translate(30px, -30px) rotate(120deg);
+  }
+  66% {
+    transform: translate(-20px, 20px) rotate(240deg);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.legendary-upload-container {
+  width: 100%;
+  padding: 20px 0;
+}
+
+.upload-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 32px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  border: 2px solid #e9ecef;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: center;
+  animation: slideInUp 0.5s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    border-color: #1e284b;
+  }
+}
+
+.upload-icon-wrapper {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+  transition: all 0.3s ease;
+
+  i {
+    font-size: 36px;
+    color: #ffffff;
+  }
+
+  &:hover {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
+  }
+}
+
+.upload-content {
+  .upload-title {
+    margin: 0 0 8px 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #1e284b;
+    letter-spacing: -0.3px;
+  }
+
+  .upload-subtitle {
+    margin: 0 0 24px 0;
+    font-size: 14px;
+    color: #6c757d;
+    font-weight: 400;
+  }
+}
+
+.file-input-wrapper {
+  position: relative;
+  margin-bottom: 20px;
+
+  .legendary-file-input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .file-input-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #1e284b 0%, #2c3e5f 100%);
+    color: #ffffff;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(30, 40, 75, 0.3);
+    border: none;
+
+    i {
+      font-size: 18px;
+    }
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(30, 40, 75, 0.4);
+      background: linear-gradient(135deg, #2c3e5f 0%, #1e284b 100%);
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 4px 12px rgba(30, 40, 75, 0.3);
+    }
+  }
+}
+
+.upload-status {
+  margin-top: 16px;
+  min-height: 24px;
+
+  .upload {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: #28a745;
+    font-size: 14px;
+    padding: 8px 16px;
+    background: rgba(40, 167, 69, 0.1);
+    border-radius: 8px;
+    border: 1px solid rgba(40, 167, 69, 0.2);
+
+    i {
+      animation: spin 1s linear infinite;
+    }
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// ========== MODAL SIZE OVERRIDE ==========
+:host ::ng-deep .modal-dialog {
+  max-width: 600px;
+  width: 90%;
+}
+
+:host ::ng-deep .modal-content {
+  border: none;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+:host ::ng-deep .modal-header,
+:host ::ng-deep .modal-body,
+:host ::ng-deep .modal-footer {
+  padding: 0;
+  border: none;
+}

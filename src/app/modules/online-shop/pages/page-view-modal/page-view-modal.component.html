@@ -1,0 +1,26 @@
+<div class="page-view-modal">
+  <div class="modal-header">
+    <div>
+      <h4 class="modal-title mb-0">{{ title }}</h4>
+      <small class="text-muted">/page/{{ slug }}</small>
+    </div>
+    <button type="button" class="close" aria-label="Close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+    <div *ngIf="isLoading" class="text-center py-4 text-muted">{{ 'Loading' | translate }}...</div>
+    <div *ngIf="!isLoading">
+      <span class="badge mb-3" [class.badge-success]="isActive" [class.badge-secondary]="!isActive">
+        {{ isActive ? ('Active' | translate) : ('Inactive' | translate) }}
+      </span>
+      <div *ngIf="hasContent" class="page-preview" [innerHTML]="safeContent"></div>
+      <p *ngIf="!hasContent" class="text-muted mb-0">{{ 'No content available.' | translate }}</p>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="close()">{{ 'Close' | translate }}</button>
+  </div>
+</div>

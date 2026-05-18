@@ -1,0 +1,76 @@
+<div class="gridAboveHeight" style="padding: 0 1rem;">
+  <h1 style="margin-top: 0%;">{{ 'Storefront' | translate }}</h1>
+  <hr class="mt-0 mb-2" />
+  <p class="text-muted small mb-3">
+    {{ publishedCount }} / {{ filteredData.length }}
+    {{ 'pages published on storefront' | translate }}
+  </p>
+</div>
+
+<div class="row" style="margin-right: 0; margin-left: 0; padding: 0 1rem 1rem;">
+  <div class="col-md-12">
+    <div class="card mb-0">
+      <ngx-datatable
+        [ngStyle]="{ height: gridHeight, 'box-shadow': 'none' }"
+        class="material fullscreen"
+        [columnMode]="ColumnMode.force"
+        [headerHeight]="45"
+        [footerHeight]="30"
+        [rowHeight]="40"
+        [rows]="filteredData"
+        [scrollbarH]="true"
+        [loadingIndicator]="loadingIndicator"
+        [count]="page.totalElements"
+        [limit]="page.size"
+      >
+        <ngx-datatable-column [name]="'Title' | translate" prop="title" [minWidth]="180">
+          <ng-template ngx-datatable-cell-template let-row="row">
+            <strong>{{ row.title }}</strong>
+            <div class="page-slug d-block">/page/{{ row.slug }}</div>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-column [name]="'On website' | translate" [minWidth]="120" [sortable]="false">
+          <ng-template ngx-datatable-cell-template let-row="row">
+            <label class="status-switch mb-0" [title]="'Publish on storefront' | translate">
+              <input type="checkbox" [checked]="row.isActive" (change)="onStatusToggle(row, $event)" />
+              <span class="status-switch__slider"></span>
+            </label>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-column [name]="'Status' | translate" [minWidth]="100" [sortable]="false">
+          <ng-template ngx-datatable-cell-template let-row="row">
+            <span [class]="row.isActive ? 'badge-published' : 'badge-draft'">
+              {{ row.isActive ? ('Published' | translate) : ('Draft' | translate) }}
+            </span>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-column [name]="'Action' | translate" [minWidth]="200" [sortable]="false" [canAutoResize]="false">
+          <ng-template ngx-datatable-cell-template let-row="row">
+            <button
+              type="button"
+              class="btn btn-outline-secondary btn-sm mr-1"
+              title="{{ 'View on website' | translate }}"
+              (click)="viewOnWebsite(row)"
+            >
+              <i class="fa fa-external-link fontAwesome_Li_Class" style="color: black;"></i>
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-secondary btn-sm mr-1"
+              title="{{ 'Preview' | translate }}"
+              (click)="previewPage(row)"
+            >
+              <i class="fa fa-eye fontAwesome_Li_Class" style="color: black;"></i>
+            </button>
+            <button type="button" class="btn btn-primary btn-sm" title="{{ 'Edit content' | translate }}" (click)="editContent(row)">
+              <i class="fa fa-pencil fontAwesome_Li_Class" style="color: white;"></i>
+            </button>
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+    </div>
+  </div>
+</div>

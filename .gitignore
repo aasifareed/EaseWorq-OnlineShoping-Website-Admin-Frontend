@@ -1,0 +1,19 @@
+node_modules
+dist/
+coverage/
+.codegpt
+*.log
+.vscode/
+.idea/
+.vs/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Local test / scratch artifacts
+test-output.txt
+test-results.txt
+claim-test-results.txt
+static-labels-summary.txt

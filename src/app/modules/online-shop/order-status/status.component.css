@@ -1,0 +1,10 @@
+::ng-deep .addSectionModal .modal-dialog,
+::ng-deep .UpdateStatusModal .modal-dialog {
+  max-width: 650px !important;
+  margin: 3rem auto 1rem auto !important;
+}
+
+::ng-deep .addSectionModal .modal-content,
+::ng-deep .UpdateStatusModal .modal-content {
+  border-radius: 6px;
+}

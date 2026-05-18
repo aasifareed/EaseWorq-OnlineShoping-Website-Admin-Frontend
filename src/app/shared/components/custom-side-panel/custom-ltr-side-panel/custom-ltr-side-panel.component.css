@@ -1,0 +1,30 @@
+.side-panel-body {
+    width: 100%;
+    padding: 20px 10px;
+}
+
+
+.customizer-body.side-panel-body {
+    height: 300px;
+    
+    overflow-y: auto;
+  }
+  
+  .customizer-body.side-panel-body::-webkit-scrollbar {
+    width: 12px; 
+  }
+  
+  .customizer-body.side-panel-body::-webkit-scrollbar-thumb {
+    border-radius: 6px; 
+  }
+  
+
+
+  .customizer-body.side-panel-body {
+    scrollbar-width: thin; 
+  }
+  
+  .customizer-body.side-panel-body::-ms-scrollbar-thumb {
+    border-radius: 6px;
+  }
+  

@@ -1,0 +1,26 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../out-tsc/spec",
+    "types": [
+      "jasmine",
+      "node"
+    ],
+    "target": "es2018",
+    "lib": ["es2018", "dom"]
+  },
+  "files": [
+    "test.ts",
+    "polyfills.ts"
+  ],
+  "include": [
+    "**/*.spec.ts",
+    "**/*.d.ts"
+  ],
+  "exclude": [
+    "app/views/forms/basic-form/basic-form.component.ts",
+    "app/views/inbox/inbox.module.ts",
+    "app/views/invoice/**/*.ts",
+    "app/views/pages/pages-routing.module.ts"
+  ]
+}

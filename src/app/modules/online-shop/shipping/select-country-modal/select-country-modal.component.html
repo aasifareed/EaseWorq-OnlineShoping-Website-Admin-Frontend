@@ -1,0 +1,52 @@
+<div class="select-country-modal">
+  <div class="modal-header">
+    <div class="select-country-modal__heading">
+      <h4 class="modal-title mb-0">
+        <i class="fa fa-globe fontAwesome_Li_Class select-country-modal__icon" aria-hidden="true"></i>
+        {{ 'Select Country' | translate }}
+      </h4>
+      <p class="select-country-modal__subtitle mb-0">
+        {{ 'Choose countries to enable shipping rules for your store.' | translate }}
+      </p>
+    </div>
+    <button type="button" class="close" aria-label="Close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="form-group mb-0">
+        <label class="select-country-modal__label">
+          {{ 'Countries' | translate }}
+          <span class="text-danger">*</span>
+        </label>
+        <ng-multiselect-dropdown
+          class="select-country-modal__dropdown"
+          [placeholder]="'Search and select countries' | translate"
+          [settings]="dropdownSettings"
+          [data]="availableCountries"
+          [(ngModel)]="selectedCountries"
+          [ngModelOptions]="{ standalone: true }"
+        >
+        </ng-multiselect-dropdown>
+        <small class="form-text text-muted">
+          {{ 'You can select multiple countries at once.' | translate }}
+        </small>
+        <div *ngIf="submitted && !selectedCountries?.length" class="text-danger small mt-2">
+          {{ 'Country is required' | translate }}
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" (click)="close()" [disabled]="isLoading">
+      {{ 'Cancel' | translate }}
+    </button>
+    <button type="button" class="btn btn-primary" [disabled]="isLoading" (click)="submit()">
+      <span *ngIf="isLoading" class="spinner-border spinner-border-sm mr-1" role="status" aria-hidden="true"></span>
+      {{ 'Add Countries' | translate }}
+    </button>
+  </div>
+</div>

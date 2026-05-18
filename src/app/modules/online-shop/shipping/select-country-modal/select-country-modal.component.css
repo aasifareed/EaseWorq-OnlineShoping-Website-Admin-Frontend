@@ -1,0 +1,66 @@
+.select-country-modal .modal-header {
+  align-items: flex-start;
+  padding: 1.25rem 1.5rem 0.75rem;
+  border-bottom: 1px solid #e8eaed;
+}
+
+.select-country-modal__heading {
+  flex: 1;
+  min-width: 0;
+  padding-right: 1rem;
+}
+
+.select-country-modal .modal-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #202124;
+}
+
+.select-country-modal__icon {
+  color: #1a73e8 !important;
+  font-size: 1.1rem;
+}
+
+.select-country-modal__subtitle {
+  margin-top: 0.35rem;
+  font-size: 0.8125rem;
+  color: #5f6368;
+  line-height: 1.4;
+}
+
+.select-country-modal .modal-body {
+  padding: 1.25rem 1.5rem;
+}
+
+.select-country-modal__label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #3c4043;
+  margin-bottom: 0.5rem;
+}
+
+.select-country-modal__dropdown ::ng-deep .multiselect-dropdown .dropdown-btn {
+  border: 1px solid #dadce0;
+  border-radius: 8px;
+  padding: 0.45rem 0.65rem;
+  min-height: 42px;
+  font-size: 0.875rem;
+}
+
+.select-country-modal__dropdown ::ng-deep .multiselect-dropdown .dropdown-btn:focus,
+.select-country-modal__dropdown ::ng-deep .multiselect-dropdown .dropdown-btn:hover {
+  border-color: #1a73e8;
+}
+
+.select-country-modal .modal-footer {
+  padding: 0.75rem 1.5rem 1.25rem;
+  border-top: 1px solid #e8eaed;
+  gap: 0.5rem;
+}
+
+.select-country-modal .modal-footer .btn-primary {
+  min-width: 7.5rem;
+}

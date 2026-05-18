@@ -1,0 +1,32 @@
+
+
+
+[dir="rtl"] {
+    
+.togglePassword{
+    top: 50%; 
+    left: 10px; 
+    transform: translateY(26%); 
+    cursor: pointer;
+}
+
+.btn_Forgot_Password{
+    padding-left: 10%;margin-bottom: 2%;margin-top: -5%;
+}
+
+  }
+
+  [dir="ltr"] {
+    
+.togglePassword{
+    top: 50%; 
+    right: 10px; 
+    transform: translateY(26%); 
+    cursor: pointer;
+}
+
+.btn_Forgot_Password{
+    padding-right: 10%;margin-bottom: 2%;margin-top: -5%;
+}
+
+  }

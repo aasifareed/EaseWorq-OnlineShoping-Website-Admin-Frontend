@@ -1,0 +1,7 @@
+<div *ngIf="isLoading || isManualLoading">
+    <div class="loadscreen">
+        <!-- <img src="assets/images/logo.png" class="logo mb-3" alt=""> -->
+        <img src="{{globalDataService.getLoaderPicture()}}" class="logo mb-3" alt="">
+        <div class="loader-bubble loader-bubble-primary d-block"></div>
+    </div>
+</div>

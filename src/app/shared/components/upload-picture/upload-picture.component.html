@@ -1,0 +1,52 @@
+<div class="legendary-modal-wrapper">
+  <!-- Modern Header with Gradient -->
+  <div class="legendary-header">
+    <div class="header-content">
+      <div class="header-icon-wrapper">
+        <i class="i-Upload header-icon"></i>
+      </div>
+      <div class="header-text">
+        <h3 class="modal-title">Upload Picture</h3>
+        <p class="modal-subtitle">Select an image file to upload</p>
+      </div>
+    </div>
+    <button type="button" class="legendary-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span class="close-icon">&times;</span>
+    </button>
+  </div>
+
+  <!-- Professional Body -->
+  <div class="legendary-body">
+    <div class="legendary-upload-container" [dir]="globalDataService.getdir()">
+      <div class="upload-card">
+        <div class="upload-icon-wrapper">
+          <i class="i-Upload"></i>
+        </div>
+        <div class="upload-content">
+          <h5 class="upload-title">Select Image File</h5>
+          <p class="upload-subtitle">Choose a file from your device</p>
+          <div class="file-input-wrapper">
+            <input type="file" #file id="fileInput" placeholder="Choose file" (change)="uploadFile(file.files)" accept="image/*" class="legendary-file-input">
+            <label for="fileInput" class="file-input-label">
+              <i class="i-File"></i>
+              <span>Browse Files</span>
+            </label>
+          </div>
+          <div class="upload-status" *ngIf="progress > 0 || message">
+            <span class="upload" *ngIf="progress > 0">
+              <i class="i-Loading"></i> {{progress}}% Uploading
+            </span>
+            <span class="upload" *ngIf="message">
+              {{message}}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer (empty for now) -->
+  <div class="legendary-footer">
+  </div>
+</div>
+

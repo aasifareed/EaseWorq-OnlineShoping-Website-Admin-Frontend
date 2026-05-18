@@ -1,0 +1,68 @@
+<div class="modal-header" [dir]="globalDataService.getdir()">
+  <h4 class="modal-title">{{ title | translate }}</h4>
+  <button type="button" class="close" aria-label="Close" (click)="close()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body" [dir]="globalDataService.getdir()">
+  <form [formGroup]="requestForm" *ngIf="requestForm">
+    <div class="row">
+      <div class="col-md-12 mt-2">
+        <label for="currentStatusId">{{ 'Current Status' | translate }}</label>
+        <select
+          class="form-control"
+          id="currentStatusId"
+          formControlName="currentStatusId"
+          [ngClass]="{
+            'is-invalid':
+              f?.currentStatusId?.invalid &&
+              (f?.currentStatusId?.dirty || f?.currentStatusId?.touched || submitted)
+          }"
+        >
+          <option *ngFor="let item of currentStatuses" [ngValue]="item.value">{{ item.label }}</option>
+        </select>
+      </div>
+
+      <div class="col-md-12 mt-3">
+        <label for="event">{{ 'Event' | translate }} <span class="text-danger">*</span></label>
+        <select
+          class="form-control"
+          id="event"
+          formControlName="event"
+          [ngClass]="{
+            'is-invalid': f?.event?.invalid && (f?.event?.dirty || f?.event?.touched || submitted)
+          }"
+        >
+          <option *ngFor="let item of events" [value]="item.value">{{ item.label }}</option>
+        </select>
+      </div>
+
+      <div class="col-md-12 mt-3">
+        <label for="newStatusId">{{ 'New Status' | translate }} <span class="text-danger">*</span></label>
+        <select
+          class="form-control"
+          id="newStatusId"
+          formControlName="newStatusId"
+          [ngClass]="{
+            'is-invalid':
+              f?.newStatusId?.invalid && (f?.newStatusId?.dirty || f?.newStatusId?.touched || submitted)
+          }"
+        >
+          <option *ngFor="let item of newStatuses" [value]="item.value">{{ item.label }}</option>
+        </select>
+      </div>
+    </div>
+  </form>
+
+</div>
+
+<div class="modal-footer" [dir]="globalDataService.getdir()">
+  <button type="button" class="btn btn-outline-secondary" (click)="close()">
+    {{ 'Close' | translate }}
+  </button>
+  <button type="button" class="btn btn-success" [disabled]="isLoading" (click)="save()">
+    <i class="i-Yes mr-2"></i>
+    {{ 'Save' | translate }}
+  </button>
+</div>
