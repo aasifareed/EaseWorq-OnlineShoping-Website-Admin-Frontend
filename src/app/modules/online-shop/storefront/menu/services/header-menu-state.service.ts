@@ -35,6 +35,7 @@ export class HeaderMenuStateService {
       headerDropdown1ProductGroupId: [null],
       headerDropdown2ProductGroupId: [null],
       headerDropdown3ProductGroupId: [null],
+      headerDropdown4ProductGroupId: [null],
     });
   }
 
@@ -115,6 +116,7 @@ export class HeaderMenuStateService {
       headerDropdown1ProductGroupId: m.headerDropdown1ProductGroupId || null,
       headerDropdown2ProductGroupId: m.headerDropdown2ProductGroupId || null,
       headerDropdown3ProductGroupId: m.headerDropdown3ProductGroupId || null,
+      headerDropdown4ProductGroupId: m.headerDropdown4ProductGroupId || null,
     });
   }
 
@@ -126,6 +128,7 @@ export class HeaderMenuStateService {
       headerDropdown1ProductGroupId: this.normalizeCategoryId(v.headerDropdown1ProductGroupId),
       headerDropdown2ProductGroupId: this.normalizeCategoryId(v.headerDropdown2ProductGroupId),
       headerDropdown3ProductGroupId: this.normalizeCategoryId(v.headerDropdown3ProductGroupId),
+      headerDropdown4ProductGroupId: this.normalizeCategoryId(v.headerDropdown4ProductGroupId),
     };
   }
 
@@ -154,6 +157,8 @@ export class HeaderMenuStateService {
           menuRaw.HeaderDropdown2ProductGroupId) as string,
         headerDropdown3ProductGroupId: (menuRaw.headerDropdown3ProductGroupId ||
           menuRaw.HeaderDropdown3ProductGroupId) as string,
+        headerDropdown4ProductGroupId: (menuRaw.headerDropdown4ProductGroupId ||
+          menuRaw.HeaderDropdown4ProductGroupId) as string,
       },
     };
   }

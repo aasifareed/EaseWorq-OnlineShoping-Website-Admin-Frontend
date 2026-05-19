@@ -10,6 +10,7 @@ export interface OnlineShopHeaderMenu {
   headerDropdown1ProductGroupId?: string | null;
   headerDropdown2ProductGroupId?: string | null;
   headerDropdown3ProductGroupId?: string | null;
+  headerDropdown4ProductGroupId?: string | null;
 }
 
 export interface OnlineShopHeaderMenuForEdit {

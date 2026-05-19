@@ -45,6 +45,9 @@
                         class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-xs-auto form-group add_New pages-toolbar-add"
                         style="margin-top: 1.7%;"
                       >
+                        <button type="button" class="btn btn-outline-primary mr-2" (click)="createDefaultPages()">
+                          {{ 'Add default pages' | translate }}
+                        </button>
                         <button type="button" class="btn btn-primary" (click)="openAddModal()">
                           <i class="i-Add"></i>
                           {{ 'Add Page' | translate }}

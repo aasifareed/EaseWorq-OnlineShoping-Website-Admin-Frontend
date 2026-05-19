@@ -44,6 +44,13 @@ export class MenuShellComponent implements OnInit, OnDestroy {
       route: '/online-shop/storefront/dropdown-3',
       formControlName: 'headerDropdown3ProductGroupId',
     },
+    {
+      id: 'dropdown-4',
+      label: 'Header Dropdown 4',
+      icon: 'fa-bars',
+      route: '/online-shop/storefront/dropdown-4',
+      formControlName: 'headerDropdown4ProductGroupId',
+    },
   ];
 
   private readonly destroy$ = new Subject<void>();

@@ -7,6 +7,7 @@ const routes: Routes = [
   { path: 'dropdown-1', component: MenuShellComponent },
   { path: 'dropdown-2', component: MenuShellComponent },
   { path: 'dropdown-3', component: MenuShellComponent },
+  { path: 'dropdown-4', component: MenuShellComponent },
 ];
 
 @NgModule({

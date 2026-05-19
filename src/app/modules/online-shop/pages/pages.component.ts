@@ -107,6 +107,37 @@ export class PagesComponent implements OnInit {
     this.getData();
   }
 
+  createDefaultPages(): void {
+    this.restService.postWithOutSpinner(environment.urls.Page_CreateDefaultPages, {}).subscribe({
+      next: (response) => {
+        const result = response?.result;
+        const created = (result?.createdSlugs ?? result?.CreatedSlugs ?? []) as string[];
+        const skipped = (result?.skippedSlugs ?? result?.SkippedSlugs ?? []) as string[];
+        if (created.length) {
+          this.toastr.success(
+            this.translate.instant('Created {{count}} page(s).', { count: created.length }),
+            this.translate.instant('toaster_Heading_Success'),
+            { progressBar: true },
+          );
+        } else if (skipped.length) {
+          this.toastr.info(
+            this.translate.instant('Default pages already exist.'),
+            this.translate.instant('toaster_Heading_Success'),
+            { progressBar: true },
+          );
+        }
+        this.getData();
+      },
+      error: (error) => {
+        this.toastr.error(
+          this.translate.instant(error?.error?.error?.message ?? 'Error'),
+          this.translate.instant('toaster_Heading_Error'),
+          { progressBar: true },
+        );
+      },
+    });
+  }
+
   openAddModal(): void {
     this.openFormModal(null);
   }
