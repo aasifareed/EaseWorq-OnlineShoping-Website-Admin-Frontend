@@ -80,4 +80,19 @@ export const appServiceUrls = {
   HeaderMenu_GetForEdit: '/OnlineShopHeaderMenu/GetForEdit',
   HeaderMenu_Save: '/OnlineShopHeaderMenu/Save',
   HeaderMenu_GetForStorefront: '/OnlineShopHeaderMenu/GetForStorefront',
+
+  // POS products — admin grid (OnlineShopProductAppService)
+  OnlineShopProduct_GetAllForAdmin: '/OnlineShopProduct/GetAllForAdmin',
+  OnlineShopProduct_UpdateForAdmin: '/OnlineShopProduct/UpdateForAdmin',
+  OnlineShopProduct_UploadImages: '/OnlineShopProductUpload/UploadImages',
+  OnlineShopProduct_GetImages: '/OnlineShopProductUpload/GetImages',
+  OnlineShopProduct_RemoveImage: '/OnlineShopProductUpload/RemoveImage',
+
+  // POS product categories — admin grid (OnlineShopProductCategoryAppService)
+  OnlineShopProductCategory_GetAllForAdmin: '/OnlineShopProductCategory/GetAllForAdmin',
+  OnlineShopProductCategory_UpdateForAdmin: '/OnlineShopProductCategory/UpdateForAdmin',
+
+  // POS brands — admin grid (OnlineShopBrandAppService)
+  OnlineShopBrand_GetAllForAdmin: '/OnlineShopBrand/GetAllForAdmin',
+  OnlineShopBrand_UpdateForAdmin: '/OnlineShopBrand/UpdateForAdmin',
 };

@@ -50,6 +50,12 @@ const routes: Routes = [
     // data: { permission: PermissionsEnum.OnlineOrderManagement },
   },
   {
+    path: 'products',
+    canActivate: [AuthGaurd],
+    loadChildren: () =>
+      import('./products/products.module').then((m) => m.ProductsModule),
+  },
+  {
     path: 'pages',
     canActivate: [AuthGaurd],
     loadChildren: () => import('./pages/pages.module').then((m) => m.PagesModule),

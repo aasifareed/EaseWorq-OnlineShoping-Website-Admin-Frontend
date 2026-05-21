@@ -1,0 +1,144 @@
+<div class="pim">
+  <header class="pim__header">
+    <div class="pim__header-main">
+      <div class="pim__icon-wrap" aria-hidden="true">
+        <i class="fa fa-picture-o fontAwesome_Li_Class"></i>
+      </div>
+      <div class="pim__header-text">
+        <h4 class="pim__title">Product images</h4>
+        <p class="pim__subtitle">Manage gallery photos for your online storefront</p>
+      </div>
+    </div>
+    <button type="button" class="pim__close" aria-label="Close" (click)="close()" [disabled]="uploading">
+      <i class="fa fa-times fontAwesome_Li_Class"></i>
+    </button>
+  </header>
+
+  <div class="pim__body">
+    <div class="pim__columns">
+    <section class="pim__card pim__card--gallery">
+      <div class="pim__card-head">
+        <div>
+          <h6 class="pim__card-title">Gallery</h6>
+          <p class="pim__card-desc">Images shown on the online shop. Remove any you no longer need.</p>
+        </div>
+        <span class="pim__pill" *ngIf="!loadingImages">{{ existingImages.length }} image{{ existingImages.length === 1 ? '' : 's' }}</span>
+      </div>
+
+      <div class="pim__loading" *ngIf="loadingImages">
+        <div class="pim__skeleton" *ngFor="let _ of skeletonSlots"></div>
+      </div>
+
+      <div class="pim__empty" *ngIf="!loadingImages && !existingImages.length">
+        <div class="pim__empty-icon"><i class="fa fa-image fontAwesome_Li_Class"></i></div>
+        <p>No images yet</p>
+        <span>Upload photos on the right to build your product gallery.</span>
+      </div>
+
+      <div class="pim__gallery" *ngIf="!loadingImages && existingImages.length">
+        <article
+          class="pim__tile"
+          *ngFor="let image of existingImages"
+          [class.pim__tile--readonly]="!image.canRemove"
+        >
+          <div class="pim__tile-media">
+            <img [src]="image.url" [alt]="product?.productName" (error)="onImageError($event)" />
+            <div class="pim__tile-overlay" *ngIf="image.canRemove">
+              <button
+                type="button"
+                class="pim__tile-action pim__tile-action--danger"
+                (click)="removeExisting(image)"
+                [disabled]="uploading || isRemoving(image)"
+                aria-label="Remove image"
+              >
+                <span *ngIf="isRemoving(image)" class="spinner-border spinner-border-sm" role="status"></span>
+                <i *ngIf="!isRemoving(image)" class="fa fa-trash fontAwesome_Li_Class"></i>
+              </button>
+            </div>
+          </div>
+          <div class="pim__tile-meta">
+            <span class="pim__badge pim__badge--pos" *ngIf="imageSourceLabel(image)">{{ imageSourceLabel(image) }}</span>
+            <span class="pim__badge pim__badge--primary" *ngIf="image.isPrimary">Primary</span>
+            <span class="pim__badge pim__badge--shop" *ngIf="image.source === 'OnlineShop' && !image.isPrimary">Online</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="pim__card pim__card--upload">
+      <div class="pim__card-head pim__card-head--compact">
+        <h6 class="pim__card-title">Add images</h6>
+      </div>
+
+      <label
+        class="pim__dropzone"
+        [class.pim__dropzone--active]="dragOver"
+        [class.pim__dropzone--disabled]="uploading"
+        (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave($event)"
+        (drop)="onDrop($event)"
+      >
+        <input
+          type="file"
+          class="pim__file-input"
+          id="productImagesInput"
+          accept="image/*"
+          multiple
+          (change)="onFilesSelected($event)"
+          [disabled]="uploading"
+        />
+        <div class="pim__dropzone-inner">
+          <div class="pim__dropzone-icon"><i class="fa fa-cloud-upload fontAwesome_Li_Class"></i></div>
+          <p class="pim__dropzone-title">
+            <span *ngIf="!selectedFiles.length">Drag &amp; drop images here</span>
+            <span *ngIf="selectedFiles.length">{{ selectedFiles.length }} file{{ selectedFiles.length === 1 ? '' : 's' }} ready to upload</span>
+          </p>
+          <p class="pim__dropzone-hint">or <span class="pim__dropzone-link">browse from your device</span></p>
+        </div>
+      </label>
+
+      <div class="pim__pending" *ngIf="previewItems.length">
+        <p class="pim__pending-label">Ready to upload</p>
+        <div class="pim__gallery pim__gallery--pending">
+          <article class="pim__tile pim__tile--pending" *ngFor="let preview of previewItems; let i = index">
+            <div class="pim__tile-media">
+              <img [src]="preview.safeUrl" alt="" />
+              <div class="pim__tile-overlay">
+                <button
+                  type="button"
+                  class="pim__tile-action pim__tile-action--danger"
+                  (click)="removeSelected(i)"
+                  [disabled]="uploading"
+                  aria-label="Remove from queue"
+                >
+                  <i class="fa fa-times fontAwesome_Li_Class"></i>
+                </button>
+              </div>
+            </div>
+            <span class="pim__tile-filename" [title]="selectedFiles[i]?.name">{{ selectedFiles[i]?.name }}</span>
+          </article>
+        </div>
+      </div>
+    </section>
+    </div>
+  </div>
+
+  <footer class="pim__footer">
+    <p class="pim__footer-hint" *ngIf="galleryChanged">Gallery updated — close to refresh the products list.</p>
+    <div class="pim__footer-actions">
+      <button type="button" class="pim__btn pim__btn--ghost" (click)="close()" [disabled]="uploading">
+        {{ galleryChanged ? 'Done' : 'Cancel' }}
+      </button>
+      <button
+        type="button"
+        class="pim__btn pim__btn--primary"
+        (click)="upload()"
+        [disabled]="uploading || selectedFiles.length === 0"
+      >
+        <span *ngIf="uploading" class="spinner-border spinner-border-sm mr-2" role="status"></span>
+        <i *ngIf="!uploading" class="fa fa-upload fontAwesome_Li_Class mr-2"></i>
+        {{ uploadButtonLabel }}
+      </button>
+    </div>
+  </footer>
+</div>

@@ -1,0 +1,182 @@
+/* Images column — centered, card-style thumbnails */
+:host ::ng-deep .products-datatable .datatable-header-cell.products-datatable__image-col,
+:host ::ng-deep .products-datatable .datatable-body-cell.products-datatable__image-col {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 6px 10px !important;
+  overflow: visible !important;
+}
+
+:host ::ng-deep .products-datatable .datatable-header-cell.products-datatable__image-col {
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+}
+
+:host ::ng-deep .products-datatable .datatable-body-cell.products-datatable__image-col .datatable-body-cell-label {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100%;
+  height: 56px !important;
+  box-sizing: border-box;
+}
+
+.products-datatable__image-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding-top: 8px;
+  box-sizing: border-box;
+}
+
+:host ::ng-deep .products-datatable .datatable-body-cell-label .btn.products-datatable__thumb-btn {
+  margin: 0 !important;
+}
+
+.products-datatable__thumb-btn {
+  position: relative;
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  line-height: 0;
+}
+
+.products-datatable__thumb-frame {
+  display: block;
+  width: 46px;
+  height: 46px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.products-datatable__thumb-btn:hover .products-datatable__thumb-frame {
+  border-color: #663399;
+  box-shadow: 0 3px 10px rgba(102, 51, 153, 0.22);
+  transform: translateY(-1px);
+}
+
+.products-datatable__thumb-btn:focus {
+  outline: none;
+}
+
+.products-datatable__thumb-btn:focus-visible .products-datatable__thumb-frame {
+  outline: 2px solid #663399;
+  outline-offset: 2px;
+}
+
+.products-datatable__thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center center;
+  display: block;
+  padding: 4px;
+  box-sizing: border-box;
+}
+
+.products-datatable__thumb-badge {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+  border-radius: 9px;
+  border: 2px solid #fff;
+  background: #663399;
+  color: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+.products-datatable__edit-input {
+  width: 100%;
+  max-width: 110px;
+  min-width: 72px;
+  height: 30px;
+  padding: 0.2rem 0.45rem;
+  text-align: right;
+  flex-shrink: 0;
+  margin: 0;
+}
+
+.products-datatable__toggle {
+  min-width: 52px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+}
+
+/* Global styles.css pulls datatable buttons up with margin-top: -10px */
+:host ::ng-deep .products-datatable .datatable-body-cell-label .btn.products-datatable__toggle {
+  margin: 0 !important;
+}
+
+:host ::ng-deep .products-datatable .datatable-body-cell.products-datatable__center-col .datatable-body-cell-label {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 56px !important;
+  box-sizing: border-box;
+}
+
+.products-datatable__cell-actions {
+  padding-top: 8px;
+  box-sizing: border-box;
+}
+
+/* All body cells — vertical center (ngx-datatable material) */
+:host ::ng-deep .products-datatable.material .datatable-body .datatable-body-row .datatable-body-cell {
+  display: flex !important;
+  align-items: center !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  line-height: normal !important;
+}
+
+:host ::ng-deep .products-datatable.material .datatable-body .datatable-body-row .datatable-body-cell .datatable-body-cell-label {
+  display: flex !important;
+  align-items: center !important;
+  width: 100%;
+  height: 100%;
+  margin: 0 !important;
+  padding: 0 4px !important;
+}
+
+:host ::ng-deep .products-datatable .datatable-header-cell.products-datatable__center-col {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+:host ::ng-deep .products-datatable .datatable-body-cell.products-datatable__center-col {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+:host ::ng-deep .products-datatable .datatable-body-cell.products-datatable__center-col .datatable-body-cell-label {
+  justify-content: center !important;
+}
+
+.products-datatable__cell-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}

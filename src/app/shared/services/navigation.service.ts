@@ -166,6 +166,14 @@ export class NavigationService {
         // permission_required: PermissionsEnum.OnlineOrder,
       },
       {
+        name: 'Products',
+        title: 'Products',
+        type: 'link',
+        icon: 'fa fa-cube',
+        icontType: InconsTypeEnum.ICons_FontAwesome.toString(),
+        state: '/online-shop/products',
+      },
+      {
         name: 'Pages',
         title: 'Pages',
         type: 'link',

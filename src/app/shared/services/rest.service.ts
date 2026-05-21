@@ -169,6 +169,15 @@ export class RestService {
         }));
     }
 
+    postFormData(url: string, formData: FormData): Observable<any> {
+        this.loaderService.display(true);
+        return this.http.post(environment.apiBaseUrl + url, formData).pipe(
+            finalize(() => {
+                this.loaderService.display(false);
+            }),
+        );
+    }
+
     postWithOutSpinner(url: string, body: any): Observable<any> {
         const headers = new HttpHeaders(
             {

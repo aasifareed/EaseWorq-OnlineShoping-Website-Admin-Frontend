@@ -1,0 +1,81 @@
+<div
+  class="separator-breadcrumb border-top"
+  style="margin-bottom: 0.5rem !important;"
+></div>
+
+<div [dir]="globalDataService.getdir()" class="gridAboveHeightInSaleOrderHistory">
+  <div *ngIf="loadError" class="alert alert-warning mb-2" role="alert">
+    {{ loadError }}
+  </div>
+
+  <div class="row">
+    <div class="col-xl-3 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <div class="form-group">
+        <input
+          style="margin-top: 7%;"
+          [formControl]="searchControl"
+          class="form-control form-control-rounded"
+          type="text"
+          [placeholder]="'Search brands' | translate"
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card mb-3">
+        <ngx-datatable
+          [ngStyle]="{ height: gridHeight, 'box-shadow': 'none' }"
+          class="material products-datatable"
+          [columnMode]="ColumnMode.force"
+          [headerHeight]="48"
+          [footerHeight]="30"
+          [rowHeight]="56"
+          [rows]="data"
+          [scrollbarH]="true"
+          [loadingIndicator]="loadingIndicator"
+          [externalPaging]="true"
+          [count]="page.totalElements"
+          [offset]="page.pageNumber"
+          [limit]="page.size"
+          (page)="setPage($event)"
+        >
+          <ngx-datatable-column [name]="'Name' | translate" prop="name" [minWidth]="220">
+            <ng-template ngx-datatable-cell-template let-row="row">
+              <strong>{{ row.name }}</strong>
+            </ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column
+            [name]="'Popular' | translate"
+            [sortable]="false"
+            [minWidth]="110"
+            cellClass="products-datatable__center-col"
+            headerClass="products-datatable__center-col"
+          >
+            <ng-template ngx-datatable-cell-template let-row="row">
+              <div class="products-datatable__cell-center products-datatable__cell-actions">
+                <button
+                  type="button"
+                  class="btn btn-sm products-datatable__toggle"
+                  [class.btn-success]="row.isPopular"
+                  [class.btn-outline-secondary]="!row.isPopular"
+                  [disabled]="isSaving(row)"
+                  (click)="togglePopular(row)"
+                >
+                  <span
+                    *ngIf="isSaving(row)"
+                    class="spinner-border spinner-border-sm"
+                    role="status"
+                  ></span>
+                  <span *ngIf="!isSaving(row)">{{ formatYesNo(row.isPopular) }}</span>
+                </button>
+              </div>
+            </ng-template>
+          </ngx-datatable-column>
+        </ngx-datatable>
+      </div>
+    </div>
+  </div>
+</div>
