@@ -20,7 +20,17 @@ export const appServiceUrls = {
   Get_All_Language_Text: '/TenantLanguage/GetAllLanguageText',
   Get_All_LookUps_Dropdown: '/POSLookUpLocalization/GetAllLookUpsDropdown',
 
-  // Online orders
+  // Online orders (OnlineShopSaleOrderAppService)
+  OnlineShopSaleOrder_GetAll: '/OnlineShopSaleOrder/GetAllOnlineShopSaleOrders',
+  OnlineShopSaleOrder_GetDetail: '/OnlineShopSaleOrder/GetOnlineShopSaleOrderForSuccessPage',
+  OnlineShopSaleOrder_GetNextStatuses: '/OnlineShopSaleOrder/GetNextOrderStatusesDropdown',
+  OnlineShopSaleOrder_UpdateStatus: '/OnlineShopSaleOrder/UpdateOnlineShopOrderStatus',
+  OnlineShopSaleOrder_ConfirmCod: '/OnlineShopSaleOrder/ConfirmCashOnDeliveryOrder',
+  OnlineShopSaleOrder_MarkCodPaid: '/OnlineShopSaleOrder/MarkCashOnDeliveryPaid',
+  OnlineShopSaleOrder_Cancel: '/OnlineShopSaleOrder/CancelOnlineShopOrder',
+  OnlineShopSaleOrder_GetShipment: '/OnlineShopSaleOrder/GetShipmentByOrderId',
+  OnlineShopSaleOrder_SaveShipment: '/OnlineShopSaleOrder/CreateOrUpdateShipment',
+  OnlineShopSaleOrder_MarkDelivered: '/OnlineShopSaleOrder/MarkShipmentDelivered',
   Get_Online_Sale_Orders: '/OnlineOrder/GetOnlineSaleOrders',
   Get_Order_DeliveryStatus_For_Dropdown: '/OnlineOrder/GetOrderDeliveryStatusForDropdown',
   Change_Delivery_Order_Status: '/OnlineOrder/ChangeDeliveryOrderStatus',

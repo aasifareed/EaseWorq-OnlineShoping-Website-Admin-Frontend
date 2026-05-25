@@ -1,113 +1,33 @@
-<div class="">
-    <div class="breadcrumb">
-    </div>
-
-    <div class="row" style="margin-top: -3%;margin-right: -35px;margin-left: -35px;">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-body" style="padding: 0%;">
-
-                    <div class="tabs">
-                        <ul class="tabs__links">
-                            <li>
-                                <button class="tabs__link" [routerLinkActive]="['active']"
-                                    [ngClass]='activeIndex==0 ? "active" : ""' (click)="changeTab(0);">
-                                    <span class="tabs__link__text" data-text="0">
-                                        <i class="fa fa-cube fontAwesome_Li_Class" style="color: black;"></i>
-                                        <span style="margin-left: 3%;">{{'online_Pending_Order_Tab' | translate}}</span>
-                                    </span>
-                                </button>
-                            </li>
-                            <li>
-                                <button class="tabs__link" [routerLinkActive]="['active']"
-                                    [ngClass]='activeIndex==1 ? "active" : ""' (click)="changeTab(1);">
-                                    <span class="tabs__link__text" data-text="1">
-                                        <i class="fa fa-list fontAwesome_Li_Class" style="color: black;"></i>
-                                        <span style="margin-left: 3%;">{{'online_Confirmed_Order_Tab' | translate}}</span>
-                                    </span>
-                                </button>
-                            </li>
-                            <li>
-                                <button class="tabs__link" [routerLinkActive]="['active']"
-                                    [ngClass]='activeIndex==2 ? "active" : ""' (click)="changeTab(2);">
-                                    <span class="tabs__link__text" data-text="2">
-                                        <i class="fa fa-list fontAwesome_Li_Class" style="color: black;"></i>
-                                        <span style="margin-left: 3%;">{{'online_Shipped_Order_Tab' | translate}}</span>
-                                    </span>
-                                </button>
-                            </li>
-                            <li>
-                                <button class="tabs__link" [routerLinkActive]="['active']"
-                                    [ngClass]='activeIndex==3 ? "active" : ""' (click)="changeTab(3);">
-                                    <span class="tabs__link__text" data-text="3">
-                                        <i class="fa fa-list fontAwesome_Li_Class" style="color: black;"></i>
-                                        <span style="margin-left: 3%;">{{'online_Delivered_Order_Tab' | translate}}</span>
-                                    </span>
-                                </button>
-                            </li>
-                            <li>
-                                <button class="tabs__link" [routerLinkActive]="['active']"
-                                    [ngClass]='activeIndex==4 ? "active" : ""' (click)="changeTab(4);">
-                                    <span class="tabs__link__text" data-text="4">
-                                        <i class="fa fa-list fontAwesome_Li_Class" style="color: black;"></i>
-                                        <span style="margin-left: 3%;">{{'online_Completed_Order_Tab' | translate}}</span>
-                                    </span>
-                                </button>
-                            </li>
-                            <li>
-                                <button class="tabs__link" [routerLinkActive]="['active']"
-                                    [ngClass]='activeIndex==5 ? "active" : ""' (click)="changeTab(5);">
-                                    <span class="tabs__link__text" data-text="5">
-                                        <i class="fa fa-whatsapp fontAwesome_Li_Class" style="color: black;"></i>
-                                        <span style="margin-left: 3%;">{{'WhatsApp' | translate}}</span>
-                                    </span>
-                                </button>
-                            </li>
-                        </ul>
-
-                        <ul class="tabs__contents">
-                            <li>
-                                <div class="tabs__content" [ngClass]='activeIndex==0 ? "active" : ""'>
-                                    <div class="separator-breadcrumb border-top" style="margin-bottom: 0.5rem !important;"></div>
-                                    <ng-template #OnlineOrderListTargetDiv></ng-template>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="tabs__content" [ngClass]='activeIndex==1 ? "active" : ""'>
-                                    <div class="separator-breadcrumb border-top" style="margin-bottom: 0.5rem !important;"></div>
-                                    <ng-template #ConfirmedOrderListTargetDiv></ng-template>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="tabs__content" [ngClass]='activeIndex==2 ? "active" : ""'>
-                                    <div class="separator-breadcrumb border-top" style="margin-bottom: 0.5rem !important;"></div>
-                                    <ng-template #ShippedOrderListTargetDiv></ng-template>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="tabs__content" [ngClass]='activeIndex==3 ? "active" : ""'>
-                                    <div class="separator-breadcrumb border-top" style="margin-bottom: 0.5rem !important;"></div>
-                                    <ng-template #deliveredOrderListTargetDiv></ng-template>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="tabs__content" [ngClass]='activeIndex==4 ? "active" : ""'>
-                                    <div class="separator-breadcrumb border-top" style="margin-bottom: 0.5rem !important;"></div>
-                                    <ng-template #CompletedOrderListTargetDiv></ng-template>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="tabs__content" [ngClass]='activeIndex==5 ? "active" : ""'>
-                                    <div class="separator-breadcrumb border-top" style="margin-bottom: 0.5rem !important;"></div>
-                                    <ng-template #WhatsAppListTargetDiv></ng-template>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
+<div class="">
+  <div class="breadcrumb"></div>
+
+  <div class="row" style="margin-top: -3%; margin-right: -35px; margin-left: -35px;">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body" style="padding: 0%;">
+          <div class="tabs">
+            <ul class="tabs__links">
+              <li>
+                <button type="button" class="tabs__link active">
+                  <span class="tabs__link__text">
+                    <i class="fa fa-whatsapp fontAwesome_Li_Class" style="color: black;"></i>
+                    <span style="margin-left: 3%;">WhatsApp</span>
+                  </span>
+                </button>
+              </li>
+            </ul>
+
+            <ul class="tabs__contents">
+              <li>
+                <div class="tabs__content active">
+                  <div class="separator-breadcrumb border-top" style="margin-bottom: 0.5rem !important;"></div>
+                  <ng-template #WhatsAppListTargetDiv></ng-template>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

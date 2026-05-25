@@ -19,11 +19,8 @@ import { SharedComponentsModule } from 'src/app/shared/components/shared-compone
 import { SharedDirectivesModule } from 'src/app/shared/directives/shared-directives.module';
 
 import { OnlineOrdersComponent } from './online-orders.component';
-import { CompletedOrderListComponent } from './online-order-for-completed/completed-order-list/completed-order-list.component';
-import { ConfirmedOrderListComponent } from './online-order-list-for-confirmed/confirmed-order-list/confirmed-order-list.component';
-import { DeliveredOrderListComponent } from './online-order-list-for-delivered/delivered-order-list/delivered-order-list.component';
-import { PendingOrderListComponent } from './online-order-list-for-pending/pending-order-list/pending-order-list.component';
-import { ShippedOrderListComponent } from './online-order-list-for-shipped/shipped-order-list/shipped-order-list.component';
+import { OrderListComponent } from './order-list/order-list.component';
+import { OrderSharedModule } from './order-shared.module';
 import { OnlineOrdersRoutingModule } from './online-orders-routing.module';
 import { WhatsAppListComponent } from './whatsapp/whatsapp-list/whatsapp-list.component';
 import { WhatsAppChatboxComponent } from './whatsapp/whatsapp-chatbox/whatsapp-chatbox.component';
@@ -47,14 +44,11 @@ import { WhatsAppChatboxComponent } from './whatsapp/whatsapp-chatbox/whatsapp-c
              EditorModule,
              CalendarModule,
              OnlineOrdersRoutingModule,
+             OrderSharedModule,
       ],
   declarations: [
     OnlineOrdersComponent,
-    CompletedOrderListComponent,
-    ConfirmedOrderListComponent,
-    DeliveredOrderListComponent,
-    PendingOrderListComponent,
-    ShippedOrderListComponent,
+    OrderListComponent,
     WhatsAppListComponent,
     WhatsAppChatboxComponent
   ],

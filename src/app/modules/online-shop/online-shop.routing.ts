@@ -12,7 +12,7 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'online-orders',
+        redirectTo: 'order-board',
         pathMatch: 'full',
       },
     ],
@@ -25,6 +25,18 @@ const routes: Routes = [
         (m) => m.OnlineOrdersModule
       ),
     // data: { permission: PermissionsEnum.OnlineOrderManagement },
+  },
+  {
+    path: 'order-board',
+    canActivate: [AuthGaurd],
+    loadChildren: () =>
+      import('./order-board/order-board.module').then((m) => m.OrderBoardModule),
+  },
+  {
+    path: 'orders/manage/:orderId',
+    canActivate: [AuthGaurd],
+    loadChildren: () =>
+      import('./online-orders/manage-order/manage-order.module').then((m) => m.ManageOrderModule),
   },
   {
     path: 'order-status',

@@ -1,0 +1,447 @@
+<div class="manage-order-page">
+  <div class="page-shell">
+    <nav class="page-breadcrumb" aria-label="breadcrumb">
+      <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item"><a [routerLink]="['/']">Home</a></li>
+        <li class="breadcrumb-item"><a (click)="goBack()" class="breadcrumb-link">Order Board</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Manage Order</li>
+      </ol>
+    </nav>
+
+    <div *ngIf="isLoading" class="loading-state">
+      <i class="fas fa-spinner fa-spin fontAwesome_Li_Class"></i>
+      <p>Loading order details...</p>
+    </div>
+
+    <ng-container *ngIf="!isLoading && detail">
+      <header class="order-hero">
+        <div class="order-hero__main">
+          <button type="button" class="btn btn-ghost-back" (click)="goBack()">
+            <i class="fa fa-arrow-left fontAwesome_Li_Class"></i>
+          </button>
+          <div class="order-hero__titles">
+            <h1 class="order-hero__title">Manage Order</h1>
+            <div class="order-hero__meta">
+              <span class="chip chip-order">
+                <i class="fa fa-hashtag fontAwesome_Li_Class"></i> {{ orderNumber }}
+              </span>
+              <span class="chip chip-status" [style.--chip-color]="statusColor" title="Current order status">
+                Order status: {{ statusDisplayName }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="order-hero__actions">
+          <div class="status-toolbar">
+            <label class="status-toolbar__label">Update status</label>
+            <ng-select class="status-toolbar__select" [options]="statusOptions"
+              [(ngModel)]="selectedStatusId"
+              [disabled]="statusOptionsLoading || manualStatusChangeDisabled"
+              [noFilter]="999"
+              [placeholder]="manualStatusChangeDisabled ? 'Use action buttons below' : 'Select next status'"
+              notFoundMsg="No statuses available"
+              [allowClear]="true">
+            </ng-select>
+            <button type="button" class="btn btn-save-status" (click)="saveStatus()"
+              [disabled]="isSavingStatus || statusOptionsLoading || manualStatusChangeDisabled || !selectedStatusId">
+              <i class="fontAwesome_Li_Class fas" [ngClass]="isSavingStatus ? 'fa-spinner fa-spin' : 'fa-check'"></i>
+              {{ isSavingStatus ? 'Saving' : 'Save' }}
+            </button>
+          </div>
+          <p class="status-toolbar__hint" *ngIf="statusOptionsHint">{{ statusOptionsHint }}</p>
+        </div>
+      </header>
+
+      <div class="summary-strip">
+        <div class="summary-metric">
+          <span class="summary-metric__label">Order date</span>
+          <span class="summary-metric__value">{{ detail.orderDate ? (detail.orderDate | date:'MMM d, y · h:mm a') : '—' }}</span>
+        </div>
+        <div class="summary-metric">
+          <span class="summary-metric__label">Total</span>
+          <span class="summary-metric__value summary-metric__value--accent">{{ formatMoney(detail.totalAmount) }}</span>
+        </div>
+        <div class="summary-metric">
+          <span class="summary-metric__label">Paid</span>
+          <span class="summary-metric__value">{{ formatMoney(detail.paidAmount) }}</span>
+        </div>
+        <div class="summary-metric">
+          <span class="summary-metric__label">Remaining</span>
+          <span class="summary-metric__value">{{ formatMoney(detail.remainingAmount) }}</span>
+        </div>
+        <div class="summary-metric">
+          <span class="summary-metric__label">Payment method</span>
+          <span class="summary-metric__value">{{ display(detail.paymentMethodName) }}</span>
+        </div>
+        <div class="summary-metric">
+          <span class="summary-metric__label">Payment status</span>
+          <span class="summary-metric__value">{{ paymentStatusLabel(detail.paymentStatus) }}</span>
+        </div>
+        <div class="summary-metric">
+          <span class="summary-metric__label">Delivery</span>
+          <span class="summary-metric__value">{{ deliveryStatusLabel(detail.deliveryStatus) }}</span>
+        </div>
+        <div class="summary-metric">
+          <span class="summary-metric__label">Shipping method</span>
+          <span class="summary-metric__value">{{ display(detail.shippingMethodName) }}</span>
+        </div>
+      </div>
+
+      <div class="tabs-panel">
+        <ul ngbNav #nav="ngbNav" class="order-tabs" [(activeId)]="activeTabId">
+          <li [ngbNavItem]="1">
+            <a ngbNavLink><i class="fa fa-file-alt fontAwesome_Li_Class tab-icon"></i> Order Details</a>
+            <ng-template ngbNavContent>
+              <div class="tab-grid">
+                <section class="panel panel--customer">
+                  <div class="panel__head">
+                    <i class="fa fa-user fontAwesome_Li_Class panel__icon"></i>
+                    <h2 class="panel__title">Customer</h2>
+                  </div>
+                  <div class="panel__body">
+                    <div class="info-grid">
+                      <div class="info-cell">
+                        <span class="info-label">Customer name</span>
+                        <span class="info-value">{{ display(billingAddress?.customerName) }}</span>
+                      </div>
+                      <div class="info-cell">
+                        <span class="info-label">Phone</span>
+                        <span class="info-value">{{ display(billingAddress?.phone) }}</span>
+                      </div>
+                      <div class="info-cell info-cell--wide">
+                        <span class="info-label">Email</span>
+                        <span class="info-value">{{ display(billingAddress?.emailAddress) }}</span>
+                      </div>
+                      <div class="info-cell info-cell--wide">
+                        <span class="info-label">Address</span>
+                        <span class="info-value">{{ display(billingAddress?.address) }}</span>
+                      </div>
+                      <div class="info-cell">
+                        <span class="info-label">City</span>
+                        <span class="info-value">{{ display(billingAddress?.townCity) }}</span>
+                      </div>
+                      <div class="info-cell">
+                        <span class="info-label">State</span>
+                        <span class="info-value">{{ display(billingAddress?.stateCounty) }}</span>
+                      </div>
+                      <div class="info-cell">
+                        <span class="info-label">Zip</span>
+                        <span class="info-value">{{ display(billingAddress?.postalCode) }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="panel panel--shipping">
+                  <div class="panel__head">
+                    <i class="fa fa-truck fontAwesome_Li_Class panel__icon"></i>
+                    <h2 class="panel__title">Shipping address</h2>
+                  </div>
+                  <div class="panel__body">
+                    <div class="info-grid">
+                      <div class="info-cell">
+                        <span class="info-label">Receiver</span>
+                        <span class="info-value">{{ display(shippingAddress?.customerName) }}</span>
+                      </div>
+                      <div class="info-cell">
+                        <span class="info-label">Phone</span>
+                        <span class="info-value">{{ display(shippingAddress?.phone) }}</span>
+                      </div>
+                      <div class="info-cell info-cell--wide">
+                        <span class="info-label">Address</span>
+                        <span class="info-value">{{ display(shippingAddress?.address) }}</span>
+                      </div>
+                      <div class="info-cell">
+                        <span class="info-label">City</span>
+                        <span class="info-value">{{ display(shippingAddress?.townCity) }}</span>
+                      </div>
+                      <div class="info-cell">
+                        <span class="info-label">State</span>
+                        <span class="info-value">{{ display(shippingAddress?.stateCounty) }}</span>
+                      </div>
+                      <div class="info-cell">
+                        <span class="info-label">Zip</span>
+                        <span class="info-value">{{ display(shippingAddress?.postalCode) }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="panel panel--amounts panel--full">
+                  <div class="panel__head">
+                    <i class="fa fa-calculator fontAwesome_Li_Class panel__icon"></i>
+                    <h2 class="panel__title">Order amounts</h2>
+                  </div>
+                  <div class="panel__body">
+                    <div class="amount-cards">
+                      <div class="amount-card">
+                        <span class="amount-card__label">Subtotal</span>
+                        <span class="amount-card__value">{{ formatMoney(detail.subTotalAmount) }}</span>
+                      </div>
+                      <div class="amount-card">
+                        <span class="amount-card__label">Shipping</span>
+                        <span class="amount-card__value">{{ formatMoney(detail.shippingCharges) }}</span>
+                      </div>
+                      <div class="amount-card">
+                        <span class="amount-card__label">Tax</span>
+                        <span class="amount-card__value">{{ formatMoney(detail.taxAmount) }}</span>
+                      </div>
+                      <div class="amount-card">
+                        <span class="amount-card__label">Discount</span>
+                        <span class="amount-card__value">{{ formatMoney(detail.discountAmount) }}</span>
+                      </div>
+                      <div class="amount-card amount-card--highlight">
+                        <span class="amount-card__label">Grand total</span>
+                        <span class="amount-card__value">{{ formatMoney(detail.totalAmount) }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </ng-template>
+          </li>
+
+          <li [ngbNavItem]="2">
+            <a ngbNavLink><i class="fa fa-box fontAwesome_Li_Class tab-icon"></i> Products</a>
+            <ng-template ngbNavContent>
+              <section class="panel panel--full">
+                <div class="panel__head panel__head--split">
+                  <div>
+                    <i class="fa fa-box fontAwesome_Li_Class panel__icon"></i>
+                    <h2 class="panel__title">Order products</h2>
+                  </div>
+                  <span class="panel__meta">{{ products.length }} item(s)</span>
+                </div>
+                <div class="panel__body panel__body--flush">
+                  <div class="table-wrap">
+                    <table class="products-table">
+                      <thead>
+                        <tr>
+                          <th class="col-product">Product</th>
+                          <th class="col-qty text-end">Qty</th>
+                          <th class="col-price text-end">Unit price</th>
+                          <th class="col-total text-end">Line total</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let product of products">
+                          <td class="col-product">
+                            <div class="product-cell">
+                              <div class="product-thumb-wrap" *ngIf="product.productImageUrl">
+                                <img [src]="product.productImageUrl" [alt]="product.productName"
+                                  class="product-thumb" (error)="onProductImageError($event)">
+                              </div>
+                              <div class="product-thumb-placeholder" *ngIf="!product.productImageUrl">
+                                <i class="fa fa-image fontAwesome_Li_Class"></i>
+                              </div>
+                              <span class="product-name">{{ product.productName }}</span>
+                            </div>
+                          </td>
+                          <td class="text-end">{{ product.quantity }}</td>
+                          <td class="text-end">{{ formatMoney(product.unitPrice) }}</td>
+                          <td class="text-end fw-semibold">{{ formatMoney(product.lineTotal) }}</td>
+                        </tr>
+                        <tr *ngIf="!products.length">
+                          <td colspan="4" class="empty-row">No products on this order.</td>
+                        </tr>
+                      </tbody>
+                      <tfoot *ngIf="products.length">
+                        <tr>
+                          <td colspan="3" class="text-end">Products subtotal</td>
+                          <td class="text-end">{{ formatMoney(productsSubtotal) }}</td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+                </div>
+              </section>
+            </ng-template>
+          </li>
+
+          <li [ngbNavItem]="3">
+            <a ngbNavLink><i class="fa fa-credit-card fontAwesome_Li_Class tab-icon"></i> Payment &amp; Actions</a>
+            <ng-template ngbNavContent>
+              <section class="panel panel--full">
+                <div class="panel__head">
+                  <i class="fa fa-credit-card fontAwesome_Li_Class panel__icon"></i>
+                  <h2 class="panel__title">Payment overview</h2>
+                </div>
+                <div class="panel__body">
+                  <div class="info-grid">
+                    <div class="info-cell">
+                      <span class="info-label">Payment method</span>
+                      <span class="info-value">{{ display(detail.paymentMethodName) }}</span>
+                    </div>
+                    <div class="info-cell">
+                      <span class="info-label">Payment status</span>
+                      <span class="info-value">{{ paymentStatusLabel(detail.paymentStatus) }}</span>
+                    </div>
+                    <div class="info-cell">
+                      <span class="info-label">Total</span>
+                      <span class="info-value">{{ formatMoney(detail.totalAmount) }}</span>
+                    </div>
+                    <div class="info-cell">
+                      <span class="info-label">Paid</span>
+                      <span class="info-value">{{ formatMoney(detail.paidAmount) }}</span>
+                    </div>
+                    <div class="info-cell">
+                      <span class="info-label">Remaining</span>
+                      <span class="info-value">{{ formatMoney(detail.remainingAmount) }}</span>
+                    </div>
+                  </div>
+                  <p *ngIf="isCod" class="text-muted small mb-0 mt-3">
+                    Use the <strong>Cash On Delivery</strong> tab to confirm the order and record payment.
+                  </p>
+                </div>
+              </section>
+            </ng-template>
+          </li>
+
+          <li [ngbNavItem]="4" *ngIf="isCod">
+            <a ngbNavLink><i class="fa fa-money-bill-wave fontAwesome_Li_Class tab-icon"></i> Cash On Delivery</a>
+            <ng-template ngbNavContent>
+              <section class="panel panel--full">
+                <div class="panel__head">
+                  <i class="fa fa-money-bill-wave fontAwesome_Li_Class panel__icon"></i>
+                  <h2 class="panel__title">Cash on delivery</h2>
+                </div>
+                <div class="panel__body">
+                  <div class="action-card action-card--primary mb-0">
+                    <p class="action-card__hint">Confirm the order and record customer payment when received.</p>
+                    <button type="button" class="btn btn-action" (click)="confirmCod()" [disabled]="isActionBusy">
+                      <i class="fa fa-check-circle fontAwesome_Li_Class"></i> Confirm COD order
+                    </button>
+                    <div class="cod-payment-row">
+                      <div class="form-field flex-grow-1 mb-0">
+                        <label class="form-field__label">Paid amount</label>
+                        <input type="number" class="form-control" [(ngModel)]="codPaidAmount" min="0" step="0.01">
+                      </div>
+                      <button type="button" class="btn btn-action btn-action--outline" (click)="markCodPaid()"
+                        [disabled]="isActionBusy">
+                        Record payment
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </ng-template>
+          </li>
+
+          <li [ngbNavItem]="5">
+            <a ngbNavLink><i class="fa fa-times-circle fontAwesome_Li_Class tab-icon"></i> Cancel Order</a>
+            <ng-template ngbNavContent>
+              <section class="panel panel--full cancel-order-panel">
+                <div class="panel__head">
+                  <i class="fa fa-times-circle fontAwesome_Li_Class panel__icon"></i>
+                  <h2 class="panel__title">Cancel order</h2>
+                </div>
+                <div class="panel__body">
+                  <div class="action-card action-card--danger mb-0">
+                    <p class="action-card__hint">This action may release inventory and cannot be undone easily.</p>
+                    <div class="form-field">
+                      <label class="form-field__label">Cancellation reason</label>
+                      <textarea class="form-control" rows="4" [(ngModel)]="cancelReason"
+                        placeholder="Required — explain why this order is being cancelled"></textarea>
+                    </div>
+                    <button type="button" class="btn btn-action btn-action--danger" (click)="cancelOrder()"
+                      [disabled]="isActionBusy">
+                      <i class="fa fa-times-circle fontAwesome_Li_Class"></i> Cancel order
+                    </button>
+                  </div>
+                </div>
+              </section>
+            </ng-template>
+          </li>
+
+          <li [ngbNavItem]="6">
+            <a ngbNavLink><i class="fa fa-truck fontAwesome_Li_Class tab-icon"></i> Shipment</a>
+            <ng-template ngbNavContent>
+              <section class="panel panel--full shipment-panel">
+                <div class="panel__head">
+                  <i class="fa fa-truck fontAwesome_Li_Class panel__icon"></i>
+                  <h2 class="panel__title">Shipment</h2>
+                </div>
+                <div class="panel__body shipment-panel__body">
+                  <div class="shipment-form">
+                    <div class="row g-2">
+                      <div class="col-md-4 col-lg-3">
+                        <label class="form-field__label">Courier name</label>
+                        <input class="form-control form-control-sm" [(ngModel)]="shipmentForm.courierName"
+                          placeholder="e.g. TCS, Leopards">
+                      </div>
+                      <div class="col-md-4 col-lg-3">
+                        <label class="form-field__label">Tracking number</label>
+                        <input class="form-control form-control-sm" [(ngModel)]="shipmentForm.trackingNumber">
+                      </div>
+                      <div class="col-md-4 col-lg-6">
+                        <label class="form-field__label">Tracking URL</label>
+                        <input class="form-control form-control-sm" [(ngModel)]="shipmentForm.trackingUrl" placeholder="https://">
+                      </div>
+                      <div class="col-md-4 col-lg-3">
+                        <label class="form-field__label">Shipping charges</label>
+                        <input type="number" class="form-control form-control-sm" [(ngModel)]="shipmentForm.shippingCharges"
+                          min="0" step="0.01">
+                      </div>
+                      <div class="col-md-4 col-lg-3">
+                        <label class="form-field__label">Courier cost</label>
+                        <input type="number" class="form-control form-control-sm" [(ngModel)]="shipmentForm.courierCost"
+                          min="0" step="0.01">
+                      </div>
+                      <div class="col-md-4 col-lg-3">
+                        <label class="form-field__label">Shipped at</label>
+                        <input type="datetime-local" class="form-control form-control-sm" [(ngModel)]="shipmentForm.shippedAt">
+                      </div>
+                      <div class="col-md-12 col-lg-3">
+                        <label class="form-field__label">Shipment remarks</label>
+                        <input class="form-control form-control-sm" [(ngModel)]="shipmentForm.remarks"
+                          placeholder="Optional notes">
+                      </div>
+                    </div>
+                    <div class="shipment-actions">
+                      <button type="button" class="btn btn-action btn-sm" (click)="saveShipment()" [disabled]="isActionBusy">
+                        <i class="fa fa-save fontAwesome_Li_Class"></i> Save shipment
+                      </button>
+                      <button type="button" class="btn btn-action btn-action--outline btn-sm" (click)="markDelivered()"
+                        [disabled]="isActionBusy">
+                        <i class="fa fa-check fontAwesome_Li_Class"></i> Mark delivered
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="shipment-subsection">
+                    <div class="shipment-subsection__head">
+                      <span class="shipment-subsection__title">Delivery &amp; notes</span>
+                      <span class="shipment-subsection__hint">Used when updating status from the header</span>
+                    </div>
+                    <div class="row g-2 align-items-start shipment-notes-row">
+                      <div class="col-md-4 col-lg-3">
+                        <label class="form-field__label">Delivery status</label>
+                        <ng-select class="shipment-notes-select" [options]="deliveryStatuses"
+                          [(ngModel)]="selectedDeliveryStatus" [noFilter]="999"
+                          placeholder="Keep current">
+                        </ng-select>
+                      </div>
+                      <div class="col-md-4 col-lg-4">
+                        <label class="form-field__label">Remarks</label>
+                        <textarea class="form-control form-control-sm shipment-notes-input" rows="2"
+                          [(ngModel)]="statusRemarks" placeholder="Order history"></textarea>
+                      </div>
+                      <div class="col-md-4 col-lg-5">
+                        <label class="form-field__label">Admin note</label>
+                        <textarea class="form-control form-control-sm shipment-notes-input" rows="2"
+                          [(ngModel)]="statusAdminNote" placeholder="Internal note"></textarea>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </ng-template>
+          </li>
+        </ul>
+
+        <div [ngbNavOutlet]="nav" class="tab-outlet"></div>
+      </div>
+    </ng-container>
+  </div>
+</div>

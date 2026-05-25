@@ -1,0 +1,129 @@
+<div class="order-detail-modal">
+  <div class="modal-header custom-modal-header py-2">
+    <h5 class="modal-title mb-0">Order Information</h5>
+    <button type="button" class="close" aria-label="Close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body compact-modal-body">
+    <div *ngIf="isLoading" class="text-center py-3 text-muted">Loading order details...</div>
+
+    <ng-container *ngIf="!isLoading && detail">
+      <section class="info-section">
+        <h6 class="section-title">Customer &amp; Shipping</h6>
+        <div class="row no-gutters-compact">
+          <div class="col-4">
+            <label class="field-label">Customer Name</label>
+            <input type="text" class="form-control form-control-sm field-readonly"
+              [value]="display(detail.billingAddress?.customerName || orderRow?.customerName)" readonly>
+          </div>
+          <div class="col-4">
+            <label class="field-label">Email</label>
+            <input type="text" class="form-control form-control-sm field-readonly"
+              [value]="display(detail.billingAddress?.emailAddress)" readonly>
+          </div>
+          <div class="col-4">
+            <label class="field-label">Phone</label>
+            <input type="text" class="form-control form-control-sm field-readonly"
+              [value]="display(detail.billingAddress?.phone || orderRow?.phone)" readonly>
+          </div>
+        </div>
+        <div class="row no-gutters-compact">
+          <div class="col-12">
+            <label class="field-label">Shipping Address</label>
+            <input type="text" class="form-control form-control-sm field-readonly"
+              [value]="display(detail.shippingAddress?.address)" readonly>
+          </div>
+        </div>
+        <div class="row no-gutters-compact">
+          <div class="col-4">
+            <label class="field-label">City</label>
+            <input type="text" class="form-control form-control-sm field-readonly"
+              [value]="display(detail.shippingAddress?.townCity)" readonly>
+          </div>
+          <div class="col-4">
+            <label class="field-label">State</label>
+            <input type="text" class="form-control form-control-sm field-readonly"
+              [value]="display(detail.shippingAddress?.stateCounty)" readonly>
+          </div>
+          <div class="col-4">
+            <label class="field-label">Zip</label>
+            <input type="text" class="form-control form-control-sm field-readonly"
+              [value]="display(detail.shippingAddress?.postalCode)" readonly>
+          </div>
+        </div>
+      </section>
+
+      <section class="info-section">
+        <h6 class="section-title">Order Details</h6>
+        <div class="row no-gutters-compact">
+          <div class="col-2">
+            <label class="field-label">Order #</label>
+            <input type="text" class="form-control form-control-sm field-readonly" [value]="display(orderRow?.orderNumber)" readonly>
+          </div>
+          <div class="col-4">
+            <label class="field-label">Order Date / Time</label>
+            <input type="text" class="form-control form-control-sm field-readonly"
+              [value]="detail.orderDate ? (detail.orderDate | date:'MM/dd/yyyy hh:mm a') : '—'" readonly>
+          </div>
+          <div class="col-3">
+            <label class="field-label">Order Status</label>
+            <input type="text" class="form-control form-control-sm field-readonly"
+              [value]="display(orderRow?.orderStatusDisplayName)" readonly>
+          </div>
+          <div class="col-3">
+            <label class="field-label">Payment Status</label>
+            <input type="text" class="form-control form-control-sm field-readonly" [value]="paymentStatusLabel" readonly>
+          </div>
+        </div>
+        <div class="row no-gutters-compact">
+          <div class="col-4">
+            <label class="field-label">Payment Method</label>
+            <input type="text" class="form-control form-control-sm field-readonly"
+              [value]="display(detail.paymentMethodName)" readonly>
+          </div>
+          <div class="col-4">
+            <label class="field-label">Shipping Method</label>
+            <input type="text" class="form-control form-control-sm field-readonly"
+              [value]="display(detail.shippingMethodName)" readonly>
+          </div>
+          <div class="col-4">
+            <label class="field-label">Delivery Status</label>
+            <input type="text" class="form-control form-control-sm field-readonly" [value]="deliveryStatusLabel" readonly>
+          </div>
+        </div>
+        <div class="row no-gutters-compact">
+          <div class="col-4">
+            <label class="field-label">Total Amount</label>
+            <input type="text" class="form-control form-control-sm field-readonly"
+              [value]="formatMoney(detail.totalAmount)" readonly>
+          </div>
+          <div class="col-4">
+            <label class="field-label">Paid Amount</label>
+            <input type="text" class="form-control form-control-sm field-readonly"
+              [value]="formatMoney(orderRow?.totalPaidAmount)" readonly>
+          </div>
+          <div class="col-4">
+            <label class="field-label">Remaining</label>
+            <input type="text" class="form-control form-control-sm field-readonly"
+              [value]="formatMoney(orderRow?.remainingAmount)" readonly>
+          </div>
+        </div>
+        <div class="row no-gutters-compact">
+          <div class="col-12">
+            <label class="field-label">Products</label>
+            <textarea class="form-control form-control-sm field-readonly products-summary" rows="2" readonly>{{ productsSummary }}</textarea>
+          </div>
+        </div>
+      </section>
+    </ng-container>
+  </div>
+
+  <div class="modal-footer py-2">
+    <button type="button" class="btn btn-primary btn-sm" (click)="manageOrder()" [disabled]="isLoading || !orderRow?.id">
+      <i class="fa fa-cog fontAwesome_Li_Class mr-1"></i> Manage Order
+    </button>
+    <button type="button" class="btn btn-secondary btn-sm" (click)="close()">Close</button>
+  </div>
+</div>

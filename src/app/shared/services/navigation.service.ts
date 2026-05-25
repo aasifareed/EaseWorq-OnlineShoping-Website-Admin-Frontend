@@ -93,7 +93,7 @@ export class NavigationService {
     this.menuItems.next(this.onlineShopMenu);
 
     if (isNavigate) {
-      this.router.navigateByUrl('/online-shop/online-orders');
+      this.router.navigateByUrl('/online-shop/order-board');
     }
   }
 
@@ -130,13 +130,12 @@ export class NavigationService {
   initializeMenu() {
     this.onlineShopMenu = [
       {
-        name: 'Online Orders',
-        title: 'Online Orders',
+        name: 'Order Board',
+        title: 'Order Board',
         type: 'link',
-        icon: 'assets/images/online-shopping.png',
+        icon: 'fa fa-th-large',
         icontType: InconsTypeEnum.ICons_FontAwesome.toString(),
-        state: '/online-shop/online-orders',
-        // permission_required: PermissionsEnum.OnlineOrder,
+        state: '/online-shop/order-board',
       },
       {
         name: 'Order Status',
@@ -198,6 +197,15 @@ export class NavigationService {
         icon: 'fa fa-cog',
         icontType: InconsTypeEnum.ICons_FontAwesome.toString(),
         state: '/online-shop/settings',
+        // permission_required: PermissionsEnum.OnlineOrder,
+      },
+      {
+        name: 'Communication',
+        title: 'Communication',
+        type: 'link',
+        icon: 'fa fa-comments',
+        icontType: InconsTypeEnum.ICons_FontAwesome.toString(),
+        state: '/online-shop/online-orders',
         // permission_required: PermissionsEnum.OnlineOrder,
       },
     ];

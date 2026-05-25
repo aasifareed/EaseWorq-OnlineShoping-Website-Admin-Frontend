@@ -147,7 +147,7 @@ export class SigninComponent implements OnInit {
                       //   this.loaderService.display(false);
                       //   return;
                       // }
-                      this.router.navigateByUrl('/online-shop/online-orders');
+                      this.router.navigateByUrl('/online-shop/order-board');
                       this.navigation.setApplication(Apps.ONLINE_SHOP, false);
 
                       

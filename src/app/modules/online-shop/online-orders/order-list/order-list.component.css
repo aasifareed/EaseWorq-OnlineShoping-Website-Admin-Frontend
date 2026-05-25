@@ -1,0 +1,29 @@
+.order-status-badge {
+  color: #fff;
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+}
+
+.order-list-toolbar {
+  margin-top: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.order-list-toolbar__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.order-list-toolbar__actions .btn {
+  min-width: 6.5rem;
+  white-space: nowrap;
+}
+
+@media (min-width: 992px) {
+  .order-list-toolbar__actions {
+    justify-content: flex-end;
+  }
+}

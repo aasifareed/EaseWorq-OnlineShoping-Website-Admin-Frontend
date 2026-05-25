@@ -1,0 +1,123 @@
+<div [dir]="globalDataService.getdir()">
+
+  <div class="gridAboveHeightInSaleOrderHistory">
+    <h1>Orders</h1>
+
+    <hr class="mt-0 mb-0" />
+
+    <div class="row order-list-toolbar align-items-end">
+      <div class="col-md-6 col-lg-5">
+        <div class="form-group mb-0">
+          <input id="orderSearch" placeholder="Search by order #, customer, or phone"
+            [formControl]="searchControl" class="form-control form-control-rounded" type="text">
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-auto">
+        <div class="order-list-toolbar__actions">
+          <button type="button" class="btn btn-primary" (click)="search()">
+            <i class="i-File-Search"></i>
+            Search
+          </button>
+          <button type="button" class="btn btn-primary" (click)="resetSearch()">
+            <i class="i-Restore-Window"></i>
+            Reset
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card mb-3">
+          <ngx-datatable
+            [ngStyle]="{'height':gridHeight,'box-shadow': 'none'}" class="material fullscreen"
+            [columnMode]="ColumnMode.force" [headerHeight]="45" [footerHeight]="30" [rowHeight]="40"
+            [scrollbarH]="true" [rows]="filteredData"
+            [summaryRow]="true"
+            [summaryPosition]="'bottom'"
+            [summaryHeight]="45"
+            [selectAllRowsOnPage]="false"
+            [loadingIndicator]="loadingIndicator" [externalPaging]="true" [count]="page.totalElements"
+            [offset]="page.pageNumber" [limit]="page.size" (page)="setPage($event)" (sort)="onSort($event)">
+
+            <ngx-datatable-column name="orderNumber" [width]="200">
+              <ng-template ngx-datatable-header-template>Order #</ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="storeName" [width]="150">
+              <ng-template ngx-datatable-header-template>Store Name</ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="customerName" [width]="200">
+              <ng-template ngx-datatable-header-template>Customer Name</ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="orderStatusDisplayName" [width]="180" [summaryFunc]="null">
+              <ng-template ngx-datatable-header-template>Status</ng-template>
+              <ng-template ngx-datatable-cell-template let-row="row">
+                <span class="badge order-status-badge"
+                  [style.background-color]="row.orderStatusColorCode || '#6c757d'">
+                  {{ row.orderStatusDisplayName }}
+                </span>
+              </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="totalAmount" [width]="200" [summaryTemplate]="totalAmountTemplate">
+              <ng-template ngx-datatable-header-template>Total Amount</ng-template>
+              <ng-template ngx-datatable-cell-template let-row="row">
+                {{globalDataService.getCurrencySymbol()}} {{ row.totalAmount | number:'1.2-2' }}
+              </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="totalPaidAmount" [width]="200" [summaryTemplate]="paidAmountTemplate">
+              <ng-template ngx-datatable-header-template>Paid Amount</ng-template>
+              <ng-template ngx-datatable-cell-template let-row="row">
+                {{globalDataService.getCurrencySymbol()}} {{ row.totalPaidAmount | number:'1.2-2' }}
+              </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="remainingAmount" [width]="200" [summaryTemplate]="remaningAmountTemplate">
+              <ng-template ngx-datatable-header-template>Remaining Amount</ng-template>
+              <ng-template ngx-datatable-cell-template let-row="row">
+                {{globalDataService.getCurrencySymbol()}} {{ row.remainingAmount | number:'1.2-2' }}
+              </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="date" [width]="150">
+              <ng-template ngx-datatable-header-template>Order Date</ng-template>
+              <ng-template ngx-datatable-cell-template let-row="row">
+                {{ row.date | date:'MM-dd-yyyy' }}
+              </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="actions" [width]="100" [sortable]="false" [canAutoResize]="false" [summaryFunc]="null">
+              <ng-template ngx-datatable-header-template>Action</ng-template>
+              <ng-template ngx-datatable-cell-template let-row="row">
+                <button type="button" class="btn btn-sm btn-primary" (click)="editOrder(row)">
+                  Edit
+                </button>
+              </ng-template>
+            </ngx-datatable-column>
+
+          </ngx-datatable>
+
+          <ng-template #totalAmountTemplate>
+            {{globalDataService.getCurrencySymbol() }} {{ totalAmountSum | number:'1.2-2' }}
+          </ng-template>
+
+          <ng-template #paidAmountTemplate>
+            {{globalDataService.getCurrencySymbol() }} {{ paidAmountSum | number:'1.2-2' }}
+          </ng-template>
+
+          <ng-template #remaningAmountTemplate>
+            {{globalDataService.getCurrencySymbol() }} {{ remaningAmountSum | number:'1.2-2' }}
+          </ng-template>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>

@@ -31,7 +31,7 @@ export class RoutePermissionService {
 
   // private routePermissions: RoutePermission[] = [];
 
-  private readonly defaultRoute = '/online-shop/online-orders';
+  private readonly defaultRoute = '/online-shop/order-board';
 
   constructor(
     private router: Router,
