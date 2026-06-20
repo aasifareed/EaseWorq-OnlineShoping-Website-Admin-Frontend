@@ -1,0 +1,71 @@
+.confirmation-dialog {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.confirmation-dialog__icon {
+  flex: 0 0 auto;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+.confirmation-dialog__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.confirmation-dialog__message {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #2d3748;
+}
+
+.confirmation-dialog__detail {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.confirmation-dialog--warning .confirmation-dialog__icon {
+  background: #fff8e6;
+  color: #d97706;
+}
+
+.confirmation-dialog--danger .confirmation-dialog__icon {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.confirmation-dialog--info .confirmation-dialog__icon {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+
+.confirmation-dialog--question .confirmation-dialog__icon {
+  background: #f3f0ff;
+  color: #6658dd;
+}
+
+.confirmation-dialog__form {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e8ecf1;
+}
+
+.confirmation-dialog__form .form-group + .form-group {
+  margin-top: 0.75rem;
+}
+
+.confirmation-dialog__form .form-field__label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #4a5568;
+  margin-bottom: 0.35rem;
+}

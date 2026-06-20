@@ -11,6 +11,7 @@ import {
 import { CustomUserStoreService } from 'src/app/shared/services/custom-user-store.service';
 import { GlobalDataService } from 'src/app/shared/services/globalData.service';
 import { RestService } from 'src/app/shared/services/rest.service';
+import { ToastrService } from 'ngx-toastr';
 import { environment } from 'src/environments/environment';
 
 export interface OrderBoardStatusGroup {
@@ -34,6 +35,7 @@ export interface OrderBoardCard extends OrderListRow {
   shippingTownCity?: string;
   shippingStateCounty?: string;
   shippingPostalCode?: string;
+  requiresManualFulfillment?: boolean;
   ageDays: number;
 }
 
@@ -50,6 +52,7 @@ interface FilterOption {
 export class OrderBoardComponent implements OnInit, OnDestroy {
   showFilter = true;
   isLoading = false;
+  syncCargoLoading = false;
   searchControl = new FormControl('');
 
   filter: {
@@ -85,6 +88,7 @@ export class OrderBoardComponent implements OnInit, OnDestroy {
     private modalService: NgbModal,
     public customUserStoreService: CustomUserStoreService,
     public globalDataService: GlobalDataService,
+    private toastr: ToastrService,
   ) {}
 
   ngOnInit(): void {
@@ -126,6 +130,39 @@ export class OrderBoardComponent implements OnInit, OnDestroy {
     this.filter.shippingMethod = null;
     this.setDefaultDateRange();
     this.loadBoard(this.customUserStoreService.selectedUserStore);
+  }
+
+  syncCargoStatus(): void {
+    if (this.syncCargoLoading) {
+      return;
+    }
+
+    this.syncCargoLoading = true;
+    this.toastr.info('Syncing cargo statuses...', 'Please wait', { disableTimeOut: true });
+
+    this.restService
+      .post(environment.urls.OnlineShopShipment_SyncCourierShipments, { maxCount: 50 })
+      .subscribe({
+        next: (response) => {
+          this.syncCargoLoading = false;
+          this.toastr.clear();
+          const result = response?.result ?? response ?? {};
+          const synced = Number(result.syncedCount ?? result.SyncedCount ?? 0);
+          const failed = Number(result.failedCount ?? result.FailedCount ?? 0);
+          this.toastr.success(`Synced ${synced}, Failed ${failed}`);
+          this.loadBoard(this.customUserStoreService.selectedUserStore);
+        },
+        error: (err) => {
+          this.syncCargoLoading = false;
+          this.toastr.clear();
+          const msg =
+            err?.error?.error?.message ||
+            err?.error?.message ||
+            err?.message ||
+            'Courier sync failed.';
+          this.toastr.error(msg);
+        },
+      });
   }
 
   filterByStatus(statusId: string | null): void {
@@ -292,6 +329,16 @@ export class OrderBoardComponent implements OnInit, OnDestroy {
       url += `&shippingMethod=${this.filter.shippingMethod}`;
     }
 
+    const keyword = (this.filter.keyword || '').trim();
+    if (!keyword) {
+      if (this.filter.fromDate) {
+        url += `&orderFrom=${encodeURIComponent(this.filter.fromDate)}`;
+      }
+      if (this.filter.toDate) {
+        url += `&orderTo=${encodeURIComponent(this.filter.toDate)}`;
+      }
+    }
+
     this.restService.get(url).subscribe({
       next: (response) => {
         const items = response?.result?.items ?? [];
@@ -358,11 +405,19 @@ export class OrderBoardComponent implements OnInit, OnDestroy {
       shippingTownCity: item.shippingTownCity ?? item.ShippingTownCity,
       shippingStateCounty: item.shippingStateCounty ?? item.ShippingStateCounty,
       shippingPostalCode: item.shippingPostalCode ?? item.ShippingPostalCode,
+      requiresManualFulfillment:
+        !!(item.requiresManualFulfillment ?? item.RequiresManualFulfillment)
+        || item.shippingFulfillmentStatus === 'manual_fulfillment_required'
+        || item.ShippingFulfillmentStatus === 'manual_fulfillment_required',
       ageDays: this.getDaysSince(orderDate),
     };
   }
 
   private applyClientDateFilter(): void {
+    if ((this.filter.keyword || '').trim()) {
+      return;
+    }
+
     if (!this.filter.fromDate && !this.filter.toDate) {
       return;
     }

@@ -30,6 +30,7 @@ export class OnlineShopSettingsStateService {
     private translate: TranslateService,
   ) {
     this.form = this.buildForm();
+    this.wireCodShippingAdvanceControl();
   }
 
   get posInfo(): OnlineShopPosInfo | null {
@@ -115,6 +116,7 @@ export class OnlineShopSettingsStateService {
       isSameDayDeliveryEnabled: [false],
       deliveryTimeSlotsJson: [''],
       isCashOnDeliveryEnabled: [true],
+      collectShippingChargesOnCod: [false],
       isGoPayFastEnabled: [false],
       onlineOrderPrefix: ['OS-'],
       onlineInvoicePrefix: ['INV-OS-'],
@@ -146,6 +148,7 @@ export class OnlineShopSettingsStateService {
       isSameDayDeliveryEnabled: !!s.isSameDayDeliveryEnabled,
       deliveryTimeSlotsJson: s.deliveryTimeSlotsJson || '',
       isCashOnDeliveryEnabled: s.isCashOnDeliveryEnabled !== false,
+      collectShippingChargesOnCod: !!s.collectShippingChargesOnCod,
       isGoPayFastEnabled: this.resolveGoPayFastEnabled(s),
       onlineOrderPrefix: s.onlineOrderPrefix || 'OS-',
       onlineInvoicePrefix: s.onlineInvoicePrefix || 'INV-OS-',
@@ -154,6 +157,30 @@ export class OnlineShopSettingsStateService {
       metaDescription: s.metaDescription || '',
       metaImageUrl: s.metaImageUrl || '',
     });
+    this.syncCodShippingAdvanceControl();
+  }
+
+  private wireCodShippingAdvanceControl(): void {
+    this.form.get('isCashOnDeliveryEnabled')?.valueChanges.subscribe(() => {
+      this.syncCodShippingAdvanceControl();
+    });
+    this.syncCodShippingAdvanceControl();
+  }
+
+  private syncCodShippingAdvanceControl(): void {
+    const codEnabled = !!this.form.get('isCashOnDeliveryEnabled')?.value;
+    const advanceCtrl = this.form.get('collectShippingChargesOnCod');
+    if (!advanceCtrl) {
+      return;
+    }
+
+    if (!codEnabled) {
+      advanceCtrl.setValue(false, { emitEvent: false });
+      advanceCtrl.disable({ emitEvent: false });
+      return;
+    }
+
+    advanceCtrl.enable({ emitEvent: false });
   }
 
   private emptyPosInfo(): OnlineShopPosInfo {
@@ -180,6 +207,7 @@ export class OnlineShopSettingsStateService {
       isSameDayDeliveryEnabled: !!v.isSameDayDeliveryEnabled,
       deliveryTimeSlotsJson: this.trimOrUndefined(v.deliveryTimeSlotsJson),
       isCashOnDeliveryEnabled: !!v.isCashOnDeliveryEnabled,
+      collectShippingChargesOnCod: !!v.isCashOnDeliveryEnabled && !!v.collectShippingChargesOnCod,
       isGoPayFastEnabled: !!v.isGoPayFastEnabled,
       onlineOrderPrefix: this.trimOrUndefined(v.onlineOrderPrefix),
       onlineInvoicePrefix: this.trimOrUndefined(v.onlineInvoicePrefix),
@@ -241,6 +269,7 @@ export class OnlineShopSettingsStateService {
       isSameDayDeliveryEnabled: !!(s.isSameDayDeliveryEnabled ?? s.IsSameDayDeliveryEnabled),
       deliveryTimeSlotsJson: (s.deliveryTimeSlotsJson || s.DeliveryTimeSlotsJson) as string,
       isCashOnDeliveryEnabled: (s.isCashOnDeliveryEnabled ?? s.IsCashOnDeliveryEnabled) !== false,
+      collectShippingChargesOnCod: !!(s.collectShippingChargesOnCod ?? s.CollectShippingChargesOnCod),
       isGoPayFastEnabled: this.resolveGoPayFastEnabledFromRaw(s),
       onlineOrderPrefix: (s.onlineOrderPrefix || s.OnlineOrderPrefix) as string,
       onlineInvoicePrefix: (s.onlineInvoicePrefix || s.OnlineInvoicePrefix) as string,

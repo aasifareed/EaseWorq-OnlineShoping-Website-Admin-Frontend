@@ -41,6 +41,7 @@ export interface OnlineShopSettings {
   isSameDayDeliveryEnabled: boolean;
   deliveryTimeSlotsJson?: string;
   isCashOnDeliveryEnabled: boolean;
+  collectShippingChargesOnCod: boolean;
   isGoPayFastEnabled: boolean;
   onlineOrderPrefix?: string;
   onlineInvoicePrefix?: string;

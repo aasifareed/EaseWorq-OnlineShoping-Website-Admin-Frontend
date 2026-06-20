@@ -1,0 +1,161 @@
+<div class="provider-section payment-providers">
+  <div class="provider-section__head">
+    <div>
+      <h3 class="provider-section__title">{{ 'Payment Provider Settings' | translate }}</h3>
+      <p class="text-muted mb-0">
+        {{ 'Enable payment methods available on your online storefront checkout.' | translate }}
+      </p>
+    </div>
+    <button type="button" class="btn btn-primary btn-sm" (click)="openAddPaymentMethod()">
+      <i class="fa fa-plus mr-1"></i>{{ 'Add Payment Method' | translate }}
+    </button>
+  </div>
+
+  <div class="payment-provider-grid card mb-0">
+    <ngx-datatable
+      class="material fullscreen payment-provider-datatable"
+      [columnMode]="ColumnMode.force"
+      [headerHeight]="45"
+      [footerHeight]="30"
+      [rowHeight]="50"
+      [rows]="providers"
+      [scrollbarH]="true"
+      [loadingIndicator]="loading"
+      [messages]="{ emptyMessage: ('No payment providers configured. Click Add Payment Method to get started.' | translate) }"
+    >
+      <ngx-datatable-column [minWidth]="170" [sortable]="false">
+        <ng-template ngx-datatable-header-template>
+          <span [title]="'Provider Name' | translate">{{ 'Name' | translate }}</span>
+        </ng-template>
+        <ng-template ngx-datatable-cell-template let-row="row">
+          <span class="payment-name-cell" [title]="row.providerName">{{ row.providerName }}</span>
+          <div class="text-danger small payment-error-cell" *ngIf="row.lastError" [title]="row.lastError">
+            {{ row.lastError }}
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column [minWidth]="120" [sortable]="false">
+        <ng-template ngx-datatable-header-template>
+          <span [title]="'Provider Code' | translate">{{ 'Code' | translate }}</span>
+        </ng-template>
+        <ng-template ngx-datatable-cell-template let-row="row">
+          <code class="payment-code">{{ row.providerCode }}</code>
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column [minWidth]="90" [sortable]="false">
+        <ng-template ngx-datatable-header-template>
+          <span [title]="'Environment' | translate">{{ 'Env.' | translate }}</span>
+        </ng-template>
+        <ng-template ngx-datatable-cell-template let-row="row">
+          {{ row.environment || '—' }}
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column [minWidth]="120" [sortable]="false">
+        <ng-template ngx-datatable-header-template>
+          <span [title]="'Merchant / Account' | translate">{{ 'Merchant' | translate }}</span>
+        </ng-template>
+        <ng-template ngx-datatable-cell-template let-row="row">
+          <span [title]="merchantDisplay(row)">{{ merchantDisplay(row) }}</span>
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column [minWidth]="90" [sortable]="false" headerClass="payment-col-center" cellClass="payment-col-center">
+        <ng-template ngx-datatable-header-template>
+          <span [title]="'Active' | translate">{{ 'Active' | translate }}</span>
+        </ng-template>
+        <ng-template ngx-datatable-cell-template let-row="row">
+          <label class="status-switch mb-0" [class.status-switch--disabled]="isToggling(row.id, 'active')">
+            <input
+              type="checkbox"
+              [checked]="row.isActive"
+              [disabled]="isToggling(row.id, 'active')"
+              (change)="onActiveToggle(row, $event)"
+            />
+            <span class="status-switch__slider"></span>
+          </label>
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column [minWidth]="90" [sortable]="false" headerClass="payment-col-center" cellClass="payment-col-center">
+        <ng-template ngx-datatable-header-template>
+          <span [title]="'API Enabled' | translate">{{ 'API' | translate }}</span>
+        </ng-template>
+        <ng-template ngx-datatable-cell-template let-row="row">
+          <label
+            *ngIf="!isCod(row); else codApiDash"
+            class="status-switch mb-0"
+            [class.status-switch--disabled]="isToggling(row.id, 'api')"
+          >
+            <input
+              type="checkbox"
+              [checked]="row.isApiEnabled"
+              [disabled]="isToggling(row.id, 'api')"
+              (change)="onApiToggle(row, $event)"
+            />
+            <span class="status-switch__slider"></span>
+          </label>
+          <ng-template #codApiDash>
+            <span class="text-muted">—</span>
+          </ng-template>
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column [minWidth]="95" [sortable]="false" headerClass="payment-col-center" cellClass="payment-col-center">
+        <ng-template ngx-datatable-header-template>
+          <span [title]="'Default' | translate">{{ 'Default' | translate }}</span>
+        </ng-template>
+        <ng-template ngx-datatable-cell-template let-row="row">
+          <span class="badge badge-primary payment-badge" *ngIf="row.isDefault">{{ 'Default' | translate }}</span>
+          <span class="text-muted" *ngIf="!row.isDefault">—</span>
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column [minWidth]="110" [sortable]="false" headerClass="payment-col-center" cellClass="payment-col-center">
+        <ng-template ngx-datatable-header-template>
+          <span [title]="'Collect Shipping Advance' | translate">{{ 'Coll. Ship.' | translate }}</span>
+        </ng-template>
+        <ng-template ngx-datatable-cell-template let-row="row">
+          <span
+            *ngIf="isCod(row); else notCodShip"
+            class="badge payment-badge"
+            [class.badge-info]="row.collectShippingChargesInAdvanceForCod"
+            [class.badge-secondary]="!row.collectShippingChargesInAdvanceForCod"
+            [title]="'Collect shipping charges in advance for COD orders' | translate"
+          >
+            {{ row.collectShippingChargesInAdvanceForCod ? ('Yes' | translate) : ('No' | translate) }}
+          </span>
+          <ng-template #notCodShip>
+            <span class="text-muted">—</span>
+          </ng-template>
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column [minWidth]="200" [sortable]="false" [canAutoResize]="false">
+        <ng-template ngx-datatable-header-template>
+          <span [title]="'Actions' | translate">{{ 'Action' | translate }}</span>
+        </ng-template>
+        <ng-template ngx-datatable-cell-template let-row="row">
+          <button type="button" class="btn btn-primary btn-sm mr-1" (click)="openEdit(row)">
+            <i class="fa fa-pencil fontAwesome_Li_Class" style="color: white;"></i>
+            {{ 'Edit' | translate }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-outline-primary btn-sm mr-1"
+            *ngIf="!isCod(row) && !row.isDefault"
+            (click)="setDefault(row)"
+            [title]="'Set Default' | translate"
+          >
+            <i class="fa fa-star fontAwesome_Li_Class"></i>
+          </button>
+          <button type="button" class="btn btn-danger btn-sm" (click)="delete(row)">
+            <i class="fa fa-trash fontAwesome_Li_Class" style="color: white;"></i>
+          </button>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+  </div>
+</div>

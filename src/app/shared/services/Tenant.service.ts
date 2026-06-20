@@ -35,8 +35,10 @@ checkTenantAvailability(tenantName: string): Observable<boolean> {
     map((response: any) => {
       
       if (response.success && response.result.tenantId != null) {
-        this.store.setItem("tenantName",tenantName);
-        this.store.setItem("tenantId",response.result.tenantId);
+        this.store.setItem("tenantName", tenantName);
+        this.store.setItem("tenantId", response.result.tenantId);
+        this.globalDataService.setTenantName(tenantName);
+        this.globalDataService.setTenantId(Number(response.result.tenantId));
         return true;
       } else {
         return false;

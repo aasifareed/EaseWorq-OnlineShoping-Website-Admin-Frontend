@@ -1,0 +1,52 @@
+.provider-section {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e8eaed;
+}
+
+.provider-section__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.provider-section__title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.provider-table {
+  background: #fff;
+  border: 1px solid #e8eaed;
+  border-radius: 8px;
+  margin-bottom: 0;
+}
+
+.provider-table thead th {
+  border-top: none;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #5f6368;
+  white-space: nowrap;
+}
+
+.provider-table__url {
+  max-width: 180px;
+  word-break: break-all;
+  font-size: 0.8rem;
+}
+
+.provider-table__error {
+  max-width: 140px;
+  word-break: break-word;
+  font-size: 0.8rem;
+  color: #c5221f;
+}
+
+.provider-table__actions {
+  white-space: nowrap;
+}

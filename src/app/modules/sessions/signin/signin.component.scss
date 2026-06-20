@@ -1,32 +1,58 @@
+.signin-card-body {
+  padding: 1.25rem 1.5rem 1rem;
+}
 
+.signin-card .auth-logo {
+  margin-top: 0;
+  margin-bottom: 0.25rem;
+}
 
+.signin-form .form-group {
+  margin-bottom: 0.65rem;
+}
+
+.signin-form .form-group label {
+  margin-bottom: 0.2rem;
+  font-size: 15px;
+}
+
+.signin-form .form-control {
+  padding: 0.45rem 0.65rem;
+  font-size: 15px;
+  min-height: auto;
+}
+
+.signin-password-group {
+  margin-bottom: 0.5rem !important;
+}
+
+.signin-submit-btn {
+  font-size: 18px;
+  margin-top: 0.5rem !important;
+}
+
+.signin-forgot-wrap {
+  margin-top: 0.65rem;
+}
+
+.signin-forgot-btn {
+  margin-bottom: 0;
+}
 
 [dir="rtl"] {
-    
-.togglePassword{
-    top: 50%; 
-    left: 10px; 
-    transform: translateY(26%); 
+  .togglePassword {
+    top: 50%;
+    left: 10px;
+    transform: translateY(26%);
     cursor: pointer;
-}
-
-.btn_Forgot_Password{
-    padding-left: 10%;margin-bottom: 2%;margin-top: -5%;
-}
-
   }
+}
 
-  [dir="ltr"] {
-    
-.togglePassword{
-    top: 50%; 
-    right: 10px; 
-    transform: translateY(26%); 
+[dir="ltr"] {
+  .togglePassword {
+    top: 50%;
+    right: 10px;
+    transform: translateY(26%);
     cursor: pointer;
-}
-
-.btn_Forgot_Password{
-    padding-right: 10%;margin-bottom: 2%;margin-top: -5%;
-}
-
   }
+}

@@ -1,0 +1,80 @@
+<div class="provider-section">
+  <div class="provider-section__head">
+    <div>
+      <h3 class="provider-section__title">{{ 'Courier Provider Settings' | translate }}</h3>
+      <p class="text-muted mb-0">
+        {{ 'Configure courier API credentials for shipping rate lookup and booking.' | translate }}
+      </p>
+    </div>
+    <button type="button" class="btn btn-outline-primary btn-sm" (click)="openCreate()">
+      <i class="fa fa-plus mr-1"></i>{{ 'Add Provider' | translate }}
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="text-center py-4">
+    <i class="fa fa-spinner fa-spin fa-2x text-muted"></i>
+  </div>
+
+  <div class="table-responsive" *ngIf="!loading">
+    <table class="table table-sm provider-table">
+      <thead>
+        <tr>
+          <th>{{ 'Provider' | translate }}</th>
+          <th>{{ 'Code' | translate }}</th>
+          <th>{{ 'API URL' | translate }}</th>
+          <th>{{ 'API' | translate }}</th>
+          <th>{{ 'Manual' | translate }}</th>
+          <th>{{ 'Active' | translate }}</th>
+          <th>{{ 'Last refresh' | translate }}</th>
+          <th>{{ 'Last error' | translate }}</th>
+          <th class="text-right">{{ 'Actions' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="!providers.length">
+          <td colspan="9" class="text-muted text-center py-4">
+            {{ 'No courier providers configured yet.' | translate }}
+          </td>
+        </tr>
+        <tr *ngFor="let item of providers">
+          <td>
+            <strong>{{ item.courierProvider }}</strong>
+            <div class="text-muted small" *ngIf="item.clientSecretMasked || item.usernameMasked">
+              {{ item.clientSecretMasked || item.usernameMasked }}
+            </div>
+          </td>
+          <td>{{ item.providerCode }}</td>
+          <td class="provider-table__url">{{ item.apiBaseUrl || '—' }}</td>
+          <td>
+            <span class="badge" [class.badge-success]="item.isApiEnabled" [class.badge-secondary]="!item.isApiEnabled">
+              {{ item.isApiEnabled ? ('Yes' | translate) : ('No' | translate) }}
+            </span>
+          </td>
+          <td>
+            <span class="badge" [class.badge-info]="item.isManualRateEnabled" [class.badge-secondary]="!item.isManualRateEnabled">
+              {{ item.isManualRateEnabled ? ('Yes' | translate) : ('No' | translate) }}
+            </span>
+          </td>
+          <td>
+            <span class="badge" [class.badge-success]="item.isActive" [class.badge-secondary]="!item.isActive">
+              {{ item.isActive ? ('Yes' | translate) : ('No' | translate) }}
+            </span>
+          </td>
+          <td>{{ item.lastRefreshAt ? (item.lastRefreshAt | date: 'short') : '—' }}</td>
+          <td class="provider-table__error">{{ item.lastError || '—' }}</td>
+          <td class="text-right provider-table__actions">
+            <button type="button" class="btn btn-link btn-sm p-0 mr-2" (click)="openEdit(item)">
+              {{ 'Edit' | translate }}
+            </button>
+            <button type="button" class="btn btn-link btn-sm p-0 mr-2" (click)="toggleActive(item)">
+              {{ item.isActive ? ('Disable' | translate) : ('Enable' | translate) }}
+            </button>
+            <button type="button" class="btn btn-link btn-sm text-danger p-0" (click)="delete(item)">
+              {{ 'Delete' | translate }}
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

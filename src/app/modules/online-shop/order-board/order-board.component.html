@@ -17,41 +17,52 @@
     <div class="order-board-container">
       <div class="card mb-3" *ngIf="showFilter">
         <div class="card-body">
-          <div class="row p-2 align-items-end order-board-filter-row">
-            <div class="col-xl-2 col-lg-3 col-md-6 form-group mb-2 order-board-search-col">
-              <label for="boardSearch">Search</label>
-              <input id="boardSearch" class="form-control" type="text" placeholder="Order #, customer, phone"
-                [formControl]="searchControl">
-            </div>
-            <div class="col-xl-2 col-lg-3 col-md-6 form-group mb-2">
-              <label for="paymentMethod">Payment Method</label>
-              <ng-select id="paymentMethod" [options]="paymentMethodOptions" [(ngModel)]="filter.paymentMethod"
-                [noFilter]="999" placeholder="All Payment Methods">
-              </ng-select>
-            </div>
-            <div class="col-xl-2 col-lg-3 col-md-6 form-group mb-2">
-              <label for="shippingMethod">Shipping Method</label>
-              <ng-select id="shippingMethod" [options]="shippingMethodOptions" [(ngModel)]="filter.shippingMethod"
-                [noFilter]="999" placeholder="All Shipping Methods">
-              </ng-select>
-            </div>
-            <div class="col-xl-2 col-lg-3 col-md-6 form-group mb-2">
-              <label for="fromDate">Order From</label>
-              <input id="fromDate" type="date" class="form-control" [(ngModel)]="filter.fromDate" [max]="filter.toDate">
-            </div>
-            <div class="col-xl-2 col-lg-3 col-md-6 col-sm-6 form-group mb-2 order-board-date-to-col">
-              <label for="toDate">Order To</label>
-              <input id="toDate" type="date" class="form-control" [(ngModel)]="filter.toDate" [min]="filter.fromDate">
-            </div>
-            <div class="col-auto form-group order-board-filter-actions mb-2">
-              <div class="order-board-filter-actions-inner">
-                <button type="button" class="btn btn-primary btn-sm" (click)="search()">
-                  <i class="fa-solid fa-magnifying-glass fontAwesome_Li_Class mr-1"></i> Search
-                </button>
-                <button type="button" class="btn btn-primary btn-sm" (click)="resetSearch()">
-                  <i class="fas fa-undo fontAwesome_Li_Class mr-1"></i> Reset
-                </button>
+          <div class="order-board-filter-row p-2">
+            <div class="order-board-filter-fields">
+              <div class="order-board-filter-field order-board-search-col">
+                <label for="boardSearch">Search</label>
+                <input id="boardSearch" class="form-control" type="text" placeholder="Order #, customer, phone"
+                  [formControl]="searchControl">
               </div>
+              <div class="order-board-filter-field">
+                <label for="paymentMethod">Payment Method</label>
+                <ng-select id="paymentMethod" [options]="paymentMethodOptions" [(ngModel)]="filter.paymentMethod"
+                  [noFilter]="999" placeholder="All Payment Methods">
+                </ng-select>
+              </div>
+              <div class="order-board-filter-field">
+                <label for="shippingMethod">Shipping Method</label>
+                <ng-select id="shippingMethod" [options]="shippingMethodOptions" [(ngModel)]="filter.shippingMethod"
+                  [noFilter]="999" placeholder="All Shipping Methods">
+                </ng-select>
+              </div>
+              <div class="order-board-filter-field order-board-date-field">
+                <label for="fromDate">Order From</label>
+                <input id="fromDate" type="date" class="form-control" [(ngModel)]="filter.fromDate" [max]="filter.toDate">
+              </div>
+              <div class="order-board-filter-field order-board-date-field">
+                <label for="toDate">Order To</label>
+                <input id="toDate" type="date" class="form-control" [(ngModel)]="filter.toDate" [min]="filter.fromDate">
+              </div>
+            </div>
+            <div class="order-board-filter-actions">
+              <button type="button" class="btn btn-primary btn-sm" (click)="search()">
+                <i class="fa-solid fa-magnifying-glass fontAwesome_Li_Class mr-1"></i> Search
+              </button>
+              <button type="button" class="btn btn-primary btn-sm" (click)="resetSearch()">
+                <i class="fas fa-undo fontAwesome_Li_Class mr-1"></i> Reset
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline-primary btn-sm order-board-sync-btn"
+                [disabled]="syncCargoLoading"
+                (click)="syncCargoStatus()"
+              >
+                <i class="fas fa-sync fontAwesome_Li_Class mr-1" [class.fa-spin]="syncCargoLoading"></i>
+                <span class="order-board-sync-btn__text">
+                  {{ syncCargoLoading ? 'Syncing…' : 'Sync Cargo Status' }}
+                </span>
+              </button>
             </div>
           </div>
         </div>
@@ -98,6 +109,10 @@
                     <span class="shipping-method-badge">
                       <i class="fa fa-truck fontAwesome_Li_Class"></i>
                       {{ getShippingMethodLabel(order) }}
+                    </span>
+                    <span class="manual-fulfillment-badge" *ngIf="order.requiresManualFulfillment">
+                      <i class="fa fa-exclamation-triangle fontAwesome_Li_Class"></i>
+                      Manual dispatch
                     </span>
                   </div>
                   <div class="card-shipping-address">

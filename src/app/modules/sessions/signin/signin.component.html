@@ -1,110 +1,75 @@
 <div [dir]="globalDataService.getdir()">
 
-    <div class="card o-hidden loginTransparent"
+    <div class="card o-hidden loginTransparent signin-card"
         [@animate]="{value:'*',params:{y:'120px',opacity:'0',delay:'100ms', duration: '400ms'}}">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="p-5">
-                    <div style="margin-top: -10%;" class="auth-logo text-center">
-                        <img src="{{globalDataService.getLogoPicture()}}" alt="">
+        <div class="signin-card-body">
+            <div class="auth-logo text-center">
+                <img src="{{globalDataService.getLogoPicture()}}" alt="">
+            </div>
+            <div class="text-left">
+                <h1 class="mb-1 text-25">Sign In</h1>
+                <hr class="loginHr" />
+            </div>
+            <form [formGroup]="signinForm" (ngSubmit)="signin()" class="loginForm signin-form">
+
+                <div class="form-group">
+                    <label for="tenancyName">Tenant Name</label>
+                    <input id="tenancyName"
+                        class="form-control loginTransparent"
+                        formControlName="tenancyName"
+                        type="text"
+                        autocomplete="organization"
+                        (blur)="onTenantNameBlur()"
+                        [class.is-invalid]="(f.tenancyName.touched || f.tenancyName.dirty) && f.tenancyName.errors"
+                    />
+                    <small class="form-text text-muted" *ngIf="tenantValidating">Validating tenant...</small>
+                    <small class="form-text text-success" *ngIf="tenantValidated && !tenantValidating">Tenant validated</small>
+                    <div class="invalid-feedback" *ngIf="f.tenancyName.errors?.required">
+                        Tenant name is required
                     </div>
-                    <div class="text-left">
-                        <h1 class="mb-2 text-25">{{"signIn_header" | translate}}</h1>
-                        <hr class="loginHr" />
-                    </div>
-                    <form [formGroup]="signinForm" (ngSubmit)="signin()" class="loginForm">
-                        
-                        
-                        
-                        <!-- <div class="form-group">
-                            <label for="tenancyName">Company or Store Name</label>
-                            <input id="tenancyName"
-                             class="form-control loginTransparent" 
-                             formControlName="tenancyName"
-                                type="text"
-                                (focus)="onInputFocusForSignInForm($event)"
-                                (input)="onInputChangeForSignInForm($event)"
-                                [class.is-invalid]="f.tenancyName.errors" 
-                                >
-                                <div style="font-size: 100%;" class="invalid-feedback" 
-                                *ngIf="this.signinForm.controls['tenancyName'].hasError('tenantNotExist')"> 
-                                Store or Company is not exist with this name.
-                               </div>
-                            </div> -->
-    
-                        
-                                  
-                        <div class="form-group">
-                            <label for="email">{{"signIn_UserName_Or_Email" | translate}}</label>
-                            <!-- (focus)="onInputFocusForSignInForm($event)"
-                            (input)="onInputChangeForSignInForm($event)" -->
-                            <input id="userNameOrEmailAddress" class="form-control loginTransparent" formControlName="userNameOrEmailAddress"
-                                type="email"
-                                [class.is-invalid]="(f.userNameOrEmailAddress.touched || f.userNameOrEmailAddress.dirty) && f.userNameOrEmailAddress.errors" 
-                                >
-                        </div>
-    
-                        <div class="form-group position-relative">
-                            <label for="password">{{"signIn_Password" | translate}}</label>
-                            <!-- (focus)="onInputFocusForSignInForm($event)"
-                            (input)="onInputChangeForSignInForm($event)" -->
-                            <input
-                                id="password"
-                                class="form-control loginTransparent pr-4"
-                                formControlName="password"
-                                [type]="showPassword ? 'text' : 'password'"
-                                [class.is-invalid]="(f.password.touched || f.password.dirty) && f.password.errors"
-                            />
-                            <span
-                                class="field-eye position-absolute togglePassword"
-                                style=""
-                                (click)="togglePassword()"
-                            >
-                                <i class="fa fontAwesome_Li_Class" [ngClass]="!showPassword ? 'fa-eye-slash fa-1x' : 'fa-eye fa-1x'"></i>
-                            </span>
-                        </div>                  
-    
-    
-    
-                        <!-- <div class="form-group">
-                            <label for="password">Password</label>
-    
-                            <input id="password" class="form-control loginTransparent" formControlName="password"
-                            [type]="showPassword ? 'text' : 'password'"
-    
-                                [class.is-invalid]="(f.password.touched || f.password.dirty) && f.password.errors" 
-                                >
-                                <span class="field-eye" style="cursor: pointer;"
-                                (click)="togglePassword()">
-                                <i class="fa fontAwesome_Li_Class" [ngClass]="!showPassword ? 'fa-eye-slash fa-1x' : 'fa-eye fa-1x'"></i>
-                            </span>
-                        </div> -->
-    
-                        <!-- <button class="btn btn-rounded btn-primary btn-block mt-2">Sign In</button> -->
-                        <button class="btn btn-primary btn-block mt-1 loginBtn">
-                            {{"signIn_Button" | translate}}
-                        </button>
-                    </form>
-                    <!-- <div class="col-xs-12 text-center language">
-                        <a (click)="toggleDir('ar')" *ngIf="!arSelected" class="langBtn">العربية</a>
-                        <a (click)="toggleDir('en')" *ngIf="!enSelected" class="langBtn">English</a>
-                    </div> -->
-    
                 </div>
-            </div>
-            <!-- <div class="col-md-6 text-center " style="background-size: cover;background-image: url(./assets/images/photo-long-3.jpg)">
-              <button class="btn btn-rounded btn-outline-success  btn-block btn-icon-text" routerLink="/sessions/signup">
-                <i class="i-Mail-with-At-Sign"></i>
-                Sign up 
-              </button>
-            </div> -->
-            <div class="col-md-6 text-center"></div>
-            <div class="col-md-6 text-center btn_Forgot_Password" style="">
-                <a href="" class="btn btn-rounded btn-outline-danger  btn-block btn-icon-text" routerLink="/sessions/forgot">{{"signIn_Forgot_Password_Button" | translate}}</a>
-            </div>
-                
-              
-    
+
+                <div class="form-group">
+                    <label for="userNameOrEmailAddress">Username or Email</label>
+                    <input id="userNameOrEmailAddress" class="form-control loginTransparent" formControlName="userNameOrEmailAddress"
+                        type="email"
+                        autocomplete="username"
+                        (input)="syncAutofillCredentials()"
+                        [class.is-invalid]="(f.userNameOrEmailAddress.touched || f.userNameOrEmailAddress.dirty) && f.userNameOrEmailAddress.errors">
+                </div>
+
+                <div class="form-group position-relative signin-password-group">
+                    <label for="password">Password</label>
+                    <input
+                        id="password"
+                        class="form-control loginTransparent pr-4"
+                        formControlName="password"
+                        [type]="showPassword ? 'text' : 'password'"
+                        autocomplete="current-password"
+                        (input)="syncAutofillCredentials()"
+                        [class.is-invalid]="(f.password.touched || f.password.dirty) && f.password.errors"
+                    />
+                    <span
+                        class="field-eye position-absolute togglePassword"
+                        (click)="togglePassword()"
+                    >
+                        <i class="fa fontAwesome_Li_Class" [ngClass]="!showPassword ? 'fa-eye-slash fa-1x' : 'fa-eye fa-1x'"></i>
+                    </span>
+                </div>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary btn-block signin-submit-btn"
+                    [disabled]="!canSignIn">
+                    Sign In
+                </button>
+
+                <div class="signin-forgot-wrap">
+                    <a class="btn btn-rounded btn-outline-danger btn-block btn-icon-text signin-forgot-btn" routerLink="/sessions/forgot">
+                        Forgot Password?
+                    </a>
+                </div>
+            </form>
         </div>
     </div>
 

@@ -2,7 +2,7 @@
   <div class="gridAboveHeight">
     <h1 style="margin-top: 0;">{{ 'Status Events' | translate }}</h1>
     <hr class="mt-0 mb-0" />
-    <div class="row">
+    <div class="row status-event-toolbar align-items-start">
       <div class="col-xl-3 col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="form-group">
           <input
@@ -14,7 +14,7 @@
           />
         </div>
       </div>
-      <div class="col-xl-1 col-lg-4 col-md-4 col-sm-4 col-xs-4 form-group add_New" style="margin-top: 1.7%; margin-left: auto;">
+      <div class="col-xl-9 col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group add_New status-event-toolbar-add text-right">
         <button class="btn btn-primary" type="button" (click)="openStatusEventDialog()">
           <i class="i-Add"></i>
           {{ 'Add New' | translate }}

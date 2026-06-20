@@ -1,0 +1,55 @@
+<div class="modal-header">
+  <h5 class="modal-title">{{ 'Manage Category' | translate }}</h5>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body" *ngIf="category">
+  <div class="mb-3">
+    <label class="font-weight-bold d-block">{{ 'Category Name' | translate }}</label>
+    <div>{{ category.name }}</div>
+  </div>
+
+  <div class="form-group">
+    <label for="displayName">{{ 'Display Name' | translate }}</label>
+    <input
+      id="displayName"
+      type="text"
+      class="form-control"
+      [(ngModel)]="displayName"
+      [placeholder]="category.name"
+      maxlength="256"
+    />
+    <small class="form-text text-muted">
+      {{ 'Leave empty to use the POS category name on the storefront.' | translate }}
+    </small>
+  </div>
+
+  <div class="form-group mb-0">
+    <div class="custom-control custom-switch">
+      <input
+        type="checkbox"
+        class="custom-control-input"
+        id="showCategoryOnline"
+        [(ngModel)]="showCategoryOnline"
+      />
+      <label class="custom-control-label" for="showCategoryOnline">
+        {{ 'Show Category Online' | translate }}
+      </label>
+    </div>
+    <small class="form-text text-muted">
+      {{ 'When enabled, parent categories are also shown online automatically.' | translate }}
+    </small>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-outline-secondary" (click)="activeModal.dismiss()">
+    {{ 'Cancel' | translate }}
+  </button>
+  <button type="button" class="btn btn-primary" [disabled]="saving" (click)="save()">
+    <span *ngIf="saving" class="spinner-border spinner-border-sm mr-1" role="status"></span>
+    {{ 'Save' | translate }}
+  </button>
+</div>

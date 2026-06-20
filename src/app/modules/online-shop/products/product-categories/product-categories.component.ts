@@ -1,5 +1,6 @@
 import { Component, ElementRef, HostListener, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { ColumnMode } from '@swimlane/ngx-datatable';
 import { ToastrService } from 'ngx-toastr';
@@ -8,6 +9,7 @@ import { Page } from 'src/app/shared/models/page';
 import { GlobalDataService } from 'src/app/shared/services/globalData.service';
 import { AdminProductCategoryListItem } from '../models/product-category.models';
 import { ProductCategoriesService } from '../services/product-categories.service';
+import { ProductCategoryEditModalComponent } from '../product-category-edit-modal/product-category-edit-modal.component';
 import { calculateProductsGridLayout } from '../utils/products-grid-layout.util';
 import { ProductsTabGrid } from '../utils/products-tab-grid';
 
@@ -29,6 +31,7 @@ export class ProductCategoriesComponent implements OnInit, ProductsTabGrid {
 
   constructor(
     private categoriesService: ProductCategoriesService,
+    private modalService: NgbModal,
     private toastr: ToastrService,
     private translate: TranslateService,
     public globalDataService: GlobalDataService,
@@ -133,11 +136,26 @@ export class ProductCategoriesComponent implements OnInit, ProductsTabGrid {
     this.saveCategoryField(row, 'popular', { isPopular: !row.isPopular });
   }
 
-  toggleShowCategoryOnline(row: AdminProductCategoryListItem): void {
-    if (this.isSaving(row, 'showOnline')) {
-      return;
-    }
-    this.saveCategoryField(row, 'showOnline', { showCategoryOnline: !row.showCategoryOnline });
+  openEditModal(row: AdminProductCategoryListItem): void {
+    const modalRef = this.modalService.open(ProductCategoryEditModalComponent, {
+      centered: true,
+      backdrop: 'static',
+    });
+    modalRef.componentInstance.category = { ...row };
+
+    modalRef.result.then(
+      (updated: AdminProductCategoryListItem) => {
+        if (updated) {
+          this.replaceRow(updated);
+        }
+      },
+      () => undefined,
+    );
+  }
+
+  getDisplayLabel(row: AdminProductCategoryListItem): string {
+    const custom = (row.displayName || '').trim();
+    return custom || row.name;
   }
 
   private saveCategoryField(

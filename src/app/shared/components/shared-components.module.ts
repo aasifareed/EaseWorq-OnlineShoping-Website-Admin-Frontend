@@ -16,6 +16,7 @@ import { CustomLtrSidePanelComponent } from './custom-side-panel/custom-ltr-side
 import { CustomRTLSidePanelService } from './custom-side-panel/custom-rtl-side-panel/custom-rtl-side-panel.service';
 import { CustomLTRSidePanelService } from './custom-side-panel/custom-ltr-side-panel/custom-ltr-side-panel.service';
 import { UploadPictureComponent } from './upload-picture/upload-picture.component';
+import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -26,7 +27,8 @@ const components = [
   LtrSidePanelComponent,
   CustomRtlSidePanelComponent,
   CustomLtrSidePanelComponent,
-  UploadPictureComponent
+  UploadPictureComponent,
+  ConfirmationDialogComponent,
 
  // KeyBoardComponent
 
@@ -55,6 +57,6 @@ const components = [
   providers:[
    // KeyBoardComponent,
     CustomLTRSidePanelService,CustomRTLSidePanelService],
-    entryComponents: [UploadPictureComponent],
+    entryComponents: [UploadPictureComponent, ConfirmationDialogComponent],
 })
 export class SharedComponentsModule { }

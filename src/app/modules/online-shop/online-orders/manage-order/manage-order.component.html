@@ -14,6 +14,14 @@
     </div>
 
     <ng-container *ngIf="!isLoading && detail">
+      <div class="manual-fulfillment-alert" *ngIf="requiresManualFulfillment">
+        <i class="fa fa-exclamation-triangle fontAwesome_Li_Class"></i>
+        <div>
+          <strong>Manual fulfillment required</strong>
+          <p class="mb-0">Courier API booking failed for this order. Add tracking details in the Shipment tab once dispatched.</p>
+        </div>
+      </div>
+
       <header class="order-hero">
         <div class="order-hero__main">
           <button type="button" class="btn btn-ghost-back" (click)="goBack()">
@@ -25,9 +33,15 @@
               <span class="chip chip-order">
                 <i class="fa fa-hashtag fontAwesome_Li_Class"></i> {{ orderNumber }}
               </span>
-              <span class="chip chip-status" [style.--chip-color]="statusColor" title="Current order status">
-                Order status: {{ statusDisplayName }}
-              </span>
+              <button
+                type="button"
+                class="chip chip-status chip-status--clickable"
+                [style.--chip-color]="statusColor"
+                title="Track order movement"
+                (click)="openTrackOrderModal()">
+                <i class="fa fa-history fontAwesome_Li_Class"></i>
+                Track Order: {{ statusDisplayName }}
+              </button>
             </div>
           </div>
         </div>
@@ -39,7 +53,7 @@
               [(ngModel)]="selectedStatusId"
               [disabled]="statusOptionsLoading || manualStatusChangeDisabled"
               [noFilter]="999"
-              [placeholder]="manualStatusChangeDisabled ? 'Use action buttons below' : 'Select next status'"
+              [placeholder]="manualStatusChangeDisabled ? 'No transitions available' : 'Select next status'"
               notFoundMsg="No statuses available"
               [allowClear]="true">
             </ng-select>
@@ -49,6 +63,19 @@
               {{ isSavingStatus ? 'Saving' : 'Save' }}
             </button>
           </div>
+          <div class="status-toolbar__remarks" *ngIf="selectedStatusOption?.isEventDriven">
+            <label class="status-toolbar__label">
+              {{ selectedStatusRemarksLabel }}
+              <span *ngIf="selectedStatusRequiresRemarks" class="text-danger">*</span>
+            </label>
+            <input type="text" class="form-control form-control-sm"
+              [(ngModel)]="statusRemarks"
+              [placeholder]="selectedStatusRemarksPlaceholder" />
+          </div>
+          <p class="status-toolbar__hint status-toolbar__hint--event"
+            *ngIf="selectedStatusOption?.isEventDriven">
+            This will run: {{ selectedStatusOption?.eventDisplayName || selectedStatusOption?.eventName }}.
+          </p>
           <p class="status-toolbar__hint" *ngIf="statusOptionsHint">{{ statusOptionsHint }}</p>
         </div>
       </header>
@@ -291,7 +318,7 @@
                     </div>
                   </div>
                   <p *ngIf="isCod" class="text-muted small mb-0 mt-3">
-                    Use the <strong>Cash On Delivery</strong> tab to confirm the order and record payment.
+                    Use <strong>Update status</strong> above to confirm COD. Record payment below when cash is received.
                   </p>
                 </div>
               </section>
@@ -308,10 +335,7 @@
                 </div>
                 <div class="panel__body">
                   <div class="action-card action-card--primary mb-0">
-                    <p class="action-card__hint">Confirm the order and record customer payment when received.</p>
-                    <button type="button" class="btn btn-action" (click)="confirmCod()" [disabled]="isActionBusy">
-                      <i class="fa fa-check-circle fontAwesome_Li_Class"></i> Confirm COD order
-                    </button>
+                    <p class="action-card__hint">Record customer payment when cash is received.</p>
                     <div class="cod-payment-row">
                       <div class="form-field flex-grow-1 mb-0">
                         <label class="form-field__label">Paid amount</label>
@@ -328,31 +352,15 @@
             </ng-template>
           </li>
 
+          <!-- Cancel order tab disabled — cancellation is handled from the header status dropdown -->
+          <!--
           <li [ngbNavItem]="5">
             <a ngbNavLink><i class="fa fa-times-circle fontAwesome_Li_Class tab-icon"></i> Cancel Order</a>
             <ng-template ngbNavContent>
-              <section class="panel panel--full cancel-order-panel">
-                <div class="panel__head">
-                  <i class="fa fa-times-circle fontAwesome_Li_Class panel__icon"></i>
-                  <h2 class="panel__title">Cancel order</h2>
-                </div>
-                <div class="panel__body">
-                  <div class="action-card action-card--danger mb-0">
-                    <p class="action-card__hint">This action may release inventory and cannot be undone easily.</p>
-                    <div class="form-field">
-                      <label class="form-field__label">Cancellation reason</label>
-                      <textarea class="form-control" rows="4" [(ngModel)]="cancelReason"
-                        placeholder="Required — explain why this order is being cancelled"></textarea>
-                    </div>
-                    <button type="button" class="btn btn-action btn-action--danger" (click)="cancelOrder()"
-                      [disabled]="isActionBusy">
-                      <i class="fa fa-times-circle fontAwesome_Li_Class"></i> Cancel order
-                    </button>
-                  </div>
-                </div>
-              </section>
+              ...
             </ng-template>
           </li>
+          -->
 
           <li [ngbNavItem]="6">
             <a ngbNavLink><i class="fa fa-truck fontAwesome_Li_Class tab-icon"></i> Shipment</a>
@@ -364,75 +372,201 @@
                 </div>
                 <div class="panel__body shipment-panel__body">
                   <div class="shipment-form">
-                    <div class="row g-2">
+                    <div class="row shipment-field-row">
                       <div class="col-md-4 col-lg-3">
-                        <label class="form-field__label">Courier name</label>
-                        <input class="form-control form-control-sm" [(ngModel)]="shipmentForm.courierName"
-                          placeholder="e.g. TCS, Leopards">
+                        <div class="shipment-field">
+                          <label class="form-field__label">Courier name</label>
+                          <input class="form-control form-control-sm" [(ngModel)]="shipmentForm.courierName"
+                            placeholder="e.g. TCS, Leopards">
+                        </div>
                       </div>
                       <div class="col-md-4 col-lg-3">
-                        <label class="form-field__label">Tracking number</label>
-                        <input class="form-control form-control-sm" [(ngModel)]="shipmentForm.trackingNumber">
+                        <div class="shipment-field">
+                          <label class="form-field__label">Tracking number</label>
+                          <input class="form-control form-control-sm" [(ngModel)]="shipmentForm.trackingNumber">
+                        </div>
                       </div>
                       <div class="col-md-4 col-lg-6">
-                        <label class="form-field__label">Tracking URL</label>
-                        <input class="form-control form-control-sm" [(ngModel)]="shipmentForm.trackingUrl" placeholder="https://">
-                      </div>
-                      <div class="col-md-4 col-lg-3">
-                        <label class="form-field__label">Shipping charges</label>
-                        <input type="number" class="form-control form-control-sm" [(ngModel)]="shipmentForm.shippingCharges"
-                          min="0" step="0.01">
-                      </div>
-                      <div class="col-md-4 col-lg-3">
-                        <label class="form-field__label">Courier cost</label>
-                        <input type="number" class="form-control form-control-sm" [(ngModel)]="shipmentForm.courierCost"
-                          min="0" step="0.01">
-                      </div>
-                      <div class="col-md-4 col-lg-3">
-                        <label class="form-field__label">Shipped at</label>
-                        <input type="datetime-local" class="form-control form-control-sm" [(ngModel)]="shipmentForm.shippedAt">
-                      </div>
-                      <div class="col-md-12 col-lg-3">
-                        <label class="form-field__label">Shipment remarks</label>
-                        <input class="form-control form-control-sm" [(ngModel)]="shipmentForm.remarks"
-                          placeholder="Optional notes">
+                        <div class="shipment-field">
+                          <label class="form-field__label">Tracking URL</label>
+                          <input class="form-control form-control-sm" [(ngModel)]="shipmentForm.trackingUrl" placeholder="https://">
+                        </div>
                       </div>
                     </div>
-                    <div class="shipment-actions">
-                      <button type="button" class="btn btn-action btn-sm" (click)="saveShipment()" [disabled]="isActionBusy">
-                        <i class="fa fa-save fontAwesome_Li_Class"></i> Save shipment
-                      </button>
-                      <button type="button" class="btn btn-action btn-action--outline btn-sm" (click)="markDelivered()"
-                        [disabled]="isActionBusy">
-                        <i class="fa fa-check fontAwesome_Li_Class"></i> Mark delivered
-                      </button>
+                    <div class="row shipment-field-row">
+                      <div class="col-md-4 col-lg-3">
+                        <div class="shipment-field">
+                          <label class="form-field__label">Shipping charges</label>
+                          <input type="number" class="form-control form-control-sm" [(ngModel)]="shipmentForm.shippingCharges"
+                            min="0" step="0.01">
+                        </div>
+                      </div>
+                      <div class="col-md-4 col-lg-3">
+                        <div class="shipment-field">
+                          <label class="form-field__label">Courier cost</label>
+                          <input type="number" class="form-control form-control-sm" [(ngModel)]="shipmentForm.courierCost"
+                            min="0" step="0.01">
+                        </div>
+                      </div>
+                      <div class="col-md-4 col-lg-3">
+                        <div class="shipment-field">
+                          <label class="form-field__label">Shipped at</label>
+                          <input type="datetime-local" class="form-control form-control-sm" [(ngModel)]="shipmentForm.shippedAt">
+                        </div>
+                      </div>
+                      <div class="col-md-4 col-lg-3">
+                        <div class="shipment-field">
+                          <label class="form-field__label">Shipment remarks</label>
+                          <input class="form-control form-control-sm" [(ngModel)]="shipmentForm.remarks"
+                            placeholder="Optional shipment notes">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="shipment-subsection" *ngIf="showCargoClaimSection">
+                    <div class="shipment-subsection__head">
+                      <span class="shipment-subsection__title">Cargo claim tracking</span>
+                    </div>
+
+                    <div class="shipment-field-grid" *ngIf="showCargoClaimEntry">
+                      <div class="row shipment-field-row">
+                        <div class="col-md-4 col-lg-3">
+                          <div class="shipment-field">
+                            <label class="form-field__label">Claim status</label>
+                            <ng-select class="shipment-field-select"
+                              [options]="claimStatusSelectOptions"
+                              [(ngModel)]="claimStatusSelectValue"
+                              (ngModelChange)="onClaimStatusSelectChanged($event)"
+                              placeholder="— Not set —"
+                              [allowClear]="true"
+                              [noFilter]="999"
+                              notFoundMsg="No options">
+                            </ng-select>
+                          </div>
+                        </div>
+                        <div class="col-md-4 col-lg-3" *ngIf="showClaimAmountReceived">
+                          <div class="shipment-field">
+                            <label class="form-field__label">Amount received</label>
+                            <input type="number" class="form-control form-control-sm"
+                              [(ngModel)]="shipmentForm.claimAmountReceived"
+                              min="0.01" step="0.01" placeholder="0.00">
+                          </div>
+                        </div>
+                        <div class="col-md-4 col-lg-3" *ngIf="showClaimAccountSelection">
+                          <div class="shipment-field">
+                            <label class="form-field__label">Receive into account</label>
+                            <ng-select class="shipment-field-select"
+                              [options]="claimAccountOptions"
+                              [(ngModel)]="shipmentForm.claimAccountId"
+                              placeholder="— Select account —"
+                              [allowClear]="true"
+                              [noFilter]="999"
+                              notFoundMsg="No accounts found">
+                            </ng-select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="shipment-field-grid" *ngIf="showClaimTrackingInfo">
+                      <div class="row shipment-field-row">
+                        <div class="col-md-4 col-lg-3">
+                          <div class="shipment-field">
+                            <label class="form-field__label">Claim status</label>
+                            <div class="form-control form-control-sm shipment-readonly-field">
+                              {{ shipmentForm.claimStatus === claimReceivedStatusValue ? 'Claim Received' : '—' }}
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-4 col-lg-3">
+                          <div class="shipment-field">
+                            <label class="form-field__label">Amount received</label>
+                            <div class="form-control form-control-sm shipment-readonly-field">
+                              {{ shipmentForm.claimAmountReceived | number:'1.2-2' }}
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-4 col-lg-3">
+                          <div class="shipment-field">
+                            <label class="form-field__label">Account</label>
+                            <div class="form-control form-control-sm shipment-readonly-field">
+                              {{ selectedClaimAccountLabel }}
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-4 col-lg-3">
+                          <div class="shipment-field">
+                            <label class="form-field__label">Transaction reference</label>
+                            <div class="form-control form-control-sm shipment-readonly-field">
+                              {{ shipmentForm.cargoClaimTransactionReference || '—' }}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row shipment-field-row">
+                        <div class="col-md-4 col-lg-3">
+                          <div class="shipment-field">
+                            <label class="form-field__label">Received at</label>
+                            <div class="form-control form-control-sm shipment-readonly-field">
+                              {{ shipmentForm.cargoClaimReceivedAt || '—' }}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
                   <div class="shipment-subsection">
                     <div class="shipment-subsection__head">
                       <span class="shipment-subsection__title">Delivery &amp; notes</span>
-                      <span class="shipment-subsection__hint">Used when updating status from the header</span>
                     </div>
-                    <div class="row g-2 align-items-start shipment-notes-row">
+                    <div class="row shipment-field-row shipment-notes-row">
                       <div class="col-md-4 col-lg-3">
-                        <label class="form-field__label">Delivery status</label>
-                        <ng-select class="shipment-notes-select" [options]="deliveryStatuses"
-                          [(ngModel)]="selectedDeliveryStatus" [noFilter]="999"
-                          placeholder="Keep current">
-                        </ng-select>
+                        <div class="shipment-field">
+                          <label class="form-field__label">Delivery status</label>
+                          <div class="delivery-status-autocomplete">
+                            <input class="form-control form-control-sm"
+                              [(ngModel)]="deliveryStatusText"
+                              (input)="onDeliveryStatusInput()"
+                              (focus)="onDeliveryStatusFocus()"
+                              (blur)="onDeliveryStatusBlur()"
+                              (keydown)="onDeliveryStatusKeydown($event)"
+                              placeholder="Type or select delivery status"
+                              autocomplete="off">
+                            <ul class="delivery-status-suggestions"
+                              *ngIf="showDeliveryStatusSuggestions && filteredDeliveryStatusSuggestions.length">
+                              <li *ngFor="let suggestion of filteredDeliveryStatusSuggestions; let i = index"
+                                class="delivery-status-suggestions__item"
+                                [class.delivery-status-suggestions__item--active]="i === deliveryStatusSuggestionIndex"
+                                (mousedown)="selectDeliveryStatusSuggestion(suggestion)">
+                                {{ suggestion }}
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
                       </div>
                       <div class="col-md-4 col-lg-4">
-                        <label class="form-field__label">Remarks</label>
-                        <textarea class="form-control form-control-sm shipment-notes-input" rows="2"
-                          [(ngModel)]="statusRemarks" placeholder="Order history"></textarea>
+                        <div class="shipment-field">
+                          <label class="form-field__label">Remarks</label>
+                          <textarea class="form-control form-control-sm shipment-notes-input" rows="2"
+                            [(ngModel)]="shipmentHistoryRemarks" placeholder="Order history"></textarea>
+                        </div>
                       </div>
                       <div class="col-md-4 col-lg-5">
-                        <label class="form-field__label">Admin note</label>
-                        <textarea class="form-control form-control-sm shipment-notes-input" rows="2"
-                          [(ngModel)]="statusAdminNote" placeholder="Internal note"></textarea>
+                        <div class="shipment-field">
+                          <label class="form-field__label">Admin note</label>
+                          <textarea class="form-control form-control-sm shipment-notes-input" rows="2"
+                            [(ngModel)]="statusAdminNote" placeholder="Internal note"></textarea>
+                        </div>
                       </div>
                     </div>
+                  </div>
+
+                  <div class="shipment-actions shipment-actions--footer">
+                    <button type="button" class="btn btn-action btn-sm" (click)="saveShipment()" [disabled]="isActionBusy">
+                      <i class="fa fa-save fontAwesome_Li_Class"></i> Save shipment
+                    </button>
                   </div>
                 </div>
               </section>
@@ -445,3 +579,60 @@
     </ng-container>
   </div>
 </div>
+
+<ng-template #trackOrderModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mb-0">Track Order {{ orderNumber }}</h5>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body manage-order-track-modal-body">
+    <div *ngIf="trackModalLoading" class="text-center py-4 text-muted">Loading order status history…</div>
+    <div *ngIf="!trackModalLoading && trackModalError" class="alert alert-danger mb-0">{{ trackModalError }}</div>
+
+    <div *ngIf="!trackModalLoading && orderTimeline && !trackModalError">
+      <div class="track-summary mb-4">
+        <div class="row g-3">
+          <div class="col-sm-4">
+            <div class="track-summary-label">Current status</div>
+            <div class="track-summary-value">
+              <span class="chip chip-status" [style.--chip-color]="orderTimeline.currentOrderStatusColorCode || '#6c757d'">
+                {{ orderTimeline.currentOrderStatusDisplayName || '—' }}
+              </span>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="track-summary-label">Payment status</div>
+            <div class="track-summary-value">{{ orderTimeline.currentPaymentStatusName || '—' }}</div>
+          </div>
+          <div class="col-sm-4">
+            <div class="track-summary-label">Delivery status</div>
+            <div class="track-summary-value">{{ deliveryStatusLabel(orderTimeline.currentDeliveryStatus) }}</div>
+          </div>
+        </div>
+      </div>
+
+      <h6 class="track-history-title mb-3">Order movement</h6>
+      <div *ngIf="!chronologicalTimelineItems.length" class="text-muted">No status updates yet.</div>
+      <div *ngIf="chronologicalTimelineItems.length" class="track-timeline-horizontal">
+        <ng-container *ngFor="let event of chronologicalTimelineItems; let last = last">
+          <div class="track-timeline-step">
+            <div class="track-timeline-step-card">
+              <span class="chip chip-status mb-2" [style.--chip-color]="event.orderStatusColorCode || '#6c757d'">
+                {{ timelineStatusLabel(event) }}
+              </span>
+              <div class="track-timeline-meta text-muted">{{ formatDate(event.changedAt) }}</div>
+              <div *ngFor="let meta of timelineMeta(event)" class="track-timeline-meta text-muted">{{ meta }}</div>
+              <div *ngIf="event.remarks" class="track-timeline-remarks">{{ event.remarks }}</div>
+            </div>
+          </div>
+          <div *ngIf="!last" class="track-timeline-arrow" aria-hidden="true">→</div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary btn-sm" (click)="modal.close()">Close</button>
+  </div>
+</ng-template>

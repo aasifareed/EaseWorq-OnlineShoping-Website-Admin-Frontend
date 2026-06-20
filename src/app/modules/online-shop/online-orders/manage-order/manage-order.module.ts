@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SelectModule } from 'ng-select';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
 import { ManageOrderComponent } from './manage-order.component';
 import { ManageOrderRoutingModule } from './manage-order-routing.module';
 
@@ -17,6 +18,7 @@ import { ManageOrderRoutingModule } from './manage-order-routing.module';
     NgbModule,
     SelectModule,
     SharedModule,
+    SharedComponentsModule,
     ManageOrderRoutingModule,
   ],
   declarations: [ManageOrderComponent],

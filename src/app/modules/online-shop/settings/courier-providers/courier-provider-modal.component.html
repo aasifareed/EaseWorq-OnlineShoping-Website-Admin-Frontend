@@ -1,0 +1,75 @@
+<div class="modal-header">
+  <h5 class="modal-title">{{ title | translate }}</h5>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body" *ngIf="loading">
+  <div class="text-center py-4">
+    <i class="fa fa-spinner fa-spin fa-2x text-muted"></i>
+  </div>
+</div>
+
+<form [formGroup]="form" (ngSubmit)="save()" *ngIf="!loading">
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-md-6 form-group">
+        <label>{{ 'Courier provider' | translate }} *</label>
+        <input type="text" class="form-control" formControlName="courierProvider" />
+      </div>
+      <div class="col-md-6 form-group">
+        <label>{{ 'Provider code' | translate }} *</label>
+        <input type="text" class="form-control" formControlName="providerCode" />
+      </div>
+      <div class="col-md-12 form-group">
+        <label>{{ 'API base URL' | translate }}</label>
+        <input type="text" class="form-control" formControlName="apiBaseUrl" placeholder="https://partners.flaship.pk/mr" />
+      </div>
+      <div class="col-md-6 form-group">
+        <label>{{ 'Client ID' | translate }}</label>
+        <input type="text" class="form-control" formControlName="clientId" />
+      </div>
+      <div class="col-md-6 form-group">
+        <label>{{ 'Client secret' | translate }}</label>
+        <input type="password" class="form-control" formControlName="clientSecret" autocomplete="new-password" />
+      </div>
+      <div class="col-md-6 form-group">
+        <label>{{ 'Username' | translate }}</label>
+        <input type="text" class="form-control" formControlName="username" />
+      </div>
+      <div class="col-md-6 form-group">
+        <label>{{ 'Password' | translate }}</label>
+        <input type="password" class="form-control" formControlName="password" autocomplete="new-password" />
+      </div>
+      <div class="col-md-12 form-group">
+        <label>{{ 'API key / Access token' | translate }}</label>
+        <input type="password" class="form-control" formControlName="accessToken" autocomplete="new-password" />
+        <small class="text-muted">{{ 'Flaship uses this as X-API-KEY. Leave blank to keep existing value.' | translate }}</small>
+      </div>
+      <div class="col-md-12">
+        <label class="switch-label mr-3">
+          <input type="checkbox" formControlName="isApiEnabled" />
+          {{ 'API enabled' | translate }}
+        </label>
+        <label class="switch-label mr-3">
+          <input type="checkbox" formControlName="isManualRateEnabled" />
+          {{ 'Manual rate enabled' | translate }}
+        </label>
+        <label class="switch-label">
+          <input type="checkbox" formControlName="isActive" />
+          {{ 'Active' | translate }}
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" (click)="activeModal.dismiss()">
+      {{ 'Cancel' | translate }}
+    </button>
+    <button type="submit" class="btn btn-primary" [disabled]="saving">
+      {{ saving ? ('Saving...' | translate) : ('Save' | translate) }}
+    </button>
+  </div>
+</form>

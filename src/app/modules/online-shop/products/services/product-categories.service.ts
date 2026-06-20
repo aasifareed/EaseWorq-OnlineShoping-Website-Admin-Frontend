@@ -51,6 +51,9 @@ export class ProductCategoriesService {
     if (payload.isPopular != null) {
       body.IsPopular = payload.isPopular;
     }
+    if (payload.displayName != null) {
+      body.DisplayName = payload.displayName;
+    }
 
     const url =
       appServiceUrls.OnlineShopProductCategory_UpdateForAdmin ||
@@ -68,6 +71,7 @@ export class ProductCategoriesService {
     return {
       id: String(row.id ?? row.Id ?? ''),
       name: String(row.name ?? row.Name ?? '—'),
+      displayName: (row.displayName ?? row.DisplayName ?? null) as string | null,
       showCategoryOnline: Boolean(row.showCategoryOnline ?? row.ShowCategoryOnline ?? false),
       isPopular: Boolean(row.isPopular ?? row.IsPopular ?? false),
     };

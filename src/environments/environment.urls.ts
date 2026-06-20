@@ -23,14 +23,18 @@ export const appServiceUrls = {
   // Online orders (OnlineShopSaleOrderAppService)
   OnlineShopSaleOrder_GetAll: '/OnlineShopSaleOrder/GetAllOnlineShopSaleOrders',
   OnlineShopSaleOrder_GetDetail: '/OnlineShopSaleOrder/GetOnlineShopSaleOrderForSuccessPage',
+  OnlineShopSaleOrder_GetStatusTimeline: '/OnlineShopSaleOrder/GetOnlineShopOrderStatusTimeline',
   OnlineShopSaleOrder_GetNextStatuses: '/OnlineShopSaleOrder/GetNextOrderStatusesDropdown',
+  OnlineShopSaleOrder_GetRefundAccounts: '/OnlineShopSaleOrder/GetRefundAccountsDropdown',
   OnlineShopSaleOrder_UpdateStatus: '/OnlineShopSaleOrder/UpdateOnlineShopOrderStatus',
   OnlineShopSaleOrder_ConfirmCod: '/OnlineShopSaleOrder/ConfirmCashOnDeliveryOrder',
   OnlineShopSaleOrder_MarkCodPaid: '/OnlineShopSaleOrder/MarkCashOnDeliveryPaid',
   OnlineShopSaleOrder_Cancel: '/OnlineShopSaleOrder/CancelOnlineShopOrder',
   OnlineShopSaleOrder_GetShipment: '/OnlineShopSaleOrder/GetShipmentByOrderId',
+  OnlineShopSaleOrder_GetDeliveryStatuses: '/OnlineShopSaleOrder/GetDeliveryStatusesForDropdown',
   OnlineShopSaleOrder_SaveShipment: '/OnlineShopSaleOrder/CreateOrUpdateShipment',
   OnlineShopSaleOrder_MarkDelivered: '/OnlineShopSaleOrder/MarkShipmentDelivered',
+  OnlineShopShipment_SyncCourierShipments: '/OnlineShopShipment/SyncCourierShipments',
   Get_Online_Sale_Orders: '/OnlineOrder/GetOnlineSaleOrders',
   Get_Order_DeliveryStatus_For_Dropdown: '/OnlineOrder/GetOrderDeliveryStatusForDropdown',
   Change_Delivery_Order_Status: '/OnlineOrder/ChangeDeliveryOrderStatus',
@@ -85,6 +89,21 @@ export const appServiceUrls = {
   // Online shop settings (OnlineShopSettingsAppService)
   Settings_GetForEdit: '/OnlineShopSettings/GetForEdit',
   Settings_Save: '/OnlineShopSettings/Save',
+
+  // Courier provider settings (OnlineShopCourierProviderAppService)
+  CourierProvider_GetAll: '/OnlineShopCourierProvider/GetAllCourierProviders',
+  CourierProvider_GetForEdit: '/OnlineShopCourierProvider/GetCourierProviderForEdit',
+  CourierProvider_CreateOrUpdate: '/OnlineShopCourierProvider/CreateOrUpdateCourierProvider',
+  CourierProvider_Delete: '/OnlineShopCourierProvider/DeleteCourierProvider',
+  CourierProvider_EnableDisable: '/OnlineShopCourierProvider/EnableDisableCourierProvider',
+
+  // Payment provider settings (OnlineShopPaymentProviderAppService)
+  PaymentProvider_GetAll: '/OnlineShopPaymentProvider/GetAllPaymentProviders',
+  PaymentProvider_GetForEdit: '/OnlineShopPaymentProvider/GetPaymentProviderForEdit',
+  PaymentProvider_CreateOrUpdate: '/OnlineShopPaymentProvider/CreateOrUpdatePaymentProvider',
+  PaymentProvider_Delete: '/OnlineShopPaymentProvider/DeletePaymentProvider',
+  PaymentProvider_EnableDisable: '/OnlineShopPaymentProvider/EnableDisablePaymentProvider',
+  PaymentProvider_SetDefault: '/OnlineShopPaymentProvider/SetDefaultPaymentProvider',
 
   // Store front header menu (OnlineShopHeaderMenuAppService)
   HeaderMenu_GetForEdit: '/OnlineShopHeaderMenu/GetForEdit',

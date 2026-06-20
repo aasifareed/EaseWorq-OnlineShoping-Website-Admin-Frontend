@@ -1,0 +1,134 @@
+<div class="modal-header">
+  <h5 class="modal-title">{{ title | translate }}</h5>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body" *ngIf="loading">
+  <div class="text-center py-4">
+    <i class="fa fa-spinner fa-spin fa-2x text-muted"></i>
+  </div>
+</div>
+
+<form [formGroup]="form" (ngSubmit)="save()" *ngIf="!loading">
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-md-12 form-group">
+        <label>{{ 'Payment Method' | translate }} *</label>
+        <select class="form-control" formControlName="paymentMethod">
+          <option value="">{{ 'Select payment method' | translate }}</option>
+          <option
+            *ngFor="let opt of paymentMethodOptions"
+            [value]="opt.code"
+            [disabled]="!isEditMode && isOptionDisabled(opt.code)"
+          >
+            {{ optionLabel(opt) }}
+          </option>
+        </select>
+        <small class="text-danger" *ngIf="duplicateBlocked">
+          {{ 'This payment method already exists. Please edit the existing record.' | translate }}
+        </small>
+      </div>
+
+      <ng-container *ngIf="form.get('paymentMethod')?.value || isEditMode">
+        <div class="col-md-6 form-group">
+          <label>{{ 'Provider name' | translate }} *</label>
+          <input type="text" class="form-control" formControlName="providerName" />
+        </div>
+        <div class="col-md-6 form-group">
+          <label>{{ 'Provider code' | translate }}</label>
+          <input type="text" class="form-control" formControlName="providerCode" readonly />
+        </div>
+
+        <ng-container *ngIf="isCod">
+          <div class="col-md-12">
+            <p class="text-muted mb-2">
+              {{ 'Cash on delivery — no API credentials required.' | translate }}
+            </p>
+            <div class="custom-control custom-switch mb-3">
+              <input
+                type="checkbox"
+                class="custom-control-input"
+                id="codCollectAdvance"
+                formControlName="collectShippingChargesInAdvanceForCod"
+              />
+              <label class="custom-control-label" for="codCollectAdvance">
+                <strong>{{ 'Collect shipping charges in advance for COD orders' | translate }}</strong>
+                <small class="d-block text-muted font-weight-normal">
+                  {{ 'Customers selecting COD must pay shipping online through GoPayFast before confirmation.' | translate }}
+                </small>
+              </label>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="isGoPayFast">
+          <div class="col-md-4 form-group">
+            <label>{{ 'Environment' | translate }}</label>
+            <select class="form-control" formControlName="environment">
+              <option *ngFor="let env of environmentOptions" [value]="env">{{ env }}</option>
+            </select>
+          </div>
+          <div class="col-md-4 form-group">
+            <label>{{ 'Merchant ID' | translate }}</label>
+            <input type="text" class="form-control" formControlName="merchantId" />
+          </div>
+          <div class="col-md-4 form-group">
+            <label>{{ 'Secured key' | translate }}</label>
+            <input
+              type="password"
+              class="form-control"
+              formControlName="securedKey"
+              [placeholder]="securedKeyPlaceholder"
+              autocomplete="new-password"
+            />
+            <small class="text-muted" *ngIf="isEditMode && securedKeyPlaceholder">
+              {{ 'Leave blank to keep existing secured key.' | translate }}
+            </small>
+          </div>
+          <div class="col-md-12 form-group">
+            <label>{{ 'Public base URL' | translate }}</label>
+            <input type="text" class="form-control" formControlName="publicBaseUrl" />
+          </div>
+          <div class="col-md-12 form-group">
+            <label>{{ 'Base URL' | translate }}</label>
+            <input type="text" class="form-control" formControlName="baseUrl" />
+          </div>
+          <div class="col-md-6 form-group">
+            <label>{{ 'Token API URL' | translate }}</label>
+            <input type="text" class="form-control" formControlName="tokenApiUrl" />
+          </div>
+          <div class="col-md-6 form-group">
+            <label>{{ 'Form URL' | translate }}</label>
+            <input type="text" class="form-control" formControlName="formUrl" />
+          </div>
+        </ng-container>
+
+        <div class="col-md-12 payment-modal-toggles">
+          <div class="custom-control custom-switch mr-4 d-inline-block" *ngIf="isGoPayFast">
+            <input type="checkbox" class="custom-control-input" id="modalApiEnabled" formControlName="isApiEnabled" />
+            <label class="custom-control-label" for="modalApiEnabled">{{ 'API enabled' | translate }}</label>
+          </div>
+          <div class="custom-control custom-switch mr-4 d-inline-block" *ngIf="isGoPayFast">
+            <input type="checkbox" class="custom-control-input" id="modalIsDefault" formControlName="isDefault" />
+            <label class="custom-control-label" for="modalIsDefault">{{ 'Default provider' | translate }}</label>
+          </div>
+          <div class="custom-control custom-switch d-inline-block">
+            <input type="checkbox" class="custom-control-input" id="modalIsActive" formControlName="isActive" />
+            <label class="custom-control-label" for="modalIsActive">{{ 'Active' | translate }}</label>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" (click)="activeModal.dismiss()">
+      {{ 'Cancel' | translate }}
+    </button>
+    <button type="submit" class="btn btn-primary" [disabled]="saving || duplicateBlocked">
+      {{ saving ? ('Saving...' | translate) : ('Save' | translate) }}
+    </button>
+  </div>
+</form>

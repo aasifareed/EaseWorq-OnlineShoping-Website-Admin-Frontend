@@ -43,7 +43,8 @@
         >
           <ngx-datatable-column [name]="'Category Name' | translate" prop="name" [minWidth]="220">
             <ng-template ngx-datatable-cell-template let-row="row">
-              <strong>{{ row.name }}</strong>
+              <strong>{{ getDisplayLabel(row) }}</strong>
+              <div *ngIf="row.displayName" class="text-muted small">{{ row.name }}</div>
             </ng-template>
           </ngx-datatable-column>
 
@@ -83,21 +84,33 @@
             headerClass="products-datatable__center-col"
           >
             <ng-template ngx-datatable-cell-template let-row="row">
+              <div class="products-datatable__cell-center">
+                <span
+                  class="badge"
+                  [class.badge-success]="row.showCategoryOnline"
+                  [class.badge-secondary]="!row.showCategoryOnline"
+                >
+                  {{ formatYesNo(row.showCategoryOnline) }}
+                </span>
+              </div>
+            </ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column
+            [name]="'Actions' | translate"
+            [sortable]="false"
+            [minWidth]="110"
+            cellClass="products-datatable__center-col"
+            headerClass="products-datatable__center-col"
+          >
+            <ng-template ngx-datatable-cell-template let-row="row">
               <div class="products-datatable__cell-center products-datatable__cell-actions">
                 <button
                   type="button"
-                  class="btn btn-sm products-datatable__toggle"
-                  [class.btn-success]="row.showCategoryOnline"
-                  [class.btn-outline-secondary]="!row.showCategoryOnline"
-                  [disabled]="isSaving(row, 'showOnline')"
-                  (click)="toggleShowCategoryOnline(row)"
+                  class="btn btn-sm btn-outline-primary"
+                  (click)="openEditModal(row)"
                 >
-                  <span
-                    *ngIf="isSaving(row, 'showOnline')"
-                    class="spinner-border spinner-border-sm"
-                    role="status"
-                  ></span>
-                  <span *ngIf="!isSaving(row, 'showOnline')">{{ formatYesNo(row.showCategoryOnline) }}</span>
+                  {{ 'Edit' | translate }}
                 </button>
               </div>
             </ng-template>

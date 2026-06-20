@@ -1,27 +1,20 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { SharedAnimations } from 'src/app/shared/animations/shared-animations';
-import { FormGroup, FormBuilder, Validators, AsyncValidatorFn, ValidationErrors, AbstractControl } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../../../shared/services/auth.service';
 import { Router, RouteConfigLoadStart, ResolveStart, RouteConfigLoadEnd, ResolveEnd, ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { NavigationService } from 'src/app/shared/services/navigation.service';
-import { RolesEnum } from 'src/app/shared/enum/Roles';
 import { CustomizerService } from 'src/app/shared/services/customizer.service';
 import { TranslateService } from '@ngx-translate/core';
 import { LoaderService } from 'src/app/shared/services/loader.service';
 import { UserService } from 'src/app/shared/services/user.service';
-import { RestService } from 'src/app/shared/services/rest.service';
-import { environment } from 'src/environments/environment';
-import { PermissionService } from 'src/app/shared/services/permission.service';
-import { PermissionsEnum } from 'src/app/shared/enum/Permissions';
 import { SignalRService } from '../../../shared/services/signal-r.service';
-import { Observable, of } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
-//import { KeyBoardComponent } from '../../point-of-sale/make-sales/components/Key-board/Key-board.component';
 import { GlobalDataService } from 'src/app/shared/services/globalData.service';
 import { LocalStoreService } from 'src/app/shared/services/local-store.service';
-import { RoutePermissionService } from 'src/app/shared/services/route-permission.service';
 import { Apps } from 'src/app/shared/enum/Apps';
+import { TenantService } from 'src/app/shared/services/Tenant.service';
+import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
 
 @Component({
     selector: 'app-signin',
@@ -29,14 +22,17 @@ import { Apps } from 'src/app/shared/enum/Apps';
     styleUrls: ['./signin.component.scss'],
     animations: [SharedAnimations]
 })
-export class SigninComponent implements OnInit {
+export class SigninComponent implements OnInit, AfterViewInit {
     loading: boolean;
     loadingText: string;
     signinForm: FormGroup;
     arSelected = false;
     enSelected = false;
     showPassword: boolean;
+    tenantValidating = false;
+    tenantValidated = false;
     private impersonationContext: { targetUserId: number; targetTenantId?: number | null } | null = null;
+    private lastValidatedTenantName = '';
 
     constructor(
         private fb: FormBuilder,
@@ -48,23 +44,17 @@ export class SigninComponent implements OnInit {
         private translate: TranslateService,
         private loaderService: LoaderService,
         private userService: UserService,
-        private restService: RestService,
-        private permissionService: PermissionService,
-         public signalRService: SignalRService,
-        // public keyboard: KeyBoardComponent,
-         public globalDataService:GlobalDataService,
-         private store: LocalStoreService,
-         private routePermissionService: RoutePermissionService,
-         private activatedRoute: ActivatedRoute,
+        public signalRService: SignalRService,
+        public globalDataService: GlobalDataService,
+        private store: LocalStoreService,
+        private activatedRoute: ActivatedRoute,
+        private tenantService: TenantService,
     ) { }
 
     ngOnInit() {
-     
-    
         this.router.events.subscribe(event => {
             if (event instanceof RouteConfigLoadStart || event instanceof ResolveStart) {
                 this.loadingText = 'Loading Dashboard...';
-
                 this.loading = true;
             }
             if (event instanceof RouteConfigLoadEnd || event instanceof ResolveEnd) {
@@ -84,120 +74,240 @@ export class SigninComponent implements OnInit {
         });
 
         this.signinForm = this.fb.group({
+            tenancyName: ['', Validators.required],
             userNameOrEmailAddress: ['', Validators.required],
             password: ['', Validators.required],
-           tenancyName: [''],
-           tenantId: [''],
-           IsTenantAvailable: [false], 
+            tenantId: [''],
             rememberClient: [false]
         });
 
+        this.signinForm.get('tenancyName')?.valueChanges.pipe(
+            debounceTime(300),
+            distinctUntilChanged(),
+        ).subscribe((value) => {
+            const tenancyName = String(value ?? '').trim();
+            if (!tenancyName || tenancyName !== this.lastValidatedTenantName) {
+                this.tenantValidated = false;
+            }
+        });
 
+        this.signinForm.get('tenancyName')?.valueChanges.pipe(
+            debounceTime(600),
+            distinctUntilChanged(),
+            filter((value) => !!String(value ?? '').trim()),
+        ).subscribe(() => {
+            void this.validateTenantName();
+        });
 
         this.selectedLanguage();
     }
 
+    ngAfterViewInit(): void {
+        this.syncAutofillCredentials();
+        setTimeout(() => this.syncAutofillCredentials(), 150);
+        setTimeout(() => this.syncAutofillCredentials(), 600);
+    }
+
+    syncAutofillCredentials(): void {
+        const emailEl = document.getElementById('userNameOrEmailAddress') as HTMLInputElement | null;
+        const passwordEl = document.getElementById('password') as HTMLInputElement | null;
+        const patch: Record<string, string> = {};
+
+        if (emailEl?.value?.trim()) {
+            patch.userNameOrEmailAddress = emailEl.value.trim();
+        }
+        if (passwordEl?.value) {
+            patch.password = passwordEl.value;
+        }
+
+        if (Object.keys(patch).length) {
+            this.signinForm.patchValue(patch, { emitEvent: false });
+        }
+    }
+
+    private hasSignInCredentials(): boolean {
+        const user = String(this.f.userNameOrEmailAddress.value ?? '').trim();
+        const pass = String(this.f.password.value ?? '').trim();
+        return user.length > 0 && pass.length > 0;
+    }
 
     get f() { return this.signinForm.controls; }
 
-   async signin() {
-         
-        if (this.signinForm.invalid) {
+    get canSignIn(): boolean {
+        return !this.tenantValidating
+            && this.tenantValidated
+            && this.hasSignInCredentials();
+    }
+
+    onTenantNameBlur(): void {
+        void this.validateTenantName();
+    }
+
+    async validateTenantName(): Promise<void> {
+        const tenancyName = String(this.signinForm.get('tenancyName')?.value ?? '').trim();
+        if (!tenancyName) {
+            this.tenantValidated = false;
+            this.lastValidatedTenantName = '';
+            return;
+        }
+
+        if (this.tenantValidating) {
+            return;
+        }
+
+        this.tenantValidating = true;
+        this.tenantValidated = false;
+
+        try {
+            const available = await this.tenantService
+                .checkTenantAvailability(tenancyName)
+                .toPromise();
+
+            if (available) {
+                const tenantId = this.globalDataService.getCurrentTanantId();
+                this.signinForm.patchValue({ tenantId }, { emitEvent: false });
+                this.tenantValidated = true;
+                this.lastValidatedTenantName = tenancyName;
+                this.tenantService.getTenanetSettings();
+                this.syncAutofillCredentials();
+            } else {
+                this.tenantValidated = false;
+                this.lastValidatedTenantName = '';
+                this.toastr.error(
+                    'Tenant not found. Please check the tenant name and try again.',
+                    'Error',
+                    { timeOut: 5000, progressBar: true },
+                );
+            }
+        } catch {
+            this.tenantValidated = false;
+            this.lastValidatedTenantName = '';
+            this.toastr.error(
+                'Unable to validate tenant. Please try again.',
+                'Error',
+                { timeOut: 5000, progressBar: true },
+            );
+        } finally {
+            this.tenantValidating = false;
+        }
+    }
+
+    async signin() {
+        if (!this.tenantValidated) {
+            this.toastr.warning(
+                'Please enter a valid tenant name before signing in.',
+                'Error',
+                { timeOut: 5000, progressBar: true },
+            );
+            return;
+        }
+
+        if (this.signinForm.invalid || !this.hasSignInCredentials()) {
             Object.keys(this.signinForm.controls).forEach(key => {
               this.signinForm.get(key).markAsTouched({ onlySelf: true });
             });
-      
-            this.toastr.error(this.translate.instant("signIn_Please_provide_required_fields"),this.translate.instant("toaster_Heading_Error"), {timeOut: 5000, progressBar: true });
-        }else{
 
-            this.loaderService.display(true);
-            const formValues = this.signinForm.value;
+            this.toastr.error(
+                'Please fill in all required fields.',
+                'Error',
+                { timeOut: 5000, progressBar: true },
+            );
+            return;
+        }
 
-            if (!this.impersonationContext) {
-              formValues.tenancyName = this.globalDataService.getCurrentTanantName();
-            }
+        this.loaderService.display(true);
+        const formValues = { ...this.signinForm.value };
+        formValues.tenancyName = String(formValues.tenancyName ?? '').trim();
 
-            const login$ = this.impersonationContext
-                ? this.authService.impersonateSignin({
-                    impersonatorUserNameOrEmailAddress: formValues.userNameOrEmailAddress,
-                    impersonatorPassword: formValues.password,
-                    impersonatorTenancyName: formValues.tenancyName ? formValues.tenancyName : null,
-                    targetUserId: this.impersonationContext.targetUserId,
-                    targetTenantId: this.impersonationContext.targetTenantId
-                })
-                : this.authService.signin(formValues);
+        const login$ = this.impersonationContext
+            ? this.authService.impersonateSignin({
+                impersonatorUserNameOrEmailAddress: formValues.userNameOrEmailAddress,
+                impersonatorPassword: formValues.password,
+                impersonatorTenancyName: formValues.tenancyName ? formValues.tenancyName : null,
+                targetUserId: this.impersonationContext.targetUserId,
+                targetTenantId: this.impersonationContext.targetTenantId
+            })
+            : this.authService.signin(formValues);
 
-            login$
-                .subscribe(res => {
-                    this.userService.getUser().subscribe(response => {
-                      
-                      
-                      this.loaderService.display(false);
+        login$.subscribe({
+            next: () => {
+                this.userService.getUser().subscribe({
+                    next: () => {
+                        this.loaderService.display(false);
+                        this.router.navigateByUrl('/online-shop/order-board');
+                        this.navigation.setApplication(Apps.ONLINE_SHOP, false);
 
-                      // Permission-based post-login routing disabled for now.
-                      // const hasPermission = this.routePermissionService.navigateToFirstAvailableRoute();
-                      // if (hasPermission) {
-                      //   this.navigation.setApplication(Apps.ONLINE_SHOP, false);
-                      // } else {
-                      //   this.toastr.error(
-                      //     this.translate.instant("error_no_permissions") || "You don't have permission to access any module. Please contact your administrator.",
-                      //     this.translate.instant("toaster_Heading_Error"),
-                      //     { timeOut: 5000, progressBar: true }
-                      //   );
-                      //   this.loaderService.display(false);
-                      //   return;
-                      // }
-                      this.router.navigateByUrl('/online-shop/order-board');
-                      this.navigation.setApplication(Apps.ONLINE_SHOP, false);
+                        const defaultLanguageSource = this.store.getItem('defaultLanguage');
+                        this.translate.use(defaultLanguageSource);
 
-                      
-                      let defaultLanguageSource = this.store.getItem('defaultLanguage');
-                      this.translate.use(defaultLanguageSource);
-                      
-                    this.toastr.success(this.translate.instant("signIn_Welcome_to_POS"), this.translate.instant("toaster_Heading_Success"), {timeOut: 5000, progressBar: true });
-                    this.loading = false;
-                    //this.loaderService.display(false);
-                    // this.navigation.publishNavigationChange();
-    
+                        this.toastr.success(
+                            'Welcome! You have signed in successfully.',
+                            'Success',
+                            { timeOut: 5000, progressBar: true },
+                        );
+                        this.loading = false;
+
                         if (!this.signalRService.signalRConnectionEnabled) {
                             this.signalRService.startConnection();
                         }
-    
-                }, error => {
-                    //this.loading = false;
-                if(error && error.error && error.error.error && error.error.error.message){
-                  this.toastr.error(this.translate.instant(error.error.error.message), this.translate.instant("toaster_Heading_Error"), {timeOut: 5000, progressBar: true });
-                }else if(error && error.error){
-                  this.toastr.error(this.translate.instant(error.error.message), this.translate.instant("toaster_Heading_Error"), {timeOut: 5000, progressBar: true });
-                }else{
-                  this.toastr.error(this.translate.instant('user_Form_User_Updated_Error_Message'), this.translate.instant("toaster_Heading_Error"), {timeOut: 5000, progressBar: true });
-                }
-                    this.loaderService.display(false);
+                    },
+                    error: (error) => this.handleLoginError(error),
                 });
             },
-            error => {
-              
-                if(error && error.error && error.error.error && error.error.error.message){
-                  this.toastr.error(this.translate.instant(error.error.error.message), this.translate.instant("toaster_Heading_Error"), {timeOut: 5000, progressBar: true });
-                }else if(error && error.error){
-                  this.toastr.error(this.translate.instant(error.error.message), this.translate.instant("toaster_Heading_Error"), {timeOut: 5000, progressBar: true });
-                }else{
-                  this.toastr.error(this.translate.instant('user_Form_User_Updated_Error_Message'), this.translate.instant("toaster_Heading_Error"), {timeOut: 5000, progressBar: true });
-                }
+            error: (error) => this.handleLoginError(error),
+        });
+    }
 
-                this.loaderService.display(false);
+    private handleLoginError(error: any): void {
+        const message = this.extractLoginErrorMessage(error);
+        this.toastr.error(message, 'Error', { timeOut: 5000, progressBar: true });
+        this.loaderService.display(false);
+    }
 
-            })
+    private extractLoginErrorMessage(error: any): string {
+        const raw =
+            error?.error?.error?.message
+            ?? error?.error?.message
+            ?? error?.message;
 
-
+        if (!raw) {
+            return 'Sign in failed. Please check your credentials and try again.';
         }
 
+        const text = String(raw).trim();
+        if (this.looksLikeTranslationKey(text)) {
+            return this.humanizeTranslationKey(text);
+        }
 
+        return text;
     }
-    
+
+    private looksLikeTranslationKey(value: string): boolean {
+        return /^[a-z][a-z0-9_]*$/i.test(value) && value.includes('_');
+    }
+
+    private humanizeTranslationKey(key: string): string {
+        const known: Record<string, string> = {
+            InvalidUserNameOrPassword: 'Invalid username or password.',
+            InvalidUserNameOrEmailAddress: 'Invalid username or email address.',
+            UserIsNotActive: 'This user account is not active.',
+            TenantIsNotActive: 'This tenant is not active.',
+        };
+
+        if (known[key]) {
+            return known[key];
+        }
+
+        return key
+            .replace(/([a-z])([A-Z])/g, '$1 $2')
+            .replace(/_/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim()
+            .replace(/^./, (char) => char.toUpperCase());
+    }
 
     selectedLanguage() {
-        let browserlang = localStorage.getItem('lang');
+        const browserlang = localStorage.getItem('lang');
         if (browserlang == 'ar') {
           this.arSelected = true;
           this.enSelected = false;
@@ -206,68 +316,20 @@ export class SigninComponent implements OnInit {
           this.enSelected = true;
           this.arSelected = false;
         }
-      }
+    }
+
     toggleDir(lang) {
         this.customizer.toggleDir(lang == 'ar');
-        //this.changeLanguage(lang);
         this.selectedLanguage();
     }
 
-    public checkTenantExistenceValidator(): AsyncValidatorFn {
-
-        return (control: AbstractControl): Observable<ValidationErrors | null> => {
-          return of(control.value).pipe(
-            debounceTime(300),
-            distinctUntilChanged(),
-            switchMap((tenancyName: string) =>
-            
-            
-             this.restService.post(environment.urls.Is_Tenant_Available,{tenancyName:tenancyName}).map(response => {
-              
-              
-                if(response?.result?.tenantId!==null)
-                {
-                    
-                  this.signinForm.controls['tenantId'].setValue(response.result.tenantId);
-                }
-
-                if(response?.result?.tenantId ===null)
-                {
-                    
-                  //  this.toastr.error('Company or Store is not exist with this name,Please provide correct company name');
-                 return { tenantNotExist: true };
-                }else{
-                return null;
-                }
-          })
-            )
-          );
-        };
-      }
-
-    // changeLanguage(lang: string) {
-    //     this.translateService.setDefaultLang(lang);
-    //     this.translateService.use(lang);
-    // }
-
-
-
     onInputFocusForSignInForm(event: any) {
-      //  this.virtualKeyBoardService.keyboard.setInput(event.target.value);
-       // this.virtualKeyBoardService.keyboardValue=event.target.value;
-       // this.virtualKeyBoardService.genericForm=this.signinForm;
-       // this.virtualKeyBoardService.inputName=event.target.id;
-       // this.keyboard.onInputChange(event);
-      };
-    
-      onInputChangeForSignInForm(event: any){
+    };
 
-       //this.virtualKeyBoardService.keyboard.setInput(event.target.value);
-      //  this.virtualKeyBoardService.keyboardValue=event.target.value;
-       // this.keyboard.onInputChange(event);
-      };
+    onInputChangeForSignInForm(event: any){
+    };
 
-      togglePassword(): void {
+    togglePassword(): void {
         this.showPassword = !this.showPassword;
-      }
+    }
 }

@@ -1,6 +1,7 @@
 export interface AdminProductCategoryListItem {
   id: string;
   name: string;
+  displayName?: string | null;
   showCategoryOnline: boolean;
   isPopular: boolean;
 }
@@ -16,4 +17,5 @@ export interface UpdateAdminProductCategoryPayload {
   productGroupId: string;
   showCategoryOnline?: boolean;
   isPopular?: boolean;
+  displayName?: string | null;
 }

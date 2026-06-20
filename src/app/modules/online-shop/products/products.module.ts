@@ -10,6 +10,7 @@ import { ProductsRoutingModule } from './products-routing.module';
 import { ProductsComponent } from './products.component';
 import { ProductImagesModalComponent } from './product-images-modal/product-images-modal.component';
 import { ProductCategoriesComponent } from './product-categories/product-categories.component';
+import { ProductCategoryEditModalComponent } from './product-category-edit-modal/product-category-edit-modal.component';
 import { ProductBrandsComponent } from './product-brands/product-brands.component';
 import { ProductsService } from './services/products.service';
 import { ProductCategoriesService } from './services/product-categories.service';
@@ -31,9 +32,10 @@ import { ProductBrandsService } from './services/product-brands.service';
     ProductsComponent,
     ProductImagesModalComponent,
     ProductCategoriesComponent,
+    ProductCategoryEditModalComponent,
     ProductBrandsComponent,
   ],
-  entryComponents: [ProductImagesModalComponent],
+  entryComponents: [ProductImagesModalComponent, ProductCategoryEditModalComponent],
   providers: [ProductsService, ProductCategoriesService, ProductBrandsService],
 })
 export class ProductsModule {}
