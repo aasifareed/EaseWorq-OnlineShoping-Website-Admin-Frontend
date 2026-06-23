@@ -9,6 +9,7 @@ const routes: Routes = [
   { path: 'delivery', component: SettingsShellComponent },
   { path: 'payment', component: SettingsShellComponent },
   { path: 'invoice', component: SettingsShellComponent },
+  { path: 'home-banners', component: SettingsShellComponent },
   { path: 'seo', component: SettingsShellComponent },
 ];
 

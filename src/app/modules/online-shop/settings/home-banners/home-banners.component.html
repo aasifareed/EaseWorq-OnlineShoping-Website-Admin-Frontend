@@ -1,0 +1,125 @@
+<section class="settings-panel">
+  <div class="settings-panel__intro">
+    <h2 class="settings-panel__title">{{ 'Home Page Banners' | translate }}</h2>
+    <p class="text-muted mb-0">
+      {{ 'Upload slider images for your storefront home page. Multiple banners are shown as a carousel.' | translate }}
+    </p>
+  </div>
+
+  <div class="pim pim--embedded">
+    <div class="pim__body">
+      <div class="pim__columns">
+        <section class="pim__card pim__card--gallery">
+          <div class="pim__card-head">
+            <div>
+              <h6 class="pim__card-title">Current banners</h6>
+              <p class="pim__card-desc">Images shown on the home page slider.</p>
+            </div>
+            <span class="pim__pill" *ngIf="!loadingBanners">{{ banners.length }} banner{{ banners.length === 1 ? '' : 's' }}</span>
+          </div>
+
+          <div class="pim__loading" *ngIf="loadingBanners">
+            <div class="pim__skeleton" *ngFor="let _ of skeletonSlots"></div>
+          </div>
+
+          <div class="pim__empty" *ngIf="!loadingBanners && !banners.length">
+            <div class="pim__empty-icon"><i class="fa fa-image fontAwesome_Li_Class"></i></div>
+            <p>No banners yet</p>
+            <span>Upload images on the right to create your home page slider.</span>
+          </div>
+
+          <div class="pim__gallery" *ngIf="!loadingBanners && banners.length">
+            <article class="pim__tile" *ngFor="let banner of banners; let i = index">
+              <div class="pim__tile-media">
+                <img [src]="banner.url" [alt]="'Banner ' + (i + 1)" (error)="onImageError($event)" />
+                <div class="pim__tile-overlay" *ngIf="banner.canRemove">
+                  <button
+                    type="button"
+                    class="pim__tile-action pim__tile-action--danger"
+                    (click)="removeBanner(banner)"
+                    [disabled]="uploading || isRemoving(banner)"
+                    aria-label="Remove banner"
+                  >
+                    <span *ngIf="isRemoving(banner)" class="spinner-border spinner-border-sm" role="status"></span>
+                    <i *ngIf="!isRemoving(banner)" class="fa fa-trash fontAwesome_Li_Class"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="pim__tile-meta">
+                <span class="pim__badge pim__badge--primary">Slide {{ i + 1 }}</span>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="pim__card pim__card--upload">
+          <div class="pim__card-head pim__card-head--compact">
+            <h6 class="pim__card-title">Add banners</h6>
+          </div>
+
+          <label
+            class="pim__dropzone"
+            [class.pim__dropzone--active]="dragOver"
+            [class.pim__dropzone--disabled]="uploading"
+            (dragover)="onDragOver($event)"
+            (dragleave)="onDragLeave($event)"
+            (drop)="onDrop($event)"
+          >
+            <input
+              type="file"
+              class="pim__file-input"
+              accept="image/*"
+              multiple
+              (change)="onFilesSelected($event)"
+              [disabled]="uploading"
+            />
+            <div class="pim__dropzone-inner">
+              <div class="pim__dropzone-icon"><i class="fa fa-cloud-upload fontAwesome_Li_Class"></i></div>
+              <p class="pim__dropzone-title">
+                <span *ngIf="!selectedFiles.length">Drag &amp; drop images here</span>
+                <span *ngIf="selectedFiles.length">{{ selectedFiles.length }} file{{ selectedFiles.length === 1 ? '' : 's' }} ready to upload</span>
+              </p>
+              <p class="pim__dropzone-hint">or <span class="pim__dropzone-link">browse from your device</span></p>
+            </div>
+          </label>
+
+          <div class="pim__pending" *ngIf="previewItems.length">
+            <p class="pim__pending-label">Ready to upload</p>
+            <div class="pim__gallery pim__gallery--pending">
+              <article class="pim__tile pim__tile--pending" *ngFor="let preview of previewItems; let i = index">
+                <div class="pim__tile-media">
+                  <img [src]="preview.safeUrl" alt="" />
+                  <div class="pim__tile-overlay">
+                    <button
+                      type="button"
+                      class="pim__tile-action pim__tile-action--danger"
+                      (click)="removeSelected(i)"
+                      [disabled]="uploading"
+                      aria-label="Remove from queue"
+                    >
+                      <i class="fa fa-times fontAwesome_Li_Class"></i>
+                    </button>
+                  </div>
+                </div>
+                <span class="pim__tile-filename" [title]="selectedFiles[i]?.name">{{ selectedFiles[i]?.name }}</span>
+              </article>
+            </div>
+          </div>
+
+          <div class="pim__footer-actions pim__footer-actions--inline">
+            <button
+              type="button"
+              class="pim__btn pim__btn--primary"
+              (click)="upload()"
+              [disabled]="uploading || selectedFiles.length === 0"
+            >
+              <span *ngIf="uploading" class="spinner-border spinner-border-sm mr-2" role="status"></span>
+              <i *ngIf="!uploading" class="fa fa-upload fontAwesome_Li_Class mr-2"></i>
+              {{ uploadButtonLabel }}
+            </button>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</section>

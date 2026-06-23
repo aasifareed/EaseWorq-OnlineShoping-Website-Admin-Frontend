@@ -117,6 +117,12 @@ export const appServiceUrls = {
   OnlineShopProduct_GetImages: '/OnlineShopProductUpload/GetImages',
   OnlineShopProduct_RemoveImage: '/OnlineShopProductUpload/RemoveImage',
 
+  // Home page banners (OnlineShopHomeBannerUploadController)
+  OnlineShopHomeBanner_GetBanners: '/OnlineShopHomeBannerUpload/GetBanners',
+  OnlineShopHomeBanner_UploadBanners: '/OnlineShopHomeBannerUpload/UploadBanners',
+  OnlineShopHomeBanner_RemoveBanner: '/OnlineShopHomeBannerUpload/RemoveBanner',
+  OnlineShopHomeBanner_GetForStorefront: '/OnlineShopHomeBanner/GetHomeBannersForStorefront',
+
   // POS product categories — admin grid (OnlineShopProductCategoryAppService)
   OnlineShopProductCategory_GetAllForAdmin: '/OnlineShopProductCategory/GetAllForAdmin',
   OnlineShopProductCategory_UpdateForAdmin: '/OnlineShopProductCategory/UpdateForAdmin',

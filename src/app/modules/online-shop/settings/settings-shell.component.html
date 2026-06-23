@@ -241,6 +241,9 @@
                           </div>
                         </section>
 
+                        <!-- Home page banners -->
+                        <app-home-banners *ngIf="activeSectionId === 'home-banners'"></app-home-banners>
+
                         <!-- SEO -->
                         <section *ngIf="activeSectionId === 'seo'" class="settings-panel">
                           <div class="row">
