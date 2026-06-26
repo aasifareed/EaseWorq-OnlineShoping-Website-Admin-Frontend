@@ -123,6 +123,12 @@ export const appServiceUrls = {
   OnlineShopHomeBanner_RemoveBanner: '/OnlineShopHomeBannerUpload/RemoveBanner',
   OnlineShopHomeBanner_GetForStorefront: '/OnlineShopHomeBanner/GetHomeBannersForStorefront',
 
+  // Store logo (OnlineShopStoreLogoUploadController / OnlineShopStoreLogoAppService)
+  OnlineShopStoreLogo_GetLogo: '/OnlineShopStoreLogoUpload/GetLogo',
+  OnlineShopStoreLogo_UploadLogo: '/OnlineShopStoreLogoUpload/UploadLogo',
+  OnlineShopStoreLogo_RemoveLogo: '/OnlineShopStoreLogoUpload/RemoveLogo',
+  OnlineShopStoreLogo_GetForStorefront: '/OnlineShopStoreLogo/GetLogoForStorefront',
+
   // POS product categories — admin grid (OnlineShopProductCategoryAppService)
   OnlineShopProductCategory_GetAllForAdmin: '/OnlineShopProductCategory/GetAllForAdmin',
   OnlineShopProductCategory_UpdateForAdmin: '/OnlineShopProductCategory/UpdateForAdmin',

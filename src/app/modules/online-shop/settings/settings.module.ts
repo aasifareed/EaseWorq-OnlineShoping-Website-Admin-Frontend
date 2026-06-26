@@ -16,6 +16,8 @@ import { PaymentProvidersComponent } from './payment-providers/payment-providers
 import { PaymentProviderModalComponent } from './payment-providers/payment-provider-modal.component';
 import { HomeBannersComponent } from './home-banners/home-banners.component';
 import { HomeBannersService } from './home-banners/home-banners.service';
+import { StoreLogoComponent } from './store-logo/store-logo.component';
+import { StoreLogoService } from './store-logo/store-logo.service';
 
 @NgModule({
   imports: [
@@ -35,7 +37,8 @@ import { HomeBannersService } from './home-banners/home-banners.service';
     PaymentProvidersComponent,
     PaymentProviderModalComponent,
     HomeBannersComponent,
+    StoreLogoComponent,
   ],
-  providers: [OnlineShopSettingsStateService, CourierProviderService, PaymentProviderService, HomeBannersService],
+  providers: [OnlineShopSettingsStateService, CourierProviderService, PaymentProviderService, HomeBannersService, StoreLogoService],
 })
 export class SettingsModule {}
