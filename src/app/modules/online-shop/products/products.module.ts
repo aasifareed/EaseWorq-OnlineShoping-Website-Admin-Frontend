@@ -12,6 +12,7 @@ import { ProductImagesModalComponent } from './product-images-modal/product-imag
 import { ProductCategoriesComponent } from './product-categories/product-categories.component';
 import { ProductCategoryEditModalComponent } from './product-category-edit-modal/product-category-edit-modal.component';
 import { ProductBrandsComponent } from './product-brands/product-brands.component';
+import { BrandImageModalComponent } from './brand-image-modal/brand-image-modal.component';
 import { ProductsService } from './services/products.service';
 import { ProductCategoriesService } from './services/product-categories.service';
 import { ProductBrandsService } from './services/product-brands.service';
@@ -34,8 +35,13 @@ import { ProductBrandsService } from './services/product-brands.service';
     ProductCategoriesComponent,
     ProductCategoryEditModalComponent,
     ProductBrandsComponent,
+    BrandImageModalComponent,
   ],
-  entryComponents: [ProductImagesModalComponent, ProductCategoryEditModalComponent],
+  entryComponents: [
+    ProductImagesModalComponent,
+    ProductCategoryEditModalComponent,
+    BrandImageModalComponent,
+  ],
   providers: [ProductsService, ProductCategoriesService, ProductBrandsService],
 })
 export class ProductsModule {}

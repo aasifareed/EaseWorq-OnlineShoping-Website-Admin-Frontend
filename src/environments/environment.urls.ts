@@ -136,4 +136,9 @@ export const appServiceUrls = {
   // POS brands — admin grid (OnlineShopBrandAppService)
   OnlineShopBrand_GetAllForAdmin: '/OnlineShopBrand/GetAllForAdmin',
   OnlineShopBrand_UpdateForAdmin: '/OnlineShopBrand/UpdateForAdmin',
+
+  // Brand image (OnlineShopBrandImageUploadController) — single image per brand
+  OnlineShopBrandImage_Get: '/OnlineShopBrandImageUpload/GetImage',
+  OnlineShopBrandImage_Upload: '/OnlineShopBrandImageUpload/UploadImage',
+  OnlineShopBrandImage_Remove: '/OnlineShopBrandImageUpload/RemoveImage',
 };

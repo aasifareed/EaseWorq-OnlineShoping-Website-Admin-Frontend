@@ -39,10 +39,10 @@ export class HomeBannersService {
       id: String(row.id ?? row.Id ?? ''),
       url: String(row.url ?? row.Url ?? ''),
       sortOrder: Number(row.sortOrder ?? row.SortOrder ?? 0),
-      isActive: row.isActive ?? row.IsActive ?? true,
+      isActive: (row.isActive ?? row.IsActive ?? true) as boolean,
       title: (row.title ?? row.Title) as string | undefined,
       linkUrl: (row.linkUrl ?? row.LinkUrl) as string | undefined,
-      canRemove: row.canRemove ?? row.CanRemove ?? true,
+      canRemove: (row.canRemove ?? row.CanRemove ?? true) as boolean,
     }));
   }
 }

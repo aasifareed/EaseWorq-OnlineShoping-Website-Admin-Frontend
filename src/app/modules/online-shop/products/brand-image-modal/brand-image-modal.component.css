@@ -1,0 +1,29 @@
+/* Brand image modal overrides (loaded after the shared product-images CSS).
+   A brand has a single image, so keep the dropzone compact and always show
+   the selected-file preview prominently right below it. */
+.pim__card--upload .pim__dropzone {
+  flex: 0 0 auto;
+  min-height: 150px;
+}
+
+.pim__card--upload .pim__pending {
+  flex-shrink: 0;
+  max-height: none;
+  overflow: visible;
+  margin-top: 0.85rem;
+}
+
+/* Make the single preview a clear, large thumbnail instead of a tiny square. */
+.pim__card--upload .pim__gallery--pending {
+  grid-template-columns: 1fr;
+}
+
+.pim__card--upload .pim__gallery--pending .pim__tile-media {
+  aspect-ratio: auto;
+  height: 200px;
+}
+
+.pim__card--upload .pim__gallery--pending .pim__tile-media img {
+  object-fit: contain;
+  background: #ffffff;
+}

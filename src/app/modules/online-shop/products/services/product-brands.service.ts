@@ -6,6 +6,7 @@ import { appServiceUrls } from 'src/environments/environment.urls';
 import {
   AdminProductBrandListItem,
   AdminProductBrandsQuery,
+  OnlineShopBrandImage,
   UpdateAdminProductBrandPayload,
 } from '../models/product-brand.models';
 
@@ -60,11 +61,54 @@ export class ProductBrandsService {
     );
   }
 
+  getImage(posBrandId: string): Observable<OnlineShopBrandImage | null> {
+    const url = `${appServiceUrls.OnlineShopBrandImage_Get}?posBrandId=${encodeURIComponent(posBrandId)}`;
+    return this.restService.get(url).pipe(map((response) => this.mapImage(response)));
+  }
+
+  uploadImage(posBrandId: string, file: File): Observable<OnlineShopBrandImage | null> {
+    const form = new FormData();
+    form.append('PosBrandId', posBrandId);
+    form.append('Files', file);
+    return this.restService
+      .postFormData(appServiceUrls.OnlineShopBrandImage_Upload, form)
+      .pipe(map((response) => this.mapImage(response)));
+  }
+
+  removeImage(posBrandId: string): Observable<OnlineShopBrandImage | null> {
+    return this.restService
+      .post(appServiceUrls.OnlineShopBrandImage_Remove, { PosBrandId: posBrandId })
+      .pipe(map((response) => this.mapImage(response)));
+  }
+
+  private mapImage(response: unknown): OnlineShopBrandImage | null {
+    const result = (response as { result?: unknown })?.result ?? response;
+    if (!result || typeof result !== 'object') {
+      return null;
+    }
+    const row = result as Record<string, unknown>;
+    const url = String(row.url ?? row.Url ?? '');
+    if (!url) {
+      return null;
+    }
+    return {
+      attachmentId:
+        row.attachmentId != null
+          ? String(row.attachmentId)
+          : row.AttachmentId != null
+            ? String(row.AttachmentId)
+            : undefined,
+      url,
+      canRemove: Boolean(row.canRemove ?? row.CanRemove ?? true),
+    };
+  }
+
   private mapRow(row: Record<string, unknown>): AdminProductBrandListItem {
     return {
       id: String(row.id ?? row.Id ?? ''),
       name: String(row.name ?? row.Name ?? '—'),
       isPopular: Boolean(row.isPopular ?? row.IsPopular ?? false),
+      pictureUrl: String(row.pictureUrl ?? row.PictureUrl ?? ''),
     };
   }
 }

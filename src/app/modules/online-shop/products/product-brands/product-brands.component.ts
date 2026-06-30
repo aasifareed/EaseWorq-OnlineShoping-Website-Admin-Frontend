@@ -1,5 +1,6 @@
 import { Component, ElementRef, HostListener, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { ColumnMode } from '@swimlane/ngx-datatable';
 import { ToastrService } from 'ngx-toastr';
@@ -7,6 +8,7 @@ import { debounceTime } from 'rxjs/operators';
 import { Page } from 'src/app/shared/models/page';
 import { GlobalDataService } from 'src/app/shared/services/globalData.service';
 import { AdminProductBrandListItem } from '../models/product-brand.models';
+import { BrandImageModalComponent } from '../brand-image-modal/brand-image-modal.component';
 import { ProductBrandsService } from '../services/product-brands.service';
 import { calculateProductsGridLayout } from '../utils/products-grid-layout.util';
 import { ProductsTabGrid } from '../utils/products-tab-grid';
@@ -29,6 +31,7 @@ export class ProductBrandsComponent implements OnInit, ProductsTabGrid {
 
   constructor(
     private brandsService: ProductBrandsService,
+    private modalService: NgbModal,
     private toastr: ToastrService,
     private translate: TranslateService,
     public globalDataService: GlobalDataService,
@@ -119,6 +122,36 @@ export class ProductBrandsComponent implements OnInit, ProductsTabGrid {
 
   formatYesNo(value: boolean): string {
     return value ? this.translate.instant('Yes') : this.translate.instant('No');
+  }
+
+  onImageError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    img.src = 'assets/images/logo.svg';
+  }
+
+  openImageModal(row: AdminProductBrandListItem): void {
+    const modalRef = this.modalService.open(BrandImageModalComponent, {
+      size: 'lg',
+      backdrop: 'static',
+      centered: true,
+      windowClass: 'product-images-modal-window',
+    });
+    modalRef.componentInstance.brand = { ...row };
+
+    modalRef.result.then(
+      (result: { changed?: boolean; pictureUrl?: string }) => {
+        if (result?.changed) {
+          this.updateRowPicture(row.id, result.pictureUrl ?? '');
+        }
+      },
+      () => undefined,
+    );
+  }
+
+  private updateRowPicture(brandId: string, pictureUrl: string): void {
+    this.data = this.data.map((item) =>
+      item.id === brandId ? { ...item, pictureUrl } : item,
+    );
   }
 
   isSaving(row: AdminProductBrandListItem): boolean {

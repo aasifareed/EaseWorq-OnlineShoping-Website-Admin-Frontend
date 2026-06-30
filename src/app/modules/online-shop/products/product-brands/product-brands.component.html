@@ -41,6 +41,39 @@
           [limit]="page.size"
           (page)="setPage($event)"
         >
+          <ngx-datatable-column
+            [name]="'Image' | translate"
+            [sortable]="false"
+            [canAutoResize]="false"
+            [width]="108"
+            [minWidth]="108"
+            cellClass="products-datatable__image-col"
+            headerClass="products-datatable__image-col"
+          >
+            <ng-template ngx-datatable-cell-template let-row="row">
+              <div class="products-datatable__image-cell">
+                <button
+                  type="button"
+                  class="products-datatable__thumb-btn"
+                  (click)="openImageModal(row)"
+                  [title]="'Manage image' | translate"
+                >
+                  <span class="products-datatable__thumb-frame">
+                    <img
+                      class="products-datatable__thumb"
+                      [src]="row.pictureUrl || 'assets/images/logo.svg'"
+                      [alt]="row.name"
+                      (error)="onImageError($event)"
+                    />
+                  </span>
+                  <span class="products-datatable__thumb-badge">
+                    {{ row.pictureUrl ? '1' : '+' }}
+                  </span>
+                </button>
+              </div>
+            </ng-template>
+          </ngx-datatable-column>
+
           <ngx-datatable-column [name]="'Name' | translate" prop="name" [minWidth]="220">
             <ng-template ngx-datatable-cell-template let-row="row">
               <strong>{{ row.name }}</strong>

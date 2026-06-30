@@ -47,7 +47,7 @@ export class StoreLogoService {
     return {
       id: String(row.id ?? row.Id ?? '') || null,
       url,
-      canRemove: row.canRemove ?? row.CanRemove ?? true,
+      canRemove: (row.canRemove ?? row.CanRemove ?? true) as boolean,
     };
   }
 }
