@@ -1,7 +1,7 @@
 import { appServiceUrls } from './environment.urls';
 
-const BACKEND_URL = 'https://pos-api.behzitech.com/';
-const OauthHost = '//pos-api.behzitech.com';
+const BACKEND_URL = 'https://beta-onlineshopping-api.sastakhareedo.com/';
+const OauthHost = '//beta-onlineshopping-api.sastakhareedo.com';
 const BACKEND_URL_LOCAL = 'http://localhost:63661/api';
 const OauthProtocol = 'https';
 const OauthClientId = '';
