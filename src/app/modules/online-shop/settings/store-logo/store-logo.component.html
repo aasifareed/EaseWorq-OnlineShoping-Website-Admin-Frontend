@@ -1,0 +1,77 @@
+<div class="store-logo-block">
+  <label class="store-logo-block__label">{{ 'Storefront logo' | translate }}</label>
+  <p class="text-muted store-logo-block__hint">
+    {{ 'Upload a logo for your online shop header. If no logo is set, the store name is shown instead.' | translate }}
+  </p>
+
+  <div class="logo-slot logo-slot--loading" *ngIf="loading">
+    <i class="fa fa-spinner fa-spin"></i>
+  </div>
+
+  <label
+    *ngIf="!loading && !hasLogo"
+    class="logo-slot logo-slot--empty"
+    [class.logo-slot--drag]="dragOver"
+    [class.logo-slot--disabled]="uploading"
+    (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave($event)"
+    (drop)="onDrop($event)"
+  >
+    <input
+      type="file"
+      class="logo-slot__input"
+      accept="image/*"
+      (change)="onFilePicked($event)"
+      [disabled]="uploading"
+    />
+    <span class="logo-slot__placeholder-icon">
+      <i class="fa fa-plus fontAwesome_Li_Class"></i>
+    </span>
+    <span class="logo-slot__placeholder-text">{{ 'Add logo' | translate }}</span>
+  </label>
+
+  <div
+    *ngIf="!loading && hasLogo"
+    class="logo-slot logo-slot--filled"
+    [class.logo-slot--drag]="dragOver"
+    (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave($event)"
+    (drop)="onDrop($event)"
+  >
+    <img [src]="logo?.url" alt="Store logo" class="logo-slot__img" (error)="onImageError($event)" />
+
+    <div class="logo-slot__actions">
+      <label
+        class="logo-slot__btn"
+        [attr.aria-label]="'Replace logo' | translate"
+        [title]="'Replace' | translate"
+      >
+        <input
+          type="file"
+          class="logo-slot__input"
+          accept="image/*"
+          (change)="onFilePicked($event)"
+          [disabled]="uploading || removing"
+        />
+        <i class="fa fa-refresh fontAwesome_Li_Class"></i>
+      </label>
+      <button
+        type="button"
+        class="logo-slot__btn logo-slot__btn--danger"
+        (click)="removeLogo()"
+        [disabled]="uploading || removing"
+        [attr.aria-label]="'Delete logo' | translate"
+        [title]="'Delete' | translate"
+      >
+        <span *ngIf="removing" class="spinner-border spinner-border-sm" role="status"></span>
+        <i *ngIf="!removing" class="fa fa-trash fontAwesome_Li_Class"></i>
+      </button>
+    </div>
+
+    <div class="logo-slot__busy" *ngIf="uploading">
+      <span class="spinner-border spinner-border-sm text-light" role="status"></span>
+    </div>
+  </div>
+
+  <p class="logo-slot__meta text-muted">{{ 'PNG, JPG or WebP · max header size' | translate }}</p>
+</div>

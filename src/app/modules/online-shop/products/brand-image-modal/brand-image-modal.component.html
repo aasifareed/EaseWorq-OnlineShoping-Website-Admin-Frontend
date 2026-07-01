@@ -1,0 +1,132 @@
+<div class="pim">
+  <header class="pim__header">
+    <div class="pim__header-main">
+      <div class="pim__icon-wrap" aria-hidden="true">
+        <i class="fa fa-picture-o fontAwesome_Li_Class"></i>
+      </div>
+      <div class="pim__header-text">
+        <h4 class="pim__title">Brand image</h4>
+        <p class="pim__subtitle">{{ brand?.name }} — shown in the storefront Top Brands section</p>
+      </div>
+    </div>
+    <button type="button" class="pim__close" aria-label="Close" (click)="close()" [disabled]="uploading">
+      <i class="fa fa-times fontAwesome_Li_Class"></i>
+    </button>
+  </header>
+
+  <div class="pim__body">
+    <div class="pim__columns">
+      <section class="pim__card pim__card--gallery">
+        <div class="pim__card-head">
+          <div>
+            <h6 class="pim__card-title">Current image</h6>
+            <p class="pim__card-desc">Each brand can have only one image.</p>
+          </div>
+        </div>
+
+        <div class="pim__loading" *ngIf="loadingImage">
+          <div class="pim__skeleton"></div>
+        </div>
+
+        <div class="pim__empty" *ngIf="!loadingImage && !existingImage">
+          <div class="pim__empty-icon"><i class="fa fa-image fontAwesome_Li_Class"></i></div>
+          <p>No image yet</p>
+          <span>Upload an image on the right.</span>
+        </div>
+
+        <div class="pim__gallery" *ngIf="!loadingImage && existingImage">
+          <article class="pim__tile">
+            <div class="pim__tile-media">
+              <img [src]="existingImage.url" [alt]="brand?.name" (error)="onImageError($event)" />
+              <div class="pim__tile-overlay" *ngIf="existingImage.canRemove">
+                <button
+                  type="button"
+                  class="pim__tile-action pim__tile-action--danger"
+                  (click)="removeExisting()"
+                  [disabled]="uploading || removing"
+                  aria-label="Remove image"
+                >
+                  <span *ngIf="removing" class="spinner-border spinner-border-sm" role="status"></span>
+                  <i *ngIf="!removing" class="fa fa-trash fontAwesome_Li_Class"></i>
+                </button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="pim__card pim__card--upload">
+        <div class="pim__card-head pim__card-head--compact">
+          <h6 class="pim__card-title">{{ existingImage ? 'Replace image' : 'Add image' }}</h6>
+        </div>
+
+        <label
+          class="pim__dropzone"
+          [class.pim__dropzone--active]="dragOver"
+          [class.pim__dropzone--disabled]="uploading"
+          (dragover)="onDragOver($event)"
+          (dragleave)="onDragLeave($event)"
+          (drop)="onDrop($event)"
+        >
+          <input
+            type="file"
+            class="pim__file-input"
+            accept="image/*"
+            (change)="onFileSelected($event)"
+            [disabled]="uploading"
+          />
+          <div class="pim__dropzone-inner">
+            <div class="pim__dropzone-icon"><i class="fa fa-cloud-upload fontAwesome_Li_Class"></i></div>
+            <p class="pim__dropzone-title">
+              <span *ngIf="!selectedFile">Drag &amp; drop an image here</span>
+              <span *ngIf="selectedFile">1 file ready to upload</span>
+            </p>
+            <p class="pim__dropzone-hint">or <span class="pim__dropzone-link">browse from your device</span></p>
+          </div>
+        </label>
+
+        <div class="pim__pending" *ngIf="previewSafeUrl">
+          <p class="pim__pending-label">Ready to upload</p>
+          <div class="pim__gallery pim__gallery--pending">
+            <article class="pim__tile pim__tile--pending">
+              <div class="pim__tile-media">
+                <img [src]="previewSafeUrl" alt="" />
+                <div class="pim__tile-overlay">
+                  <button
+                    type="button"
+                    class="pim__tile-action pim__tile-action--danger"
+                    (click)="clearSelected()"
+                    [disabled]="uploading"
+                    aria-label="Remove from queue"
+                  >
+                    <i class="fa fa-times fontAwesome_Li_Class"></i>
+                  </button>
+                </div>
+              </div>
+              <span class="pim__tile-filename" [title]="selectedFile?.name">{{ selectedFile?.name }}</span>
+            </article>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <footer class="pim__footer">
+    <p class="pim__footer-hint" *ngIf="changed">Image updated — close to refresh the brands list.</p>
+    <div class="pim__footer-actions">
+      <button type="button" class="pim__btn pim__btn--ghost" (click)="close()" [disabled]="uploading">
+        {{ changed ? 'Done' : 'Cancel' }}
+      </button>
+      <button
+        type="button"
+        class="pim__btn pim__btn--primary"
+        (click)="upload()"
+        [disabled]="uploading || !selectedFile"
+      >
+        <span *ngIf="uploading" class="spinner-border spinner-border-sm mr-2" role="status"></span>
+        <i *ngIf="!uploading" class="fa fa-upload fontAwesome_Li_Class mr-2"></i>
+        {{ uploadButtonLabel }}
+      </button>
+    </div>
+  </footer>
+</div>

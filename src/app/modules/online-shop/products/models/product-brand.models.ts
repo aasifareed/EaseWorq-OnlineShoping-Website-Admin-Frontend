@@ -2,6 +2,13 @@ export interface AdminProductBrandListItem {
   id: string;
   name: string;
   isPopular: boolean;
+  pictureUrl?: string;
+}
+
+export interface OnlineShopBrandImage {
+  attachmentId?: string;
+  url: string;
+  canRemove: boolean;
 }
 
 export interface AdminProductBrandsQuery {

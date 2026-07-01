@@ -79,11 +79,7 @@
                             </p>
                           </div>
 
-                          <div class="row align-items-start mb-4" *ngIf="state.posInfo?.storeLogoUrl as logoUrl">
-                            <div class="col-auto">
-                              <img [src]="logoUrl" alt="Store logo" class="settings-store-logo" />
-                            </div>
-                          </div>
+                          <app-store-logo></app-store-logo>
 
                           <div class="row">
                             <div class="col-md-6 form-group">
@@ -240,6 +236,9 @@
                             </div>
                           </div>
                         </section>
+
+                        <!-- Home page banners -->
+                        <app-home-banners *ngIf="activeSectionId === 'home-banners'"></app-home-banners>
 
                         <!-- SEO -->
                         <section *ngIf="activeSectionId === 'seo'" class="settings-panel">

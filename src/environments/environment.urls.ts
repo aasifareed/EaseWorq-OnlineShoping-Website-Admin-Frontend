@@ -117,6 +117,18 @@ export const appServiceUrls = {
   OnlineShopProduct_GetImages: '/OnlineShopProductUpload/GetImages',
   OnlineShopProduct_RemoveImage: '/OnlineShopProductUpload/RemoveImage',
 
+  // Home page banners (OnlineShopHomeBannerUploadController)
+  OnlineShopHomeBanner_GetBanners: '/OnlineShopHomeBannerUpload/GetBanners',
+  OnlineShopHomeBanner_UploadBanners: '/OnlineShopHomeBannerUpload/UploadBanners',
+  OnlineShopHomeBanner_RemoveBanner: '/OnlineShopHomeBannerUpload/RemoveBanner',
+  OnlineShopHomeBanner_GetForStorefront: '/OnlineShopHomeBanner/GetHomeBannersForStorefront',
+
+  // Store logo (OnlineShopStoreLogoUploadController / OnlineShopStoreLogoAppService)
+  OnlineShopStoreLogo_GetLogo: '/OnlineShopStoreLogoUpload/GetLogo',
+  OnlineShopStoreLogo_UploadLogo: '/OnlineShopStoreLogoUpload/UploadLogo',
+  OnlineShopStoreLogo_RemoveLogo: '/OnlineShopStoreLogoUpload/RemoveLogo',
+  OnlineShopStoreLogo_GetForStorefront: '/OnlineShopStoreLogo/GetLogoForStorefront',
+
   // POS product categories — admin grid (OnlineShopProductCategoryAppService)
   OnlineShopProductCategory_GetAllForAdmin: '/OnlineShopProductCategory/GetAllForAdmin',
   OnlineShopProductCategory_UpdateForAdmin: '/OnlineShopProductCategory/UpdateForAdmin',
@@ -124,4 +136,9 @@ export const appServiceUrls = {
   // POS brands — admin grid (OnlineShopBrandAppService)
   OnlineShopBrand_GetAllForAdmin: '/OnlineShopBrand/GetAllForAdmin',
   OnlineShopBrand_UpdateForAdmin: '/OnlineShopBrand/UpdateForAdmin',
+
+  // Brand image (OnlineShopBrandImageUploadController) — single image per brand
+  OnlineShopBrandImage_Get: '/OnlineShopBrandImageUpload/GetImage',
+  OnlineShopBrandImage_Upload: '/OnlineShopBrandImageUpload/UploadImage',
+  OnlineShopBrandImage_Remove: '/OnlineShopBrandImageUpload/RemoveImage',
 };

@@ -1,0 +1,12 @@
+@import '../../products/product-images-modal/product-images-modal.component.css';
+
+.pim--embedded {
+  border: 1px solid var(--pim-border);
+  box-shadow: none;
+}
+
+.pim__footer-actions--inline {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+}

@@ -55,6 +55,12 @@ export class SettingsShellComponent implements OnInit, OnDestroy {
       route: '/online-shop/settings/invoice',
     },
     {
+      id: 'home-banners',
+      label: 'Home Page Banners',
+      icon: 'fa-image',
+      route: '/online-shop/settings/home-banners',
+    },
+    {
       id: 'seo',
       label: 'SEO / Social',
       icon: 'fa-share-alt',
@@ -114,7 +120,9 @@ export class SettingsShellComponent implements OnInit, OnDestroy {
   }
 
   get showSaveButton(): boolean {
-    return this.activeSectionId !== 'store-information' && this.activeSectionId !== 'payment';
+    return this.activeSectionId !== 'store-information'
+      && this.activeSectionId !== 'payment'
+      && this.activeSectionId !== 'home-banners';
   }
 
   private syncFromUrl(url: string): void {
