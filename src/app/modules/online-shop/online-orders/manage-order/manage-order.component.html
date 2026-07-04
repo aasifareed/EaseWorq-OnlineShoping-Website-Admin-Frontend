@@ -195,6 +195,19 @@
                   </div>
                 </section>
 
+                <section class="panel panel--note panel--full">
+                  <div class="panel__head">
+                    <i class="fa fa-sticky-note fontAwesome_Li_Class panel__icon"></i>
+                    <h2 class="panel__title">Order note</h2>
+                  </div>
+                  <div class="panel__body">
+                    <p class="order-note-text" *ngIf="customerOrderNote; else noOrderNote">{{ customerOrderNote }}</p>
+                    <ng-template #noOrderNote>
+                      <p class="order-note-text order-note-text--empty">No order note provided.</p>
+                    </ng-template>
+                  </div>
+                </section>
+
                 <section class="panel panel--amounts panel--full">
                   <div class="panel__head">
                     <i class="fa fa-calculator fontAwesome_Li_Class panel__icon"></i>

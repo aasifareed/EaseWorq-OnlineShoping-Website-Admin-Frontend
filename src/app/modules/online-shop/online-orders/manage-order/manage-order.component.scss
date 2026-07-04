@@ -312,6 +312,22 @@ $shadow: 0 4px 20px rgba(45, 55, 72, 0.06);
   &--full {
     grid-column: 1 / -1;
   }
+
+  &--note {
+    .order-note-text {
+      margin: 0;
+      color: #334155;
+      font-size: 0.95rem;
+      line-height: 1.55;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .order-note-text--empty {
+      color: #94a3b8;
+      font-style: italic;
+    }
+  }
 }
 
 .panel__head {

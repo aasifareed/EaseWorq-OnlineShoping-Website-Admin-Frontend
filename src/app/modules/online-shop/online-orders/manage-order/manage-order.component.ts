@@ -310,6 +310,10 @@ export class ManageOrderComponent implements OnInit {
     return this.detail?.shippingAddress ?? this.detail?.ShippingAddress;
   }
 
+  get customerOrderNote(): string {
+    return String(this.detail?.customerNote ?? '').trim();
+  }
+
   goBack(): void {
     this.router.navigate(['/online-shop/order-board']);
   }
@@ -936,6 +940,7 @@ export class ManageOrderComponent implements OnInit {
       orderStatusDisplayName: raw.orderStatusDisplayName ?? raw.OrderStatusDisplayName,
       orderStatusColorCode: raw.orderStatusColorCode ?? raw.OrderStatusColorCode,
       adminNote: raw.adminNote ?? raw.AdminNote,
+      customerNote: raw.customerNote ?? raw.CustomerNote ?? '',
       shipment: this.normalizeShipmentSummary(raw.shipment ?? raw.Shipment),
       products: (raw.products ?? raw.Products ?? []).map((p: any) => ({
         productName: p.productName ?? p.ProductName,
