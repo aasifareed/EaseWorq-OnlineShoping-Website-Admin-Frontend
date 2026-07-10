@@ -1,0 +1,93 @@
+<div class="provider-section checkout-courier-section">
+  <div class="provider-section__head">
+    <div>
+      <h3 class="provider-section__title">{{ 'Visible Checkout Couriers (Flaship)' | translate }}</h3>
+      <p class="text-muted mb-0">
+        {{ 'Select which courier companies will be active and visible to customers on the public checkout page.' | translate }}
+      </p>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="checkout-courier-loading">
+    <i class="fa fa-spinner fa-spin fa-2x"></i>
+    <span>{{ 'Loading couriers...' | translate }}</span>
+  </div>
+
+  <div *ngIf="!loading && loadError" class="alert alert-warning checkout-courier-alert mb-3">
+    <i class="fa fa-exclamation-triangle mr-2"></i>
+    {{ loadError }}
+    <button type="button" class="btn btn-outline-primary btn-sm ml-2" (click)="load()">
+      <i class="fa fa-refresh mr-1"></i>{{ 'Retry' | translate }}
+    </button>
+  </div>
+
+  <div *ngIf="!loading && !loadError && !couriers.length" class="checkout-courier-empty">
+    <i class="fa fa-truck checkout-courier-empty__icon"></i>
+    <p class="mb-2">
+      {{ 'No couriers were returned from Flaship. Configure an active Flaship provider above, then refresh this list.' | translate }}
+    </p>
+    <button type="button" class="btn btn-outline-primary btn-sm" (click)="load()">
+      <i class="fa fa-refresh mr-1"></i>{{ 'Refresh' | translate }}
+    </button>
+  </div>
+
+  <ng-container *ngIf="!loading && couriers.length">
+    <div class="checkout-courier-hint" *ngIf="selectedCount === 0">
+      <i class="fa fa-info-circle mr-2"></i>
+      {{ 'No couriers selected — all available Flaship couriers will appear at checkout.' | translate }}
+    </div>
+
+    <div class="checkout-courier-toolbar">
+      <span class="checkout-courier-count">
+        <strong>{{ selectedCount }}</strong> / {{ couriers.length }} {{ 'selected' | translate }}
+      </span>
+    </div>
+
+    <div class="checkout-courier-panel">
+      <div class="checkout-courier-grid">
+        <label
+          class="checkout-courier-item"
+          *ngFor="let courier of couriers"
+          [class.checkout-courier-item--selected]="courier.selected"
+        >
+          <input
+            type="checkbox"
+            class="checkout-courier-item__checkbox"
+            [checked]="courier.selected"
+            (change)="toggleCourier(courier, $event)"
+          />
+          <span class="checkout-courier-item__body">
+            <span class="checkout-courier-item__name">{{ courier.courierName }}</span>
+            <span class="checkout-courier-item__code">{{ courier.courierCode }}</span>
+          </span>
+          <span class="checkout-courier-item__tick" *ngIf="courier.selected">
+            <i class="fa fa-check"></i>
+          </span>
+        </label>
+      </div>
+    </div>
+
+    <div class="checkout-courier-footer">
+      <div class="checkout-courier-footer__actions">
+        <button type="button" class="btn btn-outline-primary btn-sm" (click)="selectAll()">
+          <i class="fa fa-check-square-o mr-1"></i>{{ 'Select all' | translate }}
+        </button>
+        <button type="button" class="btn btn-outline-primary btn-sm" (click)="clearAll()">
+          <i class="fa fa-square-o mr-1"></i>{{ 'Clear all' | translate }}
+        </button>
+        <button type="button" class="btn btn-outline-primary btn-sm" (click)="load()">
+          <i class="fa fa-refresh mr-1"></i>{{ 'Refresh list' | translate }}
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary btn-sm checkout-courier-footer__save"
+          (click)="save()"
+          [disabled]="saving"
+        >
+          <i class="fa fa-save mr-1"></i>
+          {{ saving ? ('Saving...' | translate) : ('Save Courier Visibility' | translate) }}
+        </button>
+      </div>
+    </div>
+  </ng-container>
+</div>

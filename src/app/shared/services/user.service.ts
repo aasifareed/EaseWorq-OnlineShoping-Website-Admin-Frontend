@@ -2,6 +2,7 @@ import { HttpResponseBase } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { AuthService } from './auth.service';
 import { LocalStoreService } from './local-store.service';
@@ -38,42 +39,36 @@ export class UserService {
   }
 
   getUser(): Observable<any> {
-    // if (this.currentUser) {
-    //  return of(this.currentUser);
-    // }
-    //   else
-      {
-        
-        let userId = this.authService.getuserId();
-        return this.restService.getWithoutLoader(`${environment.urls.USER_GETBYID}?id=${userId}`).map(response => {
-           
-          this.currentUser = response.result;
-          this.navigationService.currentUser = this.currentUser;
-          this.permissionService.storePermissions(response.result.permissions);
-          
-          
+    const userId = this.authService.getuserId();
+    return this.restService.getWithoutLoader(`${environment.urls.USER_GETBYID}?id=${userId}`).pipe(
+      switchMap((response) => {
+        this.currentUser = response.result;
+        this.navigationService.currentUser = this.currentUser;
+        this.permissionService.storePermissions(response.result.permissions);
 
-          this.store.setItem('currentUser', response.result);
-          
-          this.store.setItem('permissions', response.result.permissions);
-          
-
-        //const translationsData = { HELLO: 'Hello World' };        
-        // Populate translationsData object from the translationsList
-        //this.translate.setTranslation('en', translationsData);
-        //this.translate.setDefaultLang('en');
-
+        this.store.setItem('currentUser', response.result);
+        this.store.setItem('permissions', response.result.permissions);
         this.store.setItem('defaultStoreId', response.result?.defaultStoreId);
 
-        
-        this._customUserStoreService.getUserStores();
-        this._customUserStoreService.defaultStoreId = response.result?.defaultStoreId;
-        this._customUserStoreService.selectedStore = response.result?.defaultStoreId;
+        return this._customUserStoreService.loadUserStores().pipe(
+          map((hasStore) => {
+            if (!hasStore) {
+              this.router.navigateByUrl('/store-not-found');
+              return response;
+            }
 
-        this.navigationService.resetMenu();
-        return response
-      })
-    }
+            const defaultStoreId = this._customUserStoreService.isEmptyGuid(response.result?.defaultStoreId)
+              ? this._customUserStoreService.customeStores[0]?.value
+              : response.result?.defaultStoreId;
+
+            this._customUserStoreService.defaultStoreId = defaultStoreId;
+            this._customUserStoreService.selectedStore = defaultStoreId;
+            this.navigationService.resetMenu();
+            return response;
+          }),
+        );
+      }),
+    );
   }
 
 

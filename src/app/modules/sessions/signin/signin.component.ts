@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { SharedAnimations } from 'src/app/shared/animations/shared-animations';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../../../shared/services/auth.service';
@@ -14,7 +14,19 @@ import { GlobalDataService } from 'src/app/shared/services/globalData.service';
 import { LocalStoreService } from 'src/app/shared/services/local-store.service';
 import { Apps } from 'src/app/shared/enum/Apps';
 import { TenantService } from 'src/app/shared/services/Tenant.service';
-import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
+import { CustomUserStoreService } from 'src/app/shared/services/custom-user-store.service';
+import { merge, Observable, of, Subject } from 'rxjs';
+import {
+    catchError,
+    debounceTime,
+    distinctUntilChanged,
+    filter,
+    finalize,
+    map,
+    switchMap,
+    takeUntil,
+    tap,
+} from 'rxjs/operators';
 
 @Component({
     selector: 'app-signin',
@@ -22,7 +34,9 @@ import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
     styleUrls: ['./signin.component.scss'],
     animations: [SharedAnimations]
 })
-export class SigninComponent implements OnInit, AfterViewInit {
+export class SigninComponent implements OnInit, OnDestroy, AfterViewInit {
+    private static readonly TENANT_VALIDATE_DEBOUNCE_MS = 1000;
+
     loading: boolean;
     loadingText: string;
     signinForm: FormGroup;
@@ -33,6 +47,8 @@ export class SigninComponent implements OnInit, AfterViewInit {
     tenantValidated = false;
     private impersonationContext: { targetUserId: number; targetTenantId?: number | null } | null = null;
     private lastValidatedTenantName = '';
+    private readonly destroy$ = new Subject<void>();
+    private readonly tenantBlur$ = new Subject<void>();
 
     constructor(
         private fb: FormBuilder,
@@ -49,6 +65,7 @@ export class SigninComponent implements OnInit, AfterViewInit {
         private store: LocalStoreService,
         private activatedRoute: ActivatedRoute,
         private tenantService: TenantService,
+        private customUserStoreService: CustomUserStoreService,
     ) { }
 
     ngOnInit() {
@@ -81,25 +98,103 @@ export class SigninComponent implements OnInit, AfterViewInit {
             rememberClient: [false]
         });
 
-        this.signinForm.get('tenancyName')?.valueChanges.pipe(
-            debounceTime(300),
-            distinctUntilChanged(),
-        ).subscribe((value) => {
-            const tenancyName = String(value ?? '').trim();
-            if (!tenancyName || tenancyName !== this.lastValidatedTenantName) {
-                this.tenantValidated = false;
-            }
-        });
-
-        this.signinForm.get('tenancyName')?.valueChanges.pipe(
-            debounceTime(600),
-            distinctUntilChanged(),
-            filter((value) => !!String(value ?? '').trim()),
-        ).subscribe(() => {
-            void this.validateTenantName();
-        });
+        this.setupTenantValidation();
 
         this.selectedLanguage();
+    }
+
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
+    }
+
+    private setupTenantValidation(): void {
+        const tenancyNameControl = this.signinForm.get('tenancyName');
+        if (!tenancyNameControl) {
+            return;
+        }
+
+        const tenancyName$ = tenancyNameControl.valueChanges.pipe(
+            map((value) => String(value ?? '').trim()),
+            tap((tenancyName) => {
+                if (!tenancyName || tenancyName !== this.lastValidatedTenantName) {
+                    this.tenantValidated = false;
+                }
+            }),
+        );
+
+        const debouncedInput$ = tenancyName$.pipe(
+            debounceTime(SigninComponent.TENANT_VALIDATE_DEBOUNCE_MS),
+            distinctUntilChanged(),
+        );
+
+        const blurInput$ = this.tenantBlur$.pipe(
+            map(() => String(tenancyNameControl.value ?? '').trim()),
+            filter((tenancyName) => {
+                if (!tenancyName) {
+                    return false;
+                }
+                return !(tenancyName === this.lastValidatedTenantName && this.tenantValidated);
+            }),
+        );
+
+        merge(debouncedInput$, blurInput$).pipe(
+            distinctUntilChanged(),
+            switchMap((tenancyName) => this.validateTenantName$(tenancyName)),
+            takeUntil(this.destroy$),
+        ).subscribe();
+    }
+
+    private validateTenantName$(tenancyName: string): Observable<void> {
+        if (!tenancyName) {
+            this.tenantValidated = false;
+            this.lastValidatedTenantName = '';
+            this.tenantValidating = false;
+            return of(void 0);
+        }
+
+        if (tenancyName === this.lastValidatedTenantName && this.tenantValidated) {
+            return of(void 0);
+        }
+
+        this.tenantValidating = true;
+        this.tenantValidated = false;
+
+        return this.tenantService.checkTenantAvailability(tenancyName).pipe(
+            tap((available) => {
+                if (available) {
+                    const tenantId = this.globalDataService.getCurrentTanantId();
+                    this.signinForm.patchValue({ tenantId }, { emitEvent: false });
+                    this.tenantValidated = true;
+                    this.lastValidatedTenantName = tenancyName;
+                    this.tenantService.getTenanetSettings();
+                    this.syncAutofillCredentials();
+                    return;
+                }
+
+                this.tenantValidated = false;
+                this.lastValidatedTenantName = '';
+                this.toastr.error(
+                    'Tenant not found. Please check the tenant name and try again.',
+                    'Error',
+                    { timeOut: 5000, progressBar: true },
+                );
+            }),
+            catchError(() => {
+                this.tenantValidated = false;
+                this.lastValidatedTenantName = '';
+                this.toastr.error(
+                    'Unable to validate tenant. Please try again.',
+                    'Error',
+                    { timeOut: 5000, progressBar: true },
+                );
+                return of(false);
+            }),
+            map(() => void 0),
+            finalize(() => {
+                this.tenantValidating = false;
+            }),
+        );
     }
 
     ngAfterViewInit(): void {
@@ -140,56 +235,7 @@ export class SigninComponent implements OnInit, AfterViewInit {
     }
 
     onTenantNameBlur(): void {
-        void this.validateTenantName();
-    }
-
-    async validateTenantName(): Promise<void> {
-        const tenancyName = String(this.signinForm.get('tenancyName')?.value ?? '').trim();
-        if (!tenancyName) {
-            this.tenantValidated = false;
-            this.lastValidatedTenantName = '';
-            return;
-        }
-
-        if (this.tenantValidating) {
-            return;
-        }
-
-        this.tenantValidating = true;
-        this.tenantValidated = false;
-
-        try {
-            const available = await this.tenantService
-                .checkTenantAvailability(tenancyName)
-                .toPromise();
-
-            if (available) {
-                const tenantId = this.globalDataService.getCurrentTanantId();
-                this.signinForm.patchValue({ tenantId }, { emitEvent: false });
-                this.tenantValidated = true;
-                this.lastValidatedTenantName = tenancyName;
-                this.tenantService.getTenanetSettings();
-                this.syncAutofillCredentials();
-            } else {
-                this.tenantValidated = false;
-                this.lastValidatedTenantName = '';
-                this.toastr.error(
-                    'Tenant not found. Please check the tenant name and try again.',
-                    'Error',
-                    { timeOut: 5000, progressBar: true },
-                );
-            }
-        } catch {
-            this.tenantValidated = false;
-            this.lastValidatedTenantName = '';
-            this.toastr.error(
-                'Unable to validate tenant. Please try again.',
-                'Error',
-                { timeOut: 5000, progressBar: true },
-            );
-        } finally {
-            this.tenantValidating = false;
-        }
+        this.tenantBlur$.next();
     }
 
     async signin() {
@@ -234,6 +280,14 @@ export class SigninComponent implements OnInit, AfterViewInit {
                 this.userService.getUser().subscribe({
                     next: () => {
                         this.loaderService.display(false);
+                        const hasOnlineStore = this.customUserStoreService.hasOnlineStore();
+
+                        if (!hasOnlineStore) {
+                            this.router.navigateByUrl('/store-not-found');
+                            this.loading = false;
+                            return;
+                        }
+
                         this.router.navigateByUrl('/online-shop/order-board');
                         this.navigation.setApplication(Apps.ONLINE_SHOP, false);
 

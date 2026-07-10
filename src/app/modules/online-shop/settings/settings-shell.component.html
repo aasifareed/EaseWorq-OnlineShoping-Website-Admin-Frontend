@@ -30,10 +30,10 @@
                       type="button"
                       class="btn btn-primary"
                       (click)="save()"
-                      [disabled]="state.loading || state.saving"
+                      [disabled]="state.loading || isSaving"
                     >
                       <i class="fa fa-save mr-1"></i>
-                      {{ state.saving ? ('Saving...' | translate) : ('Save Settings' | translate) }}
+                      {{ isSaving ? ('Saving...' | translate) : (saveButtonLabel | translate) }}
                     </button>
                   </div>
 
@@ -212,6 +212,7 @@
                         <!-- Delivery -->
                         <section *ngIf="activeSectionId === 'delivery'" class="settings-panel">
                           <app-courier-providers></app-courier-providers>
+                          <app-checkout-courier-visibility></app-checkout-courier-visibility>
                         </section>
 
                         <!-- Payment -->

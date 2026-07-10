@@ -15,6 +15,7 @@ import { SharedComponentsModule } from './shared/components/shared-components.mo
 import { CustomUserStoreService } from './shared/services/custom-user-store.service';
 import { GlobalDataService } from './shared/services/globalData.service';
 import { SiteNotAvailableComponent } from './SiteNotAvailable/SiteNotAvailable.component';
+import { StoreNotFoundComponent } from './views/others/store-not-found/store-not-found.component';
 import { TenantService } from './shared/services/Tenant.service';
 import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -29,7 +30,7 @@ export function TranslationLoaderFactory(http: HttpClient) {
 }
 
 @NgModule({
-  declarations: [AppComponent, SiteNotAvailableComponent],
+  declarations: [AppComponent, SiteNotAvailableComponent, StoreNotFoundComponent],
   imports: [
     BrowserModule,
     SharedModule,

@@ -48,6 +48,7 @@ export class HeaderSidebarLargeComponent implements OnInit, OnDestroy {
   href;
 
   public languageName;
+  languageSwitcherDisabled = true;
   selectedStoreSubscription: Subscription;
 
   constructor(
@@ -82,23 +83,19 @@ export class HeaderSidebarLargeComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.selectedStoreSubscription =
       this._customUserStoreService.selectedStore$.subscribe((value) => {
-        if (value && value.length == 0) {
-          //this.toastr.warning("Default store can not be removed","Warning");
-          this.toastr.warning(
-            this.translateService.instant(
-              "top_Header_Default_store_can_not_be_removed_Message"
-            ),
-            this.translateService.instant("toaster_Heading_Warning"),
-            { progressBar: true }
-          );
+        const isEmpty = value == null
+          || value === ''
+          || (Array.isArray(value) && value.length === 0);
+
+        if (isEmpty && this._customUserStoreService.customeStores?.length > 0) {
           this._customUserStoreService.selectedStore =
             this._customUserStoreService.getDefaultStoreId();
         }
       });
 
     this.getLanguagesList();
-    
-    var defaultLanguage = this.store.getItem("defaultLanguage");
+
+    const defaultLanguage = this.store.getItem('defaultLanguage') || 'en';
     this.source = defaultLanguage;
     this.previousLanguageName = defaultLanguage;
 
@@ -440,6 +437,10 @@ export class HeaderSidebarLargeComponent implements OnInit, OnDestroy {
   }
 
   languagesForDropDownValueChanged() {
+    if (this.languageSwitcherDisabled) {
+      return;
+    }
+
     for (let i = 0; i < this.languagesForDropDown?.length; i++) {
       const lang = this.languagesForDropDown[i];
       if (lang.name == this.source) {

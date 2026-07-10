@@ -5,6 +5,7 @@ import { AuthGaurd } from './shared/services/auth.gaurd';
 import { BlankLayoutComponent } from './shared/components/layouts/blank-layout/blank-layout.component';
 import { AdminLayoutSidebarLargeComponent } from './shared/components/layouts/admin-layout-sidebar-large/admin-layout-sidebar-large.component';
 import { SiteNotAvailableComponent } from './SiteNotAvailable/SiteNotAvailable.component';
+import { StoreNotFoundComponent } from './views/others/store-not-found/store-not-found.component';
 
 const adminRoutes: Routes = [
   {
@@ -68,6 +69,11 @@ const routes: Routes = [
   //     // }
   //   ]
   // },
+  {
+    path: 'store-not-found',
+    component: StoreNotFoundComponent,
+    canActivate: [AuthGaurd],
+  },
   {
     path: '',
     component: AdminLayoutSidebarLargeComponent,

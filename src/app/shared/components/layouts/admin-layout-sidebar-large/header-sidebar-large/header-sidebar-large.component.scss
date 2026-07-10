@@ -154,7 +154,12 @@ $toggle-textColor: #fff;
 
     #topBarLanguages {
         width: 150px;
-        //margin-left: 38%;
+
+        select:disabled {
+            cursor: not-allowed;
+            opacity: 0.85;
+            background-color: #f5f5f5;
+        }
     }
 
     //   #fullScreenIcon{

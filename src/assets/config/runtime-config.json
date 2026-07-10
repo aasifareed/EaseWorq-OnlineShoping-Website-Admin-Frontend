@@ -7,6 +7,6 @@
   "oauthPort": "",
   "oauthClientId": "",
   "oauthSecret": "",
-  "oauthPath": "api/TokenAuth/Authenticate",
+  "oauthPath": "api/TokenAuth/OnlineShopAuthenticate",
   "production": true
 } 

@@ -122,7 +122,16 @@ export class SettingsShellComponent implements OnInit, OnDestroy {
   get showSaveButton(): boolean {
     return this.activeSectionId !== 'store-information'
       && this.activeSectionId !== 'payment'
-      && this.activeSectionId !== 'home-banners';
+      && this.activeSectionId !== 'home-banners'
+      && this.activeSectionId !== 'delivery';
+  }
+
+  get saveButtonLabel(): string {
+    return 'Save Settings';
+  }
+
+  get isSaving(): boolean {
+    return this.state.saving;
   }
 
   private syncFromUrl(url: string): void {

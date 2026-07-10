@@ -67,7 +67,7 @@ export class RuntimeConfigService {
       oauthPort: '',
       oauthClientId: '',
       oauthSecret: '',
-      oauthPath: 'api/TokenAuth/Authenticate',
+      oauthPath: 'api/TokenAuth/OnlineShopAuthenticate',
       production: true
     };
   }

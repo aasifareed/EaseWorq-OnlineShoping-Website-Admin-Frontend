@@ -219,6 +219,34 @@ export class ManageOrderComponent implements OnInit {
     return Number(this.detail?.paidAmount ?? this.detail?.PaidAmount ?? 0);
   }
 
+  get totalAmount(): number {
+    return Number(this.detail?.totalAmount ?? this.detail?.TotalAmount ?? 0);
+  }
+
+  get remainingAmount(): number {
+    const fromDetail = Number(this.detail?.remainingAmount ?? this.detail?.RemainingAmount);
+    if (Number.isFinite(fromDetail) && fromDetail >= 0) {
+      return fromDetail;
+    }
+    return Math.max(0, this.totalAmount - this.paidAmount);
+  }
+
+  get codFullyPaid(): boolean {
+    if (!this.isCod) {
+      return false;
+    }
+    const paymentStatus = Number(this.detail?.paymentStatus ?? this.detail?.PaymentStatus ?? 0);
+    return this.remainingAmount <= 0.001 || paymentStatus === 2;
+  }
+
+  get codPaymentDisabled(): boolean {
+    return this.codFullyPaid || this.isActionBusy;
+  }
+
+  get codRecordPaymentTooltip(): string {
+    return this.codFullyPaid ? 'Amount is already paid' : '';
+  }
+
   get showClaimAmountReceived(): boolean {
     return this.showCargoClaimEntry && Number(this.shipmentForm.claimStatus) === this.claimReceivedStatusValue;
   }
@@ -403,7 +431,7 @@ export class ManageOrderComponent implements OnInit {
     if (value === null || value === undefined) {
       return '—';
     }
-    return `${this.globalDataService.getCurrencySymbol()}${Number(value).toFixed(2)}`;
+    return `${this.globalDataService.getCurrencySymbol()} ${Number(value).toFixed(2)}`;
   }
 
   display(value: string | number | null | undefined): string {
@@ -641,11 +669,26 @@ export class ManageOrderComponent implements OnInit {
     if (!this.orderId) {
       return;
     }
+
+    if (this.codFullyPaid) {
+      this.toastr.warning('This order is already fully paid.', 'Payment');
+      return;
+    }
+
     const amount = Number(this.codPaidAmount);
-    if (!amount || amount <= 0) {
+    if (!Number.isFinite(amount) || amount <= 0) {
       this.toastr.warning('Enter a valid paid amount.', 'Payment');
       return;
     }
+
+    if (amount > this.remainingAmount + 0.001) {
+      this.toastr.warning(
+        `Payment cannot exceed the remaining amount of ${this.formatMoney(this.remainingAmount)}.`,
+        'Payment',
+      );
+      return;
+    }
+
     this.runAction(
       `${environment.urls.OnlineShopSaleOrder_MarkCodPaid}?onlineShopSaleOrderId=${this.orderId}&paidAmount=${amount}`,
       null,
@@ -750,9 +793,7 @@ export class ManageOrderComponent implements OnInit {
         this.statusAdminNote = this.detail?.adminNote ?? '';
         this.syncDeliveryStatusText();
         this.ensureCurrentDeliveryStatusInSuggestions();
-        this.codPaidAmount = Number(
-          this.detail?.remainingAmount ?? this.detail?.RemainingAmount ?? 0,
-        ) || null;
+        this.syncCodPaidAmountField();
         this.isLoading = false;
         this.loadStatusOptions();
         this.loadShipment();
@@ -911,6 +952,15 @@ export class ManageOrderComponent implements OnInit {
         this.shipment = null;
       },
     });
+  }
+
+  private syncCodPaidAmountField(): void {
+    if (this.codFullyPaid) {
+      this.codPaidAmount = this.paidAmount;
+      return;
+    }
+
+    this.codPaidAmount = this.remainingAmount > 0 ? this.remainingAmount : null;
   }
 
   private normalizeDetail(raw: any): any {

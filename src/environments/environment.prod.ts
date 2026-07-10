@@ -12,7 +12,7 @@ const oauthConfig = {
   host: OauthHost,
   port: OauthPort,
   protocol: OauthProtocol,
-  path: 'api/TokenAuth/Authenticate',
+  path: 'api/TokenAuth/OnlineShopAuthenticate',
   client_id: OauthClientId,
   secret: OauthSecret,
 };

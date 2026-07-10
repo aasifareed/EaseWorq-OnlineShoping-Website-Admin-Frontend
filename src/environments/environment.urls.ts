@@ -1,8 +1,8 @@
 /** API paths used by the online shop admin app (appended to apiBaseUrl). */
 export const appServiceUrls = {
   // Auth & user
-  USER_GETBYID: '/User/GetUserById',
-  get_User_Store_By_UserId: '/User/getUserStoreByUserId',
+  USER_GETBYID: '/User/GetUserByIdForOnlineShopAdmin',
+  get_User_Store_By_UserId: '/User/getUserStoreByUserIdForOnlineShopAdmin',
   User_Reset_Password_Request: '/User/ResetPasswordRequest',
   User_Check_OTP: '/User/CheckOTP',
   User_Change_Password_ByOTP: '/User/ChangePasswordByOTP',
@@ -89,6 +89,8 @@ export const appServiceUrls = {
   // Online shop settings (OnlineShopSettingsAppService)
   Settings_GetForEdit: '/OnlineShopSettings/GetForEdit',
   Settings_Save: '/OnlineShopSettings/Save',
+  Settings_GetFlashipCouriersForAdmin: '/OnlineShopSettings/GetFlashipCouriersForAdmin',
+  Settings_SaveCourierSettings: '/OnlineShopSettings/SaveCourierSettings',
 
   // Courier provider settings (OnlineShopCourierProviderAppService)
   CourierProvider_GetAll: '/OnlineShopCourierProvider/GetAllCourierProviders',

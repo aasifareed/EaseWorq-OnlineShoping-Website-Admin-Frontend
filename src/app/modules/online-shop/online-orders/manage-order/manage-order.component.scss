@@ -9,7 +9,6 @@ $shadow: 0 4px 20px rgba(45, 55, 72, 0.06);
 
 :host {
   display: block;
-  margin: 0 -35px;
   padding-top: 0.75rem;
   background: linear-gradient(180deg, #f7f8fc 0%, #f0f2f8 100%);
   min-height: calc(100vh - 100px);
@@ -22,7 +21,14 @@ $shadow: 0 4px 20px rgba(45, 55, 72, 0.06);
 .page-shell {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 1.25rem 2rem;
+  padding: 0 28px 2rem;
+}
+
+@media (max-width: 575.98px) {
+  .page-shell {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
 }
 
 .manual-fulfillment-alert {
@@ -631,6 +637,45 @@ $shadow: 0 4px 20px rgba(45, 55, 72, 0.06);
   font-size: 12px;
   color: $text-muted;
   line-height: 1.45;
+}
+
+.cod-payment-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.cod-payment-summary__item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  background: #fafbfc;
+}
+
+.cod-payment-summary__label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: $text-muted;
+}
+
+.cod-payment-summary__value {
+  font-size: 15px;
+  font-weight: 700;
+  color: $text;
+}
+
+.cod-record-payment-wrap {
+  display: inline-flex;
+
+  &--disabled {
+    cursor: not-allowed;
+  }
 }
 
 .cod-payment-row {

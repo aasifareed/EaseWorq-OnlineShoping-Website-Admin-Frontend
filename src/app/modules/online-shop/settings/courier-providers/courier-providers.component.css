@@ -4,6 +4,12 @@
   border-top: 1px solid #e8eaed;
 }
 
+.provider-section:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
 .provider-section__head {
   display: flex;
   justify-content: space-between;

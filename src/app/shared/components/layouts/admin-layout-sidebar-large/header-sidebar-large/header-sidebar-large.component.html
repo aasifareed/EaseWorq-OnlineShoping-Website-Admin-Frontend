@@ -37,15 +37,20 @@
         
         <div id="topBarStores" *ngIf="_customUserStoreService.customeStores && _customUserStoreService.customeStores.length > 0">
             <ng-select [ngClass]="'ng-select'" [(ngModel)]="_customUserStoreService.selectedStore"
-            [ngModelOptions]="{standalone: true}" [allowClear]="true"
+            [ngModelOptions]="{standalone: true}" [allowClear]="false"
+            [disabled]="_customUserStoreService.storeSelectorDisabled"
             *ngIf="_customUserStoreService.customeStores && _customUserStoreService.customeStores.length > 0" 
             [options]="_customUserStoreService.customeStores" 
-            [multiple]="_customUserStoreService.allowMultipleStores">
+            [multiple]="false">
         </ng-select>
         </div>
 
+        <!-- Language switcher visible but disabled (English only) -->
         <div id="topBarLanguages">
-            <select class="form-control langBtn mr-5" [(ngModel)]="source" (change)="languagesForDropDownValueChanged()">
+            <select class="form-control langBtn mr-5"
+                [(ngModel)]="source"
+                [disabled]="languageSwitcherDisabled"
+                (change)="languagesForDropDownValueChanged()">
                 <option *ngFor="let language of languagesForDropDown" [value]="language.name">{{ language.displayName }}</option>
             </select>
         </div>

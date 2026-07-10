@@ -9,9 +9,11 @@ import { SettingsRoutingModule } from './settings-routing.module';
 import { SettingsShellComponent } from './settings-shell.component';
 import { OnlineShopSettingsStateService } from './services/online-shop-settings-state.service';
 import { CourierProviderService } from './services/courier-provider.service';
+import { CourierSettingsService } from './services/courier-settings.service';
 import { PaymentProviderService } from './services/payment-provider.service';
 import { CourierProvidersComponent } from './courier-providers/courier-providers.component';
 import { CourierProviderModalComponent } from './courier-providers/courier-provider-modal.component';
+import { CheckoutCourierVisibilityComponent } from './checkout-courier-visibility/checkout-courier-visibility.component';
 import { PaymentProvidersComponent } from './payment-providers/payment-providers.component';
 import { PaymentProviderModalComponent } from './payment-providers/payment-provider-modal.component';
 import { HomeBannersComponent } from './home-banners/home-banners.component';
@@ -34,11 +36,12 @@ import { StoreLogoService } from './store-logo/store-logo.service';
     SettingsShellComponent,
     CourierProvidersComponent,
     CourierProviderModalComponent,
+    CheckoutCourierVisibilityComponent,
     PaymentProvidersComponent,
     PaymentProviderModalComponent,
     HomeBannersComponent,
     StoreLogoComponent,
   ],
-  providers: [OnlineShopSettingsStateService, CourierProviderService, PaymentProviderService, HomeBannersService, StoreLogoService],
+  providers: [OnlineShopSettingsStateService, CourierProviderService, CourierSettingsService, PaymentProviderService, HomeBannersService, StoreLogoService],
 })
 export class SettingsModule {}

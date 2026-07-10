@@ -347,17 +347,48 @@
                   <h2 class="panel__title">Cash on delivery</h2>
                 </div>
                 <div class="panel__body">
+                  <div class="cod-payment-summary">
+                    <div class="cod-payment-summary__item">
+                      <span class="cod-payment-summary__label">Total</span>
+                      <span class="cod-payment-summary__value">{{ formatMoney(totalAmount) }}</span>
+                    </div>
+                    <div class="cod-payment-summary__item">
+                      <span class="cod-payment-summary__label">Paid</span>
+                      <span class="cod-payment-summary__value">{{ formatMoney(paidAmount) }}</span>
+                    </div>
+                    <div class="cod-payment-summary__item">
+                      <span class="cod-payment-summary__label">Remaining</span>
+                      <span class="cod-payment-summary__value">{{ formatMoney(remainingAmount) }}</span>
+                    </div>
+                  </div>
+
                   <div class="action-card action-card--primary mb-0">
-                    <p class="action-card__hint">Record customer payment when cash is received.</p>
+                    <p class="action-card__hint" *ngIf="!codFullyPaid">
+                      Record customer payment when cash is received. Partial payments are allowed until the remaining balance is cleared.
+                    </p>
+                    <p class="action-card__hint text-success mb-0" *ngIf="codFullyPaid">
+                      This order is fully paid. No further payment can be recorded.
+                    </p>
                     <div class="cod-payment-row">
                       <div class="form-field flex-grow-1 mb-0">
-                        <label class="form-field__label">Paid amount</label>
-                        <input type="number" class="form-control" [(ngModel)]="codPaidAmount" min="0" step="0.01">
+                        <label class="form-field__label">{{ codFullyPaid ? 'Paid amount' : 'Amount to record' }}</label>
+                        <input type="number" class="form-control"
+                          [(ngModel)]="codPaidAmount"
+                          [disabled]="codFullyPaid"
+                          [readonly]="codFullyPaid"
+                          min="0"
+                          [max]="remainingAmount"
+                          step="0.01">
                       </div>
-                      <button type="button" class="btn btn-action btn-action--outline" (click)="markCodPaid()"
-                        [disabled]="isActionBusy">
-                        Record payment
-                      </button>
+                      <span class="cod-record-payment-wrap"
+                        [class.cod-record-payment-wrap--disabled]="codFullyPaid"
+                        [title]="codRecordPaymentTooltip">
+                        <button type="button" class="btn btn-action btn-action--outline"
+                          (click)="markCodPaid()"
+                          [disabled]="codPaymentDisabled">
+                          Record payment
+                        </button>
+                      </span>
                     </div>
                   </div>
                 </div>

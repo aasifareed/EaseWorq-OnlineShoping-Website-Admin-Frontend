@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 import { LocalStoreService } from './local-store.service';
 import { PermissionService } from './permission.service';
 import { TranslateService } from '@ngx-translate/core';
 import { CustomUserStoreService } from './custom-user-store.service';
-import { GlobalDataService } from './globalData.service';
-//import { KeyBoardComponent } from 'src/app/modules/point-of-sale/make-sales/components/Key-board/Key-board.component';
 
 @Injectable({
   providedIn: 'root'
@@ -19,57 +19,64 @@ export class AuthGaurd implements CanActivate {
     private auth: AuthService,
     private store: LocalStoreService,
     private permissionService: PermissionService,
-    public _customUserStoreService:CustomUserStoreService,
-   // public keyboard: KeyBoardComponent,
+    public _customUserStoreService: CustomUserStoreService,
   ) { }
 
-  canActivate() {
-    if (this.auth.authenticated) {
-      
-     var permissions= this.store.getItem("permissions");
-     this.permissionService.storePermissions(permissions)
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | Observable<boolean> {
+    if (!this.auth.authenticated) {
+      this.router.navigateByUrl('/sessions/signin');
+      return false;
+    }
 
-     var setting= this.store.getItem("setting");
-     var languages= this.store.getItem("languages");
-     var defaultLanguage=this.store.getItem("defaultLanguage");
-     var translationsData = this.store.getItem("languageTexts");
+    if (state.url.includes('store-not-found')) {
+      return true;
+    }
 
+    const permissions = this.store.getItem('permissions');
+    this.permissionService.storePermissions(permissions);
 
-     var defaultStoreId = this.store.getItem("defaultStoreId");
-        this._customUserStoreService.getUserStores();
-        this._customUserStoreService.defaultStoreId = defaultStoreId;
-        this._customUserStoreService.selectedStore = defaultStoreId;
-  
-      this.translate.setTranslation(defaultLanguage, translationsData);
-      this.translate.setDefaultLang(defaultLanguage);
-       
-      if(languages)
-        {
-          if(defaultLanguage !=null){
-            var rtl=languages.find(x=>x.name==defaultLanguage).rtl;
-            var languageDisplayName=languages.find(x=>x.name==defaultLanguage).displayName;
-            
-            if(rtl==true){
-              this.store.setItem("dir","rtl"); 
-              document.getElementsByTagName("html")[0].setAttribute('lang', defaultLanguage);
-              document.getElementsByTagName("body")[0].setAttribute('dir', 'rtl');
-             // this.virtualKeyBoardService.setKeyboardLanguageLouts(languageDisplayName.toLowerCase());
-            }else{
-              this.store.setItem("dir","ltr"); 
-              document.getElementsByTagName("html")[0].setAttribute('lang', defaultLanguage);
-              document.getElementsByTagName("body")[0].setAttribute('dir', 'ltr');
-             // this.virtualKeyBoardService.setKeyboardLanguageLouts(languageDisplayName.toLowerCase());
-            }
-           
-          }
-        }else{
-          this.router.navigateByUrl('/sessions/signin');
+    const languages = this.store.getItem('languages');
+    const defaultLanguage = this.store.getItem('defaultLanguage');
+    const translationsData = this.store.getItem('languageTexts');
+
+    if (!languages) {
+      this.router.navigateByUrl('/sessions/signin');
+      return false;
+    }
+
+    this.translate.setTranslation(defaultLanguage, translationsData);
+    this.translate.setDefaultLang(defaultLanguage);
+
+    if (defaultLanguage != null) {
+      const language = languages.find((x) => x.name == defaultLanguage);
+      const rtl = language?.rtl;
+      if (rtl == true) {
+        this.store.setItem('dir', 'rtl');
+        document.getElementsByTagName('html')[0].setAttribute('lang', defaultLanguage);
+        document.getElementsByTagName('body')[0].setAttribute('dir', 'rtl');
+      } else {
+        this.store.setItem('dir', 'ltr');
+        document.getElementsByTagName('html')[0].setAttribute('lang', defaultLanguage);
+        document.getElementsByTagName('body')[0].setAttribute('dir', 'ltr');
+      }
+    }
+
+    return this._customUserStoreService.loadUserStores().pipe(
+      map((hasStore) => {
+        if (!hasStore) {
+          this.router.navigateByUrl('/store-not-found');
+          return false;
         }
 
+        const defaultStoreId = this.store.getItem('defaultStoreId');
+        const resolvedStoreId = this._customUserStoreService.isEmptyGuid(defaultStoreId)
+          ? this._customUserStoreService.customeStores[0]?.value
+          : defaultStoreId;
 
-      return true;
-    } else {
-      this.router.navigateByUrl('/sessions/signin');
-    }
+        this._customUserStoreService.defaultStoreId = resolvedStoreId;
+        this._customUserStoreService.selectedStore = resolvedStoreId;
+        return true;
+      }),
+    );
   }
 }
