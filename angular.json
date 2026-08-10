@@ -73,7 +73,8 @@
               "budgets": [
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "6kb"
+                  "maximumWarning": "20kb",
+                  "maximumError": "50kb"
                 }
               ],
               "fileReplacements": [
@@ -97,7 +98,8 @@
               "budgets": [
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "6kb"
+                  "maximumWarning": "20kb",
+                  "maximumError": "50kb"
                 }
               ],
               "fileReplacements": [

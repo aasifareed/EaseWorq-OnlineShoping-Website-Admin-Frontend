@@ -26,6 +26,21 @@ jobs:
       - name: Install Dependencies
         run: npm install --legacy-peer-deps
 
+      - name: Verify ng2-material-dropdown patch
+        shell: pwsh
+        run: |
+          $js = "node_modules\ng2-material-dropdown\fesm2015\ng2-material-dropdown.js"
+          $mjs = "node_modules\ng2-material-dropdown\fesm2015\ng2-material-dropdown.mjs"
+          if (-not (Test-Path $js)) {
+            Write-Host "Patch missing $js — re-applying patch-package"
+            npx patch-package
+          }
+          if (-not (Test-Path $js)) {
+            throw "ng2-material-dropdown patch failed: $js not found"
+          }
+          Copy-Item $js $mjs -Force
+          Write-Host "ng2-material-dropdown entries OK"
+
       - name: Build Angular (production)
         shell: pwsh
         run: |

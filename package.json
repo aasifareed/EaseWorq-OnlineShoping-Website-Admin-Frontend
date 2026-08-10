@@ -11,7 +11,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "postinstall": "ngcc && patch-package",
+    "postinstall": "patch-package && ngcc && node scripts/ensure-ng2-material-dropdown.js",
     "build:prod": "node --max_old_space_size=8192 ./node_modules/@angular/cli/bin/ng build --configuration production",
     "build:qa": "node --max_old_space_size=8192 ./node_modules/@angular/cli/bin/ng build --configuration qa"
   },
