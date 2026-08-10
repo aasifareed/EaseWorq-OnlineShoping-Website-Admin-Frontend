@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
@@ -10,6 +10,10 @@ import {
   OnlineShopSettings,
   OnlineShopSettingsForEdit,
 } from '../models/settings.models';
+import { gramsToKilograms, kilogramsToGrams } from '../../shared/weight.util';
+
+/** 100 kg per unit, mirroring the server bound. Catches kilograms typed into a gram field. */
+const MAX_FALLBACK_PRODUCT_WEIGHT_GRAMS = 100_000;
 
 @Injectable()
 export class OnlineShopSettingsStateService {
@@ -124,6 +128,13 @@ export class OnlineShopSettingsStateService {
       metaTitle: [''],
       metaDescription: [''],
       metaImageUrl: [''],
+      isMarginProtectionEnabled: [false],
+      minimumGrossMarginPercentage: [null],
+      // Typed in grams like every other product weight; converted on save.
+      fallbackProductWeightGrams: [
+        null,
+        [Validators.min(0), Validators.max(MAX_FALLBACK_PRODUCT_WEIGHT_GRAMS)],
+      ],
     });
   }
 
@@ -156,8 +167,13 @@ export class OnlineShopSettingsStateService {
       metaTitle: s.metaTitle || '',
       metaDescription: s.metaDescription || '',
       metaImageUrl: s.metaImageUrl || '',
+      isMarginProtectionEnabled: !!s.isMarginProtectionEnabled,
+      minimumGrossMarginPercentage: s.minimumGrossMarginPercentage ?? null,
+      // Blank rather than 0: "assume nothing" is the absence of a figure, not a weight of zero.
+      fallbackProductWeightGrams: kilogramsToGrams(s.fallbackProductWeightKg) || null,
     });
     this.syncCodShippingAdvanceControl();
+    this.syncMarginFloorControl();
   }
 
   private wireCodShippingAdvanceControl(): void {
@@ -165,6 +181,11 @@ export class OnlineShopSettingsStateService {
       this.syncCodShippingAdvanceControl();
     });
     this.syncCodShippingAdvanceControl();
+
+    this.form.get('isMarginProtectionEnabled')?.valueChanges.subscribe(() => {
+      this.syncMarginFloorControl();
+    });
+    this.syncMarginFloorControl();
   }
 
   private syncCodShippingAdvanceControl(): void {
@@ -181,6 +202,29 @@ export class OnlineShopSettingsStateService {
     }
 
     advanceCtrl.enable({ emitEvent: false });
+  }
+
+  /**
+   * The floor is only editable while protection is on, and is cleared when it is switched off so a
+   * stale percentage cannot look like it is in force.
+   */
+  private syncMarginFloorControl(): void {
+    const enabled = !!this.form.get('isMarginProtectionEnabled')?.value;
+    const floorCtrl = this.form.get('minimumGrossMarginPercentage');
+    if (!floorCtrl) {
+      return;
+    }
+
+    if (!enabled) {
+      floorCtrl.setValue(null, { emitEvent: false });
+      floorCtrl.clearValidators();
+      floorCtrl.disable({ emitEvent: false });
+    } else {
+      floorCtrl.setValidators([Validators.required, Validators.min(0.01), Validators.max(99.99)]);
+      floorCtrl.enable({ emitEvent: false });
+    }
+
+    floorCtrl.updateValueAndValidity({ emitEvent: false });
   }
 
   private emptyPosInfo(): OnlineShopPosInfo {
@@ -215,6 +259,12 @@ export class OnlineShopSettingsStateService {
       metaTitle: this.trimOrUndefined(v.metaTitle),
       metaDescription: this.trimOrUndefined(v.metaDescription),
       metaImageUrl: this.trimOrUndefined(v.metaImageUrl),
+      isMarginProtectionEnabled: !!v.isMarginProtectionEnabled,
+      minimumGrossMarginPercentage: v.isMarginProtectionEnabled
+        ? this.toNumberOrUndefined(v.minimumGrossMarginPercentage)
+        : undefined,
+      fallbackProductWeightKg:
+        gramsToKilograms(Number(v.fallbackProductWeightGrams)) || undefined,
     };
   }
 
@@ -277,6 +327,11 @@ export class OnlineShopSettingsStateService {
       metaTitle: (s.metaTitle || s.MetaTitle) as string,
       metaDescription: (s.metaDescription || s.MetaDescription) as string,
       metaImageUrl: (s.metaImageUrl || s.MetaImageUrl) as string,
+      isMarginProtectionEnabled: !!(s.isMarginProtectionEnabled ?? s.IsMarginProtectionEnabled),
+      minimumGrossMarginPercentage: (s.minimumGrossMarginPercentage ??
+        s.MinimumGrossMarginPercentage) as number,
+      fallbackProductWeightKg: (s.fallbackProductWeightKg ??
+        s.FallbackProductWeightKg) as number,
     };
   }
 

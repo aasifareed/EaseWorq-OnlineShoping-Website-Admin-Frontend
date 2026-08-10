@@ -1,5 +1,8 @@
-<div class="card order-board-page-card">
-  <div class="card-body order-board-page-card-body">
+<div class="">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card order-board-page-card">
+        <div class="card-body order-board-page-card-body">
     <header class="order-board-page-header">
       <nav class="page-breadcrumb">
         <ol class="breadcrumb mb-0">
@@ -54,7 +57,7 @@
               </button>
               <button
                 type="button"
-                class="btn btn-outline-primary btn-sm order-board-sync-btn"
+                class="btn btn-primary btn-sm order-board-sync-btn"
                 [disabled]="syncCargoLoading"
                 (click)="syncCargoStatus()"
               >
@@ -151,6 +154,9 @@
       <div *ngIf="isLoading" class="text-center py-5 text-muted">
         <i class="fas fa-spinner fa-spin fontAwesome_Li_Class fa-2x mb-2"></i>
         <p class="mb-0">Loading order board...</p>
+      </div>
+    </div>
+        </div>
       </div>
     </div>
   </div>

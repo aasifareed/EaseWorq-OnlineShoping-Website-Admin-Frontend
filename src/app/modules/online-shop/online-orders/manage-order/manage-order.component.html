@@ -2,8 +2,9 @@
   <div class="page-shell">
     <nav class="page-breadcrumb" aria-label="breadcrumb">
       <ol class="breadcrumb mb-0">
-        <li class="breadcrumb-item"><a [routerLink]="['/']">Home</a></li>
-        <li class="breadcrumb-item"><a (click)="goBack()" class="breadcrumb-link">Order Board</a></li>
+        <li class="breadcrumb-item">
+          <a [routerLink]="['/online-shop/order-board']">Order Board</a>
+        </li>
         <li class="breadcrumb-item active" aria-current="page">Manage Order</li>
       </ol>
     </nav>
@@ -71,6 +72,21 @@
             <input type="text" class="form-control form-control-sm"
               [(ngModel)]="statusRemarks"
               [placeholder]="selectedStatusRemarksPlaceholder" />
+          </div>
+          <div class="status-toolbar__courier" *ngIf="selectedStatusBooksCourier">
+            <p class="status-toolbar__hint status-toolbar__hint--event">
+              Saving will book this parcel with the courier and create the tracking number.
+            </p>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="skipCourierBooking"
+                [(ngModel)]="skipCourierBooking" />
+              <label class="form-check-label" for="skipCourierBooking">
+                Skip courier booking
+              </label>
+            </div>
+            <p class="status-toolbar__hint" *ngIf="skipCourierBooking">
+              You will need to book the parcel yourself and add the tracking number on the Shipment tab.
+            </p>
           </div>
           <p class="status-toolbar__hint status-toolbar__hint--event"
             *ngIf="selectedStatusOption?.isEventDriven">
@@ -217,23 +233,27 @@
                     <div class="amount-cards">
                       <div class="amount-card">
                         <span class="amount-card__label">Subtotal</span>
-                        <span class="amount-card__value">{{ formatMoney(detail.subTotalAmount) }}</span>
+                        <span class="amount-card__value">{{ formatMoney(orderSubtotal) }}</span>
+                      </div>
+                      <div class="amount-card" *ngFor="let discount of orderDiscountRows">
+                        <span class="amount-card__label">{{ discount.description }}</span>
+                        <span class="amount-card__value">−{{ formatMoney(discount.discountAmount) }}</span>
                       </div>
                       <div class="amount-card">
                         <span class="amount-card__label">Shipping</span>
-                        <span class="amount-card__value">{{ formatMoney(detail.shippingCharges) }}</span>
+                        <span class="amount-card__value">{{ formatMoney(orderShippingAmount) }}</span>
                       </div>
-                      <div class="amount-card">
+                      <div class="amount-card" *ngIf="detail.taxAmount > 0">
                         <span class="amount-card__label">Tax</span>
                         <span class="amount-card__value">{{ formatMoney(detail.taxAmount) }}</span>
-                      </div>
-                      <div class="amount-card">
-                        <span class="amount-card__label">Discount</span>
-                        <span class="amount-card__value">{{ formatMoney(detail.discountAmount) }}</span>
                       </div>
                       <div class="amount-card amount-card--highlight">
                         <span class="amount-card__label">Grand total</span>
                         <span class="amount-card__value">{{ formatMoney(detail.totalAmount) }}</span>
+                      </div>
+                      <div class="amount-card" *ngIf="orderWeight">
+                        <span class="amount-card__label">Order weight</span>
+                        <span class="amount-card__value">{{ orderWeight }}</span>
                       </div>
                     </div>
                   </div>
@@ -677,6 +697,9 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-secondary btn-sm" (click)="modal.close()">Close</button>
+    <button type="button" class="btn btn-outline-secondary btn-sm" (click)="modal.close()">
+      <i class="i-Close-Window"></i>
+      Close
+    </button>
   </div>
 </ng-template>

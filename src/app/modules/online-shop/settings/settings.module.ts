@@ -20,6 +20,8 @@ import { HomeBannersComponent } from './home-banners/home-banners.component';
 import { HomeBannersService } from './home-banners/home-banners.service';
 import { StoreLogoComponent } from './store-logo/store-logo.component';
 import { StoreLogoService } from './store-logo/store-logo.service';
+import { WorkingAreaComponent } from './working-area/working-area.component';
+import { WorkingAreaService } from './working-area/working-area.service';
 
 @NgModule({
   imports: [
@@ -41,7 +43,16 @@ import { StoreLogoService } from './store-logo/store-logo.service';
     PaymentProviderModalComponent,
     HomeBannersComponent,
     StoreLogoComponent,
+    WorkingAreaComponent,
   ],
-  providers: [OnlineShopSettingsStateService, CourierProviderService, CourierSettingsService, PaymentProviderService, HomeBannersService, StoreLogoService],
+  providers: [
+    OnlineShopSettingsStateService,
+    CourierProviderService,
+    CourierSettingsService,
+    PaymentProviderService,
+    HomeBannersService,
+    StoreLogoService,
+    WorkingAreaService,
+  ],
 })
 export class SettingsModule {}

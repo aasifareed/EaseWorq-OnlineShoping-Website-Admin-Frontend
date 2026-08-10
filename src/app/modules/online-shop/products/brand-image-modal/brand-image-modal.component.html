@@ -82,6 +82,7 @@
               <span *ngIf="selectedFile">1 file ready to upload</span>
             </p>
             <p class="pim__dropzone-hint">or <span class="pim__dropzone-link">browse from your device</span></p>
+            <p class="pim__dropzone-size">Recommended ~500 × 300 px. Transparent PNG/WebP preferred. Other sizes are accepted.</p>
           </div>
         </label>
 
@@ -115,6 +116,7 @@
     <p class="pim__footer-hint" *ngIf="changed">Image updated — close to refresh the brands list.</p>
     <div class="pim__footer-actions">
       <button type="button" class="pim__btn pim__btn--ghost" (click)="close()" [disabled]="uploading">
+        <i class="fa fontAwesome_Li_Class" [ngClass]="changed ? 'fa-check' : 'fa-times'"></i>
         {{ changed ? 'Done' : 'Cancel' }}
       </button>
       <button

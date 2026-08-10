@@ -89,6 +89,7 @@ export class CourierProvidersComponent implements OnInit {
     const modalRef = this.modalService.open(CourierProviderModalComponent, {
       size: 'lg',
       backdrop: 'static',
+      windowClass: 'ew-app-modal',
     });
     modalRef.componentInstance.providerId = providerId;
     modalRef.result.then(

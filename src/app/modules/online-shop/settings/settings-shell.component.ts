@@ -43,10 +43,22 @@ export class SettingsShellComponent implements OnInit, OnDestroy {
       route: '/online-shop/settings/delivery',
     },
     {
+      id: 'working-area',
+      label: 'Working Area',
+      icon: 'fa-map-marked-alt',
+      route: '/online-shop/settings/working-area',
+    },
+    {
       id: 'payment',
       label: 'Payment',
       icon: 'fa-credit-card',
       route: '/online-shop/settings/payment',
+    },
+    {
+      id: 'pricing',
+      label: 'Pricing',
+      icon: 'fa-tags',
+      route: '/online-shop/settings/pricing',
     },
     {
       id: 'invoice',
@@ -123,7 +135,8 @@ export class SettingsShellComponent implements OnInit, OnDestroy {
     return this.activeSectionId !== 'store-information'
       && this.activeSectionId !== 'payment'
       && this.activeSectionId !== 'home-banners'
-      && this.activeSectionId !== 'delivery';
+      && this.activeSectionId !== 'delivery'
+      && this.activeSectionId !== 'working-area';
   }
 
   get saveButtonLabel(): string {

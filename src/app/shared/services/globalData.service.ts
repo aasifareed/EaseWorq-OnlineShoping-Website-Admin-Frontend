@@ -59,7 +59,9 @@ constructor(private store: LocalStoreService,
 
 
 getdir(){
- return this.store?.getItem("dir"); 
+ // Tenant settings (and therefore "dir") are not available before sign in,
+ // so fall back to ltr to keep direction-scoped styles working.
+ return this.store?.getItem("dir") || "ltr";
 }
 
 getCurrencySymbol(){

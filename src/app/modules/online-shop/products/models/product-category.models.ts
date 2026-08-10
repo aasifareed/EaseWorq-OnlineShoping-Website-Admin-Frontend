@@ -4,6 +4,13 @@ export interface AdminProductCategoryListItem {
   displayName?: string | null;
   showCategoryOnline: boolean;
   isPopular: boolean;
+  pictureUrl?: string;
+}
+
+export interface OnlineShopCategoryImage {
+  attachmentId?: string;
+  url: string;
+  canRemove: boolean;
 }
 
 export interface AdminProductCategoriesQuery {

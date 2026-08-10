@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { IOption } from 'ng-select';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
@@ -18,6 +19,9 @@ export class HeaderMenuStateService {
   private readonly loadingSubject = new BehaviorSubject<boolean>(false);
   private readonly savingSubject = new BehaviorSubject<boolean>(false);
   private loaded = false;
+  // ng-select needs a stable array reference, otherwise every change detection
+  // run re-creates its option list and resets the open dropdown/search text.
+  private categoryOptionsCache: IOption[] = [];
 
   readonly categories$ = this.categoriesSubject.asObservable();
   readonly loading$ = this.loadingSubject.asObservable();
@@ -41,6 +45,10 @@ export class HeaderMenuStateService {
 
   get categories(): ProductCategoryOption[] {
     return this.categoriesSubject.value;
+  }
+
+  get categoryOptions(): IOption[] {
+    return this.categoryOptionsCache;
   }
 
   get loading(): boolean {
@@ -108,7 +116,9 @@ export class HeaderMenuStateService {
   }
 
   private applyResponse(data: OnlineShopHeaderMenuForEdit): void {
-    this.categoriesSubject.next(data.categories || []);
+    const categories = data.categories || [];
+    this.categoriesSubject.next(categories);
+    this.categoryOptionsCache = categories.map((c) => ({ value: c.id, label: c.name }));
     const m = data.menu;
     this.form.patchValue({
       id: m.id || null,

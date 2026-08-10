@@ -84,6 +84,120 @@ body.modal-open .loadscreen {
   color: #d22346;
 }
 
+/* Align primary actions with app navy theme (sidebar / table headers / Till Management) */
+.btn-primary {
+  background-color: #1e284b !important;
+  border-color: #1e284b !important;
+  color: #fff !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:not(:disabled):not(.disabled):active,
+.btn-primary:not(:disabled):not(.disabled).active,
+.show > .btn-primary.dropdown-toggle {
+  background-color: #161d3a !important;
+  border-color: #161d3a !important;
+  color: #fff !important;
+}
+
+.btn-primary:disabled,
+.btn-primary.disabled {
+  background-color: #1e284b !important;
+  border-color: #1e284b !important;
+  color: #fff !important;
+  opacity: 0.65;
+}
+
+.btn-primary i,
+.btn-primary .fa,
+.btn-primary .fas,
+.btn-primary .fa-solid,
+.btn-primary .fontAwesome_Li_Class,
+.btn-primary [class^="i-"],
+.btn-primary [class*=" i-"] {
+  color: #fff !important;
+}
+
+.btn-success {
+  background-color: #1e284b !important;
+  border-color: #1e284b !important;
+  color: #fff !important;
+}
+
+.btn-success:hover,
+.btn-success:focus,
+.btn-success:not(:disabled):not(.disabled):active,
+.btn-success:not(:disabled):not(.disabled).active {
+  background-color: #161d3a !important;
+  border-color: #161d3a !important;
+  color: #fff !important;
+}
+
+.btn-success:disabled,
+.btn-success.disabled {
+  background-color: #1e284b !important;
+  border-color: #1e284b !important;
+  color: #fff !important;
+  opacity: 0.65;
+}
+
+.btn-success i,
+.btn-success .fa,
+.btn-success .fas,
+.btn-success .fontAwesome_Li_Class,
+.btn-success [class^="i-"],
+.btn-success [class*=" i-"] {
+  color: #fff !important;
+}
+
+.btn-outline-secondary {
+  background-color: #fff !important;
+  border-color: #c5cad6 !important;
+  color: #1e284b !important;
+}
+
+.btn-outline-secondary:hover,
+.btn-outline-secondary:focus,
+.btn-outline-secondary:not(:disabled):not(.disabled):active {
+  background-color: #f3f5f9 !important;
+  border-color: #1e284b !important;
+  color: #1e284b !important;
+}
+
+.btn-outline-secondary i,
+.btn-outline-secondary [class^="i-"],
+.btn-outline-secondary [class*=" i-"] {
+  color: inherit !important;
+}
+
+.btn-secondary {
+  background-color: #fff !important;
+  border-color: #c5cad6 !important;
+  color: #1e284b !important;
+}
+
+.btn-secondary:hover,
+.btn-secondary:focus,
+.btn-secondary:not(:disabled):not(.disabled):active {
+  background-color: #f3f5f9 !important;
+  border-color: #1e284b !important;
+  color: #1e284b !important;
+}
+
+.btn-secondary i,
+.btn-secondary [class^="i-"],
+.btn-secondary [class*=" i-"] {
+  color: inherit !important;
+}
+
+.btn-danger i,
+.btn-danger .fa,
+.btn-danger .fas,
+.btn-danger .fontAwesome_Li_Class {
+  color: #fff !important;
+}
+
 .bold {
   font-weight: bold;
 }
@@ -490,12 +604,15 @@ body.modal-open .loadscreen {
 }
 
 .layout-sidebar-large .main-header {
-  padding: 0 5px;
+  padding: 0 18px;
+  background: transparent;
 }
 
 .layout-sidebar-large .main-header .logo img {
-  width: 60px !important;
-  height: 60px !important;
+  width: auto !important;
+  max-width: 140px !important;
+  height: 52px !important;
+  object-fit: contain;
 }
 
 .insideChecklist {
@@ -550,9 +667,7 @@ body.modal-open .loadscreen {
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#d08d00",endColorstr="#d08d00",GradientType=1); */
 }
 
-.layout-sidebar-large .main-header {
-  box-shadow: 0 0 10px #b3b3b3 !important;
-}
+/* Premium header chrome is owned by header-sidebar-large.component.scss */
 
 /* .esri-popup__main-container,
 .layout-sidebar-large .main-header {
@@ -1056,10 +1171,20 @@ ng-select>div>div.multiple>div.option span.deselect-option {
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 8px;
   opacity: 0.6;
   transition: 0.5s;
   font-size: 15px;
   font-weight: bold;
+}
+
+.tabs .tabs__links li .tabs__link .tabs__link-icon {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  flex: 0 0 22px;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .tabs .tabs__links li .tabs__link .tabs__link__text::before {
@@ -1104,6 +1229,10 @@ ng-select>div>div.multiple>div.option span.deselect-option {
 
 .tabs .tabs__links li .tabs__link.active .tabs__link__text {
   transform: scaleY(0.714);
+}
+
+.tabs .tabs__links li .tabs__link.active .tabs__link__text {
+  opacity: 1;
 }
 
 .tabs .tabs__links li .tabs__link.active .tabs__link__text,
@@ -2196,4 +2325,366 @@ app-new-product-list-cart-view .ngx-datatable .datatable-header{
 
 .product-images-modal-window .modal-body {
   padding: 0;
+}
+
+/* ========== EaseWorq app modals (Cash In Hand style) ========== */
+.ew-app-modal .modal-dialog,
+.addSectionModal .modal-dialog,
+.pageFormModal .modal-dialog,
+.pageViewModal .modal-dialog,
+.couponFormModal .modal-dialog,
+.UpdateStatusModal .modal-dialog,
+.shippingRuleModal .modal-dialog,
+.selectCountryModal .modal-dialog {
+  width: auto;
+  margin: 1.25rem auto !important;
+}
+
+/* Compact forms — stay small when content is light */
+.ew-app-modal .modal-dialog,
+.addSectionModal .modal-dialog,
+.UpdateStatusModal .modal-dialog {
+  max-width: min(640px, 90vw) !important;
+}
+
+/* Country picker — wider for multi-select list */
+.selectCountryModal .modal-dialog {
+  max-width: min(720px, 90vw) !important;
+  width: min(720px, 90vw);
+}
+
+/* Shipping rule — wide enough to sit its two halves side by side, so the form needs no scrolling */
+.shippingRuleModal .modal-dialog {
+  max-width: min(940px, 92vw) !important;
+  width: min(940px, 92vw);
+}
+
+/* Coupon form — one column of fields behind three tabs, so full screen width is wasted on it */
+.couponFormModal .modal-dialog {
+  max-width: min(820px, 92vw) !important;
+  width: min(820px, 92vw);
+}
+
+/* Heavy content — use most of the screen to reduce vertical scroll */
+.pageFormModal .modal-dialog,
+.pageViewModal .modal-dialog,
+.ew-app-modal--wide .modal-dialog {
+  max-width: 90vw !important;
+  width: 90vw;
+}
+
+.ew-app-modal .modal-content,
+.addSectionModal .modal-content,
+.pageFormModal .modal-content,
+.pageViewModal .modal-content,
+.couponFormModal .modal-content,
+.UpdateStatusModal .modal-content,
+.shippingRuleModal .modal-content,
+.selectCountryModal .modal-content {
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 24px 48px rgba(30, 58, 95, 0.18), 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.ew-app-modal .modal-header,
+.addSectionModal .modal-header,
+.pageFormModal .modal-header,
+.pageViewModal .modal-header,
+.couponFormModal .modal-header,
+.UpdateStatusModal .modal-header,
+.shippingRuleModal .modal-header,
+.selectCountryModal .modal-header {
+  flex-shrink: 0;
+  padding: 0.9rem 1.25rem;
+  /* Fareed-Mart NewTheme header gradient */
+  background: linear-gradient(135deg, #1e284b 0%, #2c3e6e 40%, #4c5fd5 70%, #5b6fd8 100%);
+  color: #fff;
+  border-bottom: none;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12);
+}
+
+.ew-app-modal .modal-header .modal-title,
+.addSectionModal .modal-header .modal-title,
+.pageFormModal .modal-header .modal-title,
+.pageViewModal .modal-header .modal-title,
+.couponFormModal .modal-header .modal-title,
+.UpdateStatusModal .modal-header .modal-title,
+.shippingRuleModal .modal-header .modal-title,
+.selectCountryModal .modal-header .modal-title {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #fff !important;
+}
+
+.ew-app-modal .modal-header .text-muted,
+.pageViewModal .modal-header .text-muted,
+.addSectionModal .modal-header .text-muted {
+  color: rgba(255, 255, 255, 0.78) !important;
+}
+
+.ew-app-modal .modal-header .close,
+.addSectionModal .modal-header .close,
+.pageFormModal .modal-header .close,
+.pageViewModal .modal-header .close,
+.couponFormModal .modal-header .close,
+.UpdateStatusModal .modal-header .close,
+.shippingRuleModal .modal-header .close,
+.selectCountryModal .modal-header .close {
+  padding: 0;
+  margin: 0 0 0 0.75rem;
+  opacity: 1;
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 8px;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  line-height: 1;
+  text-shadow: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  align-self: center;
+}
+
+.selectCountryModal .modal-header .close span,
+.ew-app-modal .modal-header .close span,
+.addSectionModal .modal-header .close span,
+.pageFormModal .modal-header .close span,
+.couponFormModal .modal-header .close span,
+.UpdateStatusModal .modal-header .close span {
+  color: #fff !important;
+}
+
+/* Keep Select Country compact — height follows content; dropdown overlays */
+.selectCountryModal {
+  overflow: visible;
+}
+
+.selectCountryModal .modal-dialog {
+  overflow: visible;
+}
+
+.selectCountryModal .modal-content {
+  min-height: 0 !important;
+  height: auto;
+  overflow: visible;
+}
+
+.selectCountryModal .modal-body {
+  overflow: visible !important;
+  max-height: none !important;
+}
+
+.ew-app-modal .modal-header .close:hover,
+.addSectionModal .modal-header .close:hover,
+.pageFormModal .modal-header .close:hover,
+.pageViewModal .modal-header .close:hover,
+.couponFormModal .modal-header .close:hover,
+.UpdateStatusModal .modal-header .close:hover,
+.shippingRuleModal .modal-header .close:hover,
+.selectCountryModal .modal-header .close:hover {
+  background: rgba(255, 255, 255, 0.26);
+  color: #fff;
+  opacity: 1;
+}
+
+.ew-app-modal .modal-body,
+.addSectionModal .modal-body,
+.pageFormModal .modal-body,
+.pageViewModal .modal-body,
+.couponFormModal .modal-body,
+.UpdateStatusModal .modal-body,
+.shippingRuleModal .modal-body,
+.selectCountryModal .modal-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  max-height: calc(92vh - 140px);
+  padding: 1.25rem 1.5rem;
+}
+
+.ew-app-modal .modal-footer,
+.addSectionModal .modal-footer,
+.pageFormModal .modal-footer,
+.pageViewModal .modal-footer,
+.couponFormModal .modal-footer,
+.UpdateStatusModal .modal-footer,
+.shippingRuleModal .modal-footer,
+.selectCountryModal .modal-footer {
+  flex-shrink: 0;
+  padding: 0.9rem 1.25rem;
+  border-top: 1px solid #e8ecf0;
+  background: #fafbfc;
+  gap: 0.65rem;
+}
+
+.ew-app-modal .modal-footer .btn-primary,
+.addSectionModal .modal-footer .btn-primary,
+.pageFormModal .modal-footer .btn-primary,
+.pageViewModal .modal-footer .btn-primary,
+.couponFormModal .modal-footer .btn-primary,
+.UpdateStatusModal .modal-footer .btn-primary,
+.shippingRuleModal .modal-footer .btn-primary,
+.selectCountryModal .modal-footer .btn-primary {
+  background: linear-gradient(135deg, #1e284b 0%, #2c3e6e 55%, #4c5fd5 100%);
+  border: none;
+  color: #fff;
+  border-radius: 10px;
+  font-weight: 500;
+  box-shadow: 0 2px 6px rgba(30, 40, 75, 0.28);
+}
+
+.ew-app-modal .modal-footer .btn-primary:hover:not(:disabled),
+.addSectionModal .modal-footer .btn-primary:hover:not(:disabled),
+.pageFormModal .modal-footer .btn-primary:hover:not(:disabled),
+.couponFormModal .modal-footer .btn-primary:hover:not(:disabled),
+.UpdateStatusModal .modal-footer .btn-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #252f57 0%, #3a4f9a 55%, #5b6fd8 100%);
+  color: #fff;
+}
+
+.ew-app-modal .modal-footer .btn-outline-secondary,
+.addSectionModal .modal-footer .btn-outline-secondary,
+.pageFormModal .modal-footer .btn-outline-secondary,
+.pageViewModal .modal-footer .btn-outline-secondary,
+.couponFormModal .modal-footer .btn-outline-secondary {
+  background: #fff;
+  border: 1px solid #d1d9e2;
+  color: #4a5568;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+.ew-app-modal .modal-footer .btn,
+.addSectionModal .modal-footer .btn,
+.pageFormModal .modal-footer .btn,
+.pageViewModal .modal-footer .btn,
+.couponFormModal .modal-footer .btn,
+.UpdateStatusModal .modal-footer .btn,
+.shippingRuleModal .modal-footer .btn,
+.selectCountryModal .modal-footer .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.ew-app-modal .modal-footer .btn i,
+.addSectionModal .modal-footer .btn i,
+.pageFormModal .modal-footer .btn i,
+.pageViewModal .modal-footer .btn i,
+.couponFormModal .modal-footer .btn i,
+.UpdateStatusModal .modal-footer .btn i,
+.shippingRuleModal .modal-footer .btn i,
+.selectCountryModal .modal-footer .btn i {
+  margin: 0;
+  line-height: 1;
+}
+
+@media (max-width: 767.98px) {
+  .ew-app-modal .modal-dialog,
+  .addSectionModal .modal-dialog,
+  .pageFormModal .modal-dialog,
+  .pageViewModal .modal-dialog,
+  .couponFormModal .modal-dialog,
+  .UpdateStatusModal .modal-dialog,
+  .shippingRuleModal .modal-dialog,
+  .selectCountryModal .modal-dialog,
+  .ew-app-modal--wide .modal-dialog {
+    max-width: 96vw !important;
+    width: 96vw;
+    margin: 0.75rem auto !important;
+  }
+}
+
+/* ========== Online shop filter toolbars ========== */
+.os-filter-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem 1rem;
+  margin: 0.35rem 0 0.85rem;
+}
+
+.os-filter-toolbar__field {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  min-width: 0;
+}
+
+.os-filter-toolbar__field--search {
+  flex: 1 1 220px;
+  max-width: 280px;
+}
+
+.os-filter-toolbar__field--date {
+  flex: 0 1 160px;
+  min-width: 140px;
+}
+
+.os-filter-toolbar__label {
+  display: block;
+  margin: 0 0 0.35rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #3c4043;
+}
+
+.os-filter-toolbar__field .form-control,
+.os-filter-toolbar__field .form-control-rounded {
+  margin-top: 0 !important;
+  height: 38px;
+}
+
+.os-filter-toolbar__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  align-self: flex-end;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  height: 38px;
+}
+
+.os-filter-toolbar__actions--end {
+  margin-left: auto;
+}
+
+.os-filter-toolbar__actions .btn {
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  white-space: nowrap;
+  margin: 0;
+}
+
+.os-filter-toolbar__actions .btn i {
+  margin: 0;
+  line-height: 1;
+}
+
+@media (max-width: 991.98px) {
+  .os-filter-toolbar__field--search {
+    max-width: none;
+    flex: 1 1 100%;
+  }
+
+  .os-filter-toolbar__actions--end {
+    margin-left: 0;
+    width: 100%;
+  }
 }

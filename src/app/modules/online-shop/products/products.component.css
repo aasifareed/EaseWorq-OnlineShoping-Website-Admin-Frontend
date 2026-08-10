@@ -1,4 +1,17 @@
 /* Images column — centered, card-style thumbnails */
+.products-page {
+  margin: 0;
+  padding: 0;
+}
+
+.products-page > .row {
+  margin-top: 0;
+}
+
+.products-tab-separator {
+  margin-bottom: 0.5rem !important;
+}
+
 :host ::ng-deep .products-datatable .datatable-header-cell.products-datatable__image-col,
 :host ::ng-deep .products-datatable .datatable-body-cell.products-datatable__image-col {
   display: flex !important;
@@ -113,16 +126,54 @@
   margin: 0;
 }
 
-.products-datatable__toggle {
-  min-width: 52px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.2rem 0.5rem;
+.status-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  cursor: pointer;
+  vertical-align: middle;
 }
 
-/* Global styles.css pulls datatable buttons up with margin-top: -10px */
-:host ::ng-deep .products-datatable .datatable-body-cell-label .btn.products-datatable__toggle {
-  margin: 0 !important;
+.status-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.status-switch__slider {
+  position: absolute;
+  inset: 0;
+  background: #dadce0;
+  border-radius: 24px;
+  transition: 0.2s;
+}
+
+.status-switch__slider::before {
+  position: absolute;
+  content: '';
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background: white;
+  border-radius: 50%;
+  transition: 0.2s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.status-switch input:checked + .status-switch__slider {
+  background: #1a73e8;
+}
+
+.status-switch input:checked + .status-switch__slider::before {
+  transform: translateX(20px);
+}
+
+.status-switch--disabled {
+  opacity: 0.55;
+  pointer-events: none;
+  cursor: not-allowed;
 }
 
 :host ::ng-deep .products-datatable .datatable-body-cell.products-datatable__center-col .datatable-body-cell-label {

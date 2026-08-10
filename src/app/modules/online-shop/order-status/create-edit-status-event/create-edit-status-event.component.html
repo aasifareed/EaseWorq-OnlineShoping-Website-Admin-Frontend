@@ -59,10 +59,12 @@
 
 <div class="modal-footer" [dir]="globalDataService.getdir()">
   <button type="button" class="btn btn-outline-secondary" (click)="close()">
+    <i class="i-Close-Window"></i>
     {{ 'Close' | translate }}
   </button>
-  <button type="button" class="btn btn-success" [disabled]="isLoading" (click)="save()">
-    <i class="i-Yes mr-2"></i>
+  <button type="button" class="btn btn-primary" [disabled]="isLoading" (click)="save()">
+    <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+    <i *ngIf="!isLoading" class="i-Yes"></i>
     {{ 'Save' | translate }}
   </button>
 </div>

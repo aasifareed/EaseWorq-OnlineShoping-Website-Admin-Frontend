@@ -1,3 +1,10 @@
+.signin-card {
+  border: 0;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 18px 45px rgba(16, 24, 64, 0.25);
+}
+
 .signin-card-body {
   padding: 1.25rem 1.5rem 1rem;
 }
@@ -5,6 +12,18 @@
 .signin-card .auth-logo {
   margin-top: 0;
   margin-bottom: 0.25rem;
+}
+
+.signin-logo-placeholder {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #eef0f8;
+  color: #1e284b;
+  font-size: 28px;
 }
 
 .signin-form .form-group {
@@ -26,6 +45,38 @@
   margin-bottom: 0.5rem !important;
 }
 
+.signin-password-field {
+  position: relative;
+
+  .form-control {
+    padding-right: 2.4rem;
+  }
+}
+
+.signin-password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 0.45rem;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: #6b7280;
+  cursor: pointer;
+
+  &:hover,
+  &:focus {
+    color: #1e284b;
+    outline: none;
+  }
+}
+
 .signin-submit-btn {
   font-size: 18px;
   margin-top: 0.5rem !important;
@@ -40,19 +91,13 @@
 }
 
 [dir="rtl"] {
-  .togglePassword {
-    top: 50%;
-    left: 10px;
-    transform: translateY(26%);
-    cursor: pointer;
+  .signin-password-field .form-control {
+    padding-right: 0.65rem;
+    padding-left: 2.4rem;
   }
-}
 
-[dir="ltr"] {
-  .togglePassword {
-    top: 50%;
-    right: 10px;
-    transform: translateY(26%);
-    cursor: pointer;
+  .signin-password-toggle {
+    right: auto;
+    left: 0.45rem;
   }
 }

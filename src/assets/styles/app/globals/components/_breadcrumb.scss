@@ -3,6 +3,13 @@
     align-items: center;
     margin: 0 0 1.25rem;
     padding: 0;
+
+    &:empty {
+        display: none;
+        margin: 0;
+        padding: 0;
+        height: 0;
+    }
     h1 {
         font-size: 1.5rem;
         line-height: 1;

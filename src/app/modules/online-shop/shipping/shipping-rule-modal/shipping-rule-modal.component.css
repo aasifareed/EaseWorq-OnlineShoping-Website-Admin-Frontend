@@ -1,0 +1,108 @@
+/* Modal chrome and width: global .addSectionModal / .shippingRuleModal styles in styles.css */
+
+.shipping-rule-modal__icon {
+  margin: 0 0.5rem 0 0 !important;
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.shipping-rule-modal__hint {
+  margin: 0 0 1rem;
+  font-size: 0.875rem;
+  color: #5f6368;
+  line-height: 1.45;
+}
+
+.shipping-rule-modal__label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #3c4043;
+}
+
+/*
+ * The two halves of a rule — when it matches, and what it gives — read as one thing each, and sit
+ * side by side so the whole form fits without the body scrolling.
+ */
+.shipping-rule-block {
+  height: 100%;
+  border: 1px solid #e8eaed;
+  border-radius: 10px;
+  padding: 0.9rem 1rem 1rem;
+  background: #fafbfc;
+}
+
+.shipping-rule-block__title {
+  margin: 0 0 0.15rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #5f6368;
+}
+
+.shipping-rule-block__hint {
+  margin: 0 0 0.85rem;
+  font-size: 0.8125rem;
+  color: #5f6368;
+  line-height: 1.45;
+  /* Two lines either way, so the paired fields in both blocks line up. */
+  min-height: 2.35rem;
+}
+
+.shipping-rule-block__note {
+  margin: 0.6rem 0 0;
+  font-size: 0.8125rem;
+  color: #5f6368;
+  line-height: 1.45;
+}
+
+.shipping-rule-block .form-control,
+.shipping-rule-block .input-group-text {
+  background-color: #fff;
+}
+
+.shipping-rule-block .input-group-text {
+  font-size: 0.8125rem;
+  color: #5f6368;
+  min-width: 2.75rem;
+  justify-content: center;
+}
+
+.shipping-rule-check {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.85rem 0 0;
+  font-size: 0.875rem;
+  color: #3c4043;
+  cursor: pointer;
+}
+
+.shipping-rule-check input {
+  width: 16px;
+  height: 16px;
+}
+
+/* Stacked below lg, where the two blocks no longer share a row. */
+@media (max-width: 991.98px) {
+  .shipping-rule-columns > [class*='col-'] + [class*='col-'] {
+    margin-top: 1rem;
+  }
+
+  .shipping-rule-block__hint {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 400px) {
+  .shipping-rule-block .row > [class*='col-'] {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .shipping-rule-block .row > [class*='col-'] + [class*='col-'] {
+    margin-top: 0.85rem;
+  }
+}

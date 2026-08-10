@@ -4,8 +4,8 @@
       <h1 class="mb-0">{{ 'Shipping' | translate }}</h1>
     </div>
     <div class="col-auto">
-      <button type="button" class="btn btn-outline-primary" (click)="openSelectCountryModal()">
-        <i class="fa fa-plus fontAwesome_Li_Class" style="color: black;"></i>
+      <button type="button" class="btn btn-primary" (click)="openSelectCountryModal()">
+        <i class="fa fa-plus fontAwesome_Li_Class"></i>
         {{ 'Select Country' | translate }}
       </button>
     </div>
@@ -20,21 +20,22 @@
       <li *ngFor="let country of countries">
         <h5 class="mb-0 country-name" [title]="country.countryName">{{ country.countryName }}</h5>
         <div class="country-actions">
-          <a
-            href="javascript:void(0)"
-            class="me-2"
-            title="{{ 'Edit' | translate }}"
+          <button
+            type="button"
+            class="btn btn-primary btn-sm mr-1"
             (click)="editCountry(country)"
           >
-            <i class="fa fa-pencil fontAwesome_Li_Class" style="color: black;"></i>
-          </a>
-          <a
-            href="javascript:void(0)"
-            title="{{ 'Delete' | translate }}"
+            <i class="fa fa-pencil fontAwesome_Li_Class"></i>
+            {{ 'Edit' | translate }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger btn-sm"
             (click)="deleteCountry(country)"
           >
-            <i class="fa fa-trash fontAwesome_Li_Class" style="color: black;"></i>
-          </a>
+            <i class="fa fa-trash fontAwesome_Li_Class"></i>
+            {{ 'Delete' | translate }}
+          </button>
         </div>
       </li>
     </ul>

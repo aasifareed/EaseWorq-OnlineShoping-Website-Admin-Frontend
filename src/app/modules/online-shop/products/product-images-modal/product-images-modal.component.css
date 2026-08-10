@@ -479,6 +479,14 @@
   color: var(--pim-muted);
 }
 
+.pim__dropzone-size {
+  margin: 0.55rem 0 0;
+  max-width: 22rem;
+  font-size: 0.75rem;
+  line-height: 1.35;
+  color: var(--pim-muted);
+}
+
 .pim__dropzone-link {
   color: var(--pim-brand);
   font-weight: 600;

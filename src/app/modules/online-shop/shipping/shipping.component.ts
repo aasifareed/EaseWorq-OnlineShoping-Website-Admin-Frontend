@@ -8,6 +8,12 @@ import { GlobalDataService } from 'src/app/shared/services/globalData.service';
 import { RestService } from 'src/app/shared/services/rest.service';
 import { environment } from 'src/environments/environment';
 import {
+  formatRuleDiscount,
+  formatRuleRange,
+  ruleTypeLabel,
+  shippingTypeLabel,
+} from './utils/shipping-rule-format.util';
+import {
   ShippingCountryDetail,
   ShippingCountryListItem,
   ShippingRule,
@@ -189,36 +195,23 @@ export class ShippingComponent implements OnInit {
   }
 
   getRuleTypeLabel(ruleType: string): string {
-    if (ruleType === 'base_on_price') {
-      return 'Based on Price';
-    }
-    if (ruleType === 'base_on_weight') {
-      return 'Based on Weight';
-    }
-    return ruleType;
+    return ruleTypeLabel(ruleType);
   }
 
   getShippingTypeLabel(shippingType: string): string {
-    if (shippingType === 'fixed') {
-      return 'Fixed';
-    }
-    if (shippingType === 'percentage') {
-      return 'Percentage';
-    }
-    if (shippingType === 'free') {
-      return 'Free';
-    }
-    return shippingType;
+    return shippingTypeLabel(shippingType);
+  }
+
+  formatRange(rule: ShippingRule): string {
+    return formatRuleRange(rule, this.currencySymbol);
   }
 
   formatAmount(rule: ShippingRule): string {
-    if (rule.shippingType === 'free') {
-      return '—';
-    }
-    if (rule.shippingType === 'percentage') {
-      return `${rule.amount}%`;
-    }
-    return String(rule.amount);
+    return formatRuleDiscount(rule, this.currencySymbol);
+  }
+
+  get currencySymbol(): string {
+    return this.globalDataService.getCurrencySymbol();
   }
 
   private loadCountryDetail(countryId: string): void {
@@ -272,7 +265,7 @@ export class ShippingComponent implements OnInit {
         name: r.name ?? r.Name,
         ruleType: r.ruleType ?? r.RuleType,
         min: r.min ?? r.Min,
-        max: r.max ?? r.Max,
+        max: r.max ?? r.Max ?? null,
         shippingType: r.shippingType ?? r.ShippingType,
         amount: r.amount ?? r.Amount,
         isActive: r.isActive ?? r.IsActive,

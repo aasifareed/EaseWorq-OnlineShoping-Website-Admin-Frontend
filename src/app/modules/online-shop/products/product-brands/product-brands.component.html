@@ -1,6 +1,5 @@
 <div
-  class="separator-breadcrumb border-top"
-  style="margin-bottom: 0.5rem !important;"
+  class="separator-breadcrumb border-top products-tab-separator"
 ></div>
 
 <div [dir]="globalDataService.getdir()" class="gridAboveHeightInSaleOrderHistory">
@@ -8,17 +7,16 @@
     {{ loadError }}
   </div>
 
-  <div class="row">
-    <div class="col-xl-3 col-lg-12 col-md-12 col-sm-12 col-xs-12">
-      <div class="form-group">
-        <input
-          style="margin-top: 7%;"
-          [formControl]="searchControl"
-          class="form-control form-control-rounded"
-          type="text"
-          [placeholder]="'Search brands' | translate"
-        />
-      </div>
+  <div class="os-filter-toolbar">
+    <div class="os-filter-toolbar__field os-filter-toolbar__field--search">
+      <label class="os-filter-toolbar__label" for="brandSearch">{{ 'Search' | translate }}</label>
+      <input
+        id="brandSearch"
+        [formControl]="searchControl"
+        class="form-control form-control-rounded"
+        type="text"
+        [placeholder]="'Search brands' | translate"
+      />
     </div>
   </div>
 
@@ -89,21 +87,19 @@
           >
             <ng-template ngx-datatable-cell-template let-row="row">
               <div class="products-datatable__cell-center products-datatable__cell-actions">
-                <button
-                  type="button"
-                  class="btn btn-sm products-datatable__toggle"
-                  [class.btn-success]="row.isPopular"
-                  [class.btn-outline-secondary]="!row.isPopular"
-                  [disabled]="isSaving(row)"
-                  (click)="togglePopular(row)"
+                <label
+                  class="status-switch mb-0"
+                  [class.status-switch--disabled]="isSaving(row)"
+                  [title]="row.isPopular ? ('Enabled' | translate) : ('Disabled' | translate)"
                 >
-                  <span
-                    *ngIf="isSaving(row)"
-                    class="spinner-border spinner-border-sm"
-                    role="status"
-                  ></span>
-                  <span *ngIf="!isSaving(row)">{{ formatYesNo(row.isPopular) }}</span>
-                </button>
+                  <input
+                    type="checkbox"
+                    [checked]="row.isPopular"
+                    [disabled]="isSaving(row)"
+                    (change)="onPopularToggle(row, $event)"
+                  />
+                  <span class="status-switch__slider"></span>
+                </label>
               </div>
             </ng-template>
           </ngx-datatable-column>

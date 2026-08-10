@@ -7,6 +7,13 @@ import { ShippingStateService } from '../shipping-state.service';
 import { environment } from 'src/environments/environment';
 import { ShippingRuleModalComponent } from '../shipping-rule-modal/shipping-rule-modal.component';
 import { ShippingCountryDetail, ShippingRule } from '../models/shipping.models';
+import { GlobalDataService } from 'src/app/shared/services/globalData.service';
+import {
+  formatRuleDiscount,
+  ruleLimitUnit,
+  ruleTypeLabel,
+  shippingTypeLabel,
+} from '../utils/shipping-rule-format.util';
 
 @Component({
   selector: 'app-shipping-country',
@@ -25,6 +32,7 @@ export class ShippingCountryComponent implements OnInit {
     private toastr: ToastrService,
     private translate: TranslateService,
     private shippingState: ShippingStateService,
+    private globalDataService: GlobalDataService,
   ) {}
 
   ngOnInit(): void {
@@ -98,26 +106,20 @@ export class ShippingCountryComponent implements OnInit {
   }
 
   getRuleTypeLabel(ruleType: string): string {
-    if (ruleType === 'base_on_price') {
-      return 'Based on Price';
-    }
-    if (ruleType === 'base_on_weight') {
-      return 'Based on Weight';
-    }
-    return ruleType;
+    return ruleTypeLabel(ruleType);
   }
 
   getShippingTypeLabel(shippingType: string): string {
-    if (shippingType === 'fixed') {
-      return 'Fixed';
-    }
-    if (shippingType === 'percentage') {
-      return 'Percentage';
-    }
-    if (shippingType === 'free') {
-      return 'Free';
-    }
-    return shippingType;
+    return shippingTypeLabel(shippingType);
+  }
+
+  /** Limits carry their unit, since a weight rule's "2" is 2 kg and a price rule's is 2 rupees. */
+  limitUnit(rule: ShippingRule): string {
+    return ruleLimitUnit(rule.ruleType, this.globalDataService.getCurrencySymbol());
+  }
+
+  formatDiscount(rule: ShippingRule): string {
+    return formatRuleDiscount(rule, this.globalDataService.getCurrencySymbol());
   }
 
   private mapCountryDetail(data: any): ShippingCountryDetail {
@@ -133,7 +135,7 @@ export class ShippingCountryComponent implements OnInit {
         name: r.name ?? r.Name,
         ruleType: r.ruleType ?? r.RuleType,
         min: r.min ?? r.Min,
-        max: r.max ?? r.Max,
+        max: r.max ?? r.Max ?? null,
         shippingType: r.shippingType ?? r.ShippingType,
         amount: r.amount ?? r.Amount,
         isActive: r.isActive ?? r.IsActive,

@@ -68,6 +68,15 @@ export class ProductsService {
     if (payload.actualSellPrice != null) {
       body.ActualSellPrice = payload.actualSellPrice;
     }
+    if (payload.discountPercent != null) {
+      body.DiscountPercent = payload.discountPercent;
+    }
+    if (payload.slug !== undefined) {
+      body.Slug = payload.slug ?? '';
+    }
+    if (payload.productWeightKg != null) {
+      body.ProductWeight = payload.productWeightKg;
+    }
     if (payload.isAvailable != null) {
       body.IsAvailable = payload.isAvailable;
     }
@@ -147,9 +156,12 @@ export class ProductsService {
       productName: String(row.productName ?? row.ProductName ?? '—'),
       categoryName: String(row.categoryName ?? row.CategoryName ?? '—'),
       brandName: String(row.brandName ?? row.BrandName ?? '—'),
+      slug: String(row.slug ?? row.Slug ?? '').trim(),
       availableQuantity: Number(row.availableQuantity ?? row.AvailableQuantity ?? 0),
       unitStock: Number(row.unitStock ?? row.UnitStock ?? 0),
       actualSellPrice: Number(row.actualSellPrice ?? row.ActualSellPrice ?? 0),
+      discountPercent: Number(row.discountPercent ?? row.DiscountPercent ?? 0),
+      productWeightKg: Number(row.productWeight ?? row.ProductWeight ?? 0),
       isAvailable: Boolean(row.isAvailable ?? row.IsAvailable ?? false),
       showProductOnline: Boolean(row.showProductOnline ?? row.ShowProductOnline ?? false),
       pictureUrl,

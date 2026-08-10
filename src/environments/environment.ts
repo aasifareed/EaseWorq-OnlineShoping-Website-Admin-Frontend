@@ -1,8 +1,9 @@
 import { appServiceUrls } from './environment.urls';
 
-const BACKEND_URL = 'https://localhost:44374/';
-const OauthHost = '//localhost:44374';
-const BACKEND_URL_LOCAL = 'https://localhost:44374/api';
+// const BACKEND_URL = 'https://localhost:44374/';
+const BACKEND_URL = 'https://wqw3kv18-44374.uks1.devtunnels.ms/';
+const OauthHost = '//wqw3kv18-44374.uks1.devtunnels.ms';
+const BACKEND_URL_LOCAL = BACKEND_URL + 'api';
 const OauthProtocol = 'https';
 const OauthClientId = '';
 const OauthPort = '';
@@ -25,6 +26,8 @@ export const environment = {
   /** Customer storefront base URL for page preview links, e.g. http://localhost:4200 */
   onlineShopStorefrontUrl: 'http://localhost:4200',
   production: false,
+  /** Same key as POS Orders Map Dashboard / Store Working Area. */
+  googleMapsApiKey: 'AIzaSyBiCLFWeI8W8gDzHKs5uQEBgnIlmih1DTs',
   oauth: oauthConfig,
   impersonateOauth: {
     ...oauthConfig,

@@ -1,6 +1,4 @@
 <div [dir]="globalDataService.getdir()">
-  <div class="breadcrumb"></div>
-
   <div class="row menu-page-row">
     <div class="col-md-12">
       <div class="card">
@@ -10,8 +8,8 @@
               <li>
                 <button type="button" class="tabs__link active">
                   <span class="tabs__link__text" data-text="0">
-                    <i class="fa fa-bars fontAwesome_Li_Class" style="color: black;"></i>
-                    <span style="margin-left: 3%;">{{ 'Menu' | translate }} — {{ pageTitle | translate }}</span>
+                    <img class="tabs__link-icon" src="assets/images/tabs/menu.svg" alt="" />
+                    <span>{{ 'Menu' | translate }} — {{ pageTitle | translate }}</span>
                   </span>
                 </button>
               </li>
@@ -19,7 +17,7 @@
 
             <ul class="tabs__contents">
               <li>
-                <div class="tabs__content active">
+                <div class="tabs__content active px-2 pb-2">
                   <div
                     class="separator-breadcrumb border-top"
                     style="margin-bottom: 0.5rem !important;"
@@ -32,7 +30,7 @@
                       (click)="save()"
                       [disabled]="state.loading || state.saving"
                     >
-                      <i class="fa fa-save mr-1"></i>
+                      <i class="fa fa-save fontAwesome_Li_Class mr-1"></i>
                       {{ state.saving ? ('Saving...' | translate) : ('Save Menu' | translate) }}
                     </button>
                   </div>
@@ -62,7 +60,7 @@
 
                     <main class="menu-main">
                       <div *ngIf="state.loading" class="text-center py-5">
-                        <i class="fa fa-spinner fa-spin fa-2x text-muted"></i>
+                        <i class="fa fa-spinner fa-spin fa-2x text-muted fontAwesome_Li_Class"></i>
                       </div>
 
                       <section *ngIf="!state.loading && activeNavItem" class="menu-panel">
@@ -75,12 +73,15 @@
 
                         <div class="form-group menu-category-select">
                           <label>{{ 'Product category' | translate }}</label>
-                          <select class="form-control" [formControlName]="activeNavItem.formControlName">
-                            <option [ngValue]="null">{{ '— None —' | translate }}</option>
-                            <option *ngFor="let cat of state.categories" [ngValue]="cat.id">
-                              {{ cat.name }}
-                            </option>
-                          </select>
+                          <ng-select
+                            [options]="state.categoryOptions"
+                            [formControlName]="activeNavItem.formControlName"
+                            [allowClear]="true"
+                            [placeholder]="'Search and select a category' | translate"
+                            [filterPlaceholder]="'Type to search...' | translate"
+                            [notFoundMsg]="'No matching category' | translate"
+                          >
+                          </ng-select>
                           <small class="text-muted d-block mt-2" *ngIf="state.getSelectedCategoryName(activeNavItem.formControlName)">
                             {{ 'Selected' | translate }}:
                             <strong>{{ state.getSelectedCategoryName(activeNavItem.formControlName) }}</strong>

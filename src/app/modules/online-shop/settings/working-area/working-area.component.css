@@ -1,0 +1,38 @@
+.working-area__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.working-area__hint {
+  font-size: 0.875rem;
+  margin-left: 0.25rem;
+}
+
+.working-area__map-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.working-area__map {
+  width: 100%;
+  height: 520px;
+  border: 1px solid #d7dbe3;
+  border-radius: 4px;
+  background: #f5f6f8;
+}
+
+.working-area__loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.55);
+  color: #333;
+  font-size: 0.95rem;
+  pointer-events: none;
+}

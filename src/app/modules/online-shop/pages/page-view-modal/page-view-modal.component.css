@@ -1,13 +1,5 @@
-.page-view-modal .modal-header {
-  align-items: flex-start;
-  padding: 1.25rem 1.5rem 0.75rem;
-  border-bottom: 1px solid #e8eaed;
-}
-
 .page-view-modal .modal-body {
-  padding: 1.25rem 1.5rem;
-  max-height: 65vh;
-  overflow-y: auto;
+  max-height: calc(92vh - 140px);
 }
 
 .page-preview {
@@ -16,14 +8,18 @@
   font-size: 0.9375rem;
 }
 
-.page-preview :deep(img) {
+.page-preview :deep(img),
+.page-preview ::ng-deep img {
   max-width: 100%;
   height: auto;
 }
 
 .page-preview :deep(h1),
 .page-preview :deep(h2),
-.page-preview :deep(h3) {
+.page-preview :deep(h3),
+.page-preview ::ng-deep h1,
+.page-preview ::ng-deep h2,
+.page-preview ::ng-deep h3 {
   color: #202124;
   margin-top: 1rem;
 }

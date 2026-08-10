@@ -1,0 +1,54 @@
+<div class="working-area">
+  <div class="settings-panel__intro">
+    <h2 class="settings-panel__title">{{ 'Working Area' | translate }}</h2>
+    <p class="text-muted mb-0">
+      {{ 'Draw the store delivery / working area polygon on the map. Click to add points, then double-click (or click near the first point) to close.' | translate }}
+    </p>
+  </div>
+
+  <div class="working-area__toolbar">
+    <button
+      type="button"
+      class="btn btn-success"
+      (click)="addPolygon()"
+      [disabled]="isDrawingMode || polygons.length > 0 || loading"
+      *ngIf="polygons.length === 0"
+    >
+      <i class="fa fa-plus fontAwesome_Li_Class mr-1"></i>
+      {{ 'Add Polygon' | translate }}
+    </button>
+
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="savePolygon()"
+      [disabled]="saving || isDrawingMode || polygons.length === 0"
+      *ngIf="polygons.length > 0 && !isDrawingMode"
+    >
+      <i class="fa fa-save fontAwesome_Li_Class mr-1"></i>
+      {{ saving ? ('Saving...' | translate) : ('Save Polygon' | translate) }}
+    </button>
+
+    <button
+      type="button"
+      class="btn btn-danger"
+      (click)="removePolygon()"
+      [disabled]="polygons.length === 0 || saving"
+    >
+      <i class="fa fa-trash fontAwesome_Li_Class mr-1"></i>
+      {{ 'Remove Polygon' | translate }}
+    </button>
+
+    <span class="working-area__hint text-muted" *ngIf="isDrawingMode">
+      {{ 'Click map to add points. Double-click to finish.' | translate }}
+    </span>
+  </div>
+
+  <div class="working-area__map-wrap">
+    <div #mapViewNode class="working-area__map"></div>
+    <div class="working-area__loading" *ngIf="loading">
+      <i class="fa fa-spinner fa-spin fontAwesome_Li_Class"></i>
+      {{ 'Loading working area...' | translate }}
+    </div>
+  </div>
+</div>

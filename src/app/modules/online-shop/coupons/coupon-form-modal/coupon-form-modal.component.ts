@@ -1,11 +1,25 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
+import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { ToastrService } from 'ngx-toastr';
+import {
+  CouponTypeEnum,
+  DiscountScopeEnum,
+} from 'src/app/shared/enum/online-shop-discount.enum';
 import { RestService } from 'src/app/shared/services/rest.service';
 import { environment } from 'src/environments/environment';
-import { COUPON_TYPES, CouponDetail } from '../models/coupon.models';
+import { ProductsService } from '../../products/services/products.service';
+import {
+  COUPON_SCOPES,
+  COUPON_TYPES,
+  CouponDetail,
+  CouponProductOption,
+} from '../models/coupon.models';
+
+/** The picker loads the catalogue in one page; the dropdown then filters client-side. */
+const PRODUCT_OPTION_PAGE_SIZE = 500;
 
 @Component({
   selector: 'app-coupon-form-modal',
@@ -22,15 +36,26 @@ export class CouponFormModalComponent implements OnInit {
   activeSection = 'general';
 
   couponTypes = COUPON_TYPES;
+  couponScopes = COUPON_SCOPES;
   sections = [
     { id: 'general', label: 'General', icon: 'fa-cog' },
     { id: 'restriction', label: 'Restriction', icon: 'fa-ban' },
     { id: 'usage', label: 'Usage', icon: 'fa-pie-chart' },
   ];
 
+  productOptions: CouponProductOption[] = [];
+  productsLoading = false;
+  productDropdownSettings: IDropdownSettings = {};
+
+  /** Ids from the saved coupon, held until the product list arrives so selections can be rehydrated. */
+  private pendingIncludeIds: string[] = [];
+  private pendingExcludeIds: string[] = [];
+  private productsLoaded = false;
+
   constructor(
     private fb: FormBuilder,
     private restService: RestService,
+    private productsService: ProductsService,
     private toastr: ToastrService,
     private translate: TranslateService,
     public activeModal: NgbActiveModal,
@@ -39,6 +64,8 @@ export class CouponFormModalComponent implements OnInit {
   ngOnInit(): void {
     this.buildForm();
     this.setupValueChanges();
+    this.buildProductDropdownSettings();
+    this.loadProductOptions();
 
     if (this.couponId) {
       this.title = 'Edit Coupon';
@@ -51,7 +78,15 @@ export class CouponFormModalComponent implements OnInit {
   }
 
   get showAmount(): boolean {
-    return this.f.type.value && this.f.type.value !== 'free_shipping';
+    return this.f.type.value && !this.isFreeShipping;
+  }
+
+  get isFreeShipping(): boolean {
+    return this.f.type.value === CouponTypeEnum.FreeShipping;
+  }
+
+  get isPercentage(): boolean {
+    return this.f.type.value === CouponTypeEnum.Percentage;
   }
 
   get showExpiryDates(): boolean {
@@ -62,13 +97,61 @@ export class CouponFormModalComponent implements OnInit {
     return !this.f.isUnlimited.value;
   }
 
+  /**
+   * Product targeting is only read for a product-scoped coupon: pricing consults the include and
+   * exclude lists behind a scope check, so on a whole-order or free-shipping coupon they change
+   * nothing. Hidden rather than ignored, so the form cannot suggest a restriction that will not hold.
+   */
+  get isProductScoped(): boolean {
+    return this.showScope && this.f.scope.value === DiscountScopeEnum.Product;
+  }
+
+  get includeProductsInvalid(): boolean {
+    return this.submitted && this.isProductScoped && this.f.includeProducts.invalid;
+  }
+
+  /** Free shipping always reduces the delivery charge, so there is no scope to choose. */
+  get showScope(): boolean {
+    return !this.isFreeShipping;
+  }
+
+  /** A cap bounds a computed reduction, which only a percentage produces. */
+  get showMaxDiscount(): boolean {
+    return this.isPercentage;
+  }
+
+  get scopeHint(): string {
+    if (!this.showScope) {
+      return 'A free-shipping coupon always reduces the delivery charge.';
+    }
+    return COUPON_SCOPES.find((s) => s.value === this.f.scope.value)?.hint ?? '';
+  }
+
+  /**
+   * The band follows the scope: a product coupon is unlocked by spend on the products it targets, while
+   * every other scope is unlocked by the cart as a whole. Worth saying, because "minimum spend" reads
+   * either way.
+   */
+  get spendBandHint(): string {
+    return this.isProductScoped
+      ? 'Spend needed on the products above, not on the whole cart.'
+      : 'Order value needed to unlock the coupon.';
+  }
+
+  /** An inverted band matches nothing, so the coupon would be dead on arrival. */
+  get spendBandInverted(): boolean {
+    const min = this.toNumber(this.f.minSpend.value);
+    const max = this.toNumber(this.f.maxSpend.value);
+    return min != null && max != null && max < min;
+  }
+
   setSection(sectionId: string): void {
     this.activeSection = sectionId;
   }
 
   submit(): void {
     this.submitted = true;
-    if (this.form.invalid) {
+    if (this.form.invalid || this.spendBandInverted) {
       this.focusInvalidSection();
       return;
     }
@@ -114,26 +197,126 @@ export class CouponFormModalComponent implements OnInit {
       endDate: [null],
       isFirstOrder: [false],
       isActive: [true],
-      isApplyAll: [true],
-      minSpend: [0, [Validators.required, Validators.min(0)]],
-      maxSpend: [null],
+      includeProducts: [[]],
+      excludeProducts: [[]],
+      // Both gates are optional: blank means the coupon has no floor or ceiling on cart value.
+      minSpend: [null, Validators.min(0)],
+      maxSpend: [null, Validators.min(0)],
       isUnlimited: [false],
       usagePerCoupon: [null],
       usagePerCustomer: [null],
+      scope: [DiscountScopeEnum.Order],
+      maxDiscountAmount: [null],
     });
+  }
+
+  private buildProductDropdownSettings(): void {
+    this.productDropdownSettings = {
+      singleSelection: false,
+      idField: 'id',
+      textField: 'label',
+      selectAllText: this.translate.instant('Select All'),
+      unSelectAllText: this.translate.instant('UnSelect All'),
+      itemsShowLimit: 3,
+      allowSearchFilter: true,
+      closeDropDownOnSelection: false,
+      maxHeight: 220,
+    };
+  }
+
+  private loadProductOptions(): void {
+    this.productsLoading = true;
+    this.productsService
+      .getProducts({ skipCount: 0, maxResultCount: PRODUCT_OPTION_PAGE_SIZE })
+      .subscribe({
+        next: ({ items }) => {
+          // The admin list is inventory-level, so one POS product can appear on several rows.
+          const byId = new Map<string, CouponProductOption>();
+          for (const p of items || []) {
+            // Mirror the storefront's `productId ?? id` fallback so saved ids match what the cart sends.
+            const id = String(p.productId || p.id || '');
+            if (!id || byId.has(id)) {
+              continue;
+            }
+            byId.set(id, { id, label: p.productName || p.productIdTag || id });
+          }
+          this.productOptions = Array.from(byId.values()).sort((a, b) => a.label.localeCompare(b.label));
+          this.productsLoading = false;
+          this.productsLoaded = true;
+          this.applyPendingProductSelection();
+        },
+        error: () => {
+          this.productsLoading = false;
+          this.productsLoaded = true;
+          this.applyPendingProductSelection();
+          this.toastr.error(
+            this.translate.instant('Could not load products.'),
+            this.translate.instant('toaster_Heading_Error'),
+            { progressBar: true },
+          );
+        },
+      });
+  }
+
+  /**
+   * Runs once both the coupon and the product list have arrived. Ids that are no longer in the
+   * catalogue are kept as raw-id options so editing a coupon never silently drops its targeting.
+   */
+  private applyPendingProductSelection(): void {
+    if (!this.productsLoaded) {
+      return;
+    }
+
+    this.form.patchValue({
+      includeProducts: this.toProductOptions(this.pendingIncludeIds),
+      excludeProducts: this.toProductOptions(this.pendingExcludeIds),
+    });
+  }
+
+  private toProductOptions(ids: string[]): CouponProductOption[] {
+    return (ids || []).map(
+      (id) => this.productOptions.find((option) => option.id === id) ?? { id, label: id },
+    );
+  }
+
+  private static parseProductIds(raw: unknown): string[] {
+    if (!raw) {
+      return [];
+    }
+    return String(raw)
+      .split(/[,;[\]"\s]+/)
+      .map((segment) => segment.trim())
+      .filter((segment) => !!segment);
+  }
+
+  /** Blank, null and empty-string all mean "not set" on an optional number field. */
+  private toNumber(value: unknown): number | null {
+    if (value == null || value === '') {
+      return null;
+    }
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+
+  private static requireAtLeastOneProduct(control: AbstractControl): ValidationErrors | null {
+    return Array.isArray(control.value) && control.value.length > 0 ? null : { required: true };
   }
 
   private setupValueChanges(): void {
     this.f.type.valueChanges.subscribe((type) => {
       const amount = this.f.amount;
-      if (type === 'free_shipping') {
+      if (type === CouponTypeEnum.FreeShipping) {
         amount.clearValidators();
         amount.setValue(null);
       } else {
         amount.setValidators([Validators.required, Validators.min(0)]);
       }
       amount.updateValueAndValidity();
+      // Free shipping has no scope of its own, so the product pickers disappear with it.
+      this.syncProductTargeting();
     });
+
+    this.f.scope.valueChanges.subscribe(() => this.syncProductTargeting());
 
     this.f.isExpired.valueChanges.subscribe((hasExpiry) => {
       const start = this.f.startDate;
@@ -157,6 +340,21 @@ export class CouponFormModalComponent implements OnInit {
         this.f.usagePerCustomer.setValue(null);
       }
     });
+
+  }
+
+  /**
+   * A product-scoped coupon needs at least one product to reduce; any other scope must not be held
+   * back by a picker it does not show.
+   */
+  private syncProductTargeting(): void {
+    const include = this.f.includeProducts;
+    if (this.isProductScoped) {
+      include.setValidators([CouponFormModalComponent.requireAtLeastOneProduct]);
+    } else {
+      include.clearValidators();
+    }
+    include.updateValueAndValidity({ emitEvent: false });
   }
 
   private loadCoupon(id: string): void {
@@ -176,13 +374,25 @@ export class CouponFormModalComponent implements OnInit {
           endDate: c.endDate ? c.endDate.substring(0, 10) : null,
           isFirstOrder: c.isFirstOrder,
           isActive: c.isActive,
-          isApplyAll: c.isApplyAll,
-          minSpend: c.minSpend,
-          maxSpend: c.maxSpend,
+          // A stored zero is the absence of a floor, so show it as blank rather than a figure that
+          // looks deliberate.
+          minSpend: c.minSpend ? c.minSpend : null,
+          maxSpend: c.maxSpend ?? null,
           isUnlimited: c.isUnlimited,
           usagePerCoupon: c.usagePerCoupon,
           usagePerCustomer: c.usagePerCustomer,
+          // Shipping scope belongs to free-shipping coupons and is not offered in the dropdown, so the
+          // control falls back to the order default rather than holding an unselectable value.
+          scope:
+            c.scope && c.scope !== DiscountScopeEnum.Shipping
+              ? c.scope
+              : DiscountScopeEnum.Order,
+          maxDiscountAmount: c.maxDiscountAmount ?? null,
         });
+        this.pendingIncludeIds = CouponFormModalComponent.parseProductIds(c.includeProductIds);
+        this.pendingExcludeIds = CouponFormModalComponent.parseProductIds(c.excludeProductIds);
+        this.syncProductTargeting();
+        this.applyPendingProductSelection();
         this.isLoading = false;
       },
       error: () => {
@@ -199,27 +409,47 @@ export class CouponFormModalComponent implements OnInit {
       description: v.description,
       code: v.code,
       type: v.type,
-      amount: v.type === 'free_shipping' ? null : Number(v.amount),
-      minSpend: Number(v.minSpend || 0),
-      maxSpend: v.maxSpend != null && v.maxSpend !== '' ? Number(v.maxSpend) : null,
+      amount: this.isFreeShipping ? null : Number(v.amount),
+      // The server takes a non-nullable minimum, so "no minimum" travels as zero.
+      minSpend: this.toNumber(v.minSpend) ?? 0,
+      maxSpend: this.toNumber(v.maxSpend),
       isUnlimited: !!v.isUnlimited,
       usagePerCoupon: v.isUnlimited ? null : v.usagePerCoupon,
       usagePerCustomer: v.isUnlimited ? null : v.usagePerCustomer,
       isExpired: !!v.isExpired,
       startDate: v.isExpired && v.startDate ? v.startDate : null,
       endDate: v.isExpired && v.endDate ? v.endDate : null,
-      isApplyAll: !!v.isApplyAll,
+      // Targeting follows the scope rather than being set separately: only a product-scoped coupon
+      // narrows to a product list, and every other scope reduces the whole thing.
+      isApplyAll: !this.isProductScoped,
       isFirstOrder: !!v.isFirstOrder,
       isActive: !!v.isActive,
-      includeProductIds: null,
-      excludeProductIds: null,
+      includeProductIds: this.isProductScoped ? this.joinProductIds(v.includeProducts) : null,
+      excludeProductIds: this.isProductScoped ? this.joinProductIds(v.excludeProducts) : null,
+      // Free shipping's scope is its type; the server decides it either way.
+      scope: this.isFreeShipping ? null : v.scope,
+      maxDiscountAmount: this.showMaxDiscount ? this.toNumber(v.maxDiscountAmount) : null,
     };
+  }
+
+  private joinProductIds(selection: CouponProductOption[]): string | null {
+    const ids = (selection || []).map((option) => option?.id).filter((id) => !!id);
+    return ids.length ? Array.from(new Set(ids)).join(',') : null;
   }
 
   private focusInvalidSection(): void {
     const controls = this.form.controls;
-    const generalFields = ['title', 'description', 'code', 'type', 'amount', 'startDate', 'endDate'];
-    const restrictionFields = ['minSpend'];
+    const generalFields = [
+      'title',
+      'description',
+      'code',
+      'type',
+      'amount',
+      'maxDiscountAmount',
+      'startDate',
+      'endDate',
+    ];
+    const restrictionFields = ['scope', 'includeProducts', 'minSpend'];
     const usageFields = ['usagePerCoupon', 'usagePerCustomer'];
 
     for (const key of generalFields) {
@@ -234,9 +464,14 @@ export class CouponFormModalComponent implements OnInit {
         return;
       }
     }
+    if (this.spendBandInverted) {
+      this.activeSection = 'restriction';
+      return;
+    }
     for (const key of usageFields) {
       if (controls[key]?.invalid) {
         this.activeSection = 'usage';
+        return;
       }
     }
   }
@@ -258,8 +493,12 @@ export class CouponFormModalComponent implements OnInit {
       startDate: data.startDate ?? data.StartDate,
       endDate: data.endDate ?? data.EndDate,
       isApplyAll: data.isApplyAll ?? data.IsApplyAll,
+      includeProductIds: data.includeProductIds ?? data.IncludeProductIds,
+      excludeProductIds: data.excludeProductIds ?? data.ExcludeProductIds,
       isFirstOrder: data.isFirstOrder ?? data.IsFirstOrder,
       isActive: data.isActive ?? data.IsActive,
+      scope: data.scope ?? data.Scope,
+      maxDiscountAmount: data.maxDiscountAmount ?? data.MaxDiscountAmount,
     };
   }
 }

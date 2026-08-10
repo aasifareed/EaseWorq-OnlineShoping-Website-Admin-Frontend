@@ -9,6 +9,7 @@ import { Page } from 'src/app/shared/models/page';
 import { GlobalDataService } from 'src/app/shared/services/globalData.service';
 import { AdminProductCategoryListItem } from '../models/product-category.models';
 import { ProductCategoriesService } from '../services/product-categories.service';
+import { CategoryImageModalComponent } from '../category-image-modal/category-image-modal.component';
 import { ProductCategoryEditModalComponent } from '../product-category-edit-modal/product-category-edit-modal.component';
 import { calculateProductsGridLayout } from '../utils/products-grid-layout.util';
 import { ProductsTabGrid } from '../utils/products-tab-grid';
@@ -53,18 +54,13 @@ export class ProductCategoriesComponent implements OnInit, ProductsTabGrid {
   onTabActivated(): void {
     this.page.pageNumber = 0;
     this.calculatePageSize(true);
-    setTimeout(() => this.calculatePageSize(false), 0);
-    setTimeout(() => this.calculatePageSize(false), 120);
+    setTimeout(() => this.calculatePageSize(true), 0);
+    setTimeout(() => this.calculatePageSize(true), 100);
   }
 
   @HostListener('window:resize')
   onResize(): void {
-    const previousSize = this.page.size;
-    this.calculatePageSize(false);
-    if (previousSize !== this.page.size) {
-      this.page.pageNumber = 0;
-      this.loadCategories();
-    }
+    this.calculatePageSize(true);
   }
 
   calculatePageSize(reload = true): void {
@@ -121,25 +117,63 @@ export class ProductCategoriesComponent implements OnInit, ProductsTabGrid {
     this.loadCategories();
   }
 
-  formatYesNo(value: boolean): string {
-    return value ? this.translate.instant('Yes') : this.translate.instant('No');
+  onImageError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    img.src = 'assets/images/logo.svg';
+  }
+
+  openImageModal(row: AdminProductCategoryListItem): void {
+    const modalRef = this.modalService.open(CategoryImageModalComponent, {
+      size: 'lg',
+      backdrop: 'static',
+      centered: true,
+      windowClass: 'product-images-modal-window',
+    });
+    modalRef.componentInstance.category = { ...row };
+
+    modalRef.result.then(
+      (result: { changed?: boolean; pictureUrl?: string }) => {
+        if (result?.changed) {
+          this.updateRowPicture(row.id, result.pictureUrl ?? '');
+        }
+      },
+      () => undefined,
+    );
+  }
+
+  private updateRowPicture(categoryId: string, pictureUrl: string): void {
+    this.data = this.data.map((item) =>
+      item.id === categoryId ? { ...item, pictureUrl } : item,
+    );
   }
 
   isSaving(row: AdminProductCategoryListItem, field: 'popular' | 'showOnline'): boolean {
     return this.savingKeys.has(this.savingKey(row, field));
   }
 
-  togglePopular(row: AdminProductCategoryListItem): void {
+  onPopularToggle(row: AdminProductCategoryListItem, event: Event): void {
+    const input = event.target as HTMLInputElement;
     if (this.isSaving(row, 'popular')) {
+      input.checked = row.isPopular;
       return;
     }
-    this.saveCategoryField(row, 'popular', { isPopular: !row.isPopular });
+    this.saveCategoryField(row, 'popular', { isPopular: input.checked }, input);
+  }
+
+  onShowOnlineToggle(row: AdminProductCategoryListItem, event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (this.isSaving(row, 'showOnline')) {
+      input.checked = row.showCategoryOnline;
+      return;
+    }
+    this.saveCategoryField(row, 'showOnline', { showCategoryOnline: input.checked }, input);
   }
 
   openEditModal(row: AdminProductCategoryListItem): void {
     const modalRef = this.modalService.open(ProductCategoryEditModalComponent, {
       centered: true,
       backdrop: 'static',
+      windowClass: 'ew-app-modal',
     });
     modalRef.componentInstance.category = { ...row };
 
@@ -162,6 +196,7 @@ export class ProductCategoriesComponent implements OnInit, ProductsTabGrid {
     row: AdminProductCategoryListItem,
     field: 'popular' | 'showOnline',
     patch: { isPopular?: boolean; showCategoryOnline?: boolean },
+    toggleInput?: HTMLInputElement,
   ): void {
     const key = this.savingKey(row, field);
     this.savingKeys.add(key);
@@ -179,6 +214,13 @@ export class ProductCategoriesComponent implements OnInit, ProductsTabGrid {
         },
         error: (err) => {
           this.savingKeys.delete(key);
+          if (toggleInput) {
+            if (field === 'popular') {
+              toggleInput.checked = row.isPopular;
+            } else if (field === 'showOnline') {
+              toggleInput.checked = row.showCategoryOnline;
+            }
+          }
           const message =
             err?.error?.error?.message || this.translate.instant('Failed to update category.');
           this.toastr.error(message);
@@ -191,6 +233,14 @@ export class ProductCategoriesComponent implements OnInit, ProductsTabGrid {
   }
 
   private replaceRow(updated: AdminProductCategoryListItem): void {
-    this.data = this.data.map((item) => (item.id === updated.id ? { ...item, ...updated } : item));
+    this.data = this.data.map((item) =>
+      item.id === updated.id
+        ? {
+            ...item,
+            ...updated,
+            pictureUrl: updated.pictureUrl || item.pictureUrl,
+          }
+        : item,
+    );
   }
 }

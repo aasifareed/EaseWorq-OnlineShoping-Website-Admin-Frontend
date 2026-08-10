@@ -3,11 +3,11 @@
         position: fixed;
         width: 100%;
         height: $topbar-height;
-        box-shadow: 0 1px 15px rgba(0,0,0,.04), 0 1px 6px rgba(0,0,0,.04);
         display: flex;
         align-items: center;
         justify-content: space-between;
-        background: $background;
+        /* Premium gradient comes from header-sidebar-large component styles */
+        background: transparent;
         z-index: 100;
         padding: 0 1rem;
         .header-left {

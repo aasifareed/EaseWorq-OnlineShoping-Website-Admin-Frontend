@@ -1,6 +1,5 @@
 <div
-  class="separator-breadcrumb border-top"
-  style="margin-bottom: 0.5rem !important;"
+  class="separator-breadcrumb border-top products-tab-separator"
 ></div>
 
 <div [dir]="globalDataService.getdir()" class="gridAboveHeightInSaleOrderHistory">
@@ -8,17 +7,16 @@
     {{ loadError }}
   </div>
 
-  <div class="row">
-    <div class="col-xl-3 col-lg-12 col-md-12 col-sm-12 col-xs-12">
-      <div class="form-group">
-        <input
-          style="margin-top: 7%;"
-          [formControl]="searchControl"
-          class="form-control form-control-rounded"
-          type="text"
-          [placeholder]="'Search categories' | translate"
-        />
-      </div>
+  <div class="os-filter-toolbar">
+    <div class="os-filter-toolbar__field os-filter-toolbar__field--search">
+      <label class="os-filter-toolbar__label" for="categorySearch">{{ 'Search' | translate }}</label>
+      <input
+        id="categorySearch"
+        [formControl]="searchControl"
+        class="form-control form-control-rounded"
+        type="text"
+        [placeholder]="'Search categories' | translate"
+      />
     </div>
   </div>
 
@@ -41,6 +39,39 @@
           [limit]="page.size"
           (page)="setPage($event)"
         >
+          <ngx-datatable-column
+            [name]="'Image' | translate"
+            [sortable]="false"
+            [canAutoResize]="false"
+            [width]="108"
+            [minWidth]="108"
+            cellClass="products-datatable__image-col"
+            headerClass="products-datatable__image-col"
+          >
+            <ng-template ngx-datatable-cell-template let-row="row">
+              <div class="products-datatable__image-cell">
+                <button
+                  type="button"
+                  class="products-datatable__thumb-btn"
+                  (click)="openImageModal(row)"
+                  [title]="'Manage image' | translate"
+                >
+                  <span class="products-datatable__thumb-frame">
+                    <img
+                      class="products-datatable__thumb"
+                      [src]="row.pictureUrl || 'assets/images/logo.svg'"
+                      [alt]="row.name"
+                      (error)="onImageError($event)"
+                    />
+                  </span>
+                  <span class="products-datatable__thumb-badge">
+                    {{ row.pictureUrl ? '1' : '+' }}
+                  </span>
+                </button>
+              </div>
+            </ng-template>
+          </ngx-datatable-column>
+
           <ngx-datatable-column [name]="'Category Name' | translate" prop="name" [minWidth]="220">
             <ng-template ngx-datatable-cell-template let-row="row">
               <strong>{{ getDisplayLabel(row) }}</strong>
@@ -57,21 +88,19 @@
           >
             <ng-template ngx-datatable-cell-template let-row="row">
               <div class="products-datatable__cell-center products-datatable__cell-actions">
-                <button
-                  type="button"
-                  class="btn btn-sm products-datatable__toggle"
-                  [class.btn-success]="row.isPopular"
-                  [class.btn-outline-secondary]="!row.isPopular"
-                  [disabled]="isSaving(row, 'popular')"
-                  (click)="togglePopular(row)"
+                <label
+                  class="status-switch mb-0"
+                  [class.status-switch--disabled]="isSaving(row, 'popular')"
+                  [title]="row.isPopular ? ('Enabled' | translate) : ('Disabled' | translate)"
                 >
-                  <span
-                    *ngIf="isSaving(row, 'popular')"
-                    class="spinner-border spinner-border-sm"
-                    role="status"
-                  ></span>
-                  <span *ngIf="!isSaving(row, 'popular')">{{ formatYesNo(row.isPopular) }}</span>
-                </button>
+                  <input
+                    type="checkbox"
+                    [checked]="row.isPopular"
+                    [disabled]="isSaving(row, 'popular')"
+                    (change)="onPopularToggle(row, $event)"
+                  />
+                  <span class="status-switch__slider"></span>
+                </label>
               </div>
             </ng-template>
           </ngx-datatable-column>
@@ -84,14 +113,20 @@
             headerClass="products-datatable__center-col"
           >
             <ng-template ngx-datatable-cell-template let-row="row">
-              <div class="products-datatable__cell-center">
-                <span
-                  class="badge"
-                  [class.badge-success]="row.showCategoryOnline"
-                  [class.badge-secondary]="!row.showCategoryOnline"
+              <div class="products-datatable__cell-center products-datatable__cell-actions">
+                <label
+                  class="status-switch mb-0"
+                  [class.status-switch--disabled]="isSaving(row, 'showOnline')"
+                  [title]="row.showCategoryOnline ? ('Enabled' | translate) : ('Disabled' | translate)"
                 >
-                  {{ formatYesNo(row.showCategoryOnline) }}
-                </span>
+                  <input
+                    type="checkbox"
+                    [checked]="row.showCategoryOnline"
+                    [disabled]="isSaving(row, 'showOnline')"
+                    (change)="onShowOnlineToggle(row, $event)"
+                  />
+                  <span class="status-switch__slider"></span>
+                </label>
               </div>
             </ng-template>
           </ngx-datatable-column>
@@ -107,9 +142,10 @@
               <div class="products-datatable__cell-center products-datatable__cell-actions">
                 <button
                   type="button"
-                  class="btn btn-sm btn-outline-primary"
+                  class="btn btn-sm btn-primary"
                   (click)="openEditModal(row)"
                 >
+                  <i class="fa fa-pencil fontAwesome_Li_Class"></i>
                   {{ 'Edit' | translate }}
                 </button>
               </div>

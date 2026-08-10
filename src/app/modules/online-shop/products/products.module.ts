@@ -11,6 +11,7 @@ import { ProductsComponent } from './products.component';
 import { ProductImagesModalComponent } from './product-images-modal/product-images-modal.component';
 import { ProductCategoriesComponent } from './product-categories/product-categories.component';
 import { ProductCategoryEditModalComponent } from './product-category-edit-modal/product-category-edit-modal.component';
+import { CategoryImageModalComponent } from './category-image-modal/category-image-modal.component';
 import { ProductBrandsComponent } from './product-brands/product-brands.component';
 import { BrandImageModalComponent } from './brand-image-modal/brand-image-modal.component';
 import { ProductsService } from './services/products.service';
@@ -34,12 +35,14 @@ import { ProductBrandsService } from './services/product-brands.service';
     ProductImagesModalComponent,
     ProductCategoriesComponent,
     ProductCategoryEditModalComponent,
+    CategoryImageModalComponent,
     ProductBrandsComponent,
     BrandImageModalComponent,
   ],
   entryComponents: [
     ProductImagesModalComponent,
     ProductCategoryEditModalComponent,
+    CategoryImageModalComponent,
     BrandImageModalComponent,
   ],
   providers: [ProductsService, ProductCategoriesService, ProductBrandsService],

@@ -94,6 +94,7 @@
             <span *ngIf="selectedFiles.length">{{ selectedFiles.length }} file{{ selectedFiles.length === 1 ? '' : 's' }} ready to upload</span>
           </p>
           <p class="pim__dropzone-hint">or <span class="pim__dropzone-link">browse from your device</span></p>
+          <p class="pim__dropzone-size">Recommended 800 × 800 px. Other sizes are accepted and shown without cropping.</p>
         </div>
       </label>
 
@@ -127,6 +128,7 @@
     <p class="pim__footer-hint" *ngIf="galleryChanged">Gallery updated — close to refresh the products list.</p>
     <div class="pim__footer-actions">
       <button type="button" class="pim__btn pim__btn--ghost" (click)="close()" [disabled]="uploading">
+        <i class="fa fontAwesome_Li_Class" [ngClass]="galleryChanged ? 'fa-check' : 'fa-times'"></i>
         {{ galleryChanged ? 'Done' : 'Cancel' }}
       </button>
       <button

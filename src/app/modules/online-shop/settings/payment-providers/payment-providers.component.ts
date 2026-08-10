@@ -183,6 +183,7 @@ export class PaymentProvidersComponent implements OnInit {
     const modalRef = this.modalService.open(PaymentProviderModalComponent, {
       size: 'lg',
       backdrop: 'static',
+      windowClass: 'ew-app-modal',
     });
     modalRef.componentInstance.providerId = providerId;
     modalRef.componentInstance.existingProviderCodes = this.existingProviderCodes();

@@ -1,8 +1,5 @@
 <div [dir]="globalDataService.getdir()">
-  <div class="breadcrumb">
-  </div>
-
-  <div class="row" style="margin-top: -3%; margin-right: -35px; margin-left: -35px;">
+  <div class="row">
     <div class="col-md-12">
       <div class="card">
         <div class="card-body" style="padding: 0%;">
@@ -16,8 +13,8 @@
                   (click)="changeTab(0)"
                 >
                   <span class="tabs__link__text" data-text="0">
-                    <i class="fa fa-tags fontAwesome_Li_Class" style="color: black;"></i>
-                    <span style="margin-left: 3%;">{{ 'Statuses' | translate }}</span>
+                    <img class="tabs__link-icon" src="assets/images/tabs/statuses.svg" alt="" />
+                    <span>{{ 'Statuses' | translate }}</span>
                   </span>
                 </button>
               </li>
@@ -29,8 +26,8 @@
                   (click)="changeTab(1)"
                 >
                   <span class="tabs__link__text" data-text="1">
-                    <i class="fa fa-exchange-alt fontAwesome_Li_Class" style="color: black;"></i>
-                    <span style="margin-left: 3%;">{{ 'Status Events' | translate }}</span>
+                    <img class="tabs__link-icon" src="assets/images/tabs/status-events.svg" alt="" />
+                    <span>{{ 'Status Events' | translate }}</span>
                   </span>
                 </button>
               </li>
@@ -38,7 +35,7 @@
 
             <ul class="tabs__contents">
               <li>
-                <div class="tabs__content active">
+                <div class="tabs__content active status-page-body">
                   <div
                     class="separator-breadcrumb border-top"
                     style="margin-bottom: 0.5rem !important;"

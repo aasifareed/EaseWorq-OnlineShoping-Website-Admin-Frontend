@@ -3,7 +3,6 @@ import {
   ElementRef,
   HostListener,
   OnInit,
-  Renderer2,
   ViewChild,
 } from "@angular/core";
 import { FormControl } from "@angular/forms";
@@ -20,6 +19,7 @@ import * as moment from "moment";
 import { AddUpdateStatusComponent } from "../add-update-status/add-update-status.component";
 import { environment } from "src/environments/environment";
 import { StatusDto } from "../models/statusDto";
+import { calculateStatusGridLayout } from "../utils/status-grid-layout.util";
 
 @Component({
   selector: "app-status-list",
@@ -51,14 +51,15 @@ export class StatusListComponent implements OnInit {
     public _customUserStoreService: CustomUserStoreService,
     public globalDataService: GlobalDataService,
     private el: ElementRef,
-    private renderer: Renderer2,
   ) {
     this.page.pageNumber = 0;
     //this.page.size = 11;
   }
 
   ngOnInit() {
-    this.calculatePageSize();
+    this.applyGridLayout(true);
+    setTimeout(() => this.applyGridLayout(true), 0);
+    setTimeout(() => this.applyGridLayout(true), 100);
 
     this.searchControl.valueChanges
       .pipe(debounceTime(200))
@@ -243,43 +244,26 @@ export class StatusListComponent implements OnInit {
 
   @HostListener("window:resize", ["$event"])
   onResize() {
-    // Recalculate page size on window resize
-    this.calculatePageSize();
-    //this.getData();
+    this.applyGridLayout(true);
   }
 
   calculatePageSize(): void {
-    const rowHeight = 45;
-    const headerFooterHeight = 70;
-    let availableHeight = window.innerHeight - headerFooterHeight;
+    this.applyGridLayout(true);
+  }
 
-    const mainHeaderElement = this.renderer.selectRootElement(
-      ".main-header",
-      true,
-    );
-    const mainHeaderElementHeight = mainHeaderElement
-      ? mainHeaderElement.offsetHeight
-      : 0;
-    availableHeight -= mainHeaderElementHeight;
+  private applyGridLayout(reload: boolean): void {
+    const layout = calculateStatusGridLayout(this.el.nativeElement);
+    const sizeChanged = this.page.size !== layout.pageSize;
+    const needsInitialLoad = this.data == null;
+    this.page.size = layout.pageSize;
+    this.gridHeight = layout.gridHeight;
 
-    const tabElement = this.renderer.selectRootElement(".tabs__links", true);
-    const tabElementHeight = tabElement ? tabElement.offsetHeight : 0;
-    availableHeight -= tabElementHeight;
-
-    // Get the height of the gridAboveHeight elements
-    const gridAboveHeightElement =
-      this.el.nativeElement.querySelector(".gridAboveHeight");
-    const gridAboveHeightElementHeight = gridAboveHeightElement
-      ? gridAboveHeightElement.offsetHeight
-      : 0;
-    availableHeight -= gridAboveHeightElementHeight;
-
-    // Calculate the number of rows that can be displayed
-    this.page.size = Math.floor(availableHeight / rowHeight);
-    if (this.page.size <= 0) {
-      this.page.size = 10;
+    if (reload && (sizeChanged || needsInitialLoad)) {
+      if (sizeChanged) {
+        this.page.pageNumber = 0;
+      }
+      this.getData();
     }
-    this.getData();
   }
 
   getTextColor(bgColor: string | null | undefined): string {

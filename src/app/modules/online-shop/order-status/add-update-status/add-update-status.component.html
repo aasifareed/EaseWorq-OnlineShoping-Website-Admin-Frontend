@@ -93,13 +93,16 @@
 
 <!-- Modal Footer -->
 <div class="modal-footer">
-  <button type="button" class="btn btn-secondary" (click)="activeModal.dismiss()">
-    <i class="i-Close-Window mr-2"></i> Close
+  <button type="button" class="btn btn-outline-secondary" (click)="activeModal.dismiss()">
+    <i class="i-Close-Window"></i>
+    {{ 'Close' | translate }}
   </button>
-  <button *ngIf="isAddScreen" type="button" class="btn btn-success" (click)="submit()">
-    <i class="i-Add mr-2"></i> {{'Submit' | translate}}
+  <button *ngIf="isAddScreen" type="button" class="btn btn-primary" (click)="submit()">
+    <i class="i-Add"></i>
+    {{ 'Submit' | translate }}
   </button>
-  <button *ngIf="!isAddScreen" type="button" class="btn btn-success" (click)="update()">
-    <i class="i-Yes mr-2"></i> {{'Update' | translate}}
+  <button *ngIf="!isAddScreen" type="button" class="btn btn-primary" (click)="update()">
+    <i class="i-Yes"></i>
+    {{ 'Update' | translate }}
   </button>
 </div>

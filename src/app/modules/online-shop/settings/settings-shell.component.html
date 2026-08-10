@@ -1,6 +1,4 @@
 <div [dir]="globalDataService.getdir()">
-  <div class="breadcrumb"></div>
-
   <div class="row settings-page-row">
     <div class="col-md-12">
       <div class="card">
@@ -10,8 +8,8 @@
               <li>
                 <button type="button" class="tabs__link active">
                   <span class="tabs__link__text" data-text="0">
-                    <i class="fa fa-cog fontAwesome_Li_Class" style="color: black;"></i>
-                    <span style="margin-left: 3%;">{{ pageTitle | translate }}</span>
+                    <img class="tabs__link-icon" src="assets/images/tabs/settings.png" alt="" />
+                    <span>{{ pageTitle | translate }}</span>
                   </span>
                 </button>
               </li>
@@ -19,7 +17,7 @@
 
             <ul class="tabs__contents">
               <li>
-                <div class="tabs__content active">
+                <div class="tabs__content active px-2 pb-2">
                   <div
                     class="separator-breadcrumb border-top"
                     style="margin-bottom: 0.5rem !important;"
@@ -32,7 +30,7 @@
                       (click)="save()"
                       [disabled]="state.loading || isSaving"
                     >
-                      <i class="fa fa-save mr-1"></i>
+                      <i class="fa fa-save fontAwesome_Li_Class mr-1"></i>
                       {{ isSaving ? ('Saving...' | translate) : (saveButtonLabel | translate) }}
                     </button>
                   </div>
@@ -66,7 +64,7 @@
 
                     <main class="settings-main">
                       <div *ngIf="state.loading" class="text-center py-5">
-                        <i class="fa fa-spinner fa-spin fa-2x text-muted"></i>
+                        <i class="fa fa-spinner fa-spin fa-2x text-muted fontAwesome_Li_Class"></i>
                       </div>
 
                       <ng-container *ngIf="!state.loading">
@@ -215,9 +213,80 @@
                           <app-checkout-courier-visibility></app-checkout-courier-visibility>
                         </section>
 
+                        <!-- Working Area -->
+                        <section *ngIf="activeSectionId === 'working-area'" class="settings-panel">
+                          <app-working-area></app-working-area>
+                        </section>
+
                         <!-- Payment -->
                         <section *ngIf="activeSectionId === 'payment'" class="settings-panel">
                           <app-payment-providers></app-payment-providers>
+                        </section>
+
+                        <!-- Pricing -->
+                        <section *ngIf="activeSectionId === 'pricing'" class="settings-panel">
+                          <div class="switches-row">
+                            <label class="switch-label">
+                              <input type="checkbox" formControlName="isMarginProtectionEnabled" />
+                              {{ 'Protect margin on discounted orders' | translate }}
+                            </label>
+                          </div>
+                          <div class="row">
+                            <div class="col-md-12 form-group mb-2">
+                              <small class="text-muted">
+                                {{ 'Coupons and promotions are trimmed so an order never sells below this margin. Product cost comes from the POS, so a product with no cost recorded cannot be protected.' | translate }}
+                              </small>
+                            </div>
+                            <div class="col-md-6 form-group mb-0" *ngIf="state.form.get('isMarginProtectionEnabled').value">
+                              <label>{{ 'Minimum gross margin' | translate }}</label>
+                              <div class="input-group">
+                                <input
+                                  type="number"
+                                  class="form-control"
+                                  formControlName="minimumGrossMarginPercentage"
+                                  min="0.01"
+                                  max="99.99"
+                                  step="0.01"
+                                  placeholder="15"
+                                />
+                                <div class="input-group-append">
+                                  <span class="input-group-text">%</span>
+                                </div>
+                              </div>
+                              <small class="text-danger" *ngIf="state.form.get('minimumGrossMarginPercentage').invalid && state.form.get('minimumGrossMarginPercentage').touched">
+                                {{ 'Enter a margin between 0 and 100 percent.' | translate }}
+                              </small>
+                            </div>
+                          </div>
+
+                          <hr class="my-3" />
+
+                          <div class="row">
+                            <div class="col-md-12 form-group mb-2">
+                              <label class="mb-1">{{ 'Assumed weight for products with no weight' | translate }}</label>
+                              <small class="text-muted d-block">
+                                {{ 'Couriers charge by weight. A product with no weight recorded adds nothing to the parcel, so a cart of such products is quoted at the minimum billable weight. Set a deliberately generous figure to keep those quotes safe until every product has its own weight. Leave empty to assume nothing.' | translate }}
+                              </small>
+                            </div>
+                            <div class="col-md-6 form-group mb-0">
+                              <div class="input-group">
+                                <input
+                                  type="number"
+                                  class="form-control"
+                                  formControlName="fallbackProductWeightGrams"
+                                  min="0"
+                                  step="1"
+                                  [placeholder]="'Assume nothing' | translate"
+                                />
+                                <div class="input-group-append">
+                                  <span class="input-group-text">{{ 'g' | translate }}</span>
+                                </div>
+                              </div>
+                              <small class="text-danger" *ngIf="state.form.get('fallbackProductWeightGrams').invalid && state.form.get('fallbackProductWeightGrams').touched">
+                                {{ 'Enter a weight in grams, up to 100000 g.' | translate }}
+                              </small>
+                            </div>
+                          </div>
                         </section>
 
                         <!-- Invoice -->

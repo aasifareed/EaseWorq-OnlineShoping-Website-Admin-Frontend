@@ -1,7 +1,5 @@
 <div [dir]="globalDataService.getdir()">
-  <div class="breadcrumb"></div>
-
-  <div class="row" style="margin-top: -3%; margin-right: -35px; margin-left: -35px;">
+  <div class="row">
     <div class="col-md-12">
       <div class="card">
         <div class="card-body" style="padding: 0%;">
@@ -10,8 +8,8 @@
               <li>
                 <button type="button" class="tabs__link active">
                   <span class="tabs__link__text" data-text="0">
-                    <i class="fa-solid fa-file-lines fontAwesome_Li_Class" style="color: black;"></i>
-                    <span style="margin-left: 3%;">{{ 'Pages' | translate }}</span>
+                    <img class="tabs__link-icon" src="assets/images/tabs/pages.png" alt="" />
+                    <span>{{ 'Pages' | translate }}</span>
                   </span>
                 </button>
               </li>
@@ -19,7 +17,7 @@
 
             <ul class="tabs__contents">
               <li>
-                <div class="tabs__content active">
+                <div class="tabs__content active px-2 pb-2">
                   <div
                     class="separator-breadcrumb border-top"
                     style="margin-bottom: 0.5rem !important;"
@@ -45,18 +43,19 @@
                         class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-xs-auto form-group add_New pages-toolbar-add"
                         style="margin-top: 1.7%;"
                       >
-                        <button type="button" class="btn btn-outline-primary mr-2" (click)="createDefaultPages()">
+                        <button type="button" class="btn btn-primary mr-2" (click)="createDefaultPages()">
+                          <i class="fa fa-files-o fontAwesome_Li_Class"></i>
                           {{ 'Add default pages' | translate }}
                         </button>
                         <button type="button" class="btn btn-primary" (click)="openAddModal()">
-                          <i class="i-Add"></i>
+                          <i class="fa fa-plus fontAwesome_Li_Class"></i>
                           {{ 'Add Page' | translate }}
                         </button>
                       </div>
                     </div>
                   </div>
 
-                  <div class="row" style="margin-right: -16px; margin-left: -16px;">
+                  <div class="row">
                     <div class="col-md-12">
                       <div class="card mb-3">
                         <ngx-datatable

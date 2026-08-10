@@ -49,6 +49,15 @@ export interface OnlineShopSettings {
   metaTitle?: string;
   metaDescription?: string;
   metaImageUrl?: string;
+  /** Stops stacked promotions from selling below an acceptable margin. */
+  isMarginProtectionEnabled?: boolean;
+  /** Gross margin floor as a percentage of merchandise revenue, e.g. 15. */
+  minimumGrossMarginPercentage?: number;
+  /**
+   * Kilograms assumed per unit for a product with no catalogue weight, so an unweighed line does not
+   * quote the courier as if it weighed nothing. Absent means no assumption.
+   */
+  fallbackProductWeightKg?: number;
 }
 
 export interface OnlineShopSettingsForEdit {

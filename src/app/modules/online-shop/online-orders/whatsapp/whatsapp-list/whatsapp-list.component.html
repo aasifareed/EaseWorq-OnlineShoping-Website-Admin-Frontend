@@ -74,9 +74,12 @@
     <div *ngIf="webhookSuccess" class="alert alert-success mt-2 mb-0">{{ webhookSuccess }}</div>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Cancel</button>
+    <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss()">
+      <i class="i-Close-Window"></i>
+      Cancel
+    </button>
     <button type="button" class="btn btn-primary" (click)="sendWebhookPayload(modal)" [disabled]="webhookSending || !webhookTestPhoneNumber?.trim() || !webhookTestMessage?.trim()">
-      <span *ngIf="!webhookSending">Send</span>
+      <span *ngIf="!webhookSending"><i class="i-Paper-Plane"></i> Send</span>
       <span *ngIf="webhookSending" class="spinner-border spinner-border-sm"></span>
     </button>
   </div>

@@ -1,3 +1,8 @@
+import {
+  ShippingChargeTypeEnum,
+  ShippingRuleTypeEnum,
+} from 'src/app/shared/enum/online-shop-discount.enum';
+
 export interface ShippingCountryListItem {
   id: string;
   countryName: string;
@@ -20,7 +25,8 @@ export interface ShippingRule {
   name: string;
   ruleType: string;
   min: number;
-  max: number;
+  /** Null means the rule has no upper limit ("and above"). */
+  max: number | null;
   shippingType: string;
   amount: number;
   isActive: boolean;
@@ -31,13 +37,13 @@ export interface ShippingCountryOption {
   countryName: string;
 }
 
-export const SHIPPING_RULE_TYPES = [
-  { value: 'base_on_price', label: 'Based on Price' },
-  { value: 'base_on_weight', label: 'Based on Weight' },
+export const SHIPPING_RULE_TYPES: { value: ShippingRuleTypeEnum; label: string }[] = [
+  { value: ShippingRuleTypeEnum.BaseOnPrice, label: 'Based on Price' },
+  { value: ShippingRuleTypeEnum.BaseOnWeight, label: 'Based on Weight' },
 ];
 
-export const SHIPPING_CHARGE_TYPES = [
-  { value: 'fixed', label: 'Fixed' },
-  { value: 'percentage', label: 'Percentage' },
-  { value: 'free', label: 'Free' },
+export const SHIPPING_CHARGE_TYPES: { value: ShippingChargeTypeEnum; label: string }[] = [
+  { value: ShippingChargeTypeEnum.Fixed, label: 'Fixed' },
+  { value: ShippingChargeTypeEnum.Percentage, label: 'Percentage' },
+  { value: ShippingChargeTypeEnum.Free, label: 'Free' },
 ];

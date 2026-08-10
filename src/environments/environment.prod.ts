@@ -24,6 +24,7 @@ export const environment = {
   assetUrl: BACKEND_URL + 'SmartOfficerAttachment',
   onlineShopStorefrontUrl: '',
   production: true,
+  googleMapsApiKey: 'AIzaSyBiCLFWeI8W8gDzHKs5uQEBgnIlmih1DTs',
   oauth: oauthConfig,
   impersonateOauth: {
     ...oauthConfig,

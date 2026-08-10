@@ -6,13 +6,16 @@ import { GlobalDataService } from 'src/app/shared/services/globalData.service';
 import { ConfirmationDialogService } from 'src/app/shared/services/confirmation-dialog.service';
 import { RestService } from 'src/app/shared/services/rest.service';
 import { environment } from 'src/environments/environment';
+import { describeWeight } from '../../shared/weight.util';
 
 interface StatusOption {
   value: string;
   label: string;
+  statusName?: string;
   isEventDriven?: boolean;
   eventName?: string;
   eventDisplayName?: string;
+  booksCourierShipment?: boolean;
 }
 
 interface OrderProductRow {
@@ -47,6 +50,7 @@ export class ManageOrderComponent implements OnInit {
   statusOptionsHint = '';
   selectedStatusId: string | null = null;
   statusRemarks = '';
+  skipCourierBooking = false;
   statusAdminNote = '';
   shipmentHistoryRemarks = '';
   deliveryStatusText = '';
@@ -178,6 +182,11 @@ export class ManageOrderComponent implements OnInit {
     return this.statusOptions.find((option) => option.value === this.selectedStatusId);
   }
 
+  /** Saving this status is what books the parcel with the courier, so the admin is warned before it happens. */
+  get selectedStatusBooksCourier(): boolean {
+    return !!this.selectedStatusOption?.booksCourierShipment;
+  }
+
   get selectedStatusRequiresRemarks(): boolean {
     const option = this.selectedStatusOption;
     return !!option?.isEventDriven
@@ -221,6 +230,53 @@ export class ManageOrderComponent implements OnInit {
 
   get totalAmount(): number {
     return Number(this.detail?.totalAmount ?? this.detail?.TotalAmount ?? 0);
+  }
+
+  /**
+   * Merchandise at list price. Orders placed before pricing was centralised never stored it, so the
+   * already-discounted subtotal they did store stands in.
+   */
+  get orderSubtotal(): number {
+    const listPrice = Number(this.detail?.originalSubTotalAmount ?? 0);
+    return listPrice > 0 ? listPrice : Number(this.detail?.subTotalAmount ?? 0);
+  }
+
+  /** The courier rate before any delivery promotion, with the same pre-conversion fallback. */
+  get orderShippingAmount(): number {
+    const listPrice = Number(this.detail?.originalShippingAmount ?? 0);
+    return listPrice > 0 ? listPrice : Number(this.detail?.shippingCharges ?? 0);
+  }
+
+  /**
+   * Weight of the goods, for dispatch, in the unit a packer would say it in: grams under a kilogram.
+   * Null when the order predates weight capture or nothing in it carried a catalogue weight — showing
+   * 0 g would read as a weightless parcel rather than as an unknown one.
+   */
+  get orderWeight(): string | null {
+    return describeWeight(this.detail?.totalWeightKg) || null;
+  }
+
+  /**
+   * Every discount on the order with the label the pricing engine gave it. A pre-conversion order
+   * has no rows, so its single stored figure is shown as one unnamed discount.
+   */
+  get orderDiscountRows(): { description: string; discountAmount: number }[] {
+    const rows = (this.detail?.appliedDiscounts ?? [])
+      .filter((d: any) => d.discountAmount > 0)
+      .sort((a: any, b: any) => a.sortOrder - b.sortOrder)
+      .map((d: any) => ({
+        description: d.description || 'Discount',
+        discountAmount: d.discountAmount,
+      }));
+
+    if (rows.length) {
+      return rows;
+    }
+
+    const legacyDiscount = Number(this.detail?.discountAmount ?? 0);
+    return legacyDiscount > 0
+      ? [{ description: 'Discount', discountAmount: legacyDiscount }]
+      : [];
   }
 
   get remainingAmount(): number {
@@ -591,7 +647,13 @@ export class ManageOrderComponent implements OnInit {
       onlineShopSaleOrderId: this.orderId,
       orderStatusId: this.selectedStatusId,
       remarks,
+      skipCourierBooking: this.selectedStatusBooksCourier ? this.skipCourierBooking : undefined,
     };
+
+    if (this.selectedStatusBooksCourier) {
+      this.confirmCourierBooking(payload);
+      return;
+    }
 
     if (selected?.isEventDriven) {
       const eventLabel = selected.eventDisplayName || selected.eventName || 'a configured action';
@@ -643,12 +705,46 @@ export class ManageOrderComponent implements OnInit {
     this.submitStatusUpdate(payload);
   }
 
+  /**
+   * The consignment is created the moment this status is saved, and money changes hands with the courier,
+   * so it is worth one deliberate click — and a plain warning when the booking is being skipped.
+   */
+  private confirmCourierBooking(payload: {
+    onlineShopSaleOrderId: string;
+    orderStatusId: string;
+    remarks?: string;
+    skipCourierBooking?: boolean;
+  }): void {
+    const skipping = !!payload.skipCourierBooking;
+
+    this.confirmationDialog
+      .confirm({
+        title: skipping ? 'Continue without booking the courier?' : 'Book the courier now?',
+        message: skipping
+          ? 'No consignment will be created for this order.'
+          : 'This will book the parcel with the courier and create the tracking number.',
+        detail: skipping
+          ? 'Book the parcel with the courier yourself, then add the tracking number on the Shipment tab.'
+          : 'If the courier refuses the booking, the order stays where it is and nothing is sent to the customer.',
+        confirmText: 'Yes, continue',
+        cancelText: 'Cancel',
+        confirmButtonClass: 'btn-primary',
+        icon: 'warning',
+      })
+      .then((result) => {
+        if (result.confirmed) {
+          this.submitStatusUpdate(payload);
+        }
+      });
+  }
+
   private submitStatusUpdate(payload: {
     onlineShopSaleOrderId: string;
     orderStatusId: string;
     remarks?: string;
     refundAccountId?: string;
     refundAmount?: number;
+    skipCourierBooking?: boolean;
   }): void {
     this.isSavingStatus = true;
     this.restService.put(environment.urls.OnlineShopSaleOrder_UpdateStatus, payload).subscribe({
@@ -656,6 +752,7 @@ export class ManageOrderComponent implements OnInit {
         this.isSavingStatus = false;
         this.toastr.success('Order status updated.', 'Success', { progressBar: true });
         this.statusRemarks = '';
+        this.skipCourierBooking = false;
         this.loadOrder();
       },
       error: (err) => {
@@ -848,9 +945,11 @@ export class ManageOrderComponent implements OnInit {
         label: String(
           item.displayName ?? item.DisplayName ?? item.label ?? item.Label ?? '',
         ),
+        statusName: item.statusName ?? item.StatusName ?? undefined,
         isEventDriven: !!(item.isEventDriven ?? item.IsEventDriven),
         eventName: item.eventName ?? item.EventName ?? undefined,
         eventDisplayName: item.eventDisplayName ?? item.EventDisplayName ?? undefined,
+        booksCourierShipment: !!(item.booksCourierShipment ?? item.BooksCourierShipment),
       }))
       .filter((option) => option.value && option.label);
   }
@@ -859,6 +958,7 @@ export class ManageOrderComponent implements OnInit {
     this.statusOptions = [...options];
     this.statusOptionsHint = hint;
     this.selectedStatusId = null;
+    this.skipCourierBooking = false;
     this.statusOptionsLoading = false;
   }
 
@@ -971,11 +1071,25 @@ export class ManageOrderComponent implements OnInit {
       onlineShopSaleOrderId: raw.onlineShopSaleOrderId ?? raw.OnlineShopSaleOrderId,
       onlineOrderNumber: raw.onlineOrderNumber ?? raw.OnlineOrderNumber,
       orderDate: raw.orderDate ?? raw.OrderDate,
+      originalSubTotalAmount: raw.originalSubTotalAmount ?? raw.OriginalSubTotalAmount ?? 0,
+      productDiscountAmount: raw.productDiscountAmount ?? raw.ProductDiscountAmount ?? 0,
       subTotalAmount: raw.subTotalAmount ?? raw.SubTotalAmount,
+      orderDiscountAmount: raw.orderDiscountAmount ?? raw.OrderDiscountAmount ?? 0,
+      netMerchandiseAmount: raw.netMerchandiseAmount ?? raw.NetMerchandiseAmount ?? 0,
+      originalShippingAmount: raw.originalShippingAmount ?? raw.OriginalShippingAmount ?? 0,
+      shippingDiscountAmount: raw.shippingDiscountAmount ?? raw.ShippingDiscountAmount ?? 0,
       shippingCharges: raw.shippingCharges ?? raw.ShippingCharges,
       taxAmount: raw.taxAmount ?? raw.TaxAmount,
       discountAmount: raw.discountAmount ?? raw.DiscountAmount,
       totalAmount: raw.totalAmount ?? raw.TotalAmount,
+      totalWeightKg: raw.totalWeightKg ?? raw.TotalWeightKg ?? 0,
+      appliedDiscounts: (raw.appliedDiscounts ?? raw.AppliedDiscounts ?? []).map((d: any) => ({
+        scope: d.scope ?? d.Scope ?? '',
+        description: d.description ?? d.Description ?? '',
+        couponCode: d.couponCode ?? d.CouponCode ?? null,
+        discountAmount: Number(d.discountAmount ?? d.DiscountAmount ?? 0),
+        sortOrder: Number(d.sortOrder ?? d.SortOrder ?? 0),
+      })),
       paidAmount: raw.paidAmount ?? raw.PaidAmount,
       remainingAmount: raw.remainingAmount ?? raw.RemainingAmount,
       shippingMethodName: raw.shippingMethodName ?? raw.ShippingMethodName,

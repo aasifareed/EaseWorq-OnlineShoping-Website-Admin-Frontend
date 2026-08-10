@@ -1,97 +1,186 @@
-<div class="modal-body shipping-rule-form">
-  <h3 class="text-center fw-semibold mb-4">{{ title | translate }}</h3>
-  <form [formGroup]="form" (ngSubmit)="submit()">
-    <div class="form-group">
-      <label class="font-weight-bold">{{ 'Name' | translate }} <span class="text-danger">*</span></label>
-      <input
-        type="text"
-        class="form-control"
-        formControlName="name"
-        [placeholder]="'Enter Name' | translate"
-      />
-      <div *ngIf="submitted && f.name.errors" class="text-danger small mt-1">
-        {{ 'Name is required' | translate }}
-      </div>
-    </div>
+<div class="shipping-rule-modal">
+  <div class="modal-header">
+    <h4 class="modal-title">
+      <i class="fa fa-truck fontAwesome_Li_Class shipping-rule-modal__icon" aria-hidden="true"></i>
+      <span>{{ title | translate }}</span>
+    </h4>
+    <button type="button" class="close" aria-label="Close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
 
-    <div class="form-group">
-      <label class="font-weight-bold">{{ 'Rule Type' | translate }} <span class="text-danger">*</span></label>
-      <select class="form-control" formControlName="ruleType">
-        <option value="">{{ 'Select Rule Type' | translate }}</option>
-        <option *ngFor="let t of ruleTypes" [value]="t.value">{{ t.label }}</option>
-      </select>
-      <div *ngIf="submitted && f.ruleType.errors" class="text-danger small mt-1">
-        {{ 'Rule type is required' | translate }}
-      </div>
-    </div>
+  <div class="modal-body" [formGroup]="form">
+    <p class="shipping-rule-modal__hint">
+      {{ 'A rule takes money off the courier charge when an order falls inside its band. When several rules match, the one worth the most to the customer wins.' | translate }}
+    </p>
 
     <div class="row">
-      <div class="col-md-6 form-group">
-        <label class="font-weight-bold">{{ 'Minimum' | translate }} <span class="text-danger">*</span></label>
+      <div class="col-md-7 form-group">
+        <label class="shipping-rule-modal__label">
+          {{ 'Name' | translate }} <span class="text-danger">*</span>
+        </label>
         <input
-          type="number"
+          type="text"
           class="form-control"
-          formControlName="min"
-          [placeholder]="'Enter Minimum Value' | translate"
+          formControlName="name"
+          [placeholder]="'e.g. Free delivery over 5000' | translate"
         />
-      </div>
-      <div class="col-md-6 form-group">
-        <label class="font-weight-bold">{{ 'Maximum' | translate }} <span class="text-danger">*</span></label>
-        <input
-          type="number"
-          class="form-control"
-          formControlName="max"
-          [placeholder]="'Enter Maximum Value' | translate"
-        />
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label class="font-weight-bold">{{ 'Shipping Type' | translate }} <span class="text-danger">*</span></label>
-      <select class="form-control" formControlName="shippingType">
-        <option *ngFor="let t of shippingTypes" [value]="t.value">{{ t.label }}</option>
-      </select>
-    </div>
-
-    <div class="form-group" *ngIf="showAmount && f.shippingType.value === 'fixed'">
-      <label class="font-weight-bold">{{ 'Amount' | translate }} <span class="text-danger">*</span></label>
-      <div class="input-group">
-        <div class="input-group-prepend">
-          <span class="input-group-text">$</span>
+        <div *ngIf="submitted && f.name.errors" class="text-danger small mt-1">
+          {{ 'Name is required' | translate }}
         </div>
-        <input
-          type="number"
-          class="form-control"
-          formControlName="amount"
-          [placeholder]="'Enter Amount' | translate"
-        />
       </div>
-    </div>
-
-    <div class="form-group" *ngIf="showAmount && f.shippingType.value === 'percentage'">
-      <label class="font-weight-bold">{{ 'Percentage' | translate }} <span class="text-danger">*</span></label>
-      <div class="input-group">
-        <input
-          type="number"
-          class="form-control"
-          formControlName="amount"
-          min="0"
-          max="100"
-          [placeholder]="'Enter Percentage' | translate"
-        />
-        <div class="input-group-append">
-          <span class="input-group-text">%</span>
+      <div class="col-md-5 form-group">
+        <label class="shipping-rule-modal__label">
+          {{ 'Rule Type' | translate }} <span class="text-danger">*</span>
+        </label>
+        <select class="form-control" formControlName="ruleType">
+          <option value="">{{ 'Select Rule Type' | translate }}</option>
+          <option *ngFor="let t of ruleTypes" [value]="t.value">{{ t.label | translate }}</option>
+        </select>
+        <div *ngIf="submitted && f.ruleType.errors" class="text-danger small mt-1">
+          {{ 'Rule type is required' | translate }}
         </div>
       </div>
     </div>
 
-    <div class="text-right mt-4">
-      <button type="button" class="btn btn-outline-secondary mr-2" (click)="close()">
-        {{ 'Cancel' | translate }}
-      </button>
-      <button type="submit" class="btn btn-primary" [disabled]="isLoading">
-        {{ 'Submit' | translate }}
-      </button>
+    <div class="row shipping-rule-columns">
+      <div class="col-lg-6">
+        <section class="shipping-rule-block">
+          <h6 class="shipping-rule-block__title">{{ 'Applies when' | translate }}</h6>
+          <p class="shipping-rule-block__hint">
+            {{ (isWeightRule
+              ? 'Matched on the weight the courier bills the parcel at.'
+              : 'Matched on the order value after discounts.') | translate }}
+          </p>
+
+          <div class="row">
+            <div class="col-6 form-group mb-0">
+              <label class="shipping-rule-modal__label">
+                {{ 'Minimum' | translate }} <span class="text-danger">*</span>
+              </label>
+              <div class="input-group">
+                <input
+                  type="number"
+                  class="form-control"
+                  formControlName="min"
+                  min="0"
+                  [step]="limitStep"
+                  placeholder="0"
+                />
+                <div class="input-group-append">
+                  <span class="input-group-text">{{ limitUnitLabel }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 form-group mb-0">
+              <label class="shipping-rule-modal__label">
+                {{ 'Maximum' | translate }}
+                <span class="text-danger" *ngIf="!noUpperLimit">*</span>
+              </label>
+              <div class="input-group">
+                <input
+                  type="number"
+                  class="form-control"
+                  formControlName="max"
+                  min="0"
+                  [step]="limitStep"
+                  [placeholder]="(noUpperLimit ? 'None' : 'Enter Maximum Value') | translate"
+                />
+                <div class="input-group-append">
+                  <span class="input-group-text">{{ limitUnitLabel }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <label class="shipping-rule-check">
+            <input type="checkbox" formControlName="noUpperLimit" />
+            <span>{{ 'No upper limit' | translate }}</span>
+          </label>
+
+          <p class="shipping-rule-block__note" *ngIf="noUpperLimit">
+            {{ (isWeightRule ? 'Applies to every parcel of' : 'Applies to every order of') | translate }}
+            {{ f.min.value || 0 }} {{ limitUnitLabel }} {{ 'or more.' | translate }}
+          </p>
+
+          <div *ngIf="submitted && rangeInvalid" class="text-danger small mt-2">
+            {{ 'Maximum must be greater than or equal to minimum.' | translate }}
+          </div>
+        </section>
+      </div>
+
+      <div class="col-lg-6">
+        <section class="shipping-rule-block">
+          <h6 class="shipping-rule-block__title">{{ 'Then the customer gets' | translate }}</h6>
+          <p class="shipping-rule-block__hint">
+            {{ 'Taken off the courier charge, never more than the charge itself. Free waives it entirely.' | translate }}
+          </p>
+
+          <div class="row">
+            <div class="col-6 form-group mb-0">
+              <label class="shipping-rule-modal__label">
+                {{ 'Discount' | translate }} <span class="text-danger">*</span>
+              </label>
+              <select class="form-control" formControlName="shippingType">
+                <option *ngFor="let t of shippingTypes" [value]="t.value">{{ t.label | translate }}</option>
+              </select>
+            </div>
+
+            <div class="col-6 form-group mb-0" *ngIf="isFixedCharge">
+              <label class="shipping-rule-modal__label">
+                {{ 'Amount off' | translate }} <span class="text-danger">*</span>
+              </label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">{{ currencySymbol }}</span>
+                </div>
+                <input
+                  type="number"
+                  class="form-control"
+                  formControlName="amount"
+                  min="0"
+                  [placeholder]="'Enter Amount' | translate"
+                />
+              </div>
+            </div>
+
+            <div class="col-6 form-group mb-0" *ngIf="isPercentageCharge">
+              <label class="shipping-rule-modal__label">
+                {{ 'Percentage off' | translate }} <span class="text-danger">*</span>
+              </label>
+              <div class="input-group">
+                <input
+                  type="number"
+                  class="form-control"
+                  formControlName="amount"
+                  min="0"
+                  max="100"
+                  [placeholder]="'Enter Percentage' | translate"
+                />
+                <div class="input-group-append">
+                  <span class="input-group-text">%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <p class="shipping-rule-block__note" *ngIf="isFreeCharge">
+            {{ 'Delivery is free for every order this rule matches.' | translate }}
+          </p>
+        </section>
+      </div>
     </div>
-  </form>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" (click)="close()" [disabled]="isLoading">
+      <i class="i-Close-Window"></i>
+      {{ 'Cancel' | translate }}
+    </button>
+    <button type="button" class="btn btn-primary" [disabled]="isLoading" (click)="submit()">
+      <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      <i *ngIf="!isLoading" class="i-Yes"></i>
+      {{ (rule ? 'Update' : 'Save') | translate }}
+    </button>
+  </div>
 </div>

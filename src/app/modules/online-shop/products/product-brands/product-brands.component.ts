@@ -53,18 +53,13 @@ export class ProductBrandsComponent implements OnInit, ProductsTabGrid {
   onTabActivated(): void {
     this.page.pageNumber = 0;
     this.calculatePageSize(true);
-    setTimeout(() => this.calculatePageSize(false), 0);
-    setTimeout(() => this.calculatePageSize(false), 120);
+    setTimeout(() => this.calculatePageSize(true), 0);
+    setTimeout(() => this.calculatePageSize(true), 100);
   }
 
   @HostListener('window:resize')
   onResize(): void {
-    const previousSize = this.page.size;
-    this.calculatePageSize(false);
-    if (previousSize !== this.page.size) {
-      this.page.pageNumber = 0;
-      this.loadBrands();
-    }
+    this.calculatePageSize(true);
   }
 
   calculatePageSize(reload = true): void {
@@ -120,10 +115,6 @@ export class ProductBrandsComponent implements OnInit, ProductsTabGrid {
     this.loadBrands();
   }
 
-  formatYesNo(value: boolean): string {
-    return value ? this.translate.instant('Yes') : this.translate.instant('No');
-  }
-
   onImageError(event: Event): void {
     const img = event.target as HTMLImageElement;
     img.src = 'assets/images/logo.svg';
@@ -158,16 +149,19 @@ export class ProductBrandsComponent implements OnInit, ProductsTabGrid {
     return this.savingKeys.has(this.savingKey(row));
   }
 
-  togglePopular(row: AdminProductBrandListItem): void {
+  onPopularToggle(row: AdminProductBrandListItem, event: Event): void {
+    const input = event.target as HTMLInputElement;
     if (this.isSaving(row)) {
+      input.checked = row.isPopular;
       return;
     }
-    this.saveBrandField(row, { isPopular: !row.isPopular });
+    this.saveBrandField(row, { isPopular: input.checked }, input);
   }
 
   private saveBrandField(
     row: AdminProductBrandListItem,
     patch: { isPopular: boolean },
+    toggleInput?: HTMLInputElement,
   ): void {
     const key = this.savingKey(row);
     this.savingKeys.add(key);
@@ -185,6 +179,9 @@ export class ProductBrandsComponent implements OnInit, ProductsTabGrid {
         },
         error: (err) => {
           this.savingKeys.delete(key);
+          if (toggleInput) {
+            toggleInput.checked = row.isPopular;
+          }
           const message =
             err?.error?.error?.message || this.translate.instant('Failed to update brand.');
           this.toastr.error(message);

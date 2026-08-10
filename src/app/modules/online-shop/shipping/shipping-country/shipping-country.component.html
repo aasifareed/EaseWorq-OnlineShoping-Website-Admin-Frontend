@@ -4,8 +4,8 @@
       <h1 class="mb-0">{{ country.countryName }}</h1>
     </div>
     <div class="col-auto">
-      <button type="button" class="btn btn-outline-primary" (click)="openAddRuleModal()">
-        <i class="fa fa-plus fontAwesome_Li_Class" style="color: black;"></i>
+      <button type="button" class="btn btn-primary" (click)="openAddRuleModal()">
+        <i class="fa fa-plus fontAwesome_Li_Class"></i>
         {{ 'Add Shipping Rule' | translate }}
       </button>
     </div>
@@ -17,21 +17,22 @@
         <ng-template ngbPanelTitle>
           <span class="rule-title">{{ rule.name }}</span>
           <span class="panel-actions float-right">
-            <a
-              href="javascript:void(0)"
-              class="me-2"
-              title="{{ 'Edit' | translate }}"
+            <button
+              type="button"
+              class="btn btn-primary btn-sm mr-1"
               (click)="$event.stopPropagation(); openAddRuleModal(rule)"
             >
-              <i class="fa fa-pencil fontAwesome_Li_Class" style="color: black;"></i>
-            </a>
-            <a
-              href="javascript:void(0)"
-              title="{{ 'Delete' | translate }}"
+              <i class="fa fa-pencil fontAwesome_Li_Class"></i>
+              {{ 'Edit' | translate }}
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger btn-sm"
               (click)="$event.stopPropagation(); deleteRule(rule)"
             >
-              <i class="fa fa-trash fontAwesome_Li_Class" style="color: black;"></i>
-            </a>
+              <i class="fa fa-trash fontAwesome_Li_Class"></i>
+              {{ 'Delete' | translate }}
+            </button>
           </span>
         </ng-template>
         <ng-template ngbPanelContent>
@@ -42,20 +43,24 @@
                 {{ getRuleTypeLabel(rule.ruleType) }}
               </p>
               <p class="mb-2">
-                <strong>{{ 'Minimum' | translate }}:</strong> {{ rule.min }}
+                <strong>{{ 'Minimum' | translate }}:</strong> {{ rule.min }} {{ limitUnit(rule) }}
               </p>
               <p class="mb-0">
-                <strong>{{ 'Maximum' | translate }}:</strong> {{ rule.max }}
+                <strong>{{ 'Maximum' | translate }}:</strong>
+                <ng-container *ngIf="rule.max === null || rule.max === undefined; else hasMax">
+                  {{ 'No upper limit' | translate }}
+                </ng-container>
+                <ng-template #hasMax>{{ rule.max }} {{ limitUnit(rule) }}</ng-template>
               </p>
             </div>
             <div class="col-md-6">
               <p class="mb-2">
-                <strong>{{ 'Shipping Type' | translate }}:</strong>
+                <strong>{{ 'Delivery discount' | translate }}:</strong>
                 {{ getShippingTypeLabel(rule.shippingType) }}
               </p>
-              <p class="mb-0" *ngIf="rule.shippingType !== 'free'">
-                <strong>{{ 'Amount' | translate }}:</strong>
-                {{ rule.amount }}{{ rule.shippingType === 'percentage' ? '%' : '' }}
+              <p class="mb-0">
+                <strong>{{ 'Off courier charge' | translate }}:</strong>
+                {{ formatDiscount(rule) }}
               </p>
             </div>
           </div>
@@ -67,8 +72,8 @@
   <div *ngIf="!country.shippingRules?.length" class="no-data-added text-center py-5">
     <h4 class="text-muted">{{ 'No Data Found' | translate }}</h4>
     <p class="text-muted mb-3">{{ 'Add a shipping rule for this country.' | translate }}</p>
-    <button type="button" class="btn btn-outline-primary" (click)="openAddRuleModal()">
-      <i class="fa fa-plus fontAwesome_Li_Class" style="color: black;"></i>
+    <button type="button" class="btn btn-primary" (click)="openAddRuleModal()">
+      <i class="fa fa-plus fontAwesome_Li_Class"></i>
       {{ 'Add Shipping Rule' | translate }}
     </button>
   </div>

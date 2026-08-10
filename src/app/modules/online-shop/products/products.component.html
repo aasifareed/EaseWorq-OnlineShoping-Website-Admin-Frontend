@@ -1,6 +1,4 @@
-<div class="">
-  <div class="breadcrumb"></div>
-
+<div class="products-page">
   <div class="row">
     <div class="col-md-12">
       <div class="card">
@@ -15,8 +13,8 @@
                   (click)="changeTab(0)"
                 >
                   <span class="tabs__link__text" data-text="0">
-                    <i class="fa fa-cube fontAwesome_Li_Class" style="color: black;"></i>
-                    <span style="margin-left: 3%;">{{ 'Products' | translate }}</span>
+                    <img class="tabs__link-icon" src="assets/images/tabs/products.png" alt="" />
+                    <span>{{ 'Products' | translate }}</span>
                   </span>
                 </button>
               </li>
@@ -28,8 +26,8 @@
                   (click)="changeTab(1)"
                 >
                   <span class="tabs__link__text" data-text="1">
-                    <i class="fa fa-folder-open fontAwesome_Li_Class" style="color: black;"></i>
-                    <span style="margin-left: 3%;">{{ 'Product Categories' | translate }}</span>
+                    <img class="tabs__link-icon" src="assets/images/tabs/categories.png" alt="" />
+                    <span>{{ 'Product Categories' | translate }}</span>
                   </span>
                 </button>
               </li>
@@ -41,8 +39,8 @@
                   (click)="changeTab(2)"
                 >
                   <span class="tabs__link__text" data-text="2">
-                    <i class="fa fa-bookmark fontAwesome_Li_Class" style="color: black;"></i>
-                    <span style="margin-left: 3%;">{{ 'Brands' | translate }}</span>
+                    <img class="tabs__link-icon" src="assets/images/tabs/brands.png" alt="" />
+                    <span>{{ 'Brands' | translate }}</span>
                   </span>
                 </button>
               </li>
@@ -52,27 +50,25 @@
               <li>
                 <div class="tabs__content active">
                   <ng-container *ngIf="activeTab === 0">
-                  <div
-                    class="separator-breadcrumb border-top"
-                    style="margin-bottom: 0.5rem !important;"
-                  ></div>
+                  <div class="separator-breadcrumb border-top products-tab-separator"></div>
 
                   <div [dir]="globalDataService.getdir()" class="gridAboveHeightInSaleOrderHistory">
                     <div *ngIf="loadError" class="alert alert-warning mb-2" role="alert">
                       {{ loadError }}
                     </div>
 
-                    <div class="row">
-                      <div class="col-xl-3 col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <div class="form-group">
-                          <input
-                            style="margin-top: 7%;"
-                            [formControl]="searchControl"
-                            class="form-control form-control-rounded"
-                            type="text"
-                            [placeholder]="'Search products' | translate"
-                          />
-                        </div>
+                    <div class="os-filter-toolbar">
+                      <div class="os-filter-toolbar__field os-filter-toolbar__field--search">
+                        <label class="os-filter-toolbar__label" for="productSearch">
+                          {{ 'Search' | translate }}
+                        </label>
+                        <input
+                          id="productSearch"
+                          [formControl]="searchControl"
+                          class="form-control form-control-rounded"
+                          type="text"
+                          [placeholder]="'Search products' | translate"
+                        />
                       </div>
                     </div>
 
@@ -159,6 +155,26 @@
                             </ngx-datatable-column>
 
                             <ngx-datatable-column
+                              [name]="'Slug' | translate"
+                              prop="slug"
+                              [minWidth]="160"
+                            >
+                              <ng-template ngx-datatable-cell-template let-row="row">
+                                <div class="products-datatable__cell-actions">
+                                  <input
+                                    type="text"
+                                    class="form-control form-control-sm products-datatable__edit-input"
+                                    [value]="row.slug"
+                                    [placeholder]="slugPlaceholder(row)"
+                                    [disabled]="isSaving(row, 'slug')"
+                                    (blur)="onSlugBlur(row, $event)"
+                                    (keydown.enter)="$any($event.target).blur()"
+                                  />
+                                </div>
+                              </ng-template>
+                            </ngx-datatable-column>
+
+                            <ngx-datatable-column
                               [name]="'Available Qty' | translate"
                               prop="availableQuantity"
                               [minWidth]="110"
@@ -197,6 +213,57 @@
                             </ngx-datatable-column>
 
                             <ngx-datatable-column
+                              [name]="'Weight (g)' | translate"
+                              prop="productWeightKg"
+                              [minWidth]="110"
+                              cellClass="products-datatable__center-col"
+                              headerClass="products-datatable__center-col"
+                            >
+                              <ng-template ngx-datatable-cell-template let-row="row">
+                                <div class="products-datatable__cell-center products-datatable__cell-actions">
+                                  <input
+                                    type="number"
+                                    class="form-control form-control-sm products-datatable__edit-input"
+                                    [value]="weightGrams(row)"
+                                    [title]="weightGrams(row) > 0
+                                      ? ''
+                                      : ('No weight set — delivery is quoted at the courier minimum.' | translate)"
+                                    min="0"
+                                    step="1"
+                                    placeholder="0"
+                                    [disabled]="isSaving(row, 'weight')"
+                                    (blur)="onWeightBlur(row, $event)"
+                                    (keydown.enter)="$any($event.target).blur()"
+                                  />
+                                </div>
+                              </ng-template>
+                            </ngx-datatable-column>
+
+                            <ngx-datatable-column
+                              [name]="'Discount (%)' | translate"
+                              prop="discountPercent"
+                              [minWidth]="110"
+                              cellClass="products-datatable__center-col"
+                              headerClass="products-datatable__center-col"
+                            >
+                              <ng-template ngx-datatable-cell-template let-row="row">
+                                <div class="products-datatable__cell-center products-datatable__cell-actions">
+                                  <input
+                                    type="number"
+                                    class="form-control form-control-sm products-datatable__edit-input"
+                                    [value]="row.discountPercent"
+                                    min="0"
+                                    max="100"
+                                    step="0.01"
+                                    [disabled]="isSaving(row, 'discount')"
+                                    (blur)="onDiscountBlur(row, $event)"
+                                    (keydown.enter)="$any($event.target).blur()"
+                                  />
+                                </div>
+                              </ng-template>
+                            </ngx-datatable-column>
+
+                            <ngx-datatable-column
                               [name]="'Show Online' | translate"
                               [sortable]="false"
                               [minWidth]="110"
@@ -205,21 +272,19 @@
                             >
                               <ng-template ngx-datatable-cell-template let-row="row">
                                 <div class="products-datatable__cell-center products-datatable__cell-actions">
-                                  <button
-                                    type="button"
-                                    class="btn btn-sm products-datatable__toggle"
-                                    [class.btn-success]="row.showProductOnline"
-                                    [class.btn-outline-secondary]="!row.showProductOnline"
-                                    [disabled]="isSaving(row, 'showOnline')"
-                                    (click)="toggleShowOnline(row)"
+                                  <label
+                                    class="status-switch mb-0"
+                                    [class.status-switch--disabled]="isSaving(row, 'showOnline')"
+                                    [title]="row.showProductOnline ? ('Enabled' | translate) : ('Disabled' | translate)"
                                   >
-                                    <span
-                                      *ngIf="isSaving(row, 'showOnline')"
-                                      class="spinner-border spinner-border-sm"
-                                      role="status"
-                                    ></span>
-                                    <span *ngIf="!isSaving(row, 'showOnline')">{{ formatYesNo(row.showProductOnline) }}</span>
-                                  </button>
+                                    <input
+                                      type="checkbox"
+                                      [checked]="row.showProductOnline"
+                                      [disabled]="isSaving(row, 'showOnline')"
+                                      (change)="onShowOnlineToggle(row, $event)"
+                                    />
+                                    <span class="status-switch__slider"></span>
+                                  </label>
                                 </div>
                               </ng-template>
                             </ngx-datatable-column>
@@ -233,21 +298,19 @@
                             >
                               <ng-template ngx-datatable-cell-template let-row="row">
                                 <div class="products-datatable__cell-center products-datatable__cell-actions">
-                                  <button
-                                    type="button"
-                                    class="btn btn-sm products-datatable__toggle"
-                                    [class.btn-success]="row.isAvailable"
-                                    [class.btn-outline-secondary]="!row.isAvailable"
-                                    [disabled]="isSaving(row, 'available')"
-                                    (click)="toggleAvailable(row)"
+                                  <label
+                                    class="status-switch mb-0"
+                                    [class.status-switch--disabled]="isSaving(row, 'available')"
+                                    [title]="row.isAvailable ? ('Enabled' | translate) : ('Disabled' | translate)"
                                   >
-                                    <span
-                                      *ngIf="isSaving(row, 'available')"
-                                      class="spinner-border spinner-border-sm"
-                                      role="status"
-                                    ></span>
-                                    <span *ngIf="!isSaving(row, 'available')">{{ formatYesNo(row.isAvailable) }}</span>
-                                  </button>
+                                    <input
+                                      type="checkbox"
+                                      [checked]="row.isAvailable"
+                                      [disabled]="isSaving(row, 'available')"
+                                      (change)="onAvailableToggle(row, $event)"
+                                    />
+                                    <span class="status-switch__slider"></span>
+                                  </label>
                                 </div>
                               </ng-template>
                             </ngx-datatable-column>

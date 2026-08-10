@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
@@ -12,6 +12,7 @@ import { RestService } from 'src/app/shared/services/rest.service';
 import { environment } from 'src/environments/environment';
 import { CreateEditStatusEventComponent } from '../create-edit-status-event/create-edit-status-event.component';
 import { StatusEventDto } from '../models/statusEventDto';
+import { calculateStatusGridLayout } from '../utils/status-grid-layout.util';
 
 @Component({
   selector: 'app-status-event-list',
@@ -27,6 +28,7 @@ export class StatusEventListComponent implements OnInit {
   loadingIndicator = false;
   isLoading = false;
   filter: Record<string, unknown> = {};
+  private hasLoadedOnce = false;
 
   page = new Page();
 
@@ -36,13 +38,16 @@ export class StatusEventListComponent implements OnInit {
     private modalService: NgbModal,
     private translate: TranslateService,
     public globalDataService: GlobalDataService,
+    private el: ElementRef,
   ) {
     this.page.pageNumber = 0;
   }
 
   ngOnInit(): void {
-    this.calculatePageSize();
-    this.getData();
+    this.applyGridLayout(true);
+    setTimeout(() => this.applyGridLayout(true), 0);
+    setTimeout(() => this.applyGridLayout(true), 100);
+
     this.searchControl.valueChanges
       .pipe(debounceTime(200))
       .subscribe((value) => {
@@ -54,17 +59,25 @@ export class StatusEventListComponent implements OnInit {
 
   @HostListener('window:resize')
   onResize(): void {
-    this.calculatePageSize();
+    this.applyGridLayout(true);
   }
 
-  calculatePageSize(): void {
-    const rowHeight = 40;
-    const headerFooterHeight = 120;
-    const availableHeight = window.innerHeight - headerFooterHeight;
-    this.page.size = Math.max(Math.floor(availableHeight / rowHeight), 5);
+  private applyGridLayout(reload: boolean): void {
+    const layout = calculateStatusGridLayout(this.el.nativeElement);
+    const sizeChanged = this.page.size !== layout.pageSize;
+    this.page.size = layout.pageSize;
+    this.gridHeight = layout.gridHeight;
+
+    if (reload && (sizeChanged || !this.hasLoadedOnce)) {
+      if (sizeChanged) {
+        this.page.pageNumber = 0;
+      }
+      this.getData();
+    }
   }
 
   getData(): void {
+    this.hasLoadedOnce = true;
     this.isLoading = true;
     this.loadingIndicator = true;
     let url = environment.urls.StatusEvent_GetAll;

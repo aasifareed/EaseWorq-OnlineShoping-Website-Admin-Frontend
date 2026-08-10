@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { ProductsService } from '../products/services/products.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { SharedDirectivesModule } from 'src/app/shared/directives/shared-directives.module';
 import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
@@ -17,11 +19,13 @@ import { CouponFormModalComponent } from './coupon-form-modal/coupon-form-modal.
     ReactiveFormsModule,
     NgbModule,
     NgxDatatableModule,
+    NgMultiSelectDropDownModule,
     SharedModule,
     SharedDirectivesModule,
     SharedComponentsModule,
     CouponsRoutingModule,
   ],
   declarations: [CouponsComponent, CouponFormModalComponent],
+  providers: [ProductsService],
 })
 export class CouponsModule {}

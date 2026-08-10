@@ -10,8 +10,9 @@ import { Page } from 'src/app/shared/models/page';
 import { GlobalDataService } from 'src/app/shared/services/globalData.service';
 import { RestService } from 'src/app/shared/services/rest.service';
 import { environment } from 'src/environments/environment';
+import { CouponTypeEnum } from 'src/app/shared/enum/online-shop-discount.enum';
 import { CouponFormModalComponent } from './coupon-form-modal/coupon-form-modal.component';
-import { CouponListItem } from './models/coupon.models';
+import { COUPON_TYPES, CouponListItem } from './models/coupon.models';
 
 @Component({
   selector: 'app-coupons',
@@ -162,23 +163,14 @@ export class CouponsComponent implements OnInit {
   }
 
   getTypeLabel(type: string): string {
-    if (type === 'percentage') {
-      return 'Percentage';
-    }
-    if (type === 'fixed') {
-      return 'Fixed';
-    }
-    if (type === 'free_shipping') {
-      return 'Free Shipping';
-    }
-    return type;
+    return COUPON_TYPES.find((t) => t.value === type)?.label ?? type;
   }
 
   formatAmount(row: CouponListItem): string {
-    if (row.type === 'free_shipping') {
+    if (row.type === CouponTypeEnum.FreeShipping) {
       return '—';
     }
-    if (row.type === 'percentage') {
+    if (row.type === CouponTypeEnum.Percentage) {
       return `${row.amount}%`;
     }
     return row.amount != null ? String(row.amount) : '—';

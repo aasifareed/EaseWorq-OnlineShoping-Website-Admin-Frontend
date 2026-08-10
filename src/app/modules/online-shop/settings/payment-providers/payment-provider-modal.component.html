@@ -7,7 +7,7 @@
 
 <div class="modal-body" *ngIf="loading">
   <div class="text-center py-4">
-    <i class="fa fa-spinner fa-spin fa-2x text-muted"></i>
+    <i class="fa fa-spinner fa-spin fa-2x text-muted fontAwesome_Li_Class"></i>
   </div>
 </div>
 
@@ -125,9 +125,12 @@
 
   <div class="modal-footer">
     <button type="button" class="btn btn-outline-secondary" (click)="activeModal.dismiss()">
+      <i class="i-Close-Window"></i>
       {{ 'Cancel' | translate }}
     </button>
     <button type="submit" class="btn btn-primary" [disabled]="saving || duplicateBlocked">
+      <span *ngIf="saving" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      <i *ngIf="!saving" class="i-Yes"></i>
       {{ saving ? ('Saving...' | translate) : ('Save' | translate) }}
     </button>
   </div>

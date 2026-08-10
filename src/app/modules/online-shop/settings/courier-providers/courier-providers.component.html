@@ -6,13 +6,13 @@
         {{ 'Configure courier API credentials for shipping rate lookup and booking.' | translate }}
       </p>
     </div>
-    <button type="button" class="btn btn-outline-primary btn-sm" (click)="openCreate()">
-      <i class="fa fa-plus mr-1"></i>{{ 'Add Provider' | translate }}
+    <button type="button" class="btn btn-primary btn-sm" (click)="openCreate()">
+      <i class="fa fa-plus fontAwesome_Li_Class mr-1"></i>{{ 'Add Provider' | translate }}
     </button>
   </div>
 
   <div *ngIf="loading" class="text-center py-4">
-    <i class="fa fa-spinner fa-spin fa-2x text-muted"></i>
+    <i class="fa fa-spinner fa-spin fa-2x text-muted fontAwesome_Li_Class"></i>
   </div>
 
   <div class="table-responsive" *ngIf="!loading">
@@ -63,13 +63,16 @@
           <td>{{ item.lastRefreshAt ? (item.lastRefreshAt | date: 'short') : '—' }}</td>
           <td class="provider-table__error">{{ item.lastError || '—' }}</td>
           <td class="text-right provider-table__actions">
-            <button type="button" class="btn btn-link btn-sm p-0 mr-2" (click)="openEdit(item)">
+            <button type="button" class="btn btn-primary btn-sm mr-1" (click)="openEdit(item)">
+              <i class="fa fa-pencil fontAwesome_Li_Class"></i>
               {{ 'Edit' | translate }}
             </button>
-            <button type="button" class="btn btn-link btn-sm p-0 mr-2" (click)="toggleActive(item)">
+            <button type="button" class="btn btn-primary btn-sm mr-1" (click)="toggleActive(item)">
+              <i class="fa fontAwesome_Li_Class" [ngClass]="item.isActive ? 'fa-ban' : 'fa-check'"></i>
               {{ item.isActive ? ('Disable' | translate) : ('Enable' | translate) }}
             </button>
-            <button type="button" class="btn btn-link btn-sm text-danger p-0" (click)="delete(item)">
+            <button type="button" class="btn btn-danger btn-sm" (click)="delete(item)">
+              <i class="fa fa-trash fontAwesome_Li_Class"></i>
               {{ 'Delete' | translate }}
             </button>
           </td>

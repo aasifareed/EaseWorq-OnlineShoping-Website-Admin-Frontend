@@ -11,8 +11,16 @@ import { AdminProductListItem } from './models/product.models';
 import { ProductImagesModalComponent } from './product-images-modal/product-images-modal.component';
 import { ProductsService } from './services/products.service';
 import { calculateProductsGridLayout } from './utils/products-grid-layout.util';
+import {
+  MAX_PRODUCT_WEIGHT_GRAMS,
+  gramsToKilograms,
+  kilogramsToGrams,
+} from '../shared/weight.util';
 import { ProductCategoriesComponent } from './product-categories/product-categories.component';
 import { ProductBrandsComponent } from './product-brands/product-brands.component';
+
+/** The inline-editable cells, each saved on its own so one slow save cannot block the others. */
+type EditableProductField = 'price' | 'discount' | 'slug' | 'weight' | 'showOnline' | 'available';
 
 @Component({
   selector: 'app-products',
@@ -56,22 +64,28 @@ export class ProductsComponent implements OnInit {
 
   private activateTab(index: number): void {
     if (index === 0) {
-      this.calculatePageSize();
+      this.onProductsTabActivated();
       return;
     }
     if (index === 1) {
       this.categoriesTab?.onTabActivated();
-      setTimeout(() => this.categoriesTab?.onTabActivated(), 50);
       return;
     }
     if (index === 2) {
       this.brandsTab?.onTabActivated();
-      setTimeout(() => this.brandsTab?.onTabActivated(), 50);
     }
   }
 
+  /** Re-measure after the tab DOM is painted so height matches Categories/Brands. */
+  private onProductsTabActivated(): void {
+    this.page.pageNumber = 0;
+    this.calculatePageSize(true);
+    setTimeout(() => this.calculatePageSize(true), 0);
+    setTimeout(() => this.calculatePageSize(true), 100);
+  }
+
   ngOnInit(): void {
-    this.calculatePageSize();
+    this.onProductsTabActivated();
 
     this.searchControl.valueChanges.pipe(debounceTime(300)).subscribe(() => {
       this.page.pageNumber = 0;
@@ -84,23 +98,25 @@ export class ProductsComponent implements OnInit {
     if (this.activeTab !== 0) {
       return;
     }
-    const previousSize = this.page.size;
-    this.calculatePageSize();
-    if (previousSize !== this.page.size) {
-      this.page.pageNumber = 0;
-      this.loadProducts();
-    }
+    this.calculatePageSize(true);
   }
 
-  calculatePageSize(): void {
+  calculatePageSize(reload = true): void {
     if (this.activeTab !== 0) {
       return;
     }
 
     const layout = calculateProductsGridLayout(this.el.nativeElement);
+    const sizeChanged = this.page.size !== layout.pageSize;
     this.page.size = layout.pageSize;
     this.gridHeight = layout.gridHeight;
-    this.loadProducts();
+
+    if (reload && (sizeChanged || this.data.length === 0)) {
+      if (sizeChanged) {
+        this.page.pageNumber = 0;
+      }
+      this.loadProducts();
+    }
   }
 
   loadProducts(): void {
@@ -147,11 +163,7 @@ export class ProductsComponent implements OnInit {
     img.src = 'assets/images/logo.svg';
   }
 
-  formatYesNo(value: boolean): string {
-    return value ? this.translate.instant('Yes') : this.translate.instant('No');
-  }
-
-  isSaving(row: AdminProductListItem, field: 'price' | 'showOnline' | 'available'): boolean {
+  isSaving(row: AdminProductListItem, field: EditableProductField): boolean {
     return this.savingKeys.has(this.savingKey(row, field));
   }
 
@@ -169,24 +181,105 @@ export class ProductsComponent implements OnInit {
     this.saveProductField(row, 'price', { actualSellPrice: value });
   }
 
-  toggleShowOnline(row: AdminProductListItem): void {
-    if (this.isSaving(row, 'showOnline')) {
+  onDiscountBlur(row: AdminProductListItem, event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const value = Number(input?.value);
+    if (Number.isNaN(value) || value < 0 || value > 100) {
+      input.value = String(row.discountPercent ?? 0);
+      this.toastr.warning(this.translate.instant('Enter a valid discount between 0 and 100.'));
       return;
     }
-    this.saveProductField(row, 'showOnline', { showProductOnline: !row.showProductOnline });
+    const rounded = Math.round(value * 100) / 100;
+    if (rounded === Number(row.discountPercent ?? 0)) {
+      return;
+    }
+    this.saveProductField(row, 'discount', { discountPercent: rounded });
   }
 
-  toggleAvailable(row: AdminProductListItem): void {
-    if (this.isSaving(row, 'available')) {
+  /** The unit weight as a human reads it: grams. 0 means no weight has been recorded yet. */
+  weightGrams(row: AdminProductListItem): number {
+    return kilogramsToGrams(row.productWeightKg);
+  }
+
+  /**
+   * Unit weight, typed in grams because the catalogue is accessories weighing tens of grams. Couriers
+   * quote on weight and an order's weight is summed from this, so a product left at 0 is invisible to
+   * the shipping engine and its parcel gets quoted at the courier's minimum instead.
+   */
+  onWeightBlur(row: AdminProductListItem, event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const grams = Number(input?.value);
+    const currentGrams = this.weightGrams(row);
+    if (Number.isNaN(grams) || grams < 0 || grams > MAX_PRODUCT_WEIGHT_GRAMS) {
+      input.value = String(currentGrams);
+      this.toastr.warning(this.translate.instant('Enter a valid weight in grams.'));
       return;
     }
-    this.saveProductField(row, 'available', { isAvailable: !row.isAvailable });
+    const wholeGrams = Math.round(grams);
+    if (wholeGrams === currentGrams) {
+      return;
+    }
+    this.saveProductField(row, 'weight', { productWeightKg: gramsToKilograms(wholeGrams) });
+  }
+
+  slugPlaceholder(row: AdminProductListItem): string {
+    return this.suggestSlug(row.productName) || 'product-slug';
+  }
+
+  onSlugBlur(row: AdminProductListItem, event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const next = String(input?.value ?? '').trim();
+    const current = String(row.slug ?? '').trim();
+    if (next === current) {
+      return;
+    }
+    // Empty blur with no existing slug → auto-generate from product name.
+    const payloadSlug = next || this.suggestSlug(row.productName) || '';
+    this.saveProductField(row, 'slug', { slug: payloadSlug });
+  }
+
+  private suggestSlug(name: string): string {
+    return String(name || '')
+      .trim()
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/-{2,}/g, '-')
+      .replace(/^-|-$/g, '')
+      .slice(0, 180);
+  }
+
+  onShowOnlineToggle(row: AdminProductListItem, event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (this.isSaving(row, 'showOnline')) {
+      input.checked = row.showProductOnline;
+      return;
+    }
+    this.saveProductField(row, 'showOnline', { showProductOnline: input.checked }, input);
+  }
+
+  onAvailableToggle(row: AdminProductListItem, event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (this.isSaving(row, 'available')) {
+      input.checked = row.isAvailable;
+      return;
+    }
+    this.saveProductField(row, 'available', { isAvailable: input.checked }, input);
   }
 
   private saveProductField(
     row: AdminProductListItem,
-    field: 'price' | 'showOnline' | 'available',
-    patch: { actualSellPrice?: number; isAvailable?: boolean; showProductOnline?: boolean },
+    field: EditableProductField,
+    patch: {
+      actualSellPrice?: number;
+      discountPercent?: number;
+      slug?: string;
+      productWeightKg?: number;
+      isAvailable?: boolean;
+      showProductOnline?: boolean;
+    },
+    toggleInput?: HTMLInputElement,
   ): void {
     const key = this.savingKey(row, field);
     this.savingKeys.add(key);
@@ -205,6 +298,13 @@ export class ProductsComponent implements OnInit {
         },
         error: (err) => {
           this.savingKeys.delete(key);
+          if (toggleInput) {
+            if (field === 'showOnline') {
+              toggleInput.checked = row.showProductOnline;
+            } else if (field === 'available') {
+              toggleInput.checked = row.isAvailable;
+            }
+          }
           const message = err?.error?.error?.message || this.translate.instant('Failed to update product.');
           this.toastr.error(message);
         },

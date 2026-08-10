@@ -6,6 +6,7 @@ import { appServiceUrls } from 'src/environments/environment.urls';
 import {
   AdminProductCategoriesQuery,
   AdminProductCategoryListItem,
+  OnlineShopCategoryImage,
   UpdateAdminProductCategoryPayload,
 } from '../models/product-category.models';
 
@@ -67,6 +68,48 @@ export class ProductCategoriesService {
     );
   }
 
+  getImage(posProductGroupId: string): Observable<OnlineShopCategoryImage | null> {
+    const url = `${appServiceUrls.OnlineShopCategoryImage_Get}?posProductGroupId=${encodeURIComponent(posProductGroupId)}`;
+    return this.restService.get(url).pipe(map((response) => this.mapImage(response)));
+  }
+
+  uploadImage(posProductGroupId: string, file: File): Observable<OnlineShopCategoryImage | null> {
+    const form = new FormData();
+    form.append('PosProductGroupId', posProductGroupId);
+    form.append('Files', file);
+    return this.restService
+      .postFormData(appServiceUrls.OnlineShopCategoryImage_Upload, form)
+      .pipe(map((response) => this.mapImage(response)));
+  }
+
+  removeImage(posProductGroupId: string): Observable<OnlineShopCategoryImage | null> {
+    return this.restService
+      .post(appServiceUrls.OnlineShopCategoryImage_Remove, { PosProductGroupId: posProductGroupId })
+      .pipe(map((response) => this.mapImage(response)));
+  }
+
+  private mapImage(response: unknown): OnlineShopCategoryImage | null {
+    const result = (response as { result?: unknown })?.result ?? response;
+    if (!result || typeof result !== 'object') {
+      return null;
+    }
+    const row = result as Record<string, unknown>;
+    const url = String(row.url ?? row.Url ?? '');
+    if (!url) {
+      return null;
+    }
+    return {
+      attachmentId:
+        row.attachmentId != null
+          ? String(row.attachmentId)
+          : row.AttachmentId != null
+            ? String(row.AttachmentId)
+            : undefined,
+      url,
+      canRemove: Boolean(row.canRemove ?? row.CanRemove ?? true),
+    };
+  }
+
   private mapRow(row: Record<string, unknown>): AdminProductCategoryListItem {
     return {
       id: String(row.id ?? row.Id ?? ''),
@@ -74,6 +117,7 @@ export class ProductCategoriesService {
       displayName: (row.displayName ?? row.DisplayName ?? null) as string | null,
       showCategoryOnline: Boolean(row.showCategoryOnline ?? row.ShowCategoryOnline ?? false),
       isPopular: Boolean(row.isPopular ?? row.IsPopular ?? false),
+      pictureUrl: String(row.pictureUrl ?? row.PictureUrl ?? ''),
     };
   }
 }

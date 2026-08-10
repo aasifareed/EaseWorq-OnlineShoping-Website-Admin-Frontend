@@ -26,8 +26,9 @@ export class SelectCountryModalComponent implements OnInit {
     textField: 'countryName',
     selectAllText: 'Select All',
     unSelectAllText: 'UnSelect All',
-    itemsShowLimit: 5,
+    itemsShowLimit: 3,
     allowSearchFilter: true,
+    maxHeight: 200,
   };
 
   constructor(

@@ -47,7 +47,7 @@
 
         <!-- Language switcher visible but disabled (English only) -->
         <div id="topBarLanguages">
-            <select class="form-control langBtn mr-5"
+            <select class="form-control langBtn"
                 [(ngModel)]="source"
                 [disabled]="languageSwitcherDisabled"
                 (change)="languagesForDropDownValueChanged()">
@@ -71,12 +71,12 @@
         <!-- </div> -->
         <!-- <app-language-changer></app-language-changer> -->
         <!-- WhatsApp: icon with real-time notification badge -->
-        <div ngbDropdown [placement]="'bottom-right'" class="d-inline-block">
-            <div class="badge-top-container" ngbDropdownToggle>
+        <div ngbDropdown [placement]="'bottom-right'" class="d-inline-block header-whatsapp">
+            <div class="header-whatsapp-toggle" ngbDropdownToggle role="button" title="WhatsApp" aria-label="WhatsApp">
                 <span class="badge badge-danger whatsapp-badge" *ngIf="signalRService.whatsAppNotifications?.length > 0">
                     {{ signalRService.whatsAppNotifications.length > 99 ? '99+' : signalRService.whatsAppNotifications.length }}
                 </span>
-                <i class="fa fa-whatsapp text-success header-icon fontAwesome_Li_Class" style="margin-right: 8px; font-size: 18px;" aria-hidden="true" title="WhatsApp"></i>
+                <i class="fab fa-whatsapp fontAwesome_Li_Class" aria-hidden="true"></i>
             </div>
             <div ngbDropdownMenu class="whatsapp-dropdown">
                 <div class="dropdown-header" *ngIf="signalRService.whatsAppNotifications?.length > 0">{{ 'WhatsApp Messages' | translate }}</div>
@@ -113,33 +113,43 @@
             </div>
         </div>
 
-        <div *ngIf="globalDataService.getdir()=='ltr'" ngbDropdown [placement]="'bottom-right'" class="user col align-self-end">
-            <img src="{{authService.getcurrentUserProfilePicture()}}" id="userDropdown" ngbDropdownToggle alt="">
-            <label class="userName" ngbDropdownToggle>{{fullName}}</label>
+        <div *ngIf="globalDataService.getdir()=='ltr'" ngbDropdown [placement]="'bottom-right'" class="user">
+            <div class="user-toggle" id="userDropdown" ngbDropdownToggle>
+                <img src="{{authService.getcurrentUserProfilePicture()}}" alt="">
+                <span class="user-copy">
+                    <label class="userName">{{fullName}}</label>
+                    <small *ngIf="userRole">{{userRole}}</small>
+                </span>
+                <span class="user-chevron-wrap">
+                    <i class="fa fa-angle-down user-chevron fontAwesome_Li_Class" aria-hidden="true"></i>
+                </span>
+            </div>
             <div ngbDropdownMenu aria-labelledby="userDropdown" class="header-account-dropdown">
                 <div class="dropdown-header">
                     <i class="i-Lock-User mr-1"></i> {{fullName}} <sup class="role">{{userRole}}</sup>
                 </div>
-                <!-- <button class="dropdown-item">Account settings</button>
-                <button class="dropdown-item">Billing history</button> -->
                 <button class="dropdown-item" (click)="signout()" translate><i class="i-Lock-2"></i> SignOut</button>
             </div>
         </div>
 
 
-        <div *ngIf="globalDataService.getdir()=='rtl'" ngbDropdown [placement]="'bottom-right'" class="user col align-self-end" id="userProfileDropdown">
-            
-            <label class="userName" ngbDropdownToggle>{{fullName}}</label>
-            <div ngbDropdownMenu aria-labelledby="userDropdown" class="header-account-dropdown">
+        <div *ngIf="globalDataService.getdir()=='rtl'" ngbDropdown [placement]="'bottom-right'" class="user" id="userProfileDropdown">
+            <div class="user-toggle" id="userDropdownRtl" ngbDropdownToggle>
+                <span class="user-copy">
+                    <label class="userName">{{fullName}}</label>
+                    <small *ngIf="userRole">{{userRole}}</small>
+                </span>
+                <span class="user-chevron-wrap">
+                    <i class="fa fa-angle-down user-chevron fontAwesome_Li_Class" aria-hidden="true"></i>
+                </span>
+                <img src="{{authService.getcurrentUserProfilePicture()}}" alt="">
+            </div>
+            <div ngbDropdownMenu aria-labelledby="userDropdownRtl" class="header-account-dropdown">
                 <div class="dropdown-header">
                     <i class="i-Lock-User mr-1"></i> {{fullName}} <sup class="role">{{userRole}}</sup>
                 </div>
-                <!-- <button class="dropdown-item">Account settings</button>
-                <button class="dropdown-item">Billing history</button> -->
                 <button class="dropdown-item" (click)="signout()" translate><i class="i-Lock-2"></i> SignOut</button>
             </div>
-
-            <img src="{{authService.getcurrentUserProfilePicture()}}" id="userDropdown" ngbDropdownToggle alt="">
         </div>
 
     </div>

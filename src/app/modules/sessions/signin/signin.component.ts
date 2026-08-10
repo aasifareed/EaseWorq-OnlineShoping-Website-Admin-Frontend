@@ -45,6 +45,7 @@ export class SigninComponent implements OnInit, OnDestroy, AfterViewInit {
     showPassword: boolean;
     tenantValidating = false;
     tenantValidated = false;
+    private failedLogoUrl: string | null = null;
     private impersonationContext: { targetUserId: number; targetTenantId?: number | null } | null = null;
     private lastValidatedTenantName = '';
     private readonly destroy$ = new Subject<void>();
@@ -227,6 +228,18 @@ export class SigninComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     get f() { return this.signinForm.controls; }
+
+    get logoUrl(): string | null {
+        const url = String(this.globalDataService.getLogoPicture() ?? '').trim();
+        if (!url || url === this.failedLogoUrl) {
+            return null;
+        }
+        return url;
+    }
+
+    onLogoError(): void {
+        this.failedLogoUrl = this.logoUrl;
+    }
 
     get canSignIn(): boolean {
         return !this.tenantValidating

@@ -1,8 +1,4 @@
-::ng-deep .couponFormModal .modal-dialog {
-  max-width: 720px !important;
-  margin: 2rem auto 1rem auto !important;
-}
-
+/* Modal chrome/width: global .couponFormModal styles in styles.css */
 
 .coupon-title-cell {
   font-weight: 500;

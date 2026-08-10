@@ -9,31 +9,33 @@
   </div>
 
   <div *ngIf="loading" class="checkout-courier-loading">
-    <i class="fa fa-spinner fa-spin fa-2x"></i>
+    <i class="fa fontAwesome_Li_Class fa-spinner fa-spin fa-2x"></i>
     <span>{{ 'Loading couriers...' | translate }}</span>
   </div>
 
   <div *ngIf="!loading && loadError" class="alert alert-warning checkout-courier-alert mb-3">
-    <i class="fa fa-exclamation-triangle mr-2"></i>
+    <i class="fa fontAwesome_Li_Class fa-exclamation-triangle mr-2"></i>
     {{ loadError }}
-    <button type="button" class="btn btn-outline-primary btn-sm ml-2" (click)="load()">
-      <i class="fa fa-refresh mr-1"></i>{{ 'Retry' | translate }}
+    <button type="button" class="checkout-courier-btn checkout-courier-btn--ghost ml-2" (click)="load()">
+      <i class="fa fontAwesome_Li_Class fa-arrows-rotate" aria-hidden="true"></i>
+      <span>{{ 'Retry' | translate }}</span>
     </button>
   </div>
 
   <div *ngIf="!loading && !loadError && !couriers.length" class="checkout-courier-empty">
-    <i class="fa fa-truck checkout-courier-empty__icon"></i>
+    <i class="fa fontAwesome_Li_Class fa-truck checkout-courier-empty__icon"></i>
     <p class="mb-2">
       {{ 'No couriers were returned from Flaship. Configure an active Flaship provider above, then refresh this list.' | translate }}
     </p>
-    <button type="button" class="btn btn-outline-primary btn-sm" (click)="load()">
-      <i class="fa fa-refresh mr-1"></i>{{ 'Refresh' | translate }}
+    <button type="button" class="checkout-courier-btn checkout-courier-btn--ghost" (click)="load()">
+      <i class="fa fontAwesome_Li_Class fa-arrows-rotate" aria-hidden="true"></i>
+      <span>{{ 'Refresh' | translate }}</span>
     </button>
   </div>
 
   <ng-container *ngIf="!loading && couriers.length">
     <div class="checkout-courier-hint" *ngIf="selectedCount === 0">
-      <i class="fa fa-info-circle mr-2"></i>
+      <i class="fa fontAwesome_Li_Class fa-info-circle mr-2"></i>
       {{ 'No couriers selected — all available Flaship couriers will appear at checkout.' | translate }}
     </div>
 
@@ -61,7 +63,7 @@
             <span class="checkout-courier-item__code">{{ courier.courierCode }}</span>
           </span>
           <span class="checkout-courier-item__tick" *ngIf="courier.selected">
-            <i class="fa fa-check"></i>
+            <i class="fa fontAwesome_Li_Class fa-check"></i>
           </span>
         </label>
       </div>
@@ -69,23 +71,26 @@
 
     <div class="checkout-courier-footer">
       <div class="checkout-courier-footer__actions">
-        <button type="button" class="btn btn-outline-primary btn-sm" (click)="selectAll()">
-          <i class="fa fa-check-square-o mr-1"></i>{{ 'Select all' | translate }}
+        <button type="button" class="checkout-courier-btn checkout-courier-btn--ghost" (click)="selectAll()">
+          <i class="fa fontAwesome_Li_Class fa-square-check" aria-hidden="true"></i>
+          <span>{{ 'Select all' | translate }}</span>
         </button>
-        <button type="button" class="btn btn-outline-primary btn-sm" (click)="clearAll()">
-          <i class="fa fa-square-o mr-1"></i>{{ 'Clear all' | translate }}
+        <button type="button" class="checkout-courier-btn checkout-courier-btn--ghost" (click)="clearAll()">
+          <i class="fa fontAwesome_Li_Class fa-eraser" aria-hidden="true"></i>
+          <span>{{ 'Clear all' | translate }}</span>
         </button>
-        <button type="button" class="btn btn-outline-primary btn-sm" (click)="load()">
-          <i class="fa fa-refresh mr-1"></i>{{ 'Refresh list' | translate }}
+        <button type="button" class="checkout-courier-btn checkout-courier-btn--ghost" (click)="load()">
+          <i class="fa fontAwesome_Li_Class fa-arrows-rotate" aria-hidden="true"></i>
+          <span>{{ 'Refresh list' | translate }}</span>
         </button>
         <button
           type="button"
-          class="btn btn-primary btn-sm checkout-courier-footer__save"
+          class="checkout-courier-btn checkout-courier-btn--primary checkout-courier-footer__save"
           (click)="save()"
           [disabled]="saving"
         >
-          <i class="fa fa-save mr-1"></i>
-          {{ saving ? ('Saving...' | translate) : ('Save Courier Visibility' | translate) }}
+          <i class="fa fontAwesome_Li_Class" [ngClass]="saving ? 'fa-spinner fa-spin' : 'fa-floppy-disk'" aria-hidden="true"></i>
+          <span>{{ saving ? ('Saving...' | translate) : ('Save Courier Visibility' | translate) }}</span>
         </button>
       </div>
     </div>

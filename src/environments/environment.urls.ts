@@ -134,13 +134,20 @@ export const appServiceUrls = {
   // POS product categories — admin grid (OnlineShopProductCategoryAppService)
   OnlineShopProductCategory_GetAllForAdmin: '/OnlineShopProductCategory/GetAllForAdmin',
   OnlineShopProductCategory_UpdateForAdmin: '/OnlineShopProductCategory/UpdateForAdmin',
+  OnlineShopCategoryImage_Get: '/OnlineShopCategoryImageUpload/GetImage',
+  OnlineShopCategoryImage_Upload: '/OnlineShopCategoryImageUpload/UploadImage',
+  OnlineShopCategoryImage_Remove: '/OnlineShopCategoryImageUpload/RemoveImage',
 
   // POS brands — admin grid (OnlineShopBrandAppService)
   OnlineShopBrand_GetAllForAdmin: '/OnlineShopBrand/GetAllForAdmin',
   OnlineShopBrand_UpdateForAdmin: '/OnlineShopBrand/UpdateForAdmin',
 
-  // Brand image (OnlineShopBrandImageUploadController) — single image per brand
+  // Online shop brand images (OnlineShopBrandImageUploadController)
   OnlineShopBrandImage_Get: '/OnlineShopBrandImageUpload/GetImage',
   OnlineShopBrandImage_Upload: '/OnlineShopBrandImageUpload/UploadImage',
   OnlineShopBrandImage_Remove: '/OnlineShopBrandImageUpload/RemoveImage',
+
+  // Store working area polygon (OnlineShopStoreWorkingLocationAppService)
+  WorkingArea_CreateLocation: '/OnlineShopStoreWorkingLocation/CreateLocation',
+  WorkingArea_GetCurrentStoreLocations: '/OnlineShopStoreWorkingLocation/GetCurrentStoreLocations',
 };

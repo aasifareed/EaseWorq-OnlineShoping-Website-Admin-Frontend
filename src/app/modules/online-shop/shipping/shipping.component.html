@@ -1,7 +1,5 @@
 <div [dir]="globalDataService.getdir()">
-  <div class="breadcrumb"></div>
-
-  <div class="row" style="margin-top: -3%; margin-right: -35px; margin-left: -35px;">
+  <div class="row">
     <div class="col-md-12">
       <div class="card">
         <div class="card-body" style="padding: 0%;">
@@ -10,8 +8,8 @@
               <li>
                 <button type="button" class="tabs__link active">
                   <span class="tabs__link__text" data-text="0">
-                    <i class="fa fa-truck fontAwesome_Li_Class" style="color: black;"></i>
-                    <span style="margin-left: 3%;">{{ 'Shipping' | translate }}</span>
+                    <img class="tabs__link-icon" src="assets/images/tabs/shipping.png" alt="" />
+                    <span>{{ 'Shipping' | translate }}</span>
                   </span>
                 </button>
               </li>
@@ -19,16 +17,16 @@
 
             <ul class="tabs__contents">
               <li>
-                <div class="tabs__content active">
+                <div class="tabs__content active px-2 pb-2">
                   <div
                     class="separator-breadcrumb border-top"
                     style="margin-bottom: 0.5rem !important;"
                   ></div>
 
                   <div class="shipping-toolbar">
-                    <button type="button" class="btn btn-primary" (click)="openSelectCountryModal()">
-                      <i class="i-Add"></i>
-                      {{ 'Select Country' | translate }}
+                    <button type="button" class="btn btn-primary shipping-action-btn" (click)="openSelectCountryModal()">
+                      <i class="fa fa-plus fontAwesome_Li_Class"></i>
+                      <span>{{ 'Select Country' | translate }}</span>
                     </button>
                   </div>
 
@@ -40,13 +38,15 @@
                       </div>
 
                       <div class="shipping-sidebar__search">
-                        <i class="fa fa-search fontAwesome_Li_Class search-icon" style="color: black;"></i>
-                        <input
-                          type="text"
-                          class="form-control form-control-rounded"
-                          [formControl]="searchControl"
-                          [placeholder]="'Search countries' | translate"
-                        />
+                        <div class="shipping-search-field">
+                          <i class="fa fa-search fontAwesome_Li_Class shipping-search-field__icon" aria-hidden="true"></i>
+                          <input
+                            type="text"
+                            class="form-control shipping-search-field__input"
+                            [formControl]="searchControl"
+                            [placeholder]="'Search countries' | translate"
+                          />
+                        </div>
                       </div>
 
                       <div class="shipping-sidebar__list" *ngIf="!countriesLoading && filteredCountries.length">
@@ -58,7 +58,7 @@
                           (click)="selectCountry(country)"
                         >
                           <span class="country-item__avatar">
-                            <i class="fa fa-globe fontAwesome_Li_Class" style="color: black;"></i>
+                            <i class="fa fa-globe fontAwesome_Li_Class"></i>
                           </span>
                           <span class="country-item__body">
                             <span class="country-item__name">{{ country.countryName }}</span>
@@ -74,17 +74,18 @@
                               title="{{ 'Delete' | translate }}"
                               (click)="deleteCountry(country, $event)"
                             >
-                              <i class="fa fa-trash fontAwesome_Li_Class" style="color: black;"></i>
+                              <i class="fa fa-trash fontAwesome_Li_Class"></i>
                             </button>
                           </span>
                         </button>
                       </div>
 
                       <div class="shipping-sidebar__empty" *ngIf="!countriesLoading && !filteredCountries.length">
-                        <i class="fa fa-map-o fontAwesome_Li_Class" style="color: black;"></i>
+                        <i class="fa fa-map-o fontAwesome_Li_Class"></i>
                         <p>{{ 'No countries found' | translate }}</p>
-                        <button type="button" class="btn btn-sm btn-primary" (click)="openSelectCountryModal()">
-                          {{ 'Select Country' | translate }}
+                        <button type="button" class="btn btn-sm btn-primary shipping-action-btn" (click)="openSelectCountryModal()">
+                          <i class="fa fa-plus fontAwesome_Li_Class"></i>
+                          <span>{{ 'Select Country' | translate }}</span>
                         </button>
                       </div>
 
@@ -102,12 +103,12 @@
                           </div>
                           <button
                             type="button"
-                            class="btn btn-primary"
+                            class="btn btn-primary shipping-action-btn"
                             (click)="openAddRuleModal()"
                             [disabled]="rulesLoading"
                           >
-                            <i class="i-Add"></i>
-                            {{ 'Add Shipping Rule' | translate }}
+                            <i class="fa fa-plus fontAwesome_Li_Class"></i>
+                            <span>{{ 'Add Shipping Rule' | translate }}</span>
                           </button>
                         </div>
 
@@ -116,9 +117,9 @@
                         </div>
 
                         <div class="rules-panel" *ngIf="!rulesLoading && selectedCountry.shippingRules?.length">
-                          <div class="row" style="margin-right: -16px; margin-left: -16px;">
+                          <div class="row">
                             <div class="col-md-12">
-                              <div class="card mb-3">
+                              <div class="card mb-0 border-0 shadow-none">
                                 <div class="table-responsive">
                                   <table class="table table-hover shipping-rules-table mb-0">
                                     <thead>
@@ -137,7 +138,7 @@
                                         <td>
                                           <span class="badge badge-light">{{ getRuleTypeLabel(rule.ruleType) }}</span>
                                         </td>
-                                        <td class="text-muted">{{ rule.min }} – {{ rule.max }}</td>
+                                        <td class="text-muted">{{ formatRange(rule) }}</td>
                                         <td>
                                           <span class="badge badge-outline">{{
                                             getShippingTypeLabel(rule.shippingType)
@@ -147,19 +148,19 @@
                                         <td class="text-right rule-actions">
                                           <button
                                             type="button"
-                                            class="btn btn-icon"
-                                            title="{{ 'Edit' | translate }}"
+                                            class="btn btn-primary btn-sm mr-1"
                                             (click)="openAddRuleModal(rule)"
                                           >
-                                            <i class="fa fa-pencil fontAwesome_Li_Class" style="color: black;"></i>
+                                            <i class="fa fa-pencil fontAwesome_Li_Class"></i>
+                                            {{ 'Edit' | translate }}
                                           </button>
                                           <button
                                             type="button"
-                                            class="btn btn-icon"
-                                            title="{{ 'Delete' | translate }}"
+                                            class="btn btn-danger btn-sm"
                                             (click)="deleteRule(rule)"
                                           >
-                                            <i class="fa fa-trash fontAwesome_Li_Class" style="color: black;"></i>
+                                            <i class="fa fa-trash fontAwesome_Li_Class"></i>
+                                            {{ 'Delete' | translate }}
                                           </button>
                                         </td>
                                       </tr>
@@ -179,9 +180,9 @@
                             <i class="fa fa-sliders fontAwesome_Li_Class empty-state__icon" style="color: black;"></i>
                             <h3>{{ 'No shipping rules yet' | translate }}</h3>
                             <p>{{ 'Create rules based on order price or weight for this country.' | translate }}</p>
-                            <button type="button" class="btn btn-primary" (click)="openAddRuleModal()">
-                              <i class="i-Add"></i>
-                              {{ 'Add Shipping Rule' | translate }}
+                            <button type="button" class="btn btn-primary shipping-action-btn" (click)="openAddRuleModal()">
+                              <i class="fa fa-plus fontAwesome_Li_Class"></i>
+                              <span>{{ 'Add Shipping Rule' | translate }}</span>
                             </button>
                           </div>
                         </div>
