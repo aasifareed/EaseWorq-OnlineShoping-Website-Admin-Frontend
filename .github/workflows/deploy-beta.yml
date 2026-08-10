@@ -15,31 +15,25 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      # Angular 10 — Node 14 is the supported LTS range for this CLI version
-      - name: Setup Node 14
+      # Match Fareed-Mart-Frontend-NewTheme (Angular 10 builds reliably on Node 16)
+      - name: Setup Node 16
         uses: actions/setup-node@v4
         with:
-          node-version: "14"
-          cache: npm
-          cache-dependency-path: package-lock.json
+          node-version: "16"
 
       - name: Install Dependencies
         run: npm install --legacy-peer-deps
 
-      - name: Verify ng2-material-dropdown patch
+      - name: Verify and Apply Patches
         shell: pwsh
         run: |
+          node scripts/fix-ng2-material-dropdown.js
+
           $js = "node_modules\ng2-material-dropdown\fesm2015\ng2-material-dropdown.js"
-          $mjs = "node_modules\ng2-material-dropdown\fesm2015\ng2-material-dropdown.mjs"
           if (-not (Test-Path $js)) {
-            Write-Host "Patch missing $js — re-applying patch-package"
-            npx patch-package
+            throw "ng2-material-dropdown fix failed: $js not found"
           }
-          if (-not (Test-Path $js)) {
-            throw "ng2-material-dropdown patch failed: $js not found"
-          }
-          Copy-Item $js $mjs -Force
-          Write-Host "ng2-material-dropdown entries OK"
+          Write-Host "ng2-material-dropdown ready"
 
       - name: Build Angular (production)
         shell: pwsh
@@ -102,8 +96,7 @@ jobs:
               }
 
               Write-Host "Uploading: $relativePath"
-              # OpenWrite does not truncate existing remote files. Remove first so
-              # shorter uploads cannot leave leftover bytes from previous files.
+              # OpenWrite does not truncate existing remote files — remove first
               Invoke-SSHCommand -SessionId $SshSessionId -Command "rm -f `"$remoteFilePath`"" | Out-Null
               $fileContent = [System.IO.File]::ReadAllBytes($item.FullName)
               $stream = $SftpSession.Session.OpenWrite($remoteFilePath)
