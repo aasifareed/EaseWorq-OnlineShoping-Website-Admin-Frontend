@@ -35,10 +35,10 @@ jobs:
           }
           Write-Host "ng2-material-dropdown ready"
 
-      - name: Build Angular (production)
+      - name: Build Angular (beta)
         shell: pwsh
         run: |
-          npm run build:prod
+          npm run build:beta
           if (-not (Test-Path "dist\index.html")) {
             throw "Build output missing: dist/index.html"
           }
