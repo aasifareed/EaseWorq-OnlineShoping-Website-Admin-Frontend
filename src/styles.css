@@ -774,6 +774,47 @@ ng-select>div>div.multiple>div.option span.deselect-option {
   max-width: 80% !important;
 }
 
+/* Keep Bootstrap size classes usable — the 80% rule above stretches confirm/alert popups. */
+.modal-dialog.modal-sm {
+  max-width: 440px !important;
+  width: min(440px, calc(100vw - 2rem));
+}
+
+.modal-dialog.modal-md {
+  max-width: 560px !important;
+  width: min(560px, calc(100vw - 2rem));
+}
+
+.confirmation-dialog-window .modal-dialog {
+  max-width: min(520px, calc(100vw - 2rem)) !important;
+  width: min(520px, calc(100vw - 2rem));
+  margin: 1.75rem auto;
+}
+
+.confirmation-dialog-window .modal-dialog.modal-md {
+  max-width: min(560px, calc(100vw - 2rem)) !important;
+  width: min(560px, calc(100vw - 2rem));
+}
+
+.confirmation-dialog-window .modal-content {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.confirmation-dialog-window .modal-header,
+.confirmation-dialog-window .modal-footer {
+  padding: 0.85rem 1.1rem;
+}
+
+.confirmation-dialog-window .modal-body {
+  padding: 1rem 1.1rem;
+}
+
+.confirmation-dialog-window .modal-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
 .m-t-24 {
   margin-top: 24px;
 }

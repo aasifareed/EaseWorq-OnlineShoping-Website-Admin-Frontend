@@ -19,6 +19,7 @@ export class ConfirmationDialogService {
       keyboard: true,
       size: options.showAccountSelect || options.showRefundAmount ? 'md' : (options.size ?? 'sm'),
       windowClass: 'confirmation-dialog-window',
+      backdropClass: 'confirmation-dialog-backdrop',
     });
 
     Object.assign(modalRef.componentInstance, {
