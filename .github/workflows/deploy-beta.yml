@@ -96,11 +96,15 @@ jobs:
               }
 
               Write-Host "Uploading: $relativePath"
-              # OpenWrite does not truncate existing remote files — remove first
-              Invoke-SSHCommand -SessionId $SshSessionId -Command "rm -f `"$remoteFilePath`"" | Out-Null
+              # Same pattern as EaseWorqWebsite / POS-Admin-Frontend.
+              # OpenWrite does not truncate; SetLength cuts leftover bytes from a
+              # shorter upload (this previously left old Facebook script after </html>).
               $fileContent = [System.IO.File]::ReadAllBytes($item.FullName)
               $stream = $SftpSession.Session.OpenWrite($remoteFilePath)
               $stream.Write($fileContent, 0, $fileContent.Length)
+              if ($stream.CanSeek) {
+                $stream.SetLength($fileContent.Length)
+              }
               $stream.Flush()
               $stream.Close()
               $stream.Dispose()
