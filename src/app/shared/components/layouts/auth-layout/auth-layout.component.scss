@@ -79,22 +79,3 @@
         opacity: 0; /* Completely faded out */
     }
 }
-
-
-.videobcg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    min-width: 100%;
-    min-height: 100%;
-    z-index: -2;
-    width: 100% !important;
-    height: auto !important;
-    object-fit: cover;
-}
-
-@media (max-width:768px) {
-    .videobcg {
-        object-fit: cover;
-    }
-}
