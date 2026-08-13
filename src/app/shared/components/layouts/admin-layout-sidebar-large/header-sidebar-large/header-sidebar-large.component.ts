@@ -122,62 +122,10 @@ export class HeaderSidebarLargeComponent implements OnInit, OnDestroy {
     //         this.linkEnabled = false;
     // });
 
-    //this.signalRService.startConnection();
-    this.signalRService
-      .addDataListener("OnlineOrders")
-      .subscribe((mockElement) => {
-        // const mockElement = {
-        //   title: 'New User Added',
-        //   statusText: 'Active',
-        //   description: 'A new user has been added to the system.',
-        //   creationTime: new Date(),
-        //   link: '/users/123',
-        //   isRead: false,
-        //   id: 1,
-        //   sourceId: 101,
-        //   sourceType: 'User',
-        //   taskGroupId: 5
-        // };
-
-        this.signalRService.signalrNotifications.unshift({
-          icon: "fontAwesome_Li_Class fa fa-3x fa-shopping-basket",
-          title: mockElement.title,
-          badge: mockElement.statusText,
-          text: mockElement.description,
-          time: mockElement.creationTime,
-          status: mockElement.statusText,
-          link: mockElement.link,
-          isRead: mockElement.isRead,
-          id: mockElement.id,
-          sourceId: "101",
-          sourceType: mockElement.sourceType,
-          taskGroupId: "5",
-        });
-      });
-
-    let url = environment.urls.Notification_GET_ALL;
-    this.restService.getWithoutLoader(url).subscribe((res) => {
-      this.signalRService.signalrNotifications = [];
-      res.result.items.forEach((element) => {
-        if (!element.status) {
-          element.statusText = "Completed";
-        }
-        this.signalRService.signalrNotifications.push({
-          icon: "fontAwesome_Li_Class fa fa-3x fa-shopping-basket",
-          title: element.title,
-          badge: element.statusText,
-          text: element.description,
-          time: element.creationTime,
-          status: element.statusText,
-          link: element.link,
-          isRead: element.isRead,
-          id: element.id,
-          sourceId: element.sourceId,
-          sourceType: element.sourceType,
-          taskGroupId: element.taskGroupId,
-        });
-      });
-    });
+    if (!this.signalRService.signalRConnectionEnabled) {
+      this.signalRService.startConnection();
+    }
+    this.signalRService.reloadOnlineShopNotifications();
     this.href = this.router.url;
     console.log(this.router.url);
 
@@ -278,6 +226,12 @@ export class HeaderSidebarLargeComponent implements OnInit, OnDestroy {
 
       if (notification.link) {
         this.router.navigateByUrl(notification.link);
+      } else if (notification.sourceType === NotificationSourceTypeEnum.OnlineShopSaleOrder) {
+        this.router.navigateByUrl(
+          notification.sourceId
+            ? `/online-shop/orders/manage/${notification.sourceId}`
+            : "/online-shop/order-board"
+        );
       } else if (
         notification.sourceType == NotificationSourceTypeEnum.OfficerTask
       ) {

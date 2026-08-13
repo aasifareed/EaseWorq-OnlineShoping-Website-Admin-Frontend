@@ -176,7 +176,7 @@ export class SigninComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.tenantValidated = false;
                 this.lastValidatedTenantName = '';
                 this.toastr.error(
-                    'Tenant not found. Please check the tenant name and try again.',
+                    'Company not found. Please check the company name and try again.',
                     'Error',
                     { timeOut: 5000, progressBar: true },
                 );
@@ -185,7 +185,7 @@ export class SigninComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.tenantValidated = false;
                 this.lastValidatedTenantName = '';
                 this.toastr.error(
-                    'Unable to validate tenant. Please try again.',
+                    'Unable to validate company. Please try again.',
                     'Error',
                     { timeOut: 5000, progressBar: true },
                 );
@@ -254,7 +254,7 @@ export class SigninComponent implements OnInit, OnDestroy, AfterViewInit {
     async signin() {
         if (!this.tenantValidated) {
             this.toastr.warning(
-                'Please enter a valid tenant name before signing in.',
+                'Please enter a valid company name before signing in.',
                 'Error',
                 { timeOut: 5000, progressBar: true },
             );

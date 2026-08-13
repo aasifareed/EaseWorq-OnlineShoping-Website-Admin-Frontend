@@ -1,11 +1,12 @@
 import { Injectable, NgZone } from '@angular/core';
 import * as signalR from "@microsoft/signalr";
-import { title } from 'process';
 import { environment } from 'src/environments/environment';
 import { NotificationsDto } from '../models/NotificationDto';
 import { AuthService } from './auth.service';
 import { RestService } from './rest.service';
 import { Observable, Subject } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
+import { NotificationSourceTypeEnum } from '../enum/notificationSourceType';
 
 export interface WhatsAppNotificationPayload {
   phoneNumber: string;
@@ -33,10 +34,14 @@ export class SignalRService {
   private syncingTablesNameSubject = new Subject<any>();
   public syncingTablesName$ = this.syncingTablesNameSubject.asObservable();
 
+  private onlineShopNewOrderSubject = new Subject<NotificationsDto>();
+  public onlineShopNewOrder$ = this.onlineShopNewOrderSubject.asObservable();
+
   constructor(
     private authService: AuthService,
     private restService: RestService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private toastr: ToastrService
   ) { }
 
     public startConnection = () => {
@@ -48,6 +53,7 @@ export class SignalRService {
         s === signalR.HubConnectionState.Connected ||
         s === signalR.HubConnectionState.Reconnecting
       ) {
+        this.reloadOnlineShopNotifications();
         return;
       }
       void existing.stop().catch(() => undefined);
@@ -79,40 +85,13 @@ export class SignalRService {
       this.ngZone.run(() => this.syncingTablesNameSubject.next(data));
     });
 
-    this.hubConnection.on('ReceiveMessage', (data) =>
-        {         
-          
-          let url = environment.urls.Notification_GET_ALL;
-                   this.restService.getWithoutLoader(url).subscribe(res=>{
-                    this.signalrNotifications=[];
-                    res.result.items.forEach(element => {
-                      
-                      if(!element.status)
-                      {
-                       element.statusText='Completed';
-                      }
-                      
-                      this.signalrNotifications.push({
-                        icon: 'i-Add-User',
-                        title:element.title,
-                        badge: element.statusText,
-                        text:element.description,
-                        time:new Date(element.creationTime),
-                        status:element.statusText,
-                        link: element.link,
-                        isRead:element.isRead,
-                        id:element.id,
-                        sourceId:element.sourceId,
-                        sourceType:element.sourceType,
-                        taskGroupId:element.taskGroupId               
-                      });
+    this.hubConnection.on('ReceiveMessage', () => {
+      this.ngZone.run(() => this.reloadOnlineShopNotifications());
+    });
 
-                    });
-
-                   });
-
-            console.log('From signalR- message received ' + data);
-        });
+    this.hubConnection.on('OnlineOrders', (payload: any, message?: string) => {
+      this.ngZone.run(() => this.handleOnlineShopNewOrder(payload, message));
+    });
 
     this.hubConnection.on('WhatsAppNewMessage', (data: WhatsAppNotificationPayload) => {
       if (data && data.phoneNumber) {
@@ -127,6 +106,7 @@ export class SignalRService {
       .start()
       .then(() => {
         this.signalRConnectionEnabled = true;
+        this.reloadOnlineShopNotifications();
         console.log('signalR Connection  started');
       })
       .catch(err => {
@@ -145,6 +125,76 @@ export class SignalRService {
     }
     this.signalrNotifications = [];
     this.whatsAppNotifications = [];
+  }
+
+  reloadOnlineShopNotifications(): void {
+    const url = environment.urls.Notification_GET_ALL;
+    this.restService.getWithoutLoader(url).subscribe((res) => {
+      const items = res?.result?.items || [];
+      this.signalrNotifications = items
+        .filter((element) => this.isOnlineShopOrderAlert(element) && !element.isRead)
+        .map((element) => this.mapNotification(element));
+    });
+  }
+
+  handleOnlineShopNewOrder(payload: any, message?: string): void {
+    if (!payload) {
+      this.reloadOnlineShopNotifications();
+      return;
+    }
+
+    const mapped = this.mapNotification(payload);
+    if (!this.isOnlineShopOrderAlert(mapped)) {
+      return;
+    }
+
+    if (mapped.id && this.signalrNotifications.some((item) => item.id === mapped.id)) {
+      return;
+    }
+
+    this.signalrNotifications.unshift(mapped);
+    this.onlineShopNewOrderSubject.next(mapped);
+    this.toastr.info(mapped.text || message || 'A customer placed a new order.', mapped.title || 'New Online Order', {
+      progressBar: true,
+    });
+  }
+
+  isOnlineShopOrderAlert(item: { sourceType?: string; SourceType?: string } | null | undefined): boolean {
+    const sourceType = (item?.sourceType || item?.SourceType || '').toString();
+    return sourceType === NotificationSourceTypeEnum.OnlineShopSaleOrder;
+  }
+
+  mapNotification(element: any): NotificationsDto {
+    const badge = element?.statusText || element?.StatusText || element?.status || element?.Status || 'New Order';
+    const creationTime = element?.creationTime || element?.CreationTime;
+    return {
+      icon: 'fontAwesome_Li_Class fa fa-shopping-basket',
+      title: element?.title || element?.Title || 'New Online Order',
+      badge,
+      text: element?.description || element?.Description || '',
+      time: creationTime ? new Date(creationTime) : new Date(),
+      status: this.mapStatusClass(badge),
+      link: element?.link || element?.Link || '/online-shop/order-board',
+      isRead: !!(element?.isRead ?? element?.IsRead),
+      id: element?.id ?? element?.Id,
+      sourceId: element?.sourceId || element?.SourceId,
+      sourceType: element?.sourceType || element?.SourceType,
+      taskGroupId: element?.taskGroupId ?? element?.TaskGroupId,
+    };
+  }
+
+  private mapStatusClass(statusText: string): string {
+    const status = (statusText || '').toLowerCase();
+    if (status.includes('cancel') || status.includes('fail')) {
+      return 'danger';
+    }
+    if (status.includes('deliver') || status.includes('complete') || status.includes('paid')) {
+      return 'success';
+    }
+    if (status.includes('ship') || status.includes('confirm')) {
+      return 'info';
+    }
+    return 'warning';
   }
 
   clearWhatsAppNotifications(phoneNumber?: string): void {

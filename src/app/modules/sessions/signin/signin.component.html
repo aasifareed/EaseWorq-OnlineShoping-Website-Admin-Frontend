@@ -16,7 +16,7 @@
             <form [formGroup]="signinForm" (ngSubmit)="signin()" class="loginForm signin-form">
 
                 <div class="form-group">
-                    <label for="tenancyName">Tenant Name</label>
+                    <label for="tenancyName">Company Name</label>
                     <input id="tenancyName"
                         class="form-control loginTransparent"
                         formControlName="tenancyName"
@@ -25,10 +25,10 @@
                         (blur)="onTenantNameBlur()"
                         [class.is-invalid]="(f.tenancyName.touched || f.tenancyName.dirty) && f.tenancyName.errors"
                     />
-                    <small class="form-text text-muted" *ngIf="tenantValidating">Validating tenant...</small>
-                    <small class="form-text text-success" *ngIf="tenantValidated && !tenantValidating">Tenant validated</small>
+                    <small class="form-text text-muted" *ngIf="tenantValidating">Validating company...</small>
+                    <small class="form-text text-success" *ngIf="tenantValidated && !tenantValidating">Company validated</small>
                     <div class="invalid-feedback" *ngIf="f.tenancyName.errors?.required">
-                        Tenant name is required
+                        Company name is required
                     </div>
                 </div>
 

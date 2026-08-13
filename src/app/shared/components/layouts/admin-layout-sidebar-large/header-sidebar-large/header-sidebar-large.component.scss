@@ -540,7 +540,8 @@ $toggle-textColor: #fff;
     border-radius: 10px;
 }
 
-:host .header-whatsapp {
+:host .header-whatsapp,
+:host .header-alerts {
     flex: 0 0 auto;
 }
 
@@ -585,7 +586,8 @@ $toggle-textColor: #fff;
     }
 }
 
-:host .header-whatsapp-toggle .whatsapp-badge {
+:host .header-whatsapp-toggle .whatsapp-badge,
+:host .header-alerts-toggle .header-alerts-badge {
     position: absolute;
     top: -5px;
     right: -5px;
@@ -600,6 +602,40 @@ $toggle-textColor: #fff;
     line-height: 14px;
 }
 
+:host .header-alerts-toggle {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.78);
+    border: 1px solid rgba(50, 66, 133, 0.16);
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(24, 36, 82, 0.06);
+    transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+
+    &::after {
+        display: none !important;
+    }
+
+    .header-alerts-icon {
+        color: #324285 !important;
+        font-size: 18px;
+        line-height: 1;
+    }
+
+    &:hover {
+        background: #eef2ff;
+        border-color: rgba(50, 66, 133, 0.35);
+        box-shadow: 0 6px 14px rgba(50, 66, 133, 0.16);
+        transform: translateY(-1px);
+    }
+}
+
 :host ::ng-deep .header-account-dropdown {
     margin-top: 9px !important;
     overflow: hidden;
@@ -608,13 +644,237 @@ $toggle-textColor: #fff;
     box-shadow: 0 18px 44px rgba(15, 23, 42, 0.22);
 }
 
-:host ::ng-deep .whatsapp-dropdown,
-:host ::ng-deep .notification-dropdown {
+:host ::ng-deep .whatsapp-dropdown {
     margin-top: 9px !important;
     overflow: hidden;
     border: 1px solid rgba(62, 79, 159, 0.16);
     border-radius: 12px;
     box-shadow: 0 18px 44px rgba(15, 23, 42, 0.22);
+}
+
+:host ::ng-deep .header-alerts-dropdown.dropdown-menu,
+:host ::ng-deep .header-alerts-dropdown {
+    width: 380px;
+    max-width: min(380px, calc(100vw - 24px));
+    padding: 0 !important;
+    margin-top: 9px !important;
+    overflow: hidden;
+    white-space: normal !important;
+    border: 1px solid rgba(62, 79, 159, 0.16) !important;
+    border-radius: 14px !important;
+    background: #ffffff !important;
+    box-shadow: 0 18px 44px rgba(15, 23, 42, 0.22) !important;
+}
+
+:host ::ng-deep .header-alerts-dropdown__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem 0.75rem;
+    border-bottom: 1px solid rgba(50, 66, 133, 0.1);
+    background: #f7f8fd;
+}
+
+:host ::ng-deep .header-alerts-dropdown__title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #243056;
+}
+
+:host ::ng-deep .header-alerts-dropdown__count {
+    flex-shrink: 0;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #ffcc00;
+    color: #111111;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+:host ::ng-deep .header-alerts-dropdown__body {
+    max-height: 360px;
+    overflow-y: auto;
+}
+
+:host ::ng-deep .header-alerts-dropdown__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    padding: 1.75rem 1.25rem;
+    text-align: center;
+    color: #5b678a;
+
+    i {
+        margin-bottom: 0.35rem;
+        color: #8b96b8;
+        font-size: 22px;
+    }
+
+    strong {
+        color: #243056;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    small {
+        max-width: 240px;
+        color: #7a86a8;
+        font-size: 12px;
+        line-height: 1.45;
+    }
+}
+
+:host ::ng-deep .header-alerts-item {
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+    margin: 0;
+    padding: 0.9rem 1rem;
+    border: 0;
+    border-bottom: 1px solid rgba(50, 66, 133, 0.08);
+    background: #ffffff;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.15s ease;
+
+    &:last-child {
+        border-bottom: none;
+    }
+
+    &:hover,
+    &:focus {
+        background: #f4f6fd;
+        outline: none;
+    }
+}
+
+:host ::ng-deep .header-alerts-item__icon {
+    display: inline-flex;
+    flex: 0 0 40px;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin-right: 0.75rem;
+    border-radius: 10px;
+    background: #fff6d6;
+    color: #b88600;
+
+    i {
+        font-size: 16px;
+        line-height: 1;
+    }
+
+    &--success {
+        background: #e9f8ee;
+        color: #1f8a4c;
+    }
+
+    &--info {
+        background: #e8f1ff;
+        color: #2f6fed;
+    }
+
+    &--warning {
+        background: #fff6d6;
+        color: #b88600;
+    }
+
+    &--danger {
+        background: #fdecec;
+        color: #d64545;
+    }
+}
+
+:host ::ng-deep .header-alerts-item__content {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+:host ::ng-deep .header-alerts-item__top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.25rem;
+}
+
+:host ::ng-deep .header-alerts-item__title {
+    color: #1f2a4a;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+:host ::ng-deep .header-alerts-item__time {
+    flex-shrink: 0;
+    color: #8b96b8;
+    font-size: 11px;
+    line-height: 1.35;
+    white-space: nowrap;
+}
+
+:host ::ng-deep .header-alerts-item__text {
+    margin: 0 0 0.55rem;
+    color: #4b5778;
+    font-size: 13px;
+    line-height: 1.45;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
+:host ::ng-deep .header-alerts-item__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+:host ::ng-deep .header-alerts-item__badge {
+    display: inline-flex;
+    align-items: center;
+    max-width: 70%;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #fff3bf;
+    color: #7a5b00;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.4;
+    white-space: nowrap;
+
+    &--success {
+        background: #d9f5e5;
+        color: #146c3c;
+    }
+
+    &--info {
+        background: #dce9ff;
+        color: #1f4fb8;
+    }
+
+    &--warning {
+        background: #fff3bf;
+        color: #7a5b00;
+    }
+
+    &--danger {
+        background: #fde2e2;
+        color: #b42318;
+    }
+}
+
+:host ::ng-deep .header-alerts-item__action {
+    color: #4f5fd7;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
 }
 
 @media (max-width: 920px) {

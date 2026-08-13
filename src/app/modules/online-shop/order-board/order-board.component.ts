@@ -11,6 +11,7 @@ import {
 import { CustomUserStoreService } from 'src/app/shared/services/custom-user-store.service';
 import { GlobalDataService } from 'src/app/shared/services/globalData.service';
 import { RestService } from 'src/app/shared/services/rest.service';
+import { SignalRService } from 'src/app/shared/services/signal-r.service';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from 'src/environments/environment';
 
@@ -80,6 +81,7 @@ export class OrderBoardComponent implements OnInit, OnDestroy {
   ordersByStatus: Record<string, OrderBoardCard[]> = {};
   private allOrders: OrderBoardCard[] = [];
   private selectedStoreSubscription: Subscription;
+  private newOrderSubscription: Subscription;
   private cardClickTimer: ReturnType<typeof setTimeout> | null = null;
 
   constructor(
@@ -89,6 +91,7 @@ export class OrderBoardComponent implements OnInit, OnDestroy {
     public customUserStoreService: CustomUserStoreService,
     public globalDataService: GlobalDataService,
     private toastr: ToastrService,
+    private signalRService: SignalRService,
   ) {}
 
   ngOnInit(): void {
@@ -105,6 +108,10 @@ export class OrderBoardComponent implements OnInit, OnDestroy {
       this.filter.keyword = value || undefined;
       this.loadOrders(this.customUserStoreService.selectedUserStore);
     });
+
+    this.newOrderSubscription = this.signalRService.onlineShopNewOrder$.subscribe(() => {
+      this.loadBoard(this.customUserStoreService.selectedUserStore || this.customUserStoreService.getDefaultStoreId());
+    });
   }
 
   ngOnDestroy(): void {
@@ -112,6 +119,7 @@ export class OrderBoardComponent implements OnInit, OnDestroy {
       clearTimeout(this.cardClickTimer);
     }
     this.selectedStoreSubscription?.unsubscribe();
+    this.newOrderSubscription?.unsubscribe();
   }
 
   toggleFilter(): void {

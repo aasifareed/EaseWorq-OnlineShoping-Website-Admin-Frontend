@@ -89,26 +89,52 @@
                 </a>
             </div>
         </div>
-        <div *ngIf="signalRService.signalrNotifications?.length>0" ngbDropdown [placement]="'bottom-right'">
-            <div class="badge-top-container">
-                <span class="badge badge-primary">{{signalRService.signalrNotifications.length}}</span>
-                <i ngbDropdownToggle class="i-Bell text-muted header-icon" role="button"></i>
+        <div ngbDropdown [placement]="'bottom-right'" class="d-inline-block header-alerts">
+            <div class="header-alerts-toggle" ngbDropdownToggle role="button" title="Alerts" aria-label="Alerts">
+                <span class="badge badge-danger header-alerts-badge" *ngIf="signalRService.signalrNotifications?.length > 0">
+                    {{ signalRService.signalrNotifications.length > 99 ? '99+' : signalRService.signalrNotifications.length }}
+                </span>
+                <i class="i-Bell header-alerts-icon" aria-hidden="true"></i>
             </div>
-            <div ngbDropdownMenu class="notification-dropdown rtl-ps-none" perfectScrollbar>
-                <div class="dropdown-item d-flex" *ngFor="let item of signalRService.signalrNotifications" (click)="readNotification(item)">
-                    <div class="notification-icon">
-                        <i class="{{item.icon}} text-{{item.status}} mr-1"></i>
+            <div ngbDropdownMenu class="header-alerts-dropdown">
+                <div class="header-alerts-dropdown__header">
+                    <span class="header-alerts-dropdown__title">Alerts</span>
+                    <span
+                        *ngIf="signalRService.signalrNotifications?.length"
+                        class="header-alerts-dropdown__count">
+                        {{ signalRService.signalrNotifications.length }} new
+                    </span>
+                </div>
+                <div class="header-alerts-dropdown__body">
+                    <div class="header-alerts-dropdown__empty" *ngIf="!signalRService.signalrNotifications?.length">
+                        <i class="i-Bell" aria-hidden="true"></i>
+                        <strong>No new order alerts</strong>
+                        <small>You’ll be notified here when a customer places an order.</small>
                     </div>
-                    <div class="notification-details flex-grow-1">
-                        <p class="m-0 d-flex align-items-center">
-                            <span>{{item.title}}</span>
-                            <span *ngIf="item.badge"
-                                class="badge badge-pill badge-{{item.status}} ml-1 mr-1">{{item.badge}}</span>
-                            <span class="flex-grow-1"></span>
-                            <span class="text-small text-muted ml-auto">{{item.time | relativeTime}}</span>
-                        </p>
-                        <p class="text-small text-muted m-0">{{item.text | excerpt:30}}</p>
-                    </div>
+                    <button
+                        type="button"
+                        class="header-alerts-item"
+                        *ngFor="let item of signalRService.signalrNotifications"
+                        (click)="readNotification(item)">
+                        <div class="header-alerts-item__icon header-alerts-item__icon--{{ item.status }}">
+                            <i class="fa fa-shopping-basket" aria-hidden="true"></i>
+                        </div>
+                        <div class="header-alerts-item__content">
+                            <div class="header-alerts-item__top">
+                                <span class="header-alerts-item__title">{{ item.title }}</span>
+                                <span class="header-alerts-item__time">{{ item.time | relativeTime }}</span>
+                            </div>
+                            <p class="header-alerts-item__text">{{ item.text }}</p>
+                            <div class="header-alerts-item__footer">
+                                <span
+                                    *ngIf="item.badge"
+                                    class="header-alerts-item__badge header-alerts-item__badge--{{ item.status }}">
+                                    {{ item.badge }}
+                                </span>
+                                <span class="header-alerts-item__action">View order</span>
+                            </div>
+                        </div>
+                    </button>
                 </div>
             </div>
         </div>
