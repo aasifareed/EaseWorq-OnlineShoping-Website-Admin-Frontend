@@ -29,7 +29,7 @@
           [columnMode]="ColumnMode.force"
           [headerHeight]="48"
           [footerHeight]="30"
-          [rowHeight]="56"
+          [rowHeight]="64"
           [rows]="data"
           [scrollbarH]="true"
           [loadingIndicator]="loadingIndicator"
@@ -74,7 +74,10 @@
 
           <ngx-datatable-column [name]="'Name' | translate" prop="name" [minWidth]="220">
             <ng-template ngx-datatable-cell-template let-row="row">
-              <strong>{{ row.name }}</strong>
+              <div class="products-datatable__name-cell">
+                <strong>{{ row.name }}</strong>
+                <span class="products-datatable__catalog-hint" *ngIf="catalogHint(row) as hint">{{ hint }}</span>
+              </div>
             </ng-template>
           </ngx-datatable-column>
 

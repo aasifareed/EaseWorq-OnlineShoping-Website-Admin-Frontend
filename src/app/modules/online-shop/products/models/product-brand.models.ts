@@ -3,6 +3,8 @@ export interface AdminProductBrandListItem {
   name: string;
   isPopular: boolean;
   pictureUrl?: string;
+  hasOnlineProducts: boolean;
+  hasInStockOnline: boolean;
 }
 
 export interface OnlineShopBrandImage {

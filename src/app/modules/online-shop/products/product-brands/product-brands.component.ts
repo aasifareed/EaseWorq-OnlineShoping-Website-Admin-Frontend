@@ -63,7 +63,7 @@ export class ProductBrandsComponent implements OnInit, ProductsTabGrid {
   }
 
   calculatePageSize(reload = true): void {
-    const layout = calculateProductsGridLayout(this.el.nativeElement);
+    const layout = calculateProductsGridLayout(this.el.nativeElement, { rowHeight: 64 });
     const sizeChanged = this.page.size !== layout.pageSize;
     this.page.size = layout.pageSize;
     this.gridHeight = layout.gridHeight;
@@ -147,6 +147,16 @@ export class ProductBrandsComponent implements OnInit, ProductsTabGrid {
 
   isSaving(row: AdminProductBrandListItem): boolean {
     return this.savingKeys.has(this.savingKey(row));
+  }
+
+  catalogHint(row: AdminProductBrandListItem): string | null {
+    if (row.hasOnlineProducts && row.hasInStockOnline) {
+      return null;
+    }
+    if (!row.hasOnlineProducts) {
+      return this.translate.instant('No products shown online');
+    }
+    return this.translate.instant('No stock in this store');
   }
 
   onPopularToggle(row: AdminProductBrandListItem, event: Event): void {

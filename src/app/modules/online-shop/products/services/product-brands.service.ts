@@ -109,6 +109,8 @@ export class ProductBrandsService {
       name: String(row.name ?? row.Name ?? '—'),
       isPopular: Boolean(row.isPopular ?? row.IsPopular ?? false),
       pictureUrl: String(row.pictureUrl ?? row.PictureUrl ?? ''),
+      hasOnlineProducts: Boolean(row.hasOnlineProducts ?? row.HasOnlineProducts ?? false),
+      hasInStockOnline: Boolean(row.hasInStockOnline ?? row.HasInStockOnline ?? false),
     };
   }
 }

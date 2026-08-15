@@ -8,6 +8,7 @@ export interface ProductsGridLayoutOptions {
   extraRows?: number;
   /** Space reserved below the table (page padding / scrollbar). */
   layoutBuffer?: number;
+  rowHeight?: number;
 }
 
 const ROW_HEIGHT = 56;
@@ -76,6 +77,7 @@ export function calculateProductsGridLayout(
 ): ProductsGridLayout {
   const extraRows = options?.extraRows ?? 0;
   const layoutBuffer = options?.layoutBuffer ?? 24;
+  const rowHeight = options?.rowHeight ?? ROW_HEIGHT;
 
   const tableTop = resolveTableTop(hostElement);
   let availableHeight: number;
@@ -87,12 +89,12 @@ export function calculateProductsGridLayout(
     availableHeight = window.innerHeight - 280 - layoutBuffer - DATATABLE_CHROME;
   }
 
-  let pageSize = Math.floor(availableHeight / ROW_HEIGHT) + extraRows;
+  let pageSize = Math.floor(availableHeight / rowHeight) + extraRows;
   if (pageSize <= 0) {
     pageSize = 5;
   }
 
-  const bodyHeight = pageSize * ROW_HEIGHT;
+  const bodyHeight = pageSize * rowHeight;
   return {
     pageSize,
     gridHeight: `${bodyHeight + DATATABLE_CHROME}px`,

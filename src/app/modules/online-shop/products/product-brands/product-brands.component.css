@@ -1,3 +1,18 @@
 :host {
   display: block;
 }
+
+.products-datatable__name-cell {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  min-width: 0;
+}
+
+.products-datatable__catalog-hint {
+  font-size: 11px;
+  line-height: 1.2;
+  color: #c05621;
+  font-weight: 500;
+}
