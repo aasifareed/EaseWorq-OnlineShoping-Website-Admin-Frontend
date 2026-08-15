@@ -74,6 +74,12 @@ export class ProductsService {
     if (payload.slug !== undefined) {
       body.Slug = payload.slug ?? '';
     }
+    if (payload.displayName !== undefined) {
+      body.DisplayName = payload.displayName ?? '';
+    }
+    if (payload.description !== undefined) {
+      body.Description = payload.description ?? '';
+    }
     if (payload.productWeightKg != null) {
       body.ProductWeight = payload.productWeightKg;
     }
@@ -154,6 +160,8 @@ export class ProductsService {
       productId: String(row.productId ?? row.ProductId ?? ''),
       productIdTag: String(row.productIdTag ?? row.ProductIdTag ?? ''),
       productName: String(row.productName ?? row.ProductName ?? '—'),
+      displayName: this.mapOptionalText(row.displayName ?? row.DisplayName),
+      description: this.mapOptionalText(row.description ?? row.Description),
       categoryName: String(row.categoryName ?? row.CategoryName ?? '—'),
       brandName: String(row.brandName ?? row.BrandName ?? '—'),
       slug: String(row.slug ?? row.Slug ?? '').trim(),
@@ -167,5 +175,13 @@ export class ProductsService {
       pictureUrl,
       pictureUrls: pictureUrls.length > 0 ? pictureUrls : pictureUrl ? [pictureUrl] : [],
     };
+  }
+
+  private mapOptionalText(value: unknown): string | null {
+    if (value == null) {
+      return null;
+    }
+    const text = String(value).trim();
+    return text.length > 0 ? text : null;
   }
 }

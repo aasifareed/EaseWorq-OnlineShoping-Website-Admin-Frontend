@@ -9,6 +9,7 @@ import { Page } from 'src/app/shared/models/page';
 import { GlobalDataService } from 'src/app/shared/services/globalData.service';
 import { AdminProductListItem } from './models/product.models';
 import { ProductImagesModalComponent } from './product-images-modal/product-images-modal.component';
+import { ProductEditModalComponent } from './product-edit-modal/product-edit-modal.component';
 import { ProductsService } from './services/products.service';
 import { calculateProductsGridLayout } from './utils/products-grid-layout.util';
 import {
@@ -325,6 +326,29 @@ export class ProductsComponent implements OnInit {
 
   getImageCount(row: AdminProductListItem): number {
     return row.pictureUrls?.length ?? (row.pictureUrl ? 1 : 0);
+  }
+
+  getDisplayLabel(row: AdminProductListItem): string {
+    const custom = (row.displayName || '').trim();
+    return custom || row.productName;
+  }
+
+  openEditModal(row: AdminProductListItem): void {
+    const modalRef = this.modalService.open(ProductEditModalComponent, {
+      centered: true,
+      backdrop: 'static',
+      windowClass: 'ew-app-modal',
+    });
+    modalRef.componentInstance.product = { ...row };
+
+    modalRef.result.then(
+      (updated: AdminProductListItem) => {
+        if (updated) {
+          this.replaceRow(updated);
+        }
+      },
+      () => undefined,
+    );
   }
 
   openImagesModal(row: AdminProductListItem): void {

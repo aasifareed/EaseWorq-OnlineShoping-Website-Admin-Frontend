@@ -115,6 +115,12 @@ export class ProductCategoriesService {
       id: String(row.id ?? row.Id ?? ''),
       name: String(row.name ?? row.Name ?? '—'),
       displayName: (row.displayName ?? row.DisplayName ?? null) as string | null,
+      parentGroupId: row.parentGroupId != null
+        ? String(row.parentGroupId)
+        : row.ParentGroupId != null
+          ? String(row.ParentGroupId)
+          : null,
+      parent: (row.parent ?? row.Parent ?? null) as string | null,
       showCategoryOnline: Boolean(row.showCategoryOnline ?? row.ShowCategoryOnline ?? false),
       isPopular: Boolean(row.isPopular ?? row.IsPopular ?? false),
       pictureUrl: String(row.pictureUrl ?? row.PictureUrl ?? ''),

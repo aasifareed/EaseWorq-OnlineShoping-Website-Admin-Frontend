@@ -9,6 +9,7 @@ import { SharedComponentsModule } from 'src/app/shared/components/shared-compone
 import { ProductsRoutingModule } from './products-routing.module';
 import { ProductsComponent } from './products.component';
 import { ProductImagesModalComponent } from './product-images-modal/product-images-modal.component';
+import { ProductEditModalComponent } from './product-edit-modal/product-edit-modal.component';
 import { ProductCategoriesComponent } from './product-categories/product-categories.component';
 import { ProductCategoryEditModalComponent } from './product-category-edit-modal/product-category-edit-modal.component';
 import { CategoryImageModalComponent } from './category-image-modal/category-image-modal.component';
@@ -33,6 +34,7 @@ import { ProductBrandsService } from './services/product-brands.service';
   declarations: [
     ProductsComponent,
     ProductImagesModalComponent,
+    ProductEditModalComponent,
     ProductCategoriesComponent,
     ProductCategoryEditModalComponent,
     CategoryImageModalComponent,
@@ -41,6 +43,7 @@ import { ProductBrandsService } from './services/product-brands.service';
   ],
   entryComponents: [
     ProductImagesModalComponent,
+    ProductEditModalComponent,
     ProductCategoryEditModalComponent,
     CategoryImageModalComponent,
     BrandImageModalComponent,

@@ -2,6 +2,8 @@ export interface AdminProductCategoryListItem {
   id: string;
   name: string;
   displayName?: string | null;
+  parentGroupId?: string | null;
+  parent?: string | null;
   showCategoryOnline: boolean;
   isPopular: boolean;
   pictureUrl?: string;

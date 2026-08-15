@@ -1,0 +1,54 @@
+<div class="modal-header">
+  <h5 class="modal-title">{{ 'Manage Product' | translate }}</h5>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body" *ngIf="product">
+  <div class="mb-3">
+    <label class="font-weight-bold d-block">{{ 'Product Name' | translate }}</label>
+    <div>{{ product.productName }}</div>
+  </div>
+
+  <div class="form-group">
+    <label for="productDisplayName">{{ 'Display Name' | translate }}</label>
+    <input
+      id="productDisplayName"
+      type="text"
+      class="form-control"
+      [(ngModel)]="displayName"
+      [placeholder]="product.productName"
+      maxlength="512"
+    />
+    <small class="form-text text-muted">
+      {{ 'Leave empty to use the POS product name on the storefront.' | translate }}
+    </small>
+  </div>
+
+  <div class="form-group mb-0">
+    <label for="productDescription">{{ 'Description' | translate }}</label>
+    <textarea
+      id="productDescription"
+      class="form-control"
+      rows="5"
+      [(ngModel)]="description"
+      maxlength="8000"
+    ></textarea>
+    <small class="form-text text-muted">
+      {{ 'Leave empty to use the POS product description on the storefront.' | translate }}
+    </small>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-outline-secondary" (click)="activeModal.dismiss()">
+    <i class="i-Close-Window"></i>
+    {{ 'Cancel' | translate }}
+  </button>
+  <button type="button" class="btn btn-primary" [disabled]="saving" (click)="save()">
+    <span *ngIf="saving" class="spinner-border spinner-border-sm" role="status"></span>
+    <i *ngIf="!saving" class="i-Yes"></i>
+    {{ 'Save' | translate }}
+  </button>
+</div>

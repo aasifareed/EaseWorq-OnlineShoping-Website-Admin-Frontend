@@ -3,6 +3,10 @@ export interface AdminProductListItem {
   productId: string;
   productIdTag: string;
   productName: string;
+  /** Storefront name. Empty/null uses productName. */
+  displayName?: string | null;
+  /** Storefront description. Empty/null uses the POS product description. */
+  description?: string | null;
   categoryName: string;
   brandName: string;
   /** SEO / shareable storefront URL slug. */
@@ -39,6 +43,10 @@ export interface UpdateAdminProductPayload {
   discountPercent?: number;
   /** Pass string to set/normalize; empty clears then auto-generates from name. */
   slug?: string;
+  /** Pass string to set; empty uses the POS product name on the storefront. */
+  displayName?: string;
+  /** Pass string to set; empty uses the POS product description on the storefront. */
+  description?: string;
   /** Unit weight in kilograms. Shared with POS — the same weight the POS product carries. */
   productWeightKg?: number;
   isAvailable?: boolean;

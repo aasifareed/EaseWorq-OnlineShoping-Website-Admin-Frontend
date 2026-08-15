@@ -79,6 +79,12 @@
             </ng-template>
           </ngx-datatable-column>
 
+          <ngx-datatable-column [name]="'Parent Category' | translate" prop="parent" [minWidth]="200">
+            <ng-template ngx-datatable-cell-template let-row="row">
+              {{ row.parent || '—' }}
+            </ng-template>
+          </ngx-datatable-column>
+
           <ngx-datatable-column
             [name]="'Popular' | translate"
             [sortable]="false"
