@@ -127,21 +127,33 @@
                             <ngx-datatable-column
                               [name]="'Product Name' | translate"
                               prop="productName"
-                              [minWidth]="180"
+                              [minWidth]="260"
+                              [flexGrow]="3"
+                              cellClass="products-datatable__text-col"
+                              headerClass="products-datatable__text-col"
                             >
                               <ng-template ngx-datatable-cell-template let-row="row">
-                                <strong [title]="getDisplayLabel(row)">{{ getDisplayLabel(row) }}</strong>
-                                <div *ngIf="row.displayName" class="text-muted small">{{ row.productName }}</div>
+                                <div class="products-datatable__text-cell" [title]="getProductNameTitle(row)">
+                                  <span class="products-datatable__text-primary">{{ getDisplayLabel(row) }}</span>
+                                  <span *ngIf="row.displayName" class="products-datatable__text-secondary">
+                                    {{ row.productName }}
+                                  </span>
+                                </div>
                               </ng-template>
                             </ngx-datatable-column>
 
                             <ngx-datatable-column
                               [name]="'Category' | translate"
                               prop="categoryName"
-                              [minWidth]="160"
+                              [minWidth]="200"
+                              [flexGrow]="2"
+                              cellClass="products-datatable__text-col"
+                              headerClass="products-datatable__text-col"
                             >
                               <ng-template ngx-datatable-cell-template let-row="row">
-                                <span [title]="row.categoryName">{{ row.categoryName }}</span>
+                                <div class="products-datatable__text-cell" [title]="row.categoryName">
+                                  <span class="products-datatable__text-primary">{{ row.categoryName }}</span>
+                                </div>
                               </ng-template>
                             </ngx-datatable-column>
 
@@ -149,9 +161,14 @@
                               [name]="'Brand' | translate"
                               prop="brandName"
                               [minWidth]="120"
+                              [flexGrow]="1"
+                              cellClass="products-datatable__text-col"
+                              headerClass="products-datatable__text-col"
                             >
                               <ng-template ngx-datatable-cell-template let-row="row">
-                                <span [title]="row.brandName">{{ row.brandName }}</span>
+                                <div class="products-datatable__text-cell" [title]="row.brandName">
+                                  <span class="products-datatable__text-primary">{{ row.brandName }}</span>
+                                </div>
                               </ng-template>
                             </ngx-datatable-column>
 

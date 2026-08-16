@@ -333,11 +333,21 @@ export class ProductsComponent implements OnInit {
     return custom || row.productName;
   }
 
+  getProductNameTitle(row: AdminProductListItem): string {
+    const display = this.getDisplayLabel(row);
+    const posName = (row.productName || '').trim();
+    if (row.displayName && posName && display !== posName) {
+      return `${display}\n${posName}`;
+    }
+    return display;
+  }
+
   openEditModal(row: AdminProductListItem): void {
     const modalRef = this.modalService.open(ProductEditModalComponent, {
       centered: true,
       backdrop: 'static',
-      windowClass: 'ew-app-modal',
+      size: 'lg',
+      windowClass: 'ew-app-modal ew-app-modal--wide',
     });
     modalRef.componentInstance.product = { ...row };
 

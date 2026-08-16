@@ -41,7 +41,7 @@ export class ProductEditModalComponent implements OnInit {
         productInventoryId: this.product.id,
         productId: this.product.productId,
         displayName: this.displayName.trim(),
-        description: this.description.trim(),
+        description: this.normalizedDescription(),
       })
       .subscribe({
         next: (updated) => {
@@ -56,5 +56,16 @@ export class ProductEditModalComponent implements OnInit {
           this.toastr.error(message);
         },
       });
+  }
+
+  /** Empty editor HTML should fall back to the POS description. */
+  private normalizedDescription(): string {
+    const html = (this.description || '').trim();
+    const text = html
+      .replace(/<[^>]*>/g, ' ')
+      .replace(/&nbsp;/gi, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    return text ? html : '';
   }
 }

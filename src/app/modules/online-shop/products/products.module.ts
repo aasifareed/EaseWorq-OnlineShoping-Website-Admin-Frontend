@@ -18,6 +18,7 @@ import { BrandImageModalComponent } from './brand-image-modal/brand-image-modal.
 import { ProductsService } from './services/products.service';
 import { ProductCategoriesService } from './services/product-categories.service';
 import { ProductBrandsService } from './services/product-brands.service';
+import { EditorModule } from 'primeng/editor';
 
 @NgModule({
   imports: [
@@ -30,6 +31,7 @@ import { ProductBrandsService } from './services/product-brands.service';
     SharedDirectivesModule,
     SharedComponentsModule,
     ProductsRoutingModule,
+    EditorModule,
   ],
   declarations: [
     ProductsComponent,

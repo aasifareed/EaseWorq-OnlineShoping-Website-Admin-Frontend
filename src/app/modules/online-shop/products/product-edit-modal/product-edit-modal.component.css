@@ -1,1 +1,30 @@
-/* Intentionally minimal — inherits shared modal styles */
+.product-description-field ::ng-deep .p-editor-container {
+  border-radius: 4px;
+}
+
+.product-description-field ::ng-deep .p-editor-toolbar {
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+.product-description-field ::ng-deep .ql-editor {
+  min-height: 200px;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
+
+.product-description-field ::ng-deep .ql-editor ul {
+  list-style-type: disc;
+  padding-left: 1.35rem;
+}
+
+.product-description-field ::ng-deep .ql-editor ol {
+  list-style-type: decimal;
+  padding-left: 1.35rem;
+}
+
+.product-description-field ::ng-deep .ql-editor h2,
+.product-description-field ::ng-deep .ql-editor h3 {
+  font-weight: 700;
+  margin: 0.4rem 0 0.5rem;
+}

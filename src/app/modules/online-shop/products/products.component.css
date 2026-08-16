@@ -231,3 +231,43 @@
   height: 100%;
   box-sizing: border-box;
 }
+
+:host ::ng-deep .products-datatable.material .datatable-body .datatable-body-row .datatable-body-cell.products-datatable__text-col,
+:host ::ng-deep .products-datatable .datatable-header-cell.products-datatable__text-col {
+  overflow: hidden !important;
+}
+
+:host ::ng-deep .products-datatable.material .datatable-body .datatable-body-row .datatable-body-cell.products-datatable__text-col .datatable-body-cell-label {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  align-items: stretch !important;
+}
+
+.products-datatable__text-cell {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.products-datatable__text-primary,
+.products-datatable__text-secondary {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.25;
+}
+
+.products-datatable__text-primary {
+  font-weight: 600;
+}
+
+.products-datatable__text-secondary {
+  color: #6c757d;
+  font-size: 12px;
+}
