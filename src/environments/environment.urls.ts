@@ -150,4 +150,8 @@ export const appServiceUrls = {
   // Store working area polygon (OnlineShopStoreWorkingLocationAppService)
   WorkingArea_CreateLocation: '/OnlineShopStoreWorkingLocation/CreateLocation',
   WorkingArea_GetCurrentStoreLocations: '/OnlineShopStoreWorkingLocation/GetCurrentStoreLocations',
+
+  // Online shop reports (OnlineShopReportingAppService)
+  OnlineShopReporting_GetSaleOrdersReport: '/OnlineShopReporting/GetSaleOrdersReport',
+  OnlineShopReporting_GetProfitMarginReport: '/OnlineShopReporting/GetProfitMarginReport',
 };

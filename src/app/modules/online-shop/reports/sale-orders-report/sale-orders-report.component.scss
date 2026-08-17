@@ -1,0 +1,39 @@
+@import '../report-filter-panel.scss';
+
+.report-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.65rem;
+}
+
+.report-summary-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.65rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.report-summary-card--accent {
+  background: #eef4fc;
+  border-color: #1565c0;
+}
+
+.report-summary-card__label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.report-summary-card strong {
+  font-size: 0.95rem;
+  color: #0f172a;
+}
+
+:host ::ng-deep .datatable-footer {
+  overflow: hidden !important;
+}

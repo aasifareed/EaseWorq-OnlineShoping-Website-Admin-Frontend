@@ -1,0 +1,175 @@
+/* Right-side Filters panel — matches POS Reports dashboard */
+
+.report-tab-layout {
+  width: 100%;
+  min-width: 0;
+}
+
+.report-tab-layout .maintenance-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 16px;
+  width: 100%;
+  align-items: start;
+}
+
+.report-tab-layout .charts-area {
+  min-width: 0;
+  max-width: 100%;
+  overflow: visible;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.report-tab-layout .report-table-panel {
+  min-width: 0;
+  background: #fff;
+  border: 1px solid #e3e8ef;
+  border-radius: 10px;
+  padding: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+
+.report-tab-layout .report-table-panel ::ng-deep .ngx-datatable.material {
+  box-shadow: none !important;
+}
+
+.report-tab-layout .report-filters-aside {
+  width: 300px;
+  max-width: 300px;
+  grid-row: 1;
+  align-self: start;
+  background: #fafbfc !important;
+  border: 1px solid #e3e8ef;
+  border-radius: 4px;
+  padding: 12px;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 20;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: calc(100vh - 160px);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.report-tab-layout .report-filters-aside h4 {
+  margin: 0;
+  padding: 0;
+  font-weight: 700;
+  font-size: 16px;
+  color: #222 !important;
+  flex-shrink: 0;
+  line-height: 1.2;
+}
+
+.report-tab-layout .report-filters-fields {
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-right: 2px;
+}
+
+.report-tab-layout .report-filters-actions {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 8px;
+  border-top: 1px solid #e3e8ef;
+  background: #fafbfc;
+}
+
+.report-tab-layout .filter-field {
+  width: 100%;
+  display: block;
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+
+.report-tab-layout .date-label {
+  display: block;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.54) !important;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.report-tab-layout .filter-control {
+  display: block;
+  width: 100% !important;
+  max-width: 100%;
+  height: 38px;
+  font-size: 13px;
+  border-radius: 3px;
+  border-color: #cfd8e3;
+  box-sizing: border-box;
+}
+
+.report-tab-layout .report-filters-aside .btn-block {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.report-tab-layout .report-filters-aside .btn-primary {
+  background: #1565c0;
+  border-color: #1565c0;
+  color: #fff;
+}
+
+.report-tab-layout .report-filters-aside .btn-primary:hover:not(:disabled) {
+  background: #0d47a1;
+  border-color: #0d47a1;
+}
+
+.report-tab-layout .report-filters-aside .btn-default {
+  background: #fff;
+  border: 1px solid #c5ced9;
+  color: #333;
+  width: 100%;
+}
+
+.report-tab-layout .report-user-ng-select {
+  display: block;
+  width: 100%;
+}
+
+.report-tab-layout .report-user-ng-select ::ng-deep .below .single,
+.report-tab-layout ::ng-deep .report-user-ng-select .below .single {
+  min-height: 38px !important;
+  height: 38px !important;
+  padding: 0 28px 0 8px !important;
+  font-size: 13px !important;
+  border-radius: 4px !important;
+  display: flex !important;
+  align-items: center !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  border: 1px solid #cfd8e3 !important;
+}
+
+@media (max-width: 991px) {
+  .report-tab-layout .maintenance-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .report-tab-layout .report-filters-aside {
+    width: 100%;
+    max-width: 100%;
+    position: static !important;
+    order: -1;
+    max-height: none;
+  }
+}

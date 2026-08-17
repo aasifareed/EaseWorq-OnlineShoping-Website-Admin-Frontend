@@ -138,6 +138,14 @@ export class NavigationService {
         state: '/online-shop/order-board',
       },
       {
+        name: 'Reports',
+        title: 'Reports',
+        type: 'link',
+        icon: 'fa fa-chart-bar',
+        icontType: InconsTypeEnum.ICons_FontAwesome.toString(),
+        state: '/online-shop/reports',
+      },
+      {
         name: 'Order Status',
         title: 'Order Status',
         type: 'link',

@@ -1,0 +1,30 @@
+<div [dir]="globalDataService.getdir()" class="reports-dashboard">
+  <div class="card dashboard-card">
+    <div class="header dashboard-header">
+      <h4 class="dashboard-page-title">
+        <i class="fa fa-file-text-o fontAwesome_Li_Class"></i>
+        Reports
+      </h4>
+    </div>
+
+    <div class="body dashboard-body">
+      <div class="dashboard-tabs">
+        <button type="button" class="dashboard-tab" [class.active]="activeTab === 'sale'" (click)="setTab('sale')">
+          Sale Order
+        </button>
+        <button type="button" class="dashboard-tab" [class.active]="activeTab === 'profit'" (click)="setTab('profit')">
+          Profit / Margin
+        </button>
+      </div>
+
+      <div class="report-tab-panels">
+        <div class="report-tab-panel" [class.active]="activeTab === 'sale'">
+          <app-sale-orders-report *ngIf="activeTab === 'sale'"></app-sale-orders-report>
+        </div>
+        <div class="report-tab-panel" [class.active]="activeTab === 'profit'">
+          <app-profit-margin-report *ngIf="activeTab === 'profit'"></app-profit-margin-report>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,159 @@
+<div [dir]="globalDataService.getdir()" class="report-tab-layout">
+  <div class="maintenance-layout">
+    <div class="charts-area">
+      <div class="report-summary-grid">
+        <div class="report-summary-card">
+          <span class="report-summary-card__label">Revenue</span>
+          <strong>{{ formatMoney(summary.revenueSum) }}</strong>
+        </div>
+        <div class="report-summary-card">
+          <span class="report-summary-card__label">Product Cost</span>
+          <strong>{{ formatMoney(summary.costSum) }}</strong>
+        </div>
+        <div class="report-summary-card">
+          <span class="report-summary-card__label">Product Profit</span>
+          <strong>{{ formatMoney(summary.profitSum) }}</strong>
+        </div>
+        <div class="report-summary-card">
+          <span class="report-summary-card__label">Shipping Charged</span>
+          <strong>{{ formatMoney(summary.shippingChargesSum) }}</strong>
+        </div>
+        <div class="report-summary-card">
+          <span class="report-summary-card__label">Courier Cost</span>
+          <strong>{{ formatMoney(summary.courierCostSum) }}</strong>
+        </div>
+        <div class="report-summary-card report-summary-card--accent">
+          <span class="report-summary-card__label">Net Profit</span>
+          <strong>{{ formatMoney(netProfit) }}</strong>
+        </div>
+      </div>
+
+      <div class="report-table-panel">
+        <ngx-datatable
+          [ngStyle]="{ height: gridHeight, 'box-shadow': 'none' }"
+          class="material fullscreen"
+          [columnMode]="ColumnMode.force"
+          [headerHeight]="45"
+          [footerHeight]="45"
+          [rowHeight]="40"
+          [scrollbarH]="true"
+          [rows]="rows"
+          [summaryRow]="true"
+          [summaryPosition]="'bottom'"
+          [summaryHeight]="45"
+          [loadingIndicator]="loadingIndicator"
+          [externalPaging]="true"
+          [count]="page.totalElements"
+          [offset]="page.pageNumber"
+          [limit]="page.size"
+          (page)="setPage($event)">
+
+          <ngx-datatable-column name="productName" [width]="220" [summaryFunc]="null">
+            <ng-template ngx-datatable-header-template>Product</ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column name="productSku" [width]="120" [summaryFunc]="null">
+            <ng-template ngx-datatable-header-template>SKU</ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column name="brandName" [width]="120" [summaryFunc]="null">
+            <ng-template ngx-datatable-header-template>Brand</ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column name="categoryName" [width]="140" [summaryFunc]="null">
+            <ng-template ngx-datatable-header-template>Category</ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column name="quantity" [width]="90" [summaryTemplate]="qtyTemplate">
+            <ng-template ngx-datatable-header-template>Qty</ng-template>
+            <ng-template ngx-datatable-cell-template let-row="row">{{ row.quantity | number:'1.0-2' }}</ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column name="revenue" [width]="120" [summaryTemplate]="revenueTemplate">
+            <ng-template ngx-datatable-header-template>Revenue</ng-template>
+            <ng-template ngx-datatable-cell-template let-row="row">{{ formatMoney(row.revenue) }}</ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column name="cost" [width]="120" [summaryTemplate]="costTemplate">
+            <ng-template ngx-datatable-header-template>Cost</ng-template>
+            <ng-template ngx-datatable-cell-template let-row="row">{{ formatMoney(row.cost) }}</ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column name="profit" [width]="120" [summaryTemplate]="profitTemplate">
+            <ng-template ngx-datatable-header-template>Profit</ng-template>
+            <ng-template ngx-datatable-cell-template let-row="row">{{ formatMoney(row.profit) }}</ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column name="margin" [width]="100" [summaryFunc]="null">
+            <ng-template ngx-datatable-header-template>Margin %</ng-template>
+            <ng-template ngx-datatable-cell-template let-row="row">{{ row.margin | number:'1.2-2' }}%</ng-template>
+          </ngx-datatable-column>
+        </ngx-datatable>
+
+        <ng-template #qtyTemplate>{{ summary.quantitySum | number:'1.0-2' }}</ng-template>
+        <ng-template #revenueTemplate>{{ formatMoney(summary.revenueSum) }}</ng-template>
+        <ng-template #costTemplate>{{ formatMoney(summary.costSum) }}</ng-template>
+        <ng-template #profitTemplate>{{ formatMoney(summary.profitSum) }}</ng-template>
+      </div>
+    </div>
+
+    <aside class="report-filters-aside">
+      <h4>Filters</h4>
+
+      <div class="report-filters-fields">
+        <div class="filter-field">
+          <label class="date-label" for="profitFromDate">From</label>
+          <input id="profitFromDate" type="date" class="form-control filter-control" [(ngModel)]="filter.fromDate" [max]="filter.toDate">
+        </div>
+
+        <div class="filter-field">
+          <label class="date-label" for="profitToDate">To</label>
+          <input id="profitToDate" type="date" class="form-control filter-control" [(ngModel)]="filter.toDate" [min]="filter.fromDate">
+        </div>
+
+        <div class="filter-field">
+          <label class="date-label" for="profitProduct">Product</label>
+          <ng-select id="profitProduct" class="report-user-ng-select" [options]="productOptions"
+            [(ngModel)]="filter.externalProductId" [noFilter]="999" placeholder="All Products"></ng-select>
+        </div>
+
+        <div class="filter-field">
+          <label class="date-label" for="profitBrand">Brand</label>
+          <input id="profitBrand" class="form-control filter-control" type="text" [(ngModel)]="filter.brandName" placeholder="Brand name">
+        </div>
+
+        <div class="filter-field">
+          <label class="date-label" for="profitCategory">Category</label>
+          <input id="profitCategory" class="form-control filter-control" type="text" [(ngModel)]="filter.categoryName" placeholder="Category name">
+        </div>
+
+        <div class="filter-field">
+          <label class="date-label" for="profitPaymentMethod">Payment Method</label>
+          <ng-select id="profitPaymentMethod" class="report-user-ng-select" [options]="paymentMethodOptions"
+            [(ngModel)]="filter.paymentMethod" [noFilter]="999" placeholder="All Payment Methods"></ng-select>
+        </div>
+
+        <div class="filter-field">
+          <label class="date-label" for="profitShippingMethod">Shipping Method</label>
+          <ng-select id="profitShippingMethod" class="report-user-ng-select" [options]="shippingMethodOptions"
+            [(ngModel)]="filter.shippingMethod" [noFilter]="999" placeholder="All Shipping Methods"></ng-select>
+        </div>
+      </div>
+
+      <div class="report-filters-actions">
+        <button type="button" class="btn btn-primary btn-block" (click)="search()">
+          <i class="fa-solid fa-magnifying-glass fontAwesome_Li_Class"></i>
+          Search
+        </button>
+        <button type="button" class="btn btn-default btn-block" (click)="resetSearch()">
+          <i class="fas fa-undo fontAwesome_Li_Class"></i>
+          Reset
+        </button>
+        <button type="button" class="btn btn-primary btn-block" (click)="exportExcel()" [disabled]="!rows.length">
+          <i class="fa fa-file-excel-o fontAwesome_Li_Class"></i>
+          Export to Excel
+        </button>
+      </div>
+    </aside>
+  </div>
+</div>

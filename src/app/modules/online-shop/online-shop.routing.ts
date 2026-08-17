@@ -81,6 +81,12 @@ const routes: Routes = [
     // data: { permission: PermissionsEnum.OnlineOrderManagement },
   },
   {
+    path: 'reports',
+    canActivate: [AuthGaurd],
+    loadChildren: () =>
+      import('./reports/reports.module').then((m) => m.ReportsModule),
+  },
+  {
     path: 'storefront',
     canActivate: [AuthGaurd],
     loadChildren: () =>

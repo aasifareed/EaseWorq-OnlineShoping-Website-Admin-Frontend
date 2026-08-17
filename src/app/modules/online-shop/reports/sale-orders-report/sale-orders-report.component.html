@@ -1,0 +1,177 @@
+<div [dir]="globalDataService.getdir()" class="report-tab-layout">
+  <div class="maintenance-layout">
+    <div class="charts-area">
+      <div class="report-summary-grid">
+        <div class="report-summary-card">
+          <span class="report-summary-card__label">Total Sales</span>
+          <strong>{{ formatMoney(summary.totalAmountSum) }}</strong>
+        </div>
+        <div class="report-summary-card">
+          <span class="report-summary-card__label">Paid</span>
+          <strong>{{ formatMoney(summary.paidAmountSum) }}</strong>
+        </div>
+        <div class="report-summary-card">
+          <span class="report-summary-card__label">Shipping Charged</span>
+          <strong>{{ formatMoney(summary.shippingChargesSum) }}</strong>
+        </div>
+        <div class="report-summary-card">
+          <span class="report-summary-card__label">Courier Cost</span>
+          <strong>{{ formatMoney(summary.courierCostSum) }}</strong>
+        </div>
+        <div class="report-summary-card">
+          <span class="report-summary-card__label">Product Profit</span>
+          <strong>{{ formatMoney(summary.productProfitSum) }}</strong>
+        </div>
+        <div class="report-summary-card report-summary-card--accent">
+          <span class="report-summary-card__label">Gross Profit</span>
+          <strong>{{ formatMoney(summary.grossProfitSum) }}</strong>
+        </div>
+      </div>
+
+      <div class="report-table-panel">
+        <ngx-datatable
+          [ngStyle]="{ height: gridHeight, 'box-shadow': 'none' }"
+          class="material fullscreen"
+          [columnMode]="ColumnMode.force"
+          [headerHeight]="45"
+          [footerHeight]="45"
+          [rowHeight]="40"
+          [scrollbarH]="true"
+          [rows]="rows"
+          [summaryRow]="true"
+          [summaryPosition]="'bottom'"
+          [summaryHeight]="45"
+          [loadingIndicator]="loadingIndicator"
+          [externalPaging]="true"
+          [count]="page.totalElements"
+          [offset]="page.pageNumber"
+          [limit]="page.size"
+          (page)="setPage($event)">
+
+          <ngx-datatable-column name="orderNumber" [width]="130">
+            <ng-template ngx-datatable-header-template>Order #</ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column name="customerName" [width]="160" [summaryFunc]="null">
+            <ng-template ngx-datatable-header-template>Customer</ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column name="orderDate" [width]="110" [summaryFunc]="null">
+            <ng-template ngx-datatable-header-template>Date</ng-template>
+            <ng-template ngx-datatable-cell-template let-row="row">
+              {{ row.orderDate | date:'MM-dd-yyyy' }}
+            </ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column name="netMerchandiseAmount" [width]="120" [summaryTemplate]="netMerchTemplate">
+            <ng-template ngx-datatable-header-template>Merchandise</ng-template>
+            <ng-template ngx-datatable-cell-template let-row="row">{{ formatMoney(row.netMerchandiseAmount) }}</ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column name="taxAmount" [width]="90" [summaryTemplate]="taxTemplate">
+            <ng-template ngx-datatable-header-template>Tax</ng-template>
+            <ng-template ngx-datatable-cell-template let-row="row">{{ formatMoney(row.taxAmount) }}</ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column name="shippingCharges" [width]="110" [summaryTemplate]="shippingTemplate">
+            <ng-template ngx-datatable-header-template>Shipping</ng-template>
+            <ng-template ngx-datatable-cell-template let-row="row">{{ formatMoney(row.shippingCharges) }}</ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column name="courierCost" [width]="110" [summaryTemplate]="courierTemplate">
+            <ng-template ngx-datatable-header-template>Courier Cost</ng-template>
+            <ng-template ngx-datatable-cell-template let-row="row">{{ formatMoney(row.courierCost) }}</ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column name="totalAmount" [width]="110" [summaryTemplate]="totalTemplate">
+            <ng-template ngx-datatable-header-template>Total</ng-template>
+            <ng-template ngx-datatable-cell-template let-row="row">{{ formatMoney(row.totalAmount) }}</ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column name="paidAmount" [width]="110" [summaryTemplate]="paidTemplate">
+            <ng-template ngx-datatable-header-template>Paid</ng-template>
+            <ng-template ngx-datatable-cell-template let-row="row">{{ formatMoney(row.paidAmount) }}</ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column name="productProfit" [width]="120" [summaryTemplate]="productProfitTemplate">
+            <ng-template ngx-datatable-header-template>Product Profit</ng-template>
+            <ng-template ngx-datatable-cell-template let-row="row">{{ formatMoney(row.productProfit) }}</ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column name="grossProfit" [width]="120" [summaryTemplate]="grossProfitTemplate">
+            <ng-template ngx-datatable-header-template>Gross Profit</ng-template>
+            <ng-template ngx-datatable-cell-template let-row="row">{{ formatMoney(row.grossProfit) }}</ng-template>
+          </ngx-datatable-column>
+
+          <ngx-datatable-column name="orderStatusName" [width]="130" [summaryFunc]="null">
+            <ng-template ngx-datatable-header-template>Status</ng-template>
+          </ngx-datatable-column>
+        </ngx-datatable>
+
+        <ng-template #netMerchTemplate>{{ formatMoney(summary.netMerchandiseAmountSum) }}</ng-template>
+        <ng-template #taxTemplate>{{ formatMoney(summary.taxAmountSum) }}</ng-template>
+        <ng-template #shippingTemplate>{{ formatMoney(summary.shippingChargesSum) }}</ng-template>
+        <ng-template #courierTemplate>{{ formatMoney(summary.courierCostSum) }}</ng-template>
+        <ng-template #totalTemplate>{{ formatMoney(summary.totalAmountSum) }}</ng-template>
+        <ng-template #paidTemplate>{{ formatMoney(summary.paidAmountSum) }}</ng-template>
+        <ng-template #productProfitTemplate>{{ formatMoney(summary.productProfitSum) }}</ng-template>
+        <ng-template #grossProfitTemplate>{{ formatMoney(summary.grossProfitSum) }}</ng-template>
+      </div>
+    </div>
+
+    <aside class="report-filters-aside">
+      <h4>Filters</h4>
+
+      <div class="report-filters-fields">
+        <div class="filter-field">
+          <label class="date-label" for="saleFromDate">From</label>
+          <input id="saleFromDate" type="date" class="form-control filter-control" [(ngModel)]="filter.fromDate" [max]="filter.toDate">
+        </div>
+
+        <div class="filter-field">
+          <label class="date-label" for="saleToDate">To</label>
+          <input id="saleToDate" type="date" class="form-control filter-control" [(ngModel)]="filter.toDate" [min]="filter.fromDate">
+        </div>
+
+        <div class="filter-field">
+          <label class="date-label" for="saleReportSearch">Search</label>
+          <input id="saleReportSearch" class="form-control filter-control" type="text" placeholder="Order #, customer, phone"
+            [formControl]="searchControl">
+        </div>
+
+        <div class="filter-field">
+          <label class="date-label" for="salePaymentMethod">Payment Method</label>
+          <ng-select id="salePaymentMethod" class="report-user-ng-select" [options]="paymentMethodOptions"
+            [(ngModel)]="filter.paymentMethod" [noFilter]="999" placeholder="All Payment Methods"></ng-select>
+        </div>
+
+        <div class="filter-field">
+          <label class="date-label" for="saleShippingMethod">Shipping Method</label>
+          <ng-select id="saleShippingMethod" class="report-user-ng-select" [options]="shippingMethodOptions"
+            [(ngModel)]="filter.shippingMethod" [noFilter]="999" placeholder="All Shipping Methods"></ng-select>
+        </div>
+
+        <div class="filter-field">
+          <label class="date-label" for="saleOrderStatus">Order Status</label>
+          <ng-select id="saleOrderStatus" class="report-user-ng-select" [options]="statusOptions"
+            [(ngModel)]="filter.orderStatusId" [noFilter]="999" placeholder="All Statuses"></ng-select>
+        </div>
+      </div>
+
+      <div class="report-filters-actions">
+        <button type="button" class="btn btn-primary btn-block" (click)="search()">
+          <i class="fa-solid fa-magnifying-glass fontAwesome_Li_Class"></i>
+          Search
+        </button>
+        <button type="button" class="btn btn-default btn-block" (click)="resetSearch()">
+          <i class="fas fa-undo fontAwesome_Li_Class"></i>
+          Reset
+        </button>
+        <button type="button" class="btn btn-primary btn-block" (click)="exportExcel()" [disabled]="!rows.length">
+          <i class="fa fa-file-excel-o fontAwesome_Li_Class"></i>
+          Export to Excel
+        </button>
+      </div>
+    </aside>
+  </div>
+</div>
