@@ -1,0 +1,400 @@
+<div [dir]="globalDataService.getdir()">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body" style="padding: 0%;">
+          <div class="tabs">
+            <ul class="tabs__links">
+              <li>
+                <button
+                  type="button"
+                  class="tabs__link"
+                  [ngClass]="activeTab === 0 ? 'active' : ''"
+                  (click)="changeTab(0)"
+                >
+                  <span class="tabs__link__text" data-text="0">
+                    <img class="tabs__link-icon" src="assets/images/tabs/inbox.svg" alt="" />
+                    <span>{{ 'Inbox' | translate }}</span>
+                  </span>
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  class="tabs__link"
+                  [ngClass]="activeTab === 1 ? 'active' : ''"
+                  (click)="changeTab(1)"
+                >
+                  <span class="tabs__link__text" data-text="1">
+                    <img class="tabs__link-icon" src="assets/images/tabs/mailbox-setup.svg" alt="" />
+                    <span>{{ 'Mailbox setup' | translate }}</span>
+                  </span>
+                </button>
+              </li>
+            </ul>
+
+            <ul class="tabs__contents">
+              <li>
+                <div class="tabs__content active px-2 pb-2">
+                  <div class="separator-breadcrumb border-top" style="margin-bottom: 0.5rem !important;"></div>
+
+                  <ng-container *ngIf="activeTab === 0">
+                    <div class="support-inbox">
+                      <aside class="support-inbox__filters">
+                        <input
+                          [formControl]="searchControl"
+                          class="form-control form-control-rounded mb-3"
+                          type="text"
+                          [placeholder]="'Search sender, email or subject' | translate"
+                        />
+
+                        <div class="filter-group">
+                          <div class="filter-title">{{ 'Mailboxes' | translate }}</div>
+                          <button type="button" class="filter-chip" [class.active]="!filter['mailboxId']" (click)="applyMailbox(null)">
+                            {{ 'All mailboxes' | translate }}
+                          </button>
+                          <button
+                            type="button"
+                            class="filter-chip"
+                            *ngFor="let mailbox of summary.mailboxes"
+                            [class.active]="isFilterActive('mailboxId', mailbox.id)"
+                            (click)="applyMailbox(mailbox.id)"
+                          >
+                            {{ mailbox.displayName }}
+                            <span class="filter-count" *ngIf="mailbox.unreadCount">{{ mailbox.unreadCount }}</span>
+                          </button>
+                        </div>
+
+                        <div class="filter-group">
+                          <div class="filter-title">{{ 'Status' | translate }}</div>
+                          <button type="button" class="filter-chip" [class.active]="isFilterActive('status', 'Open')" (click)="applyStatus('Open')">
+                            {{ 'Open' | translate }}
+                            <span class="filter-count">{{ summary.openCount }}</span>
+                          </button>
+                          <!-- Unassigned filter hidden for now; team assignment workflow deferred -->
+                          <button type="button" class="filter-chip" [class.active]="!!filter['unreadOnly']" (click)="applyUnread()">
+                            {{ 'Unread' | translate }}
+                            <span class="filter-count">{{ summary.unreadCount }}</span>
+                          </button>
+                          <button type="button" class="filter-chip" [class.active]="isFilterActive('status', 'Resolved')" (click)="applyStatus('Resolved')">
+                            {{ 'Resolved' | translate }}
+                            <span class="filter-count">{{ summary.resolvedCount }}</span>
+                          </button>
+                          <button
+                            type="button"
+                            class="filter-chip"
+                            *ngIf="summary.unroutedCount"
+                            [class.active]="!!filter['includeUnrouted']"
+                            (click)="applyUnrouted()"
+                          >
+                            {{ 'Unrouted' | translate }}
+                            <span class="filter-count">{{ summary.unroutedCount }}</span>
+                          </button>
+                        </div>
+
+                        <button type="button" class="btn btn-primary btn-sm btn-block" (click)="clearFilters()">
+                          <i class="fa fa-undo fontAwesome_Li_Class"></i>
+                          {{ 'Reset filters' | translate }}
+                        </button>
+                      </aside>
+
+                      <section class="support-inbox__list">
+                        <div class="panel-header">
+                          <div>
+                            <strong>{{ 'Conversations' | translate }}</strong>
+                            <span class="muted panel-header__count" *ngIf="page.totalElements">
+                              {{ page.totalElements }}
+                            </span>
+                          </div>
+                          <button
+                            type="button"
+                            class="btn btn-link btn-sm p-0"
+                            [disabled]="loadingList"
+                            (click)="loadConversations()"
+                            [title]="'Refresh' | translate"
+                          >
+                            <i class="fa fa-refresh fontAwesome_Li_Class" [class.fa-spin]="loadingList"></i>
+                          </button>
+                        </div>
+
+                        <div class="empty-state" *ngIf="listError">{{ listError }}</div>
+                        <div class="empty-state" *ngIf="loadingList && conversations.length === 0">{{ 'Loading conversations…' | translate }}</div>
+                        <div class="empty-state" *ngIf="!loadingList && !listError && conversations.length === 0">
+                          {{ 'No conversations match the current filters.' | translate }}
+                        </div>
+
+                        <button
+                          type="button"
+                          class="conversation-row"
+                          *ngFor="let item of conversations"
+                          [class.active]="selected?.id === item.id"
+                          [class.unread]="item.isUnread"
+                          (click)="openConversation(item)"
+                        >
+                          <span class="unread-dot" *ngIf="item.isUnread"></span>
+                          <div class="conversation-row__main">
+                            <div class="conversation-row__top">
+                              <strong>{{ displayName(item) }}</strong>
+                              <span class="muted">{{ formatDate(item.lastMessageAt) }}</span>
+                            </div>
+                            <div class="conversation-row__subject">
+                              {{ item.subject || ('(No subject)' | translate) }}
+                              <i class="fa fa-paperclip fontAwesome_Li_Class" *ngIf="item.hasAttachments"></i>
+                            </div>
+                            <div class="conversation-row__preview">{{ item.preview }}</div>
+                            <div class="conversation-row__meta">
+                              <span class="status-pill" [attr.data-status]="item.status">{{ item.status }}</span>
+                              <span *ngIf="item.assignedUserName">{{ item.assignedUserName }}</span>
+                              <span *ngIf="item.mailboxName">{{ item.mailboxName }}</span>
+                            </div>
+                          </div>
+                        </button>
+
+                        <button type="button" class="btn btn-primary btn-sm mt-2" *ngIf="hasMore()" [disabled]="loadingList" (click)="loadMore()">
+                          <i class="fa fa-angle-double-down fontAwesome_Li_Class"></i>
+                          {{ 'Load more' | translate }}
+                        </button>
+                      </section>
+
+                      <section class="support-inbox__detail">
+                        <div class="empty-state" *ngIf="!selected && !loadingDetail">
+                          {{ 'Select a conversation to read the thread.' | translate }}
+                        </div>
+                        <div class="empty-state" *ngIf="loadingDetail">{{ 'Loading conversation…' | translate }}</div>
+                        <div class="empty-state" *ngIf="detailError">{{ detailError }}</div>
+
+                        <ng-container *ngIf="selected && !loadingDetail">
+                          <div class="thread-panel">
+                          <header class="thread-header">
+                            <div class="thread-header__title">
+                              <h2>{{ selected.subject || ('(No subject)' | translate) }}</h2>
+                              <div class="muted thread-header__sender">
+                                {{ displayName(selected) }}
+                                &lt;{{ selected.customerEmail }}&gt;
+                              </div>
+                            </div>
+                            <div class="thread-actions">
+                              <span class="status-pill" [attr.data-status]="selected.status">{{ selected.status }}</span>
+                              <button type="button" class="btn btn-outline-secondary btn-sm" *ngIf="selected.isUnread" (click)="setReadState(false)">
+                                <i class="fa fa-envelope-open fontAwesome_Li_Class"></i>
+                                {{ 'Mark read' | translate }}
+                              </button>
+                              <button type="button" class="btn btn-outline-secondary btn-sm" *ngIf="!selected.isUnread" (click)="setReadState(true)">
+                                <i class="fa fa-envelope fontAwesome_Li_Class"></i>
+                                {{ 'Mark unread' | translate }}
+                              </button>
+                              <button type="button" class="btn btn-success btn-sm" *ngIf="selected.status !== 'Resolved'" (click)="changeStatus('Resolved')">
+                                <i class="fa fa-check-circle fontAwesome_Li_Class"></i>
+                                {{ 'Resolve' | translate }}
+                              </button>
+                              <button type="button" class="btn btn-outline-primary btn-sm" *ngIf="selected.status === 'Resolved'" (click)="changeStatus('Open')">
+                                <i class="fa fa-folder-open fontAwesome_Li_Class"></i>
+                                {{ 'Reopen' | translate }}
+                              </button>
+                            </div>
+                          </header>
+
+                          <div class="thread-meta-grid">
+                            <div class="meta-card">
+                              <label>{{ 'Mailbox' | translate }}</label>
+                              <div class="meta-card__value">
+                                {{ selected.mailboxName || ('Unrouted' | translate) }}
+                                <span class="muted d-block">{{ selected.mailboxAddress || '—' }}</span>
+                              </div>
+                            </div>
+                            <!-- Assignee hidden for now; team assignment workflow deferred -->
+                            <!--
+                            <div class="meta-card">
+                              <label>{{ 'Assignee' | translate }}</label>
+                              <select class="form-control form-control-sm meta-card__select" [ngModel]="selected.assignedUserId || ''" (change)="assignUser($any($event.target).value)">
+                                <option value="">{{ 'Unassigned' | translate }}</option>
+                                <option *ngFor="let user of users" [value]="user.id">{{ user.name }}</option>
+                              </select>
+                            </div>
+                            -->
+                            <div class="meta-card" *ngIf="selected.customerId">
+                              <label>{{ 'Linked customer' | translate }}</label>
+                              <button type="button" class="btn btn-link p-0 meta-card__link" (click)="openCustomerOrders()">
+                                {{ selected.customerName || selected.customerEmail }}
+                              </button>
+                            </div>
+                          </div>
+
+                          <div class="thread-messages">
+                            <article class="thread-message" *ngFor="let message of selected.messages" [class.outbound]="!isInbound(message)">
+                              <header>
+                                <div>
+                                  <strong>{{ message.fromName || message.fromAddress }}</strong>
+                                  <span class="muted" *ngIf="message.fromName"> &lt;{{ message.fromAddress }}&gt;</span>
+                                </div>
+                                <span class="muted">{{ formatDate(message.receivedAt || message.sentAt || message.creationTime) }}</span>
+                              </header>
+                              <div class="muted mb-2" *ngIf="message.toAddresses">
+                                {{ 'To' | translate }}: {{ message.toAddresses }}
+                              </div>
+                              <div class="replied-by" *ngIf="!isInbound(message) && message.createdByUserName">
+                                {{ 'Replied by' | translate }}: {{ message.createdByUserName }}
+                              </div>
+                              <div class="message-body" *ngIf="getMessageHtml(message) as html" [innerHTML]="html"></div>
+                              <div class="message-body" *ngIf="!getMessageHtml(message) && message.textBody" [innerText]="message.textBody"></div>
+                              <div class="attachments" *ngIf="message.attachments?.length">
+                                <button
+                                  type="button"
+                                  class="btn btn-primary btn-sm mr-1 mb-1"
+                                  *ngFor="let attachment of message.attachments"
+                                  [disabled]="attachment.downloadFailed"
+                                  (click)="downloadAttachment(attachment.id, attachment.fileName)"
+                                >
+                                  <i class="fa fa-paperclip fontAwesome_Li_Class"></i>
+                                  {{ attachment.fileName }}
+                                </button>
+                              </div>
+                            </article>
+                          </div>
+
+                          <div class="reply-composer" *ngIf="!selected.isUnrouted">
+                            <div class="reply-composer__header">{{ 'Reply' | translate }}</div>
+                            <div class="reply-route">
+                              <div><span class="reply-route__label">{{ 'From' | translate }}</span> {{ selected.replyFrom }}</div>
+                              <div><span class="reply-route__label">{{ 'To' | translate }}</span> {{ selected.replyTo }}</div>
+                            </div>
+                            <div class="reply-composer__editor support-rich-editor">
+                              <p-editor [(ngModel)]="replyBody" [style]="{ height: '200px' }"></p-editor>
+                            </div>
+                            <div class="reply-actions">
+                              <button type="button" class="btn btn-primary" [disabled]="sendingReply || isReplyEmpty()" (click)="sendReply()">
+                                <i class="fa fa-paper-plane fontAwesome_Li_Class mr-1" *ngIf="!sendingReply"></i>
+                                {{ sendingReply ? ('Sending…' | translate) : ('Send reply' | translate) }}
+                              </button>
+                            </div>
+                          </div>
+                          <div class="empty-state unrouted-panel" *ngIf="selected.isUnrouted">
+                            <p>{{ 'This message was sent to an unknown address and is not part of a support mailbox.' | translate }}</p>
+                            <div class="assign-mailbox" *ngIf="activeMailboxesForAssignment().length">
+                              <label>{{ 'Assign to mailbox' | translate }}</label>
+                              <select class="form-control form-control-sm" (change)="assignConversationToMailbox($any($event.target).value); $any($event.target).value = ''">
+                                <option value="">{{ 'Choose mailbox…' | translate }}</option>
+                                <option *ngFor="let mailbox of activeMailboxesForAssignment()" [value]="mailbox.id">
+                                  {{ mailbox.displayName }} &lt;{{ mailbox.emailAddress }}&gt;
+                                </option>
+                              </select>
+                            </div>
+                            <button type="button" class="btn btn-link p-0 mt-2" (click)="changeTab(1)">
+                              <i class="fa fa-cog fontAwesome_Li_Class"></i>
+                              {{ 'Configure mailboxes' | translate }}
+                            </button>
+                          </div>
+                          </div>
+                        </ng-container>
+                      </section>
+                    </div>
+                  </ng-container>
+
+                  <ng-container *ngIf="activeTab === 1">
+                    <div class="gridAboveHeight">
+                      <h1 style="margin-top: 0%;">{{ 'Support mailboxes' | translate }}</h1>
+                      <p class="text-muted mailbox-setup-intro">
+                        {{ 'Configure the exact addresses Resend receives mail for. New inbound emails route to these mailboxes automatically.' | translate }}
+                      </p>
+                      <hr class="mt-0 mb-0" />
+                      <div class="row">
+                        <div class="col-xl-3 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                          <div class="form-group">
+                            <input
+                              style="margin-top: 7%;"
+                              [formControl]="mailboxSearchControl"
+                              class="form-control form-control-rounded"
+                              type="text"
+                              [placeholder]="'Search mailboxes' | translate"
+                            />
+                          </div>
+                        </div>
+
+                        <div class="col-xl-7 col-lg-6 col-md-6 col-sm-6 col-xs-6"></div>
+
+                        <div
+                          class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-6 form-group add_New"
+                          style="margin-top: 1.7%"
+                        >
+                          <button type="button" class="btn btn-primary" (click)="openMailboxModal()">
+                            <i class="fa fa-plus fontAwesome_Li_Class"></i>
+                            {{ 'Add mailbox' | translate }}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="card mb-3">
+                          <ngx-datatable
+                            [ngStyle]="{ height: gridHeight, 'box-shadow': 'none' }"
+                            class="material fullscreen mailbox-datatable"
+                            [columnMode]="ColumnMode.force"
+                            [headerHeight]="45"
+                            [footerHeight]="30"
+                            [rowHeight]="40"
+                            [rows]="filteredMailboxes"
+                            [scrollbarH]="true"
+                            [loadingIndicator]="loadingMailboxes"
+                          >
+                            <ngx-datatable-column [name]="'Display name' | translate" prop="displayName" [minWidth]="180">
+                              <ng-template ngx-datatable-cell-template let-row="row">
+                                <span class="mailbox-title-cell" [title]="row.displayName">{{ row.displayName }}</span>
+                              </ng-template>
+                            </ngx-datatable-column>
+
+                            <ngx-datatable-column [name]="'Email address' | translate" prop="emailAddress" [minWidth]="220">
+                              <ng-template ngx-datatable-cell-template let-row="row">
+                                <code class="mailbox-email">{{ row.emailAddress }}</code>
+                              </ng-template>
+                            </ngx-datatable-column>
+
+                            <ngx-datatable-column [name]="'Domain' | translate" prop="domain" [minWidth]="160">
+                              <ng-template ngx-datatable-cell-template let-row="row">
+                                {{ row.domain || '—' }}
+                              </ng-template>
+                            </ngx-datatable-column>
+
+                            <ngx-datatable-column [name]="'Type' | translate" prop="mailboxType" [minWidth]="120">
+                              <ng-template ngx-datatable-cell-template let-row="row">
+                                {{ getMailboxTypeLabel(row.mailboxType) }}
+                              </ng-template>
+                            </ngx-datatable-column>
+
+                            <ngx-datatable-column [name]="'Status' | translate" [minWidth]="100" [sortable]="false">
+                              <ng-template ngx-datatable-cell-template let-row="row">
+                                <label class="status-switch mb-0">
+                                  <input type="checkbox" [checked]="row.isActive" (change)="onMailboxStatusToggle(row, $event)" />
+                                  <span class="status-switch__slider"></span>
+                                </label>
+                              </ng-template>
+                            </ngx-datatable-column>
+
+                            <ngx-datatable-column
+                              [name]="'Action' | translate"
+                              [minWidth]="120"
+                              [sortable]="false"
+                              [canAutoResize]="false"
+                            >
+                              <ng-template ngx-datatable-cell-template let-row="row">
+                                <button type="button" class="btn btn-primary btn-sm mr-1" (click)="openMailboxModal(row)">
+                                  <i class="fa fa-pencil fontAwesome_Li_Class" style="color: white;"></i>
+                                  {{ 'Edit' | translate }}
+                                </button>
+                              </ng-template>
+                            </ngx-datatable-column>
+                          </ngx-datatable>
+                        </div>
+                      </div>
+                    </div>
+                  </ng-container>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

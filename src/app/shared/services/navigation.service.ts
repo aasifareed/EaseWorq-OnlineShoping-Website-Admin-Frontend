@@ -199,6 +199,14 @@ export class NavigationService {
         // permission_required: PermissionsEnum.OnlineOrder,
       },
       {
+        name: 'Customer Support',
+        title: 'Customer Support',
+        type: 'link',
+        icon: 'assets/images/sidebar/customer-support.svg',
+        icontType: InconsTypeEnum.ICons_FontAwesome.toString(),
+        state: '/online-shop/customer-support',
+      },
+      {
         name: 'Settings',
         title: 'Settings',
         type: 'link',

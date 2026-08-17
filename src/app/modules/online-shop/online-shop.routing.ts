@@ -74,6 +74,14 @@ const routes: Routes = [
     // data: { permission: PermissionsEnum.OnlineOrderManagement },
   },
   {
+    path: 'customer-support',
+    canActivate: [AuthGaurd],
+    loadChildren: () =>
+      import('./customer-support/customer-support.module').then(
+        (m) => m.CustomerSupportModule
+      ),
+  },
+  {
     path: 'settings',
     canActivate: [AuthGaurd],
     loadChildren: () =>

@@ -86,6 +86,21 @@ export const appServiceUrls = {
   Page_CreateDefaultPages: '/OnlineShopPage/CreateDefaultPages',
   Page_GetPageTemplates: '/OnlineShopPage/GetPageTemplates',
 
+  // Customer support inbox (EmailSupportAppService)
+  EmailSupport_GetInboxSummary: '/EmailSupport/GetInboxSummary',
+  EmailSupport_GetMailboxConfigurations: '/EmailSupport/GetMailboxConfigurations',
+  EmailSupport_SaveMailbox: '/EmailSupport/SaveMailbox',
+  EmailSupport_SetMailboxActive: '/EmailSupport/SetMailboxActive',
+  EmailSupport_AssignConversationToMailbox: '/EmailSupport/AssignConversationToMailbox',
+  EmailSupport_GetConversations: '/EmailSupport/GetConversations',
+  EmailSupport_GetConversation: '/EmailSupport/GetConversation',
+  EmailSupport_Reply: '/EmailSupport/Reply',
+  EmailSupport_SetReadState: '/EmailSupport/SetReadState',
+  EmailSupport_Assign: '/EmailSupport/Assign',
+  EmailSupport_ChangeStatus: '/EmailSupport/ChangeStatus',
+  EmailSupport_GetAssignableUsers: '/EmailSupport/GetAssignableUsers',
+  EmailSupport_DownloadAttachment: '/EmailSupport/DownloadAttachment',
+
   // Online shop settings (OnlineShopSettingsAppService)
   Settings_GetForEdit: '/OnlineShopSettings/GetForEdit',
   Settings_Save: '/OnlineShopSettings/Save',

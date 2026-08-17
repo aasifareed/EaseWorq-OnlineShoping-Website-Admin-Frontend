@@ -33,7 +33,8 @@ import { LoaderComponent } from './components/loader/loader.component';
     ReactiveFormsModule,
     NgxPaginationModule,
     NgxDatatableModule,
-    SelectModule
+    SelectModule,
+    TranslateModule,
   ],
   providers: [
     UrlHelperService,
