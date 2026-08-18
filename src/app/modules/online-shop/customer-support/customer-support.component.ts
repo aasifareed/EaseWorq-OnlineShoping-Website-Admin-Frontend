@@ -265,40 +265,49 @@ export class CustomerSupportComponent implements OnInit {
 
   applyMailbox(mailboxId: string | null): void {
     this.filter['mailboxId'] = mailboxId || '';
-    this.page.pageNumber = 0;
-    this.loadConversations(false);
+    this.reloadList();
   }
 
   applyStatus(status: string | null): void {
-    this.filter['status'] = status || '';
-    this.page.pageNumber = 0;
-    this.loadConversations(false);
+    const alreadyActive = this.isFilterActive('status', status);
+    this.clearStatusGroupFilters();
+    if (!alreadyActive && status) {
+      this.filter['status'] = status;
+    }
+    this.reloadList();
   }
 
   applyUnassigned(): void {
-    this.filter['unassigned'] = true;
-    this.filter['status'] = '';
-    this.page.pageNumber = 0;
-    this.loadConversations(false);
+    const alreadyActive = !!this.filter['unassigned'];
+    this.clearStatusGroupFilters();
+    if (!alreadyActive) {
+      this.filter['unassigned'] = true;
+    }
+    this.reloadList();
   }
 
   applyUnread(): void {
-    this.filter['unreadOnly'] = true;
-    this.page.pageNumber = 0;
-    this.loadConversations(false);
+    const alreadyActive = !!this.filter['unreadOnly'];
+    this.clearStatusGroupFilters();
+    if (!alreadyActive) {
+      this.filter['unreadOnly'] = true;
+    }
+    this.reloadList();
   }
 
   applyUnrouted(): void {
-    this.filter['includeUnrouted'] = true;
-    this.page.pageNumber = 0;
-    this.loadConversations(false);
+    const alreadyActive = !!this.filter['includeUnrouted'];
+    this.clearStatusGroupFilters();
+    if (!alreadyActive) {
+      this.filter['includeUnrouted'] = true;
+    }
+    this.reloadList();
   }
 
   clearFilters(): void {
     this.filter = {};
     this.searchControl.setValue('', { emitEvent: false });
-    this.page.pageNumber = 0;
-    this.loadConversations(false);
+    this.reloadList();
   }
 
   loadMore(): void {
@@ -475,6 +484,18 @@ export class CustomerSupportComponent implements OnInit {
 
   isFilterActive(key: string, value: unknown): boolean {
     return this.filter[key] === value;
+  }
+
+  private clearStatusGroupFilters(): void {
+    delete this.filter['status'];
+    delete this.filter['unreadOnly'];
+    delete this.filter['unassigned'];
+    delete this.filter['includeUnrouted'];
+  }
+
+  private reloadList(): void {
+    this.page.pageNumber = 0;
+    this.loadConversations(false);
   }
 
   private setFilterURL(): string {
