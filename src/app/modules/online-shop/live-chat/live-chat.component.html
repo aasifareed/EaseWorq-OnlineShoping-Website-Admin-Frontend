@@ -1,0 +1,161 @@
+<div [dir]="globalDataService.getdir()">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body live-chat-card">
+          <div class="live-chat">
+            <aside class="live-chat__list">
+              <div class="live-chat__search">
+                <i class="fa fa-search fontAwesome_Li_Class"></i>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="searchTerm"
+                  (ngModelChange)="applyFilter()"
+                  [placeholder]="'Search people or messages' | translate"
+                />
+              </div>
+
+              <div class="live-chat__filters">
+                <button type="button" [class.active]="listFilter === 'all'" (click)="setFilter('all')">
+                  {{ 'All' | translate }}
+                </button>
+                <button type="button" [class.active]="listFilter === 'online'" (click)="setFilter('online')">
+                  {{ 'Online' | translate }}
+                  <span *ngIf="onlineCount">{{ onlineCount }}</span>
+                </button>
+                <button type="button" [class.active]="listFilter === 'unread'" (click)="setFilter('unread')">
+                  {{ 'Unread' | translate }}
+                  <span *ngIf="unreadTotal">{{ unreadTotal }}</span>
+                </button>
+              </div>
+
+              <div class="live-chat__empty" *ngIf="loadingList && conversations.length === 0">
+                {{ 'Loading conversations…' | translate }}
+              </div>
+              <div class="live-chat__empty" *ngIf="!loadingList && filteredConversations.length === 0">
+                {{ 'No customer chats yet.' | translate }}
+              </div>
+
+              <button
+                type="button"
+                class="conversation"
+                *ngFor="let item of filteredConversations"
+                [class.active]="selected?.id === item.id"
+                [class.unread]="item.unreadCount"
+                (click)="selectConversation(item)"
+              >
+                <span class="conversation__avatar">
+                  {{ initials(item.name) }}
+                  <span class="conversation__online" *ngIf="item.isOnline"></span>
+                </span>
+                <span class="conversation__body">
+                  <span class="conversation__top">
+                    <strong>{{ item.name }}</strong>
+                    <span class="muted">{{ formatListTime(item.lastTimestamp) }}</span>
+                  </span>
+                  <span class="conversation__preview">{{ previewText(item.lastMessage) || ('No messages yet' | translate) }}</span>
+                </span>
+                <span class="conversation__badge" *ngIf="item.unreadCount">{{ item.unreadCount }}</span>
+              </button>
+            </aside>
+
+            <section class="live-chat__thread">
+              <div class="live-chat__empty live-chat__empty--center" *ngIf="!selected">
+                {{ 'Select a customer to start chatting.' | translate }}
+              </div>
+
+              <div class="thread-body" *ngIf="selected">
+                <header class="thread-header">
+                  <span class="conversation__avatar">{{ initials(selected.name) }}</span>
+                  <div class="thread-header__meta">
+                    <h2>{{ selected.name }}</h2>
+                    <div class="thread-header__status">
+                      <span class="dot" [class.online]="selected.isOnline"></span>
+                      {{ selected.isOnline ? ('Online' | translate) : ('Offline' | translate) }}
+                      <span class="thread-header__email" *ngIf="selected.email">{{ selected.email }}</span>
+                    </div>
+                  </div>
+                  <span
+                    class="hub-pill"
+                    [class.hub-pill--on]="hubConnected"
+                    [class.hub-pill--off]="!hubConnected"
+                  >
+                    <span class="hub-pill__dot"></span>
+                    {{ hubConnected ? ('Live' | translate) : ('Reconnecting…' | translate) }}
+                  </span>
+                </header>
+
+                <div class="thread-messages" #messagesContainer>
+                  <div class="live-chat__empty" *ngIf="loadingMessages">{{ 'Loading messages…' | translate }}</div>
+                  <div class="live-chat__empty" *ngIf="!loadingMessages && messages.length === 0">
+                    {{ 'No history yet. Send the first message.' | translate }}
+                  </div>
+                  <ng-container *ngFor="let message of messages; let i = index">
+                    <div class="day-sep" *ngIf="!isSameDay(message, messages[i - 1])">{{ dayLabel(message.timestamp) }}</div>
+                    <div class="bubble-row" [class.out]="message.fromAdmin">
+                      <div class="bubble" [class.bubble--image]="isImage(message.message)">
+                        <a
+                          *ngIf="isImage(message.message)"
+                          [href]="imageSrc(message.message)"
+                          target="_blank"
+                          rel="noopener"
+                        >
+                          <img [src]="imageSrc(message.message)" alt="Photo" />
+                        </a>
+                        <ng-container *ngIf="!isImage(message.message)">{{ message.message }}</ng-container>
+                      </div>
+                      <div class="bubble-meta">
+                        {{ formatTime(message.timestamp) }}
+                        <i class="fa fa-check fontAwesome_Li_Class" *ngIf="message.fromAdmin"></i>
+                      </div>
+                    </div>
+                  </ng-container>
+                </div>
+
+                <div class="quick-replies">
+                  <button type="button" *ngFor="let reply of quickReplies" (click)="useQuickReply(reply)">
+                    {{ reply }}
+                  </button>
+                </div>
+
+                <form class="thread-composer" (submit)="$event.preventDefault(); send()" (paste)="onPaste($event)">
+                  <input
+                    #imageInput
+                    type="file"
+                    accept="image/jpeg,image/png,image/gif,image/webp"
+                    hidden
+                    (change)="onPickImage($event)"
+                  />
+                  <button
+                    type="button"
+                    class="attach-btn"
+                    (click)="imageInput.click()"
+                    [disabled]="sending"
+                    [attr.aria-label]="'Send image' | translate"
+                  >
+                    <svg class="attach-btn__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                      <path d="M16.5 6.5v9.2a4.5 4.5 0 1 1-9 0V7.8a3.2 3.2 0 1 1 6.4 0v7.6a1.9 1.9 0 1 1-3.8 0V8.2h1.5v7.2a.4.4 0 1 0 .8 0V7.8a1.7 1.7 0 1 0-3.4 0v7.9a3 3 0 0 0 6 0V6.5z"></path>
+                    </svg>
+                  </button>
+                  <textarea
+                    rows="1"
+                    [(ngModel)]="draft"
+                    name="draft"
+                    [placeholder]="'Write a message…' | translate"
+                    (keydown.enter)="onEnter($event)"
+                  ></textarea>
+                  <button type="submit" class="send-btn" [disabled]="sending || !draft.trim()" [attr.aria-label]="'Send' | translate">
+                    <svg class="send-btn__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                      <path d="M3.4 20.6 21 12 3.4 3.4 3 10.3l11.2 1.7L3 13.7z"></path>
+                    </svg>
+                  </button>
+                </form>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

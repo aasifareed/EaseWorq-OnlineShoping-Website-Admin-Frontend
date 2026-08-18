@@ -82,6 +82,12 @@ const routes: Routes = [
       ),
   },
   {
+    path: 'live-chat',
+    canActivate: [AuthGaurd],
+    loadChildren: () =>
+      import('./live-chat/live-chat.module').then((m) => m.LiveChatModule),
+  },
+  {
     path: 'settings',
     canActivate: [AuthGaurd],
     loadChildren: () =>

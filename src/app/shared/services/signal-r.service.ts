@@ -7,6 +7,7 @@ import { RestService } from './rest.service';
 import { Observable, Subject } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { NotificationSourceTypeEnum } from '../enum/notificationSourceType';
+import { AlertSoundService } from './alert-sound.service';
 
 export interface WhatsAppNotificationPayload {
   phoneNumber: string;
@@ -41,7 +42,8 @@ export class SignalRService {
     private authService: AuthService,
     private restService: RestService,
     private ngZone: NgZone,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private alertSound: AlertSoundService,
   ) { }
 
     public startConnection = () => {
@@ -86,7 +88,7 @@ export class SignalRService {
     });
 
     this.hubConnection.on('ReceiveMessage', () => {
-      this.ngZone.run(() => this.reloadOnlineShopNotifications());
+      this.ngZone.run(() => this.reloadOnlineShopNotifications(true));
     });
 
     this.hubConnection.on('OnlineOrders', (payload: any, message?: string) => {
@@ -98,6 +100,7 @@ export class SignalRService {
         this.ngZone.run(() => {
           this.whatsAppNotifications.push(data);
           this.whatsAppNewMessageSubject.next(data);
+          this.alertSound.play();
         });
       }
     });
@@ -127,13 +130,20 @@ export class SignalRService {
     this.whatsAppNotifications = [];
   }
 
-  reloadOnlineShopNotifications(): void {
+  reloadOnlineShopNotifications(playSound = false): void {
     const url = environment.urls.Notification_GET_ALL;
     this.restService.getWithoutLoader(url).subscribe((res) => {
       const items = res?.result?.items || [];
-      this.signalrNotifications = items
+      const next = items
         .filter((element) => this.isOnlineShopOrderAlert(element) && !element.isRead)
         .map((element) => this.mapNotification(element));
+      const hasNew =
+        playSound &&
+        next.some((item) => !this.signalrNotifications.some((existing) => existing.id === item.id));
+      this.signalrNotifications = next;
+      if (hasNew) {
+        this.alertSound.play();
+      }
     });
   }
 
@@ -154,6 +164,7 @@ export class SignalRService {
 
     this.signalrNotifications.unshift(mapped);
     this.onlineShopNewOrderSubject.next(mapped);
+    this.alertSound.play();
     this.toastr.info(mapped.text || message || 'A customer placed a new order.', mapped.title || 'New Online Order', {
       progressBar: true,
     });

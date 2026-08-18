@@ -237,34 +237,154 @@
                               </div>
                               <div class="message-body" *ngIf="getMessageHtml(message) as html" [innerHTML]="html"></div>
                               <div class="message-body" *ngIf="!getMessageHtml(message) && message.textBody" [innerText]="message.textBody"></div>
-                              <div class="attachments" *ngIf="message.attachments?.length">
+                              <div class="gmail-attachments" *ngIf="message.attachments?.length">
                                 <button
                                   type="button"
-                                  class="btn btn-primary btn-sm mr-1 mb-1"
-                                  *ngFor="let attachment of message.attachments"
+                                  class="gmail-attachment gmail-attachment--link"
+                                  *ngFor="let attachment of visibleAttachments(message)"
                                   [disabled]="attachment.downloadFailed"
                                   (click)="downloadAttachment(attachment.id, attachment.fileName)"
                                 >
-                                  <i class="fa fa-paperclip fontAwesome_Li_Class"></i>
-                                  {{ attachment.fileName }}
+                                  <span class="gmail-attachment__name" [title]="attachment.fileName">{{ attachment.fileName }}</span>
+                                  <span class="gmail-attachment__size" *ngIf="attachment.size">({{ formatFileSize(attachment.size) }})</span>
                                 </button>
                               </div>
                             </article>
                           </div>
 
-                          <div class="reply-composer" *ngIf="!selected.isUnrouted">
-                            <div class="reply-composer__header">{{ 'Reply' | translate }}</div>
-                            <div class="reply-route">
-                              <div><span class="reply-route__label">{{ 'From' | translate }}</span> {{ selected.replyFrom }}</div>
-                              <div><span class="reply-route__label">{{ 'To' | translate }}</span> {{ selected.replyTo }}</div>
+                          <div class="gmail-compose" *ngIf="!selected.isUnrouted">
+                            <header class="gmail-compose__header">
+                              <div class="gmail-compose__title">
+                                <i class="fa fa-reply fontAwesome_Li_Class"></i>
+                                <span>{{ selected.mailboxName || ('Reply' | translate) }}</span>
+                              </div>
+                              <button
+                                type="button"
+                                class="gmail-icon-btn"
+                                [title]="'Discard' | translate"
+                                (click)="discardReply()"
+                              >
+                                <i class="fa fa-times fontAwesome_Li_Class"></i>
+                              </button>
+                            </header>
+
+                            <div class="gmail-compose__meta">
+                              <div class="gmail-compose__row">
+                                <span class="gmail-compose__label">{{ 'To' | translate }}</span>
+                                <span class="gmail-compose__value">{{ selected.replyTo }}</span>
+                              </div>
+                              <div class="gmail-compose__row gmail-compose__row--muted">
+                                <span class="gmail-compose__label">{{ 'From' | translate }}</span>
+                                <span class="gmail-compose__value">{{ selected.replyFrom }}</span>
+                              </div>
                             </div>
-                            <div class="reply-composer__editor support-rich-editor">
-                              <p-editor [(ngModel)]="replyBody" [style]="{ height: '200px' }"></p-editor>
+
+                            <div
+                              class="gmail-compose__editor support-rich-editor"
+                              [class.gmail-compose__editor--toolbar-hidden]="!showReplyToolbar"
+                            >
+                              <p-editor
+                                [(ngModel)]="replyBody"
+                                [placeholder]="'Write a reply…' | translate"
+                                [style]="{ height: '168px' }"
+                              >
+                                <p-header>
+                                  <span class="ql-formats">
+                                    <select class="ql-font">
+                                      <option selected></option>
+                                      <option value="serif"></option>
+                                      <option value="monospace"></option>
+                                    </select>
+                                    <select class="ql-size">
+                                      <option value="small"></option>
+                                      <option selected></option>
+                                      <option value="large"></option>
+                                      <option value="huge"></option>
+                                    </select>
+                                  </span>
+                                  <span class="ql-formats">
+                                    <button type="button" class="ql-bold"></button>
+                                    <button type="button" class="ql-italic"></button>
+                                    <button type="button" class="ql-underline"></button>
+                                    <button type="button" class="ql-strike"></button>
+                                    <select class="ql-color"></select>
+                                  </span>
+                                  <span class="ql-formats">
+                                    <select class="ql-align">
+                                      <option selected></option>
+                                      <option value="center"></option>
+                                      <option value="right"></option>
+                                      <option value="justify"></option>
+                                    </select>
+                                    <button type="button" class="ql-list" value="ordered"></button>
+                                    <button type="button" class="ql-list" value="bullet"></button>
+                                    <button type="button" class="ql-indent" value="-1"></button>
+                                    <button type="button" class="ql-indent" value="+1"></button>
+                                  </span>
+                                  <span class="ql-formats">
+                                    <button type="button" class="ql-blockquote"></button>
+                                    <button type="button" class="ql-link"></button>
+                                    <button type="button" class="ql-clean"></button>
+                                  </span>
+                                </p-header>
+                              </p-editor>
                             </div>
-                            <div class="reply-actions">
-                              <button type="button" class="btn btn-primary" [disabled]="sendingReply || isReplyEmpty()" (click)="sendReply()">
-                                <i class="fa fa-paper-plane fontAwesome_Li_Class mr-1" *ngIf="!sendingReply"></i>
-                                {{ sendingReply ? ('Sending…' | translate) : ('Send reply' | translate) }}
+
+                            <div class="gmail-attachments" *ngIf="replyAttachments.length">
+                              <div class="gmail-attachment" *ngFor="let file of replyAttachments">
+                                <span class="gmail-attachment__name" [title]="file.fileName">{{ file.fileName }}</span>
+                                <span class="gmail-attachment__size">({{ formatFileSize(file.size) }})</span>
+                                <button
+                                  type="button"
+                                  class="gmail-attachment__remove"
+                                  [title]="'Remove' | translate"
+                                  (click)="removeReplyAttachment(file.id)"
+                                >
+                                  <i class="fa fa-times fontAwesome_Li_Class"></i>
+                                </button>
+                              </div>
+                            </div>
+
+                            <div class="gmail-compose__footer">
+                              <button
+                                type="button"
+                                class="gmail-send"
+                                [disabled]="sendingReply || (isReplyEmpty() && replyAttachments.length === 0)"
+                                (click)="sendReply()"
+                              >
+                                {{ sendingReply ? ('Sending…' | translate) : ('Send' | translate) }}
+                              </button>
+                              <button
+                                type="button"
+                                class="gmail-icon-btn"
+                                [class.active]="showReplyToolbar"
+                                [title]="'Formatting options' | translate"
+                                (click)="showReplyToolbar = !showReplyToolbar"
+                              >
+                                <span class="gmail-aa">Aa</span>
+                              </button>
+                              <button
+                                type="button"
+                                class="gmail-icon-btn"
+                                [title]="'Attach file' | translate"
+                                (click)="attachmentInput.click()"
+                              >
+                                <i class="fa fa-paperclip fontAwesome_Li_Class"></i>
+                              </button>
+                              <input
+                                #attachmentInput
+                                type="file"
+                                hidden
+                                multiple
+                                (change)="onReplyFileSelected($event)"
+                              />
+                              <button
+                                type="button"
+                                class="gmail-icon-btn gmail-icon-btn--end"
+                                [title]="'Discard' | translate"
+                                (click)="discardReply()"
+                              >
+                                <i class="fa fa-trash fontAwesome_Li_Class"></i>
                               </button>
                             </div>
                           </div>

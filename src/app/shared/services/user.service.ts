@@ -15,6 +15,7 @@ import { GlobalDataService } from './globalData.service';
 import { ToastrService } from 'ngx-toastr';
 import { GetSharedDataService } from './get-shared-data.service';
 import { SignalRService } from './signal-r.service';
+import { ChatHubService } from './chat-hub.service';
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +34,8 @@ export class UserService {
     public globalDataService:GlobalDataService,
     public toaster: ToastrService,
     public getSharedDataService: GetSharedDataService,
-    private signalRService: SignalRService
+    private signalRService: SignalRService,
+    private chatHubService: ChatHubService
   ) {
 
   }
@@ -93,6 +95,7 @@ signout() {
   const lang = localStorage.getItem('lang');
 
   this.signalRService.disconnectOnLogout();
+  this.chatHubService.disconnectOnLogout();
 
   this.authService.authenticated = false;
   this.currentUser = undefined;

@@ -3,6 +3,7 @@ import { Title } from '@angular/platform-browser';
 import { AuthService } from './shared/services/auth.service';
 import { DragService } from './shared/services/drag.service';
 import { SignalRService } from './shared/services/signal-r.service';
+import { ChatHubService } from './shared/services/chat-hub.service';
 import { TranslateService } from '@ngx-translate/core';
 import { LocalStoreService } from './shared/services/local-store.service';
 import { GlobalDataService } from './shared/services/globalData.service';
@@ -21,6 +22,7 @@ export class AppComponent implements OnInit, AfterViewChecked {
     public authService: AuthService,
     private dragService: DragService,
     public signalRService: SignalRService,
+    private chatHubService: ChatHubService,
     private titleService: Title,
     public globalDataService: GlobalDataService,
     private tenantService: TenantService,
@@ -29,6 +31,7 @@ export class AppComponent implements OnInit, AfterViewChecked {
     this.titleService.setTitle('EaseWorq Admin ' + this.get_version());
     if (this.authService.getEncryptedToken()) {
       this.signalRService.startConnection();
+      this.chatHubService.startConnection();
     }
   }
 

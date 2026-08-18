@@ -57,6 +57,9 @@ export class CustomerSupportComponent implements OnInit {
   detailError = '';
   replyBody = '';
   replyIdempotencyKey = '';
+  showReplyToolbar = true;
+  replyAttachments: ReplyDraftAttachment[] = [];
+  private replyAttachmentSeq = 0;
   filter: Record<string, unknown> = {};
 
   constructor(
@@ -247,6 +250,7 @@ export class CustomerSupportComponent implements OnInit {
     this.loadingDetail = true;
     this.detailError = '';
     this.replyBody = '';
+    this.replyAttachments = [];
     this.replyIdempotencyKey = this.newIdempotencyKey();
     this.restService.getWithoutLoader(`${environment.urls.EmailSupport_GetConversation}?id=${item.id}`).subscribe({
       next: (response) => {
@@ -333,7 +337,7 @@ export class CustomerSupportComponent implements OnInit {
   }
 
   sendReply(): void {
-    if (!this.selected || this.isReplyEmpty()) {
+    if (!this.selected || (this.isReplyEmpty() && this.replyAttachments.length === 0)) {
       this.toastr.warning('Enter a reply before sending.');
       return;
     }
@@ -341,13 +345,17 @@ export class CustomerSupportComponent implements OnInit {
     this.sendingReply = true;
     this.restService.post(environment.urls.EmailSupport_Reply, {
       conversationId: this.selected.id,
-      body: this.replyBody.trim(),
+      body: this.replyBody ? this.replyBody.trim() : '',
       idempotencyKey: this.replyIdempotencyKey,
+      attachments: this.replyAttachments.map((item) => ({
+        fileName: item.fileName,
+        contentType: item.contentType,
+        contentBase64: item.contentBase64,
+      })),
     }).subscribe({
       next: () => {
         this.sendingReply = false;
-        this.replyBody = '';
-        this.replyIdempotencyKey = this.newIdempotencyKey();
+        this.discardReply();
         this.toastr.success('Reply sent.');
         this.openConversation(this.selected);
         this.loadConversations();
@@ -358,6 +366,76 @@ export class CustomerSupportComponent implements OnInit {
         this.toastr.error(err?.error?.error?.message || 'Could not send the reply.');
       },
     });
+  }
+
+  discardReply(): void {
+    this.replyBody = '';
+    this.replyAttachments = [];
+    this.replyIdempotencyKey = this.newIdempotencyKey();
+    this.showReplyToolbar = true;
+  }
+
+  onReplyFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const files = input.files ? Array.from(input.files) : [];
+    input.value = '';
+    files.forEach((file) => this.addReplyAttachment(file));
+  }
+
+  removeReplyAttachment(id: number): void {
+    this.replyAttachments = this.replyAttachments.filter((item) => item.id !== id);
+  }
+
+  formatFileSize(bytes: number): string {
+    if (!bytes || bytes < 1024) {
+      return `${bytes || 0}B`;
+    }
+    if (bytes < 1024 * 1024) {
+      return `${Math.round(bytes / 1024)}K`;
+    }
+    return `${(bytes / (1024 * 1024)).toFixed(1).replace(/\.0$/, '')}M`;
+  }
+
+  private addReplyAttachment(file: File): void {
+    if (!file) {
+      return;
+    }
+
+    const maxFileBytes = 10 * 1024 * 1024;
+    const maxTotalBytes = 25 * 1024 * 1024;
+    if (file.size > maxFileBytes) {
+      this.toastr.warning(`${file.name} is larger than 10 MB.`);
+      return;
+    }
+
+    const currentTotal = this.replyAttachments.reduce((sum, item) => sum + item.size, 0);
+    if (currentTotal + file.size > maxTotalBytes) {
+      this.toastr.warning('Total attachments cannot exceed 25 MB.');
+      return;
+    }
+
+    if (this.replyAttachments.length >= 20) {
+      this.toastr.warning('You can attach up to 20 files.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = (reader.result as string) || '';
+      const comma = result.indexOf(',');
+      const contentBase64 = comma >= 0 ? result.substring(comma + 1) : result;
+      this.replyAttachments = [
+        ...this.replyAttachments,
+        {
+          id: ++this.replyAttachmentSeq,
+          fileName: file.name,
+          contentType: file.type || 'application/octet-stream',
+          size: file.size,
+          contentBase64,
+        },
+      ];
+    };
+    reader.readAsDataURL(file);
   }
 
   setReadState(isUnread: boolean): void {
@@ -513,4 +591,16 @@ export class CustomerSupportComponent implements OnInit {
   private newIdempotencyKey(): string {
     return 'reply-' + Date.now() + '-' + Math.random().toString(16).slice(2);
   }
+
+  visibleAttachments(message: EmailMessage) {
+    return (message.attachments || []).filter((item) => !item.isInline);
+  }
+}
+
+interface ReplyDraftAttachment {
+  id: number;
+  fileName: string;
+  contentType: string;
+  size: number;
+  contentBase64: string;
 }

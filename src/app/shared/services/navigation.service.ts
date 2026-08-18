@@ -207,6 +207,14 @@ export class NavigationService {
         state: '/online-shop/customer-support',
       },
       {
+        name: 'Live Chat',
+        title: 'Live Chat',
+        type: 'link',
+        icon: 'assets/images/sidebar/live-chat.svg',
+        icontType: InconsTypeEnum.ICons_FontAwesome.toString(),
+        state: '/online-shop/live-chat',
+      },
+      {
         name: 'Settings',
         title: 'Settings',
         type: 'link',

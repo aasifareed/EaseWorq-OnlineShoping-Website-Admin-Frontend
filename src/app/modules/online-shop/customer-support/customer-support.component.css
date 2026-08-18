@@ -347,61 +347,221 @@
   height: auto;
 }
 
-.reply-composer {
-  border-top: 1px solid #e0e3e7;
-  background: #f8f9fb;
-  padding: 0.85rem 1rem 1rem;
-  margin-top: auto;
-}
-
-.reply-composer__header {
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: #6c757d;
-  margin-bottom: 0.5rem;
-}
-
-.reply-route {
-  display: grid;
-  gap: 0.25rem;
-  margin-bottom: 0.65rem;
-  font-size: 0.8125rem;
-  color: #3c4043;
-}
-
-.reply-route__label {
-  display: inline-block;
-  min-width: 2.5rem;
-  font-weight: 600;
-  color: #6c757d;
-}
-
-.reply-composer__editor {
-  margin-bottom: 0.65rem;
-}
-
-.reply-composer__editor ::ng-deep .p-editor-container {
-  border-radius: 6px;
+.gmail-compose {
+  margin: auto 0.85rem 0.85rem;
+  background: #fff;
+  border: 1px solid #e0e3e7;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(60, 64, 67, 0.12), 0 4px 8px rgba(60, 64, 67, 0.08);
   overflow: hidden;
 }
 
-.reply-composer__editor ::ng-deep .p-editor-toolbar {
-  background: #fff;
-  border-color: #dadce0;
+.gmail-compose__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 0.85rem 0.45rem;
 }
 
-.reply-composer__editor ::ng-deep .p-editor-content {
-  background: #fff;
-  border-color: #dadce0;
+.gmail-compose__title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #202124;
 }
 
-.reply-composer__editor ::ng-deep .ql-editor {
+.gmail-compose__title .fontAwesome_Li_Class {
+  color: #5f6368;
+}
+
+.gmail-compose__meta {
+  padding: 0 0.85rem 0.35rem;
+  border-bottom: 1px solid #f1f3f4;
+}
+
+.gmail-compose__row {
+  display: flex;
+  gap: 0.75rem;
+  font-size: 0.8125rem;
+  padding: 0.2rem 0;
+  color: #202124;
+}
+
+.gmail-compose__row--muted {
+  color: #5f6368;
+}
+
+.gmail-compose__label {
+  min-width: 2.4rem;
+  color: #80868b;
+}
+
+.gmail-compose__value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gmail-compose__editor {
+  padding: 0 0.25rem;
+}
+
+.gmail-compose__editor ::ng-deep .p-editor-container {
+  border: none;
+}
+
+.gmail-compose__editor ::ng-deep .p-editor-toolbar {
+  background: #f1f3f4;
+  border: none;
+  border-radius: 24px;
+  margin: 0.4rem 0.6rem;
+  padding: 0.15rem 0.4rem;
+}
+
+.gmail-compose__editor ::ng-deep .p-editor-content {
+  border: none;
+  background: #fff;
+}
+
+.gmail-compose__editor ::ng-deep .ql-editor {
   min-height: 140px;
   font-size: 0.9375rem;
   line-height: 1.55;
   font-weight: 400;
+  padding: 0.75rem 0.9rem 0.4rem;
+}
+
+.gmail-compose__editor ::ng-deep .ql-editor.ql-blank::before {
+  font-style: normal;
+  color: #80868b;
+  left: 0.9rem;
+}
+
+.gmail-compose__editor--toolbar-hidden ::ng-deep .p-editor-toolbar {
+  display: none;
+}
+
+.gmail-attachments {
+  padding: 0.15rem 0.85rem 0.45rem;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.gmail-attachment {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background: #f1f3f4;
+  border: none;
+  border-radius: 4px;
+  padding: 0.45rem 0.65rem;
+  text-align: left;
+  color: #202124;
+  font-size: 0.8125rem;
+}
+
+.gmail-attachment--link {
+  cursor: pointer;
+}
+
+.gmail-attachment--link:hover:not(:disabled) {
+  background: #e8eaed;
+}
+
+.gmail-attachment--link:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.gmail-attachment__name {
+  color: #1a73e8;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: calc(100% - 5.5rem);
+}
+
+.gmail-attachment__size {
+  color: #3c4043;
+  margin-left: 0.25rem;
+  flex-shrink: 0;
+}
+
+.gmail-attachment__remove {
+  margin-left: auto;
+  border: none;
+  background: transparent;
+  color: #5f6368;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gmail-attachment__remove:hover {
+  background: #dadce0;
+  color: #202124;
+}
+
+.gmail-compose__footer {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.55rem 0.75rem 0.7rem;
+}
+
+.gmail-send {
+  border: none;
+  background: #0b57d0;
+  color: #fff !important;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border-radius: 18px;
+  padding: 0.45rem 1.35rem;
+  min-width: 88px;
+}
+
+.gmail-send:hover:not(:disabled) {
+  background: #0842a0;
+}
+
+.gmail-send:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.gmail-icon-btn {
+  border: none;
+  background: transparent;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  color: #5f6368;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.gmail-icon-btn:hover,
+.gmail-icon-btn.active {
+  background: #e8f0fe;
+  color: #0b57d0;
+}
+
+.gmail-icon-btn--end {
+  margin-left: auto;
+}
+
+.gmail-aa {
+  font-weight: 700;
+  font-size: 0.8125rem;
+  line-height: 1;
 }
 
 .support-rich-editor ::ng-deep .ql-editor strong,
@@ -433,21 +593,9 @@
   text-decoration: underline;
 }
 
-.reply-composer__input {
-  margin-bottom: 0.65rem;
-  resize: vertical;
-  min-height: 120px;
-  border-color: #dadce0;
-}
-
-.reply-composer__input:focus {
-  border-color: #1a73e8;
-  box-shadow: 0 0 0 0.15rem rgba(26, 115, 232, 0.15);
-}
-
-.reply-actions {
-  display: flex;
-  justify-content: flex-end;
+.support-rich-editor ::ng-deep .ql-editor img {
+  max-width: 100%;
+  height: auto;
 }
 
 .empty-state {

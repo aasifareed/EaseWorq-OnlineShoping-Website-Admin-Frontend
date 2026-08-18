@@ -101,6 +101,12 @@ export const appServiceUrls = {
   EmailSupport_GetAssignableUsers: '/EmailSupport/GetAssignableUsers',
   EmailSupport_DownloadAttachment: '/EmailSupport/DownloadAttachment',
 
+  // Live chat (ChatAppService)
+  Chat_GetChatHistory: '/Chat/GetChatHistory',
+  Chat_GetConversations: '/Chat/GetConversations',
+  Chat_GetSupportStatus: '/Chat/GetSupportStatus',
+  ChatImage_Upload: '/ChatImageUpload/Upload',
+
   // Online shop settings (OnlineShopSettingsAppService)
   Settings_GetForEdit: '/OnlineShopSettings/GetForEdit',
   Settings_Save: '/OnlineShopSettings/Save',

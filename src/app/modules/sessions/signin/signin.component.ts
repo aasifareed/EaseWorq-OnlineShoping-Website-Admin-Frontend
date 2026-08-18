@@ -10,6 +10,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { LoaderService } from 'src/app/shared/services/loader.service';
 import { UserService } from 'src/app/shared/services/user.service';
 import { SignalRService } from '../../../shared/services/signal-r.service';
+import { ChatHubService } from '../../../shared/services/chat-hub.service';
 import { GlobalDataService } from 'src/app/shared/services/globalData.service';
 import { LocalStoreService } from 'src/app/shared/services/local-store.service';
 import { Apps } from 'src/app/shared/enum/Apps';
@@ -62,6 +63,7 @@ export class SigninComponent implements OnInit, OnDestroy, AfterViewInit {
         private loaderService: LoaderService,
         private userService: UserService,
         public signalRService: SignalRService,
+        private chatHubService: ChatHubService,
         public globalDataService: GlobalDataService,
         private store: LocalStoreService,
         private activatedRoute: ActivatedRoute,
@@ -317,6 +319,7 @@ export class SigninComponent implements OnInit, OnDestroy, AfterViewInit {
                         if (!this.signalRService.signalRConnectionEnabled) {
                             this.signalRService.startConnection();
                         }
+                        this.chatHubService.startConnection();
                     },
                     error: (error) => this.handleLoginError(error),
                 });
