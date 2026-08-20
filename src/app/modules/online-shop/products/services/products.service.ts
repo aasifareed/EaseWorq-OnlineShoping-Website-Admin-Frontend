@@ -89,6 +89,9 @@ export class ProductsService {
     if (payload.showProductOnline != null) {
       body.ShowProductOnline = payload.showProductOnline;
     }
+    if (payload.showOnMeta != null) {
+      body.ShowOnMeta = payload.showOnMeta;
+    }
 
     const url = appServiceUrls.OnlineShopProduct_UpdateForAdmin || '/OnlineShopProduct/UpdateForAdmin';
     return this.restService.put(url, body).pipe(
@@ -172,6 +175,7 @@ export class ProductsService {
       productWeightKg: Number(row.productWeight ?? row.ProductWeight ?? 0),
       isAvailable: Boolean(row.isAvailable ?? row.IsAvailable ?? false),
       showProductOnline: Boolean(row.showProductOnline ?? row.ShowProductOnline ?? false),
+      showOnMeta: Boolean(row.showOnMeta ?? row.ShowOnMeta ?? false),
       pictureUrl,
       pictureUrls: pictureUrls.length > 0 ? pictureUrls : pictureUrl ? [pictureUrl] : [],
     };

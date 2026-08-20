@@ -23,6 +23,8 @@ export interface AdminProductListItem {
   productWeightKg: number;
   isAvailable: boolean;
   showProductOnline: boolean;
+  /** When true, product is pushed to the Meta catalog. */
+  showOnMeta: boolean;
   pictureUrl: string;
   pictureUrls: string[];
 }
@@ -51,6 +53,7 @@ export interface UpdateAdminProductPayload {
   productWeightKg?: number;
   isAvailable?: boolean;
   showProductOnline?: boolean;
+  showOnMeta?: boolean;
 }
 
 export interface AdminProductsQuery {

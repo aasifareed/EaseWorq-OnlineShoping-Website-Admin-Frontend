@@ -21,7 +21,7 @@ import { ProductCategoriesComponent } from './product-categories/product-categor
 import { ProductBrandsComponent } from './product-brands/product-brands.component';
 
 /** The inline-editable cells, each saved on its own so one slow save cannot block the others. */
-type EditableProductField = 'price' | 'discount' | 'slug' | 'weight' | 'showOnline' | 'available';
+type EditableProductField = 'price' | 'discount' | 'slug' | 'weight' | 'showOnline' | 'showOnMeta' | 'available';
 
 @Component({
   selector: 'app-products',
@@ -260,6 +260,15 @@ export class ProductsComponent implements OnInit {
     this.saveProductField(row, 'showOnline', { showProductOnline: input.checked }, input);
   }
 
+  onShowOnMetaToggle(row: AdminProductListItem, event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (this.isSaving(row, 'showOnMeta')) {
+      input.checked = row.showOnMeta;
+      return;
+    }
+    this.saveProductField(row, 'showOnMeta', { showOnMeta: input.checked }, input);
+  }
+
   onAvailableToggle(row: AdminProductListItem, event: Event): void {
     const input = event.target as HTMLInputElement;
     if (this.isSaving(row, 'available')) {
@@ -279,6 +288,7 @@ export class ProductsComponent implements OnInit {
       productWeightKg?: number;
       isAvailable?: boolean;
       showProductOnline?: boolean;
+      showOnMeta?: boolean;
     },
     toggleInput?: HTMLInputElement,
   ): void {
@@ -302,6 +312,8 @@ export class ProductsComponent implements OnInit {
           if (toggleInput) {
             if (field === 'showOnline') {
               toggleInput.checked = row.showProductOnline;
+            } else if (field === 'showOnMeta') {
+              toggleInput.checked = row.showOnMeta;
             } else if (field === 'available') {
               toggleInput.checked = row.isAvailable;
             }

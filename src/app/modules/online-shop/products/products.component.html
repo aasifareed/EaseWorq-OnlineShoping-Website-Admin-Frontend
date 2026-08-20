@@ -282,6 +282,32 @@
                             </ngx-datatable-column>
 
                             <ngx-datatable-column
+                              [name]="'Show On Meta' | translate"
+                              [sortable]="false"
+                              [minWidth]="120"
+                              cellClass="products-datatable__center-col"
+                              headerClass="products-datatable__center-col"
+                            >
+                              <ng-template ngx-datatable-cell-template let-row="row">
+                                <div class="products-datatable__cell-center products-datatable__cell-actions">
+                                  <label
+                                    class="status-switch mb-0"
+                                    [class.status-switch--disabled]="isSaving(row, 'showOnMeta')"
+                                    [title]="row.showOnMeta ? ('Enabled' | translate) : ('Disabled' | translate)"
+                                  >
+                                    <input
+                                      type="checkbox"
+                                      [checked]="row.showOnMeta"
+                                      [disabled]="isSaving(row, 'showOnMeta')"
+                                      (change)="onShowOnMetaToggle(row, $event)"
+                                    />
+                                    <span class="status-switch__slider"></span>
+                                  </label>
+                                </div>
+                              </ng-template>
+                            </ngx-datatable-column>
+
+                            <ngx-datatable-column
                               [name]="'Show Online' | translate"
                               [sortable]="false"
                               [minWidth]="110"
