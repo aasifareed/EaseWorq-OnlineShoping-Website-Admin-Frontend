@@ -1,0 +1,77 @@
+.meta-sync-modal__header .modal-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.meta-sync-modal__title-icon {
+  color: #1877f2;
+}
+
+.meta-sync-modal__state-icon {
+  color: #1877f2;
+}
+
+.meta-sync-modal__status-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+
+.meta-sync-modal__status-icon {
+  font-size: 1.25rem;
+  line-height: 1.4;
+  color: #1877f2;
+  flex-shrink: 0;
+}
+
+.meta-sync-modal__message {
+  font-size: 0.95rem;
+}
+
+.meta-sync-modal__progress {
+  height: 1.35rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.meta-sync-modal__progress .progress-bar {
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.35rem;
+}
+
+.meta-sync-modal__stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 0.75rem;
+}
+
+.meta-sync-modal__stats > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.5rem 0.65rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.4rem;
+}
+
+.meta-sync-modal__stats .text-muted {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.meta-sync-modal__stats .text-muted .fa {
+  font-size: 0.75rem;
+}
+
+.modal-footer .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}

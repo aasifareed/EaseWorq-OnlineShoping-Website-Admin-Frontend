@@ -1,0 +1,36 @@
+.simple-fb-post-modal__title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.simple-fb-post-modal__title .fa-facebook {
+  color: #1877f2;
+}
+
+.simple-fb-post-modal__eyebrow {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: #1877f2;
+  margin-bottom: 0.5rem;
+}
+
+.simple-fb-post-modal__caption,
+.simple-fb-post-modal__images {
+  font-family: Consolas, 'Courier New', monospace;
+  font-size: 0.875rem;
+  white-space: pre-wrap;
+}
+
+.simple-fb-post-modal__history-item {
+  padding: 0.35rem 0;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 0.85rem;
+}
+
+.modal-footer .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}

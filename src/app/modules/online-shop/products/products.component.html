@@ -70,6 +70,24 @@
                           [placeholder]="'Search products' | translate"
                         />
                       </div>
+                      <div class="os-filter-toolbar__actions os-filter-toolbar__actions--end">
+                        <button
+                          type="button"
+                          class="btn btn-outline-primary mr-2"
+                          (click)="openSimpleFacebookPostModal()"
+                        >
+                          <i class="fa fa-facebook fontAwesome_Li_Class" aria-hidden="true"></i>
+                          {{ 'Create Facebook Post' | translate }}
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-primary"
+                          (click)="openMetaCatalogSyncModal()"
+                        >
+                          <i class="fa fa-cloud-upload fontAwesome_Li_Class" aria-hidden="true"></i>
+                          {{ 'Sync products to Meta' | translate }}
+                        </button>
+                      </div>
                     </div>
 
                     <div class="row">
@@ -378,11 +396,11 @@
                                   </button>
                                   <button
                                     type="button"
-                                    class="btn btn-sm btn-outline-primary ml-1"
+                                    class="btn btn-sm btn-outline-primary ml-1 products-datatable__fb-btn"
                                     title="{{ 'Create Facebook Post' | translate }}"
                                     (click)="openFacebookPostModal(row)"
                                   >
-                                    <i class="fa fa-facebook-official fontAwesome_Li_Class"></i>
+                                    <i class="fa fa-facebook fontAwesome_Li_Class" aria-hidden="true"></i>
                                     {{ 'Facebook' | translate }}
                                   </button>
                                 </div>

@@ -185,8 +185,23 @@
 }
 
 .products-datatable__cell-actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
   padding-top: 8px;
   box-sizing: border-box;
+}
+
+.products-datatable__cell-actions .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.products-datatable__fb-btn .fa-facebook {
+  color: #1877f2;
 }
 
 /* All body cells — vertical center (ngx-datatable material) */

@@ -1,0 +1,108 @@
+<div class="modal-header meta-sync-modal__header">
+  <h5 class="modal-title">
+    <i class="fa fa-cloud-upload fontAwesome_Li_Class meta-sync-modal__title-icon" aria-hidden="true"></i>
+    {{ 'Sync products to Meta' | translate }}
+  </h5>
+  <button
+    type="button"
+    class="close"
+    aria-label="Close"
+    [disabled]="!canClose"
+    (click)="activeModal.dismiss()"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body meta-sync-modal">
+  <div *ngIf="starting" class="meta-sync-modal__state text-center py-3">
+    <i class="fa fa-spinner fa-spin fa-2x meta-sync-modal__state-icon" aria-hidden="true"></i>
+    <div class="mt-2">{{ 'Starting sync…' | translate }}</div>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger mb-0">
+    <i class="fa fa-exclamation-triangle fontAwesome_Li_Class mr-1" aria-hidden="true"></i>
+    {{ error }}
+  </div>
+
+  <ng-container *ngIf="!starting && progress && !error">
+    <div class="meta-sync-modal__status-row mb-3">
+      <i
+        class="fa fontAwesome_Li_Class meta-sync-modal__status-icon"
+        [ngClass]="{
+          'fa-spinner fa-spin': progress.isRunning,
+          'fa-check-circle text-success': !progress.isRunning && progress.status === 'Completed',
+          'fa-times-circle text-danger': !progress.isRunning && progress.status === 'Failed'
+        }"
+        aria-hidden="true"
+      ></i>
+      <p class="meta-sync-modal__message mb-0">{{ progress.message }}</p>
+    </div>
+
+    <div class="progress meta-sync-modal__progress mb-3">
+      <div
+        class="progress-bar"
+        role="progressbar"
+        [style.width.%]="percent"
+        [attr.aria-valuenow]="percent"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        [class.progress-bar-striped]="progress.isRunning"
+        [class.progress-bar-animated]="progress.isRunning"
+        [class.bg-success]="!progress.isRunning && progress.status === 'Completed'"
+        [class.bg-danger]="!progress.isRunning && progress.status === 'Failed'"
+      >
+        {{ percent }}%
+      </div>
+    </div>
+
+    <div class="meta-sync-modal__stats">
+      <div>
+        <span class="text-muted">
+          <i class="fa fa-tasks fontAwesome_Li_Class" aria-hidden="true"></i>
+          {{ 'Processed' | translate }}
+        </span>
+        <strong>{{ progress.processed }}</strong>
+      </div>
+      <div>
+        <span class="text-muted">
+          <i class="fa fa-hourglass-half fontAwesome_Li_Class" aria-hidden="true"></i>
+          {{ 'Remaining' | translate }}
+        </span>
+        <strong>{{ progress.remaining }}</strong>
+      </div>
+      <div>
+        <span class="text-muted">
+          <i class="fa fa-list fontAwesome_Li_Class" aria-hidden="true"></i>
+          {{ 'Total' | translate }}
+        </span>
+        <strong>{{ progress.total }}</strong>
+      </div>
+      <div>
+        <span class="text-muted">
+          <i class="fa fa-check fontAwesome_Li_Class" aria-hidden="true"></i>
+          {{ 'Succeeded' | translate }}
+        </span>
+        <strong>{{ progress.succeeded }}</strong>
+      </div>
+      <div>
+        <span class="text-muted">
+          <i class="fa fa-times fontAwesome_Li_Class" aria-hidden="true"></i>
+          {{ 'Failed' | translate }}
+        </span>
+        <strong>{{ progress.failed }}</strong>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" [disabled]="!canClose" (click)="activeModal.close(progress)">
+    <i
+      class="fa fontAwesome_Li_Class"
+      [ngClass]="canClose ? 'fa-times' : 'fa-spinner fa-spin'"
+      aria-hidden="true"
+    ></i>
+    {{ canClose ? ('Close' | translate) : ('Syncing…' | translate) }}
+  </button>
+</div>

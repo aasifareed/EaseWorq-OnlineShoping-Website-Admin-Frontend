@@ -8,6 +8,15 @@ export interface MetaPagePostHistoryItem {
   errorMessage?: string | null;
 }
 
+export interface MetaPagePostImage {
+  imageId: string;
+  url: string;
+  isPrimary: boolean;
+  selected: boolean;
+  canPublishToMeta: boolean;
+  sortOrder: number;
+}
+
 export interface MetaPagePostDraft {
   productId: string;
   productInventoryId: string;
@@ -23,13 +32,20 @@ export interface MetaPagePostDraft {
   canPublish: boolean;
   publishingEnabled: boolean;
   disabledReason?: string | null;
+  images: MetaPagePostImage[];
   recentPosts: MetaPagePostHistoryItem[];
+}
+
+export interface PublishMetaPageSelectedImage {
+  imageId: string;
+  order: number;
 }
 
 export interface PublishMetaPagePostPayload {
   productId: string;
   caption: string;
   imageUrl?: string;
+  selectedImages: PublishMetaPageSelectedImage[];
 }
 
 export interface PublishMetaPagePostResult {
@@ -38,4 +54,21 @@ export interface PublishMetaPagePostResult {
   externalPostId?: string | null;
   permalink?: string | null;
   message?: string | null;
+}
+
+export interface SimpleMetaPagePostDraft {
+  pageName: string;
+  pageId?: string | null;
+  caption: string;
+  linkUrl?: string | null;
+  canPublish: boolean;
+  publishingEnabled: boolean;
+  disabledReason?: string | null;
+  recentPosts: MetaPagePostHistoryItem[];
+}
+
+export interface PublishSimpleMetaPagePostPayload {
+  caption: string;
+  linkUrl?: string;
+  imageUrls?: string[];
 }

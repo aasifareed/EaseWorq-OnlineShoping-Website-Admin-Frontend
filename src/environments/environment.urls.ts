@@ -139,11 +139,16 @@ export const appServiceUrls = {
   OnlineShopProduct_UploadImages: '/OnlineShopProductUpload/UploadImages',
   OnlineShopProduct_GetImages: '/OnlineShopProductUpload/GetImages',
   OnlineShopProduct_RemoveImage: '/OnlineShopProductUpload/RemoveImage',
+  OnlineShopProduct_StartMetaCatalogSync: '/OnlineShopProduct/StartMetaCatalogSync',
+  OnlineShopProduct_GetMetaCatalogSyncProgress: '/OnlineShopProduct/GetMetaCatalogSyncProgress',
 
   // Facebook Page product publishing (OnlineShopMetaPagePublishAppService)
   OnlineShopMetaPagePublish_GetDraft: '/OnlineShopMetaPagePublish/GetFacebookPostDraft',
   OnlineShopMetaPagePublish_GetHistory: '/OnlineShopMetaPagePublish/GetFacebookPostHistory',
   OnlineShopMetaPagePublish_Publish: '/OnlineShopMetaPagePublish/PublishFacebookPost',
+  OnlineShopMetaPagePublish_GetSimpleDraft: '/OnlineShopMetaPagePublish/GetSimpleFacebookPostDraft',
+  OnlineShopMetaPagePublish_GetSimpleHistory: '/OnlineShopMetaPagePublish/GetSimpleFacebookPostHistory',
+  OnlineShopMetaPagePublish_PublishSimple: '/OnlineShopMetaPagePublish/PublishSimpleFacebookPost',
   OnlineShopMetaPagePublish_CheckConnection: '/OnlineShopMetaPagePublish/CheckMetaPagePublishingConnection',
 
   // Home page banners (OnlineShopHomeBannerUploadController)

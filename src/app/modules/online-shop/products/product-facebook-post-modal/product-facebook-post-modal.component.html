@@ -1,5 +1,8 @@
 <div class="modal-header">
-  <h5 class="modal-title">{{ 'Create Facebook Post' | translate }}</h5>
+  <h5 class="modal-title facebook-post-modal__title">
+    <i class="fa fa-facebook fontAwesome_Li_Class" aria-hidden="true"></i>
+    {{ 'Create Facebook Post' | translate }}
+  </h5>
   <button type="button" class="close" aria-label="Close" [disabled]="publishing" (click)="activeModal.dismiss()">
     <span aria-hidden="true">&times;</span>
   </button>
@@ -23,27 +26,73 @@
         <span class="text-muted">{{ 'Publishing to' | translate }}:</span>
         <strong> Facebook · {{ draft.pageName }}</strong>
       </div>
+      <div class="font-weight-bold mt-2">{{ draft.productName || product?.productName }}</div>
     </div>
 
-    <div class="facebook-post-modal__product mb-3">
-      <div class="facebook-post-modal__thumb-wrap">
-        <span class="facebook-post-modal__thumb-frame">
-          <img
-            class="facebook-post-modal__thumb"
-            [src]="previewImageUrl"
-            [alt]="draft.productName || product?.productName"
-            (error)="onPreviewImageError($event)"
-          />
-        </span>
-        <span class="facebook-post-modal__thumb-badge" *ngIf="imageCountLabel">
-          {{ imageCountLabel }}
-        </span>
+    <div class="form-group">
+      <label class="d-block mb-2">{{ 'Product Images' | translate }}</label>
+      <div class="facebook-post-modal__images" *ngIf="images.length; else noImages">
+        <div
+          class="facebook-post-modal__image-card"
+          *ngFor="let image of images"
+          [class.is-selected]="image.selected"
+        >
+          <button
+            type="button"
+            class="facebook-post-modal__image-preview-btn"
+            (click)="openImagePreview(image)"
+            [attr.aria-label]="'Preview image' | translate"
+          >
+            <img
+              [src]="image.url"
+              [alt]="draft.productName"
+              (error)="onPreviewImageError($event)"
+            />
+            <span class="facebook-post-modal__order" *ngIf="image.selected">
+              {{ selectedOrderLabel(image) }}
+            </span>
+          </button>
+          <label class="facebook-post-modal__check">
+            <input
+              type="checkbox"
+              [checked]="image.selected"
+              [disabled]="publishing || !draft.canPublish"
+              (change)="toggleImage(image)"
+            />
+            <span>{{ 'Include' | translate }}</span>
+          </label>
+          <div class="facebook-post-modal__reorder" *ngIf="image.selected">
+            <button
+              type="button"
+              class="btn btn-link btn-sm p-0"
+              [disabled]="publishing"
+              (click)="moveSelected(image, -1)"
+              [attr.aria-label]="'Move left' | translate"
+            >
+              <i class="fa fa-arrow-left" aria-hidden="true"></i>
+            </button>
+            <button
+              type="button"
+              class="btn btn-link btn-sm p-0"
+              [disabled]="publishing"
+              (click)="moveSelected(image, 1)"
+              [attr.aria-label]="'Move right' | translate"
+            >
+              <i class="fa fa-arrow-right" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
       </div>
-      <div class="facebook-post-modal__product-copy">
-        <div class="font-weight-bold">{{ draft.productName || product?.productName }}</div>
-        <div class="text-muted small" *ngIf="!draft.imageUrl && !product?.pictureUrl">
+      <ng-template #noImages>
+        <div class="text-muted small">
           {{ 'No product image — a text/link post will be published.' | translate }}
         </div>
+      </ng-template>
+      <div class="facebook-post-modal__selected-count mt-2" *ngIf="images.length">
+        {{ selectedCountLabel }}
+      </div>
+      <div class="text-muted small mt-1" *ngIf="selectedCount > 1">
+        {{ 'Use the arrows to set image order. The first selected image appears first on Facebook.' | translate }}
       </div>
     </div>
 
@@ -52,7 +101,7 @@
       <textarea
         id="fbCaption"
         class="form-control facebook-post-modal__caption"
-        rows="12"
+        rows="10"
         [(ngModel)]="caption"
         [disabled]="publishing || !draft.canPublish"
         maxlength="8000"
@@ -105,6 +154,7 @@
 
 <div class="modal-footer" *ngIf="draft">
   <button type="button" class="btn btn-secondary" [disabled]="publishing" (click)="activeModal.dismiss()">
+    <i class="fa fa-times fontAwesome_Li_Class" aria-hidden="true"></i>
     {{ 'Cancel' | translate }}
   </button>
   <button
@@ -113,7 +163,16 @@
     [disabled]="!canPublish"
     (click)="publish()"
   >
-    <i class="fa fa-spinner fa-spin" *ngIf="publishing"></i>
+    <i class="fa fontAwesome_Li_Class" [ngClass]="publishing ? 'fa-spinner fa-spin' : 'fa-share-square-o'" aria-hidden="true"></i>
     {{ publishing ? ('Publishing…' | translate) : ('Publish to Facebook' | translate) }}
   </button>
+</div>
+
+<div class="facebook-post-modal__lightbox" *ngIf="previewImage" (click)="closeImagePreview()">
+  <div class="facebook-post-modal__lightbox-inner" (click)="$event.stopPropagation()">
+    <button type="button" class="close" (click)="closeImagePreview()" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <img [src]="previewImage.url" [alt]="draft?.productName || ''" (error)="onPreviewImageError($event)" />
+  </div>
 </div>

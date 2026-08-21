@@ -11,6 +11,8 @@ import { ProductsComponent } from './products.component';
 import { ProductImagesModalComponent } from './product-images-modal/product-images-modal.component';
 import { ProductEditModalComponent } from './product-edit-modal/product-edit-modal.component';
 import { ProductFacebookPostModalComponent } from './product-facebook-post-modal/product-facebook-post-modal.component';
+import { SimpleFacebookPostModalComponent } from './simple-facebook-post-modal/simple-facebook-post-modal.component';
+import { MetaCatalogSyncModalComponent } from './meta-catalog-sync-modal/meta-catalog-sync-modal.component';
 import { ProductCategoriesComponent } from './product-categories/product-categories.component';
 import { ProductCategoryEditModalComponent } from './product-category-edit-modal/product-category-edit-modal.component';
 import { CategoryImageModalComponent } from './category-image-modal/category-image-modal.component';
@@ -20,6 +22,7 @@ import { ProductsService } from './services/products.service';
 import { ProductCategoriesService } from './services/product-categories.service';
 import { ProductBrandsService } from './services/product-brands.service';
 import { EditorModule } from 'primeng/editor';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -33,12 +36,15 @@ import { EditorModule } from 'primeng/editor';
     SharedComponentsModule,
     ProductsRoutingModule,
     EditorModule,
+    TranslateModule,
   ],
   declarations: [
     ProductsComponent,
     ProductImagesModalComponent,
     ProductEditModalComponent,
     ProductFacebookPostModalComponent,
+    SimpleFacebookPostModalComponent,
+    MetaCatalogSyncModalComponent,
     ProductCategoriesComponent,
     ProductCategoryEditModalComponent,
     CategoryImageModalComponent,
@@ -49,6 +55,8 @@ import { EditorModule } from 'primeng/editor';
     ProductImagesModalComponent,
     ProductEditModalComponent,
     ProductFacebookPostModalComponent,
+    SimpleFacebookPostModalComponent,
+    MetaCatalogSyncModalComponent,
     ProductCategoryEditModalComponent,
     CategoryImageModalComponent,
     BrandImageModalComponent,

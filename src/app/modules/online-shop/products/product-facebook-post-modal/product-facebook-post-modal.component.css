@@ -1,3 +1,13 @@
+.facebook-post-modal__title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.facebook-post-modal__title .fa-facebook {
+  color: #1877f2;
+}
+
 .facebook-post-modal__eyebrow {
   font-size: 0.7rem;
   letter-spacing: 0.08em;
@@ -6,56 +16,82 @@
   margin-bottom: 0.5rem;
 }
 
-.facebook-post-modal__product {
+.facebook-post-modal__images {
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
   gap: 0.75rem;
 }
 
-.facebook-post-modal__thumb-wrap {
-  position: relative;
-  flex-shrink: 0;
-  line-height: 0;
-}
-
-.facebook-post-modal__thumb-frame {
-  display: block;
-  width: 72px;
-  height: 72px;
-  border-radius: 8px;
+.facebook-post-modal__image-card {
+  width: 112px;
   border: 1px solid #e2e8f0;
-  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
-  overflow: hidden;
+  border-radius: 8px;
+  background: #fff;
+  padding: 0.4rem;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
 }
 
-.facebook-post-modal__thumb {
+.facebook-post-modal__image-card.is-selected {
+  border-color: #1877f2;
+  box-shadow: 0 0 0 1px rgba(24, 119, 242, 0.25);
+}
+
+.facebook-post-modal__image-preview-btn {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 84px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  overflow: hidden;
+  cursor: zoom-in;
+}
+
+.facebook-post-modal__image-preview-btn img {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  object-position: center center;
-  display: block;
   padding: 4px;
   box-sizing: border-box;
 }
 
-.facebook-post-modal__thumb-badge {
+.facebook-post-modal__order {
   position: absolute;
-  right: -2px;
-  bottom: -2px;
-  min-width: 18px;
-  height: 18px;
+  top: 4px;
+  left: 4px;
+  min-width: 20px;
+  height: 20px;
   padding: 0 5px;
-  font-size: 10px;
-  font-weight: 700;
-  line-height: 18px;
-  text-align: center;
-  border-radius: 9px;
-  border: 2px solid #fff;
-  background: #663399;
+  border-radius: 10px;
+  background: #1877f2;
   color: #fff;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-  z-index: 1;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 20px;
+  text-align: center;
+}
+
+.facebook-post-modal__check {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0.4rem 0 0;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.facebook-post-modal__reorder {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.15rem;
+}
+
+.facebook-post-modal__selected-count {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #334155;
 }
 
 .facebook-post-modal__caption {
@@ -73,4 +109,44 @@
   padding: 0.35rem 0;
   border-bottom: 1px solid #f0f0f0;
   font-size: 0.85rem;
+}
+
+.facebook-post-modal__lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(15, 23, 42, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.facebook-post-modal__lightbox-inner {
+  position: relative;
+  max-width: min(920px, 96vw);
+  max-height: 90vh;
+  background: #fff;
+  border-radius: 10px;
+  padding: 1.5rem 1rem 1rem;
+}
+
+.facebook-post-modal__lightbox-inner img {
+  display: block;
+  max-width: 100%;
+  max-height: 80vh;
+  margin: 0 auto;
+  object-fit: contain;
+}
+
+.facebook-post-modal__lightbox-inner .close {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.55rem;
+}
+
+.modal-footer .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
 }

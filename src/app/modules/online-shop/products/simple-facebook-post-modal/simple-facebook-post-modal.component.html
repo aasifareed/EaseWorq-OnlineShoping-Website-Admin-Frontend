@@ -1,0 +1,128 @@
+<div class="modal-header">
+  <h5 class="modal-title simple-fb-post-modal__title">
+    <i class="fa fa-facebook fontAwesome_Li_Class" aria-hidden="true"></i>
+    Create Facebook Post
+  </h5>
+  <button type="button" class="close" aria-label="Close" [disabled]="publishing" (click)="activeModal.dismiss()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body simple-fb-post-modal">
+  <div *ngIf="loading" class="text-center py-4">
+    <i class="fa fa-spinner fa-spin"></i>
+    <div class="mt-2">Loading draft…</div>
+  </div>
+
+  <div *ngIf="!loading && loadError && !draft" class="alert alert-danger mb-0">
+    {{ loadError }}
+  </div>
+
+  <ng-container *ngIf="!loading && draft">
+    <div class="simple-fb-post-modal__eyebrow">FACEBOOK POST</div>
+
+    <div class="simple-fb-post-modal__meta mb-3">
+      <span class="text-muted">Publishing to:</span>
+      <strong> Facebook · {{ draft.pageName }}</strong>
+    </div>
+
+    <p class="text-muted small mb-3">
+      Create a general Facebook Page post (not linked to a product).
+    </p>
+
+    <div class="form-group">
+      <label for="simpleFbCaption">Caption</label>
+      <textarea
+        id="simpleFbCaption"
+        class="form-control simple-fb-post-modal__caption"
+        rows="10"
+        [(ngModel)]="caption"
+        [disabled]="publishing || !draft.canPublish"
+        maxlength="8000"
+        placeholder="Write your Facebook post…"
+      ></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="simpleFbLink">Link (optional)</label>
+      <input
+        id="simpleFbLink"
+        type="url"
+        class="form-control"
+        [(ngModel)]="linkUrl"
+        [disabled]="publishing || !draft.canPublish"
+        placeholder="https://…"
+      />
+    </div>
+
+    <div class="form-group mb-3">
+      <label for="simpleFbImages">Image URLs (optional)</label>
+      <textarea
+        id="simpleFbImages"
+        class="form-control simple-fb-post-modal__images"
+        rows="3"
+        [(ngModel)]="imageUrlsText"
+        [disabled]="publishing || !draft.canPublish"
+        placeholder="One public HTTPS image URL per line"
+      ></textarea>
+      <small class="form-text text-muted">
+        Only public HTTPS image links. Localhost and private URLs are rejected.
+      </small>
+    </div>
+
+    <div *ngIf="loadError" class="alert alert-warning">
+      {{ loadError }}
+    </div>
+
+    <div class="simple-fb-post-modal__history" *ngIf="history.length">
+      <button
+        type="button"
+        class="btn btn-link btn-sm px-0"
+        (click)="showHistory = !showHistory"
+      >
+        View Facebook Publishing History
+        ({{ history.length }})
+      </button>
+      <ul class="list-unstyled mb-0" *ngIf="showHistory">
+        <li *ngFor="let item of history" class="simple-fb-post-modal__history-item">
+          <span class="font-weight-bold">Facebook</span>
+          ·
+          <span>{{ item.status }}</span>
+          ·
+          <span>{{ formatHistoryDate(item) }}</span>
+          <button
+            *ngIf="item.permalink"
+            type="button"
+            class="btn btn-link btn-sm py-0"
+            (click)="openPermalink(item.permalink)"
+          >
+            View Post
+          </button>
+          <div class="text-danger small" *ngIf="item.status === 'Failed' && item.errorMessage">
+            {{ item.errorMessage }}
+          </div>
+        </li>
+      </ul>
+    </div>
+  </ng-container>
+</div>
+
+<div class="modal-footer" *ngIf="draft">
+  <button type="button" class="btn btn-secondary" [disabled]="publishing" (click)="activeModal.dismiss()">
+    <i class="fa fa-times fontAwesome_Li_Class" aria-hidden="true"></i>
+    Cancel
+  </button>
+  <button
+    type="button"
+    class="btn btn-primary"
+    [disabled]="!canPublish"
+    (click)="publish()"
+  >
+    <i
+      class="fa fontAwesome_Li_Class"
+      [ngClass]="publishing ? 'fa-spinner fa-spin' : 'fa-share-square-o'"
+      aria-hidden="true"
+    ></i>
+    {{ publishing ? 'Publishing…' : 'Publish to Facebook' }}
+  </button>
+</div>

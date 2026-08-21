@@ -11,6 +11,8 @@ import { AdminProductListItem } from './models/product.models';
 import { ProductImagesModalComponent } from './product-images-modal/product-images-modal.component';
 import { ProductEditModalComponent } from './product-edit-modal/product-edit-modal.component';
 import { ProductFacebookPostModalComponent } from './product-facebook-post-modal/product-facebook-post-modal.component';
+import { SimpleFacebookPostModalComponent } from './simple-facebook-post-modal/simple-facebook-post-modal.component';
+import { MetaCatalogSyncModalComponent } from './meta-catalog-sync-modal/meta-catalog-sync-modal.component';
 import { ProductsService } from './services/products.service';
 import {
   PublishMetaPagePostResult,
@@ -388,21 +390,50 @@ export class ProductsComponent implements OnInit {
 
     modalRef.result.then(
       (result: PublishMetaPagePostResult) => {
-        if (result?.permalink) {
-          const toast = this.toastr.success(
-            this.translate.instant('Facebook post published successfully. Click here to view.'),
-            '',
-            { enableHtml: false, timeOut: 8000 },
-          );
-          toast.onTap.subscribe(() => {
-            window.open(result.permalink, '_blank', 'noopener,noreferrer');
-          });
-        } else if (result?.success) {
-          this.toastr.success(this.translate.instant('Facebook post published successfully.'));
-        }
+        this.handleFacebookPublishResult(result);
       },
       () => undefined,
     );
+  }
+
+  openSimpleFacebookPostModal(): void {
+    const modalRef = this.modalService.open(SimpleFacebookPostModalComponent, {
+      centered: true,
+      backdrop: 'static',
+      size: 'lg',
+      windowClass: 'ew-app-modal',
+    });
+
+    modalRef.result.then(
+      (result: PublishMetaPagePostResult) => {
+        this.handleFacebookPublishResult(result);
+      },
+      () => undefined,
+    );
+  }
+
+  private handleFacebookPublishResult(result: PublishMetaPagePostResult): void {
+    if (result?.permalink) {
+      const toast = this.toastr.success(
+        this.translate.instant('Facebook post published successfully. Click here to view.'),
+        '',
+        { enableHtml: false, timeOut: 8000 },
+      );
+      toast.onTap.subscribe(() => {
+        window.open(result.permalink, '_blank', 'noopener,noreferrer');
+      });
+    } else if (result?.success) {
+      this.toastr.success(this.translate.instant('Facebook post published successfully.'));
+    }
+  }
+
+  openMetaCatalogSyncModal(): void {
+    this.modalService.open(MetaCatalogSyncModalComponent, {
+      centered: true,
+      backdrop: 'static',
+      keyboard: false,
+      windowClass: 'ew-app-modal',
+    });
   }
 
   openImagesModal(row: AdminProductListItem): void {

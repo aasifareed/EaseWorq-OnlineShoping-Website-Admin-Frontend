@@ -6,6 +6,7 @@ import { AdminProductListItem } from '../models/product.models';
 import {
   MetaPagePostDraft,
   MetaPagePostHistoryItem,
+  MetaPagePostImage,
 } from '../models/facebook-post.models';
 import { ProductsService } from '../services/products.service';
 
@@ -23,6 +24,8 @@ export class ProductFacebookPostModalComponent implements OnInit {
   draft: MetaPagePostDraft | null = null;
   caption = '';
   showHistory = false;
+  images: MetaPagePostImage[] = [];
+  previewImage: MetaPagePostImage | null = null;
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -39,18 +42,30 @@ export class ProductFacebookPostModalComponent implements OnInit {
     return this.draft?.recentPosts ?? [];
   }
 
-  /** Same URL the products grid uses — not the Meta-rewritten public CDN URL. */
-  get previewImageUrl(): string {
-    return this.product?.pictureUrl || 'assets/images/logo.svg';
+  get selectedImages(): MetaPagePostImage[] {
+    return this.images.filter((img) => img.selected);
   }
 
-  get imageCountLabel(): string {
-    const count = this.product?.pictureUrls?.length ?? (this.product?.pictureUrl ? 1 : 0);
-    return count > 0 ? String(count) : '+';
+  get selectedCount(): number {
+    return this.selectedImages.length;
+  }
+
+  get selectedCountLabel(): string {
+    const count = this.selectedCount;
+    if (count === 1) {
+      return '1 image selected';
+    }
+    return `${count} images selected`;
   }
 
   get canPublish(): boolean {
-    return !!this.draft?.canPublish && !!this.caption.trim() && !this.publishing && !this.loading;
+    if (!this.draft?.canPublish || this.publishing || this.loading) {
+      return false;
+    }
+    const hasCaption = !!this.caption.trim();
+    const hasImages = this.selectedCount > 0;
+    const hasLink = !!this.draft.productUrl?.trim();
+    return hasCaption || hasImages || hasLink;
   }
 
   onPreviewImageError(event: Event): void {
@@ -71,6 +86,7 @@ export class ProductFacebookPostModalComponent implements OnInit {
       next: (draft) => {
         this.draft = draft;
         this.caption = draft.caption || '';
+        this.images = this.normalizeImages(draft.images || []);
         this.loading = false;
         if (!draft.canPublish && draft.disabledReason) {
           this.loadError = draft.disabledReason;
@@ -85,17 +101,67 @@ export class ProductFacebookPostModalComponent implements OnInit {
     });
   }
 
+  toggleImage(image: MetaPagePostImage): void {
+    if (this.publishing || !this.draft?.canPublish) {
+      return;
+    }
+    image.selected = !image.selected;
+  }
+
+  moveSelected(image: MetaPagePostImage, direction: -1 | 1): void {
+    if (!image.selected || this.publishing) {
+      return;
+    }
+    const selected = this.selectedImages;
+    const index = selected.findIndex((x) => x.imageId === image.imageId);
+    const swapWith = index + direction;
+    if (index < 0 || swapWith < 0 || swapWith >= selected.length) {
+      return;
+    }
+
+    const a = selected[index];
+    const b = selected[swapWith];
+    const orderA = a.sortOrder;
+    a.sortOrder = b.sortOrder;
+    b.sortOrder = orderA;
+    this.images = [...this.images].sort((left, right) => left.sortOrder - right.sortOrder);
+  }
+
+  selectedOrderLabel(image: MetaPagePostImage): string {
+    if (!image.selected) {
+      return '';
+    }
+    const index = this.selectedImages.findIndex((x) => x.imageId === image.imageId);
+    return index >= 0 ? String(index + 1) : '';
+  }
+
+  openImagePreview(image: MetaPagePostImage): void {
+    this.previewImage = image;
+  }
+
+  closeImagePreview(): void {
+    this.previewImage = null;
+  }
+
   publish(): void {
-    if (!this.canPublish || !this.draft) {
+    if (!this.canPublish || !this.draft || this.publishing) {
       return;
     }
 
     this.publishing = true;
+    const selected = this.selectedImages.map((img, index) => ({
+      imageId: img.imageId,
+      order: index + 1,
+    }));
+
     this.productsService
       .publishFacebookPost({
         productId: this.draft.productId,
         caption: this.caption.trim(),
-        imageUrl: this.draft.imageUrl || undefined,
+        imageUrl: selected[0]
+          ? this.images.find((x) => x.imageId === selected[0].imageId)?.url
+          : undefined,
+        selectedImages: selected,
       })
       .subscribe({
         next: (result) => {
@@ -135,5 +201,30 @@ export class ProductFacebookPostModalComponent implements OnInit {
       hour: '2-digit',
       minute: '2-digit',
     });
+  }
+
+  private normalizeImages(images: MetaPagePostImage[]): MetaPagePostImage[] {
+    const seen = new Set<string>();
+    const cleaned = images
+      .filter((img) => !!img?.imageId && !!img?.url)
+      .filter((img) => {
+        const key = img.url.trim().toLowerCase();
+        if (seen.has(key)) {
+          return false;
+        }
+        seen.add(key);
+        return true;
+      })
+      .map((img, index) => ({
+        ...img,
+        sortOrder: img.sortOrder || index + 1,
+      }));
+
+    if (cleaned.length && !cleaned.some((x) => x.selected)) {
+      const primary = cleaned.find((x) => x.isPrimary) ?? cleaned[0];
+      primary.selected = true;
+    }
+
+    return cleaned.sort((a, b) => a.sortOrder - b.sortOrder);
   }
 }

@@ -9,11 +9,15 @@ import {
   OnlineShopProductImage,
   UpdateAdminProductPayload,
 } from '../models/product.models';
+import { MetaCatalogSyncProgress } from '../models/meta-catalog-sync.models';
 import {
   MetaPagePostDraft,
   MetaPagePostHistoryItem,
+  MetaPagePostImage,
   PublishMetaPagePostPayload,
   PublishMetaPagePostResult,
+  PublishSimpleMetaPagePostPayload,
+  SimpleMetaPagePostDraft,
 } from '../models/facebook-post.models';
 
 @Injectable()
@@ -147,46 +151,153 @@ export class ProductsService {
 
   publishFacebookPost(payload: PublishMetaPagePostPayload): Observable<PublishMetaPagePostResult> {
     const url = appServiceUrls.OnlineShopMetaPagePublish_Publish;
-    const body: Record<string, string> = {
+    const body: Record<string, unknown> = {
       ProductId: payload.productId,
       Caption: payload.caption,
+      SelectedImages: (payload.selectedImages ?? []).map((img) => ({
+        ImageId: img.imageId,
+        Order: img.order,
+      })),
     };
     if (payload.imageUrl) {
       body.ImageUrl = payload.imageUrl;
     }
     return this.restService.post(url, body).pipe(
-      map((response) => {
-        const result = (response?.result ?? response) as Record<string, unknown>;
-        return {
-          success: Boolean(result.success ?? result.Success ?? false),
-          socialMediaPostId: String(result.socialMediaPostId ?? result.SocialMediaPostId ?? ''),
-          externalPostId:
-            result.externalPostId != null
-              ? String(result.externalPostId)
-              : result.ExternalPostId != null
-                ? String(result.ExternalPostId)
-                : null,
-          permalink:
-            result.permalink != null
-              ? String(result.permalink)
-              : result.Permalink != null
-                ? String(result.Permalink)
-                : null,
-          message:
-            result.message != null
-              ? String(result.message)
-              : result.Message != null
-                ? String(result.Message)
-                : null,
-        };
-      }),
+      map((response) => this.mapPublishResult((response?.result ?? response) as Record<string, unknown>)),
     );
+  }
+
+  getSimpleFacebookPostDraft(): Observable<SimpleMetaPagePostDraft> {
+    const url = appServiceUrls.OnlineShopMetaPagePublish_GetSimpleDraft;
+    return this.restService.get(url).pipe(
+      map((response) => this.mapSimpleFacebookDraft((response?.result ?? response) as Record<string, unknown>)),
+    );
+  }
+
+  publishSimpleFacebookPost(payload: PublishSimpleMetaPagePostPayload): Observable<PublishMetaPagePostResult> {
+    const url = appServiceUrls.OnlineShopMetaPagePublish_PublishSimple;
+    const body: Record<string, unknown> = {
+      Caption: payload.caption,
+      LinkUrl: payload.linkUrl || null,
+      ImageUrls: payload.imageUrls ?? [],
+    };
+    return this.restService.post(url, body).pipe(
+      map((response) => this.mapPublishResult((response?.result ?? response) as Record<string, unknown>)),
+    );
+  }
+
+  private mapPublishResult(result: Record<string, unknown>): PublishMetaPagePostResult {
+    return {
+      success: Boolean(result.success ?? result.Success ?? false),
+      socialMediaPostId: String(result.socialMediaPostId ?? result.SocialMediaPostId ?? ''),
+      externalPostId:
+        result.externalPostId != null
+          ? String(result.externalPostId)
+          : result.ExternalPostId != null
+            ? String(result.ExternalPostId)
+            : null,
+      permalink:
+        result.permalink != null
+          ? String(result.permalink)
+          : result.Permalink != null
+            ? String(result.Permalink)
+            : null,
+      message:
+        result.message != null
+          ? String(result.message)
+          : result.Message != null
+            ? String(result.Message)
+            : null,
+    };
+  }
+
+  private mapSimpleFacebookDraft(row: Record<string, unknown>): SimpleMetaPagePostDraft {
+    const recentRaw = row.recentPosts ?? row.RecentPosts;
+    const recent = Array.isArray(recentRaw)
+      ? recentRaw.map((item) => this.mapFacebookHistoryItem(item as Record<string, unknown>))
+      : [];
+
+    return {
+      pageName: String(row.pageName ?? row.PageName ?? 'Facebook Page'),
+      pageId:
+        row.pageId != null
+          ? String(row.pageId)
+          : row.PageId != null
+            ? String(row.PageId)
+            : null,
+      caption: String(row.caption ?? row.Caption ?? ''),
+      linkUrl:
+        row.linkUrl != null
+          ? String(row.linkUrl)
+          : row.LinkUrl != null
+            ? String(row.LinkUrl)
+            : null,
+      canPublish: Boolean(row.canPublish ?? row.CanPublish ?? false),
+      publishingEnabled: Boolean(row.publishingEnabled ?? row.PublishingEnabled ?? false),
+      disabledReason:
+        row.disabledReason != null
+          ? String(row.disabledReason)
+          : row.DisabledReason != null
+            ? String(row.DisabledReason)
+            : null,
+      recentPosts: recent,
+    };
+  }
+
+  startMetaCatalogSync(): Observable<MetaCatalogSyncProgress> {
+    const url = appServiceUrls.OnlineShopProduct_StartMetaCatalogSync;
+    return this.restService.post(url, {}).pipe(
+      map((response) => this.mapMetaSyncProgress((response?.result ?? response) as Record<string, unknown>)),
+    );
+  }
+
+  getMetaCatalogSyncProgress(): Observable<MetaCatalogSyncProgress> {
+    const url = appServiceUrls.OnlineShopProduct_GetMetaCatalogSyncProgress;
+    return this.restService.get(url).pipe(
+      map((response) => this.mapMetaSyncProgress((response?.result ?? response) as Record<string, unknown>)),
+    );
+  }
+
+  private mapMetaSyncProgress(row: Record<string, unknown>): MetaCatalogSyncProgress {
+    return {
+      isRunning: Boolean(row.isRunning ?? row.IsRunning ?? false),
+      status: String(row.status ?? row.Status ?? 'Idle'),
+      total: Number(row.total ?? row.Total ?? 0),
+      processed: Number(row.processed ?? row.Processed ?? 0),
+      succeeded: Number(row.succeeded ?? row.Succeeded ?? 0),
+      failed: Number(row.failed ?? row.Failed ?? 0),
+      remaining: Number(row.remaining ?? row.Remaining ?? 0),
+      percent: Number(row.percent ?? row.Percent ?? 0),
+      message:
+        row.message != null
+          ? String(row.message)
+          : row.Message != null
+            ? String(row.Message)
+            : null,
+      startedAt:
+        row.startedAt != null
+          ? String(row.startedAt)
+          : row.StartedAt != null
+            ? String(row.StartedAt)
+            : null,
+      completedAt:
+        row.completedAt != null
+          ? String(row.completedAt)
+          : row.CompletedAt != null
+            ? String(row.CompletedAt)
+            : null,
+    };
   }
 
   private mapFacebookDraft(row: Record<string, unknown>): MetaPagePostDraft {
     const recentRaw = row.recentPosts ?? row.RecentPosts;
     const recent = Array.isArray(recentRaw)
       ? recentRaw.map((item) => this.mapFacebookHistoryItem(item as Record<string, unknown>))
+      : [];
+
+    const imagesRaw = row.images ?? row.Images;
+    const images = Array.isArray(imagesRaw)
+      ? imagesRaw.map((item) => this.mapFacebookImage(item as Record<string, unknown>))
       : [];
 
     return {
@@ -219,7 +330,19 @@ export class ProductsService {
           : row.DisabledReason != null
             ? String(row.DisabledReason)
             : null,
+      images,
       recentPosts: recent,
+    };
+  }
+
+  private mapFacebookImage(row: Record<string, unknown>): MetaPagePostImage {
+    return {
+      imageId: String(row.imageId ?? row.ImageId ?? ''),
+      url: String(row.url ?? row.Url ?? ''),
+      isPrimary: Boolean(row.isPrimary ?? row.IsPrimary ?? false),
+      selected: Boolean(row.selected ?? row.Selected ?? false),
+      canPublishToMeta: Boolean(row.canPublishToMeta ?? row.CanPublishToMeta ?? true),
+      sortOrder: Number(row.sortOrder ?? row.SortOrder ?? 0),
     };
   }
 
