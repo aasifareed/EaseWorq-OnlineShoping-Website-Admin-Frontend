@@ -144,6 +144,7 @@ export const appServiceUrls = {
   OnlineShopMetaPagePublish_GetDraft: '/OnlineShopMetaPagePublish/GetFacebookPostDraft',
   OnlineShopMetaPagePublish_GetHistory: '/OnlineShopMetaPagePublish/GetFacebookPostHistory',
   OnlineShopMetaPagePublish_Publish: '/OnlineShopMetaPagePublish/PublishFacebookPost',
+  OnlineShopMetaPagePublish_CheckConnection: '/OnlineShopMetaPagePublish/CheckMetaPagePublishingConnection',
 
   // Home page banners (OnlineShopHomeBannerUploadController)
   OnlineShopHomeBanner_GetBanners: '/OnlineShopHomeBannerUpload/GetBanners',
