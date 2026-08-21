@@ -322,8 +322,6 @@ export enum PermissionsEnum {
   EmailSmsTemplate = 'SettingManagement.EmailSmsTemplate',
   EmailSmsTemplate_View = 'SettingManagement.EmailSmsTemplate.View',
   EmailSmsTemplate_Update = 'SettingManagement.EmailSmsTemplate.Update',
-
-
 }
 
 

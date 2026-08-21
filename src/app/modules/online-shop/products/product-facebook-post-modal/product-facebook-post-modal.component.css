@@ -1,0 +1,76 @@
+.facebook-post-modal__eyebrow {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: #1877f2;
+  margin-bottom: 0.5rem;
+}
+
+.facebook-post-modal__product {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.facebook-post-modal__thumb-wrap {
+  position: relative;
+  flex-shrink: 0;
+  line-height: 0;
+}
+
+.facebook-post-modal__thumb-frame {
+  display: block;
+  width: 72px;
+  height: 72px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+}
+
+.facebook-post-modal__thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center center;
+  display: block;
+  padding: 4px;
+  box-sizing: border-box;
+}
+
+.facebook-post-modal__thumb-badge {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+  border-radius: 9px;
+  border: 2px solid #fff;
+  background: #663399;
+  color: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+.facebook-post-modal__caption {
+  font-family: Consolas, 'Courier New', monospace;
+  font-size: 0.875rem;
+  white-space: pre-wrap;
+}
+
+.facebook-post-modal__link {
+  word-break: break-all;
+  font-size: 0.875rem;
+}
+
+.facebook-post-modal__history-item {
+  padding: 0.35rem 0;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 0.85rem;
+}

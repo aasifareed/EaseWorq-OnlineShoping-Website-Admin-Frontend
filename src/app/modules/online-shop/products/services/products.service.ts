@@ -9,6 +9,12 @@ import {
   OnlineShopProductImage,
   UpdateAdminProductPayload,
 } from '../models/product.models';
+import {
+  MetaPagePostDraft,
+  MetaPagePostHistoryItem,
+  PublishMetaPagePostPayload,
+  PublishMetaPagePostResult,
+} from '../models/facebook-post.models';
 
 @Injectable()
 export class ProductsService {
@@ -119,6 +125,129 @@ export class ProductsService {
         return [];
       }),
     );
+  }
+
+  getFacebookPostDraft(productId: string): Observable<MetaPagePostDraft> {
+    const url = `${appServiceUrls.OnlineShopMetaPagePublish_GetDraft}?productId=${encodeURIComponent(productId)}`;
+    return this.restService.get(url).pipe(
+      map((response) => this.mapFacebookDraft((response?.result ?? response) as Record<string, unknown>)),
+    );
+  }
+
+  getFacebookPostHistory(productId: string): Observable<MetaPagePostHistoryItem[]> {
+    const url = `${appServiceUrls.OnlineShopMetaPagePublish_GetHistory}?productId=${encodeURIComponent(productId)}`;
+    return this.restService.get(url).pipe(
+      map((response) => {
+        const result = response?.result ?? response;
+        const items = Array.isArray(result) ? result : [];
+        return items.map((row) => this.mapFacebookHistoryItem(row as Record<string, unknown>));
+      }),
+    );
+  }
+
+  publishFacebookPost(payload: PublishMetaPagePostPayload): Observable<PublishMetaPagePostResult> {
+    const url = appServiceUrls.OnlineShopMetaPagePublish_Publish;
+    const body: Record<string, string> = {
+      ProductId: payload.productId,
+      Caption: payload.caption,
+    };
+    if (payload.imageUrl) {
+      body.ImageUrl = payload.imageUrl;
+    }
+    return this.restService.post(url, body).pipe(
+      map((response) => {
+        const result = (response?.result ?? response) as Record<string, unknown>;
+        return {
+          success: Boolean(result.success ?? result.Success ?? false),
+          socialMediaPostId: String(result.socialMediaPostId ?? result.SocialMediaPostId ?? ''),
+          externalPostId:
+            result.externalPostId != null
+              ? String(result.externalPostId)
+              : result.ExternalPostId != null
+                ? String(result.ExternalPostId)
+                : null,
+          permalink:
+            result.permalink != null
+              ? String(result.permalink)
+              : result.Permalink != null
+                ? String(result.Permalink)
+                : null,
+          message:
+            result.message != null
+              ? String(result.message)
+              : result.Message != null
+                ? String(result.Message)
+                : null,
+        };
+      }),
+    );
+  }
+
+  private mapFacebookDraft(row: Record<string, unknown>): MetaPagePostDraft {
+    const recentRaw = row.recentPosts ?? row.RecentPosts;
+    const recent = Array.isArray(recentRaw)
+      ? recentRaw.map((item) => this.mapFacebookHistoryItem(item as Record<string, unknown>))
+      : [];
+
+    return {
+      productId: String(row.productId ?? row.ProductId ?? ''),
+      productInventoryId: String(row.productInventoryId ?? row.ProductInventoryId ?? ''),
+      productName: String(row.productName ?? row.ProductName ?? ''),
+      pageName: String(row.pageName ?? row.PageName ?? 'Facebook Page'),
+      pageId:
+        row.pageId != null
+          ? String(row.pageId)
+          : row.PageId != null
+            ? String(row.PageId)
+            : null,
+      caption: String(row.caption ?? row.Caption ?? ''),
+      imageUrl:
+        row.imageUrl != null
+          ? String(row.imageUrl)
+          : row.ImageUrl != null
+            ? String(row.ImageUrl)
+            : null,
+      productUrl: String(row.productUrl ?? row.ProductUrl ?? ''),
+      listPrice: Number(row.listPrice ?? row.ListPrice ?? 0),
+      sellingPrice: Number(row.sellingPrice ?? row.SellingPrice ?? 0),
+      hasDiscount: Boolean(row.hasDiscount ?? row.HasDiscount ?? false),
+      canPublish: Boolean(row.canPublish ?? row.CanPublish ?? false),
+      publishingEnabled: Boolean(row.publishingEnabled ?? row.PublishingEnabled ?? false),
+      disabledReason:
+        row.disabledReason != null
+          ? String(row.disabledReason)
+          : row.DisabledReason != null
+            ? String(row.DisabledReason)
+            : null,
+      recentPosts: recent,
+    };
+  }
+
+  private mapFacebookHistoryItem(row: Record<string, unknown>): MetaPagePostHistoryItem {
+    return {
+      id: String(row.id ?? row.Id ?? ''),
+      platform: String(row.platform ?? row.Platform ?? 'Facebook'),
+      status: String(row.status ?? row.Status ?? ''),
+      publishedAt:
+        row.publishedAt != null
+          ? String(row.publishedAt)
+          : row.PublishedAt != null
+            ? String(row.PublishedAt)
+            : null,
+      creationTime: String(row.creationTime ?? row.CreationTime ?? ''),
+      permalink:
+        row.permalink != null
+          ? String(row.permalink)
+          : row.Permalink != null
+            ? String(row.Permalink)
+            : null,
+      errorMessage:
+        row.errorMessage != null
+          ? String(row.errorMessage)
+          : row.ErrorMessage != null
+            ? String(row.ErrorMessage)
+            : null,
+    };
   }
 
   private mapImages(response: unknown): OnlineShopProductImage[] {

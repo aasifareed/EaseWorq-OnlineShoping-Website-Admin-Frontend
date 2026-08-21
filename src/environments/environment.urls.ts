@@ -140,6 +140,11 @@ export const appServiceUrls = {
   OnlineShopProduct_GetImages: '/OnlineShopProductUpload/GetImages',
   OnlineShopProduct_RemoveImage: '/OnlineShopProductUpload/RemoveImage',
 
+  // Facebook Page product publishing (OnlineShopMetaPagePublishAppService)
+  OnlineShopMetaPagePublish_GetDraft: '/OnlineShopMetaPagePublish/GetFacebookPostDraft',
+  OnlineShopMetaPagePublish_GetHistory: '/OnlineShopMetaPagePublish/GetFacebookPostHistory',
+  OnlineShopMetaPagePublish_Publish: '/OnlineShopMetaPagePublish/PublishFacebookPost',
+
   // Home page banners (OnlineShopHomeBannerUploadController)
   OnlineShopHomeBanner_GetBanners: '/OnlineShopHomeBannerUpload/GetBanners',
   OnlineShopHomeBanner_UploadBanners: '/OnlineShopHomeBannerUpload/UploadBanners',

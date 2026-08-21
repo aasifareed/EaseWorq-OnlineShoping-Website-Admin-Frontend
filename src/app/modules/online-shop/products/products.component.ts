@@ -10,7 +10,11 @@ import { GlobalDataService } from 'src/app/shared/services/globalData.service';
 import { AdminProductListItem } from './models/product.models';
 import { ProductImagesModalComponent } from './product-images-modal/product-images-modal.component';
 import { ProductEditModalComponent } from './product-edit-modal/product-edit-modal.component';
+import { ProductFacebookPostModalComponent } from './product-facebook-post-modal/product-facebook-post-modal.component';
 import { ProductsService } from './services/products.service';
+import {
+  PublishMetaPagePostResult,
+} from './models/facebook-post.models';
 import { calculateProductsGridLayout } from './utils/products-grid-layout.util';
 import {
   MAX_PRODUCT_WEIGHT_GRAMS,
@@ -367,6 +371,34 @@ export class ProductsComponent implements OnInit {
       (updated: AdminProductListItem) => {
         if (updated) {
           this.replaceRow(updated);
+        }
+      },
+      () => undefined,
+    );
+  }
+
+  openFacebookPostModal(row: AdminProductListItem): void {
+    const modalRef = this.modalService.open(ProductFacebookPostModalComponent, {
+      centered: true,
+      backdrop: 'static',
+      size: 'lg',
+      windowClass: 'ew-app-modal',
+    });
+    modalRef.componentInstance.product = { ...row };
+
+    modalRef.result.then(
+      (result: PublishMetaPagePostResult) => {
+        if (result?.permalink) {
+          const toast = this.toastr.success(
+            this.translate.instant('Facebook post published successfully. Click here to view.'),
+            '',
+            { enableHtml: false, timeOut: 8000 },
+          );
+          toast.onTap.subscribe(() => {
+            window.open(result.permalink, '_blank', 'noopener,noreferrer');
+          });
+        } else if (result?.success) {
+          this.toastr.success(this.translate.instant('Facebook post published successfully.'));
         }
       },
       () => undefined,

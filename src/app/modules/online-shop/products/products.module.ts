@@ -10,6 +10,7 @@ import { ProductsRoutingModule } from './products-routing.module';
 import { ProductsComponent } from './products.component';
 import { ProductImagesModalComponent } from './product-images-modal/product-images-modal.component';
 import { ProductEditModalComponent } from './product-edit-modal/product-edit-modal.component';
+import { ProductFacebookPostModalComponent } from './product-facebook-post-modal/product-facebook-post-modal.component';
 import { ProductCategoriesComponent } from './product-categories/product-categories.component';
 import { ProductCategoryEditModalComponent } from './product-category-edit-modal/product-category-edit-modal.component';
 import { CategoryImageModalComponent } from './category-image-modal/category-image-modal.component';
@@ -37,6 +38,7 @@ import { EditorModule } from 'primeng/editor';
     ProductsComponent,
     ProductImagesModalComponent,
     ProductEditModalComponent,
+    ProductFacebookPostModalComponent,
     ProductCategoriesComponent,
     ProductCategoryEditModalComponent,
     CategoryImageModalComponent,
@@ -46,6 +48,7 @@ import { EditorModule } from 'primeng/editor';
   entryComponents: [
     ProductImagesModalComponent,
     ProductEditModalComponent,
+    ProductFacebookPostModalComponent,
     ProductCategoryEditModalComponent,
     CategoryImageModalComponent,
     BrandImageModalComponent,

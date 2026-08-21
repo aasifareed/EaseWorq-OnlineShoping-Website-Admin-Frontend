@@ -1,0 +1,119 @@
+<div class="modal-header">
+  <h5 class="modal-title">{{ 'Create Facebook Post' | translate }}</h5>
+  <button type="button" class="close" aria-label="Close" [disabled]="publishing" (click)="activeModal.dismiss()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body facebook-post-modal">
+  <div *ngIf="loading" class="text-center py-4">
+    <i class="fa fa-spinner fa-spin"></i>
+    <div class="mt-2">{{ 'Loading draft…' | translate }}</div>
+  </div>
+
+  <div *ngIf="!loading && loadError && !draft" class="alert alert-danger mb-0">
+    {{ loadError }}
+  </div>
+
+  <ng-container *ngIf="!loading && draft">
+    <div class="facebook-post-modal__eyebrow">{{ 'FACEBOOK POST' | translate }}</div>
+
+    <div class="facebook-post-modal__meta mb-3">
+      <div>
+        <span class="text-muted">{{ 'Publishing to' | translate }}:</span>
+        <strong> Facebook · {{ draft.pageName }}</strong>
+      </div>
+    </div>
+
+    <div class="facebook-post-modal__product mb-3">
+      <div class="facebook-post-modal__thumb-wrap">
+        <span class="facebook-post-modal__thumb-frame">
+          <img
+            class="facebook-post-modal__thumb"
+            [src]="previewImageUrl"
+            [alt]="draft.productName || product?.productName"
+            (error)="onPreviewImageError($event)"
+          />
+        </span>
+        <span class="facebook-post-modal__thumb-badge" *ngIf="imageCountLabel">
+          {{ imageCountLabel }}
+        </span>
+      </div>
+      <div class="facebook-post-modal__product-copy">
+        <div class="font-weight-bold">{{ draft.productName || product?.productName }}</div>
+        <div class="text-muted small" *ngIf="!draft.imageUrl && !product?.pictureUrl">
+          {{ 'No product image — a text/link post will be published.' | translate }}
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="fbCaption">{{ 'Caption' | translate }}</label>
+      <textarea
+        id="fbCaption"
+        class="form-control facebook-post-modal__caption"
+        rows="12"
+        [(ngModel)]="caption"
+        [disabled]="publishing || !draft.canPublish"
+        maxlength="8000"
+      ></textarea>
+    </div>
+
+    <div class="form-group mb-3">
+      <label class="d-block">{{ 'Product link' | translate }}</label>
+      <a [href]="draft.productUrl" target="_blank" rel="noopener noreferrer" class="facebook-post-modal__link">
+        {{ draft.productUrl }}
+      </a>
+    </div>
+
+    <div *ngIf="loadError" class="alert alert-warning">
+      {{ loadError }}
+    </div>
+
+    <div class="facebook-post-modal__history" *ngIf="history.length">
+      <button
+        type="button"
+        class="btn btn-link btn-sm px-0"
+        (click)="showHistory = !showHistory"
+      >
+        {{ 'View Facebook Publishing History' | translate }}
+        ({{ history.length }})
+      </button>
+      <ul class="list-unstyled mb-0" *ngIf="showHistory">
+        <li *ngFor="let item of history" class="facebook-post-modal__history-item">
+          <span class="font-weight-bold">Facebook</span>
+          ·
+          <span>{{ item.status }}</span>
+          ·
+          <span>{{ formatHistoryDate(item) }}</span>
+          <button
+            *ngIf="item.permalink"
+            type="button"
+            class="btn btn-link btn-sm py-0"
+            (click)="openPermalink(item.permalink)"
+          >
+            {{ 'View Post' | translate }}
+          </button>
+          <div class="text-danger small" *ngIf="item.status === 'Failed' && item.errorMessage">
+            {{ item.errorMessage }}
+          </div>
+        </li>
+      </ul>
+    </div>
+  </ng-container>
+</div>
+
+<div class="modal-footer" *ngIf="draft">
+  <button type="button" class="btn btn-secondary" [disabled]="publishing" (click)="activeModal.dismiss()">
+    {{ 'Cancel' | translate }}
+  </button>
+  <button
+    type="button"
+    class="btn btn-primary"
+    [disabled]="!canPublish"
+    (click)="publish()"
+  >
+    <i class="fa fa-spinner fa-spin" *ngIf="publishing"></i>
+    {{ publishing ? ('Publishing…' | translate) : ('Publish to Facebook' | translate) }}
+  </button>
+</div>
