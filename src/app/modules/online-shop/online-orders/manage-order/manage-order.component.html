@@ -69,9 +69,11 @@
               {{ selectedStatusRemarksLabel }}
               <span *ngIf="selectedStatusRequiresRemarks" class="text-danger">*</span>
             </label>
-            <input type="text" class="form-control form-control-sm"
+            <textarea
+              class="form-control status-toolbar__remarks-input"
+              rows="3"
               [(ngModel)]="statusRemarks"
-              [placeholder]="selectedStatusRemarksPlaceholder" />
+              [placeholder]="selectedStatusRemarksPlaceholder"></textarea>
           </div>
           <div class="status-toolbar__courier" *ngIf="selectedStatusBooksCourier">
             <p class="status-toolbar__hint status-toolbar__hint--event">
