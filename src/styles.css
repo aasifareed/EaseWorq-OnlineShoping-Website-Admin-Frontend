@@ -263,12 +263,14 @@ body.modal-open .loadscreen {
 
 @media (min-width: 1024px) {
   .auth-layout-wrap .auth-content {
-    min-width: 550px;
+    min-width: 620px;
+    max-width: 620px;
   }
 }
 
 .auth-layout-wrap .auth-content {
-  width: 550px !important;
+  width: min(620px, calc(100vw - 2.5rem)) !important;
+  max-width: 620px !important;
 }
 
 .auth-logo img {

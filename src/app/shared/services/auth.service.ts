@@ -11,6 +11,8 @@ import { RolesEnum } from "../enum/Roles";
 import * as moment from "moment";
 import { ToastrService } from "ngx-toastr";
 import { LoaderService } from "./loader.service";
+import { Observable } from "rxjs/Observable";
+import { map } from "rxjs/operators";
 @Injectable({
   providedIn: "root"
 })
@@ -150,9 +152,64 @@ export class AuthService {
     return moment(expiresAt);
   }
 
+  resetPasswordRequest(emailAddress: string, tenantId: number): Observable<void> {
+    const body = {
+      emailAddress: String(emailAddress || '').trim(),
+      phoneNumber: '',
+      tenantId,
+    };
 
+    return this.restService.post(environment.urls.User_Reset_Password_Request, body).pipe(
+      map((response: { result?: number }) => {
+        if (response?.result !== 200) {
+          throw new Error('Unable to send verification code.');
+        }
+      }),
+    );
+  }
 
+  checkPasswordResetOtp(emailAddress: string, otpCode: string, tenantId: number): Observable<void> {
+    const body = {
+      emailAddress: String(emailAddress || '').trim(),
+      otpCode: String(otpCode || '').trim(),
+      tenantId,
+    };
 
-  
+    return this.restService.post(environment.urls.User_Check_OTP, body).pipe(
+      map((response: { result?: number }) => {
+        if (response?.result !== 200) {
+          throw new Error('Invalid verification code.');
+        }
+      }),
+    );
+  }
+
+  expirePasswordResetOtp(emailAddress: string, tenantId: number): Observable<void> {
+    const body = {
+      emailAddress: String(emailAddress || '').trim(),
+      tenantId,
+    };
+
+    return this.restService.post(environment.urls.User_Expire_Old_OTP, body).pipe(
+      map(() => undefined),
+    );
+  }
+
+  changePasswordByOtp(emailAddress: string, password: string, confirmPassword: string, tenantId: number): Observable<void> {
+    const body = {
+      emailAddress: String(emailAddress || '').trim(),
+      password,
+      confirmPassword,
+      tenantId,
+    };
+
+    return this.restService.post(environment.urls.User_Change_Password_ByOTP, body).pipe(
+      map((response: { result?: number }) => {
+        if (response?.result !== 200) {
+          throw new Error('Unable to change password.');
+        }
+      }),
+    );
+  }
 
 }

@@ -23,6 +23,7 @@ export const environment = {
   baseUrl: BACKEND_URL,
   assetUrl: BACKEND_URL + 'SmartOfficerAttachment',
   onlineShopStorefrontUrl: '',
+  onlineShopBrandHostName: 'sastakhareedo.com',
   production: true,
   googleMapsApiKey: 'AIzaSyBiCLFWeI8W8gDzHKs5uQEBgnIlmih1DTs',
   oauth: oauthConfig,

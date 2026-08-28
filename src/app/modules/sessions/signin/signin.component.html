@@ -3,15 +3,20 @@
     <div class="card o-hidden loginTransparent signin-card"
         [@animate]="{value:'*',params:{y:'120px',opacity:'0',delay:'100ms', duration: '400ms'}}">
         <div class="signin-card-body">
-            <div class="auth-logo text-center">
-                <img *ngIf="logoUrl" [src]="logoUrl" alt="Logo" (error)="onLogoError()" />
-                <div *ngIf="!logoUrl" class="signin-logo-placeholder" aria-hidden="true">
-                    <i class="fa fa-store fontAwesome_Li_Class"></i>
-                </div>
+            <div class="auth-logo text-center signin-brand-logo">
+                <img
+                    *ngIf="signinLogoUrl"
+                    [src]="signinLogoUrl"
+                    alt="Sasta Khareedo"
+                    (error)="onSigninLogoError()" />
+                <p *ngIf="!signinLogoUrl" class="signin-brand-wordmark">
+                    Sasta <span>Khareedo</span>
+                </p>
             </div>
-            <div class="text-left">
-                <h1 class="mb-1 text-25">Sign In</h1>
-                <hr class="loginHr" />
+            <div class="text-left signin-header">
+                <h1 class="signin-title">Sign In</h1>
+                <p class="signin-subtitle">Welcome back — manage your store with ease</p>
+                <div class="signin-title-accent"></div>
             </div>
             <form [formGroup]="signinForm" (ngSubmit)="signin()" class="loginForm signin-form">
 

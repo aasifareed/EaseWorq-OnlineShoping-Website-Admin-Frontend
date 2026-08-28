@@ -16,6 +16,9 @@ import { LocalStoreService } from 'src/app/shared/services/local-store.service';
 import { Apps } from 'src/app/shared/enum/Apps';
 import { TenantService } from 'src/app/shared/services/Tenant.service';
 import { CustomUserStoreService } from 'src/app/shared/services/custom-user-store.service';
+import { RestService } from 'src/app/shared/services/rest.service';
+import { environment } from 'src/environments/environment';
+import { rewriteMediaUrl } from 'src/app/shared/services/media-url';
 import { merge, Observable, of, Subject } from 'rxjs';
 import {
     catchError,
@@ -37,6 +40,7 @@ import {
 })
 export class SigninComponent implements OnInit, OnDestroy, AfterViewInit {
     private static readonly TENANT_VALIDATE_DEBOUNCE_MS = 1000;
+    private static readonly TENANT_RESOLUTION_AVAILABLE = 1;
 
     loading: boolean;
     loadingText: string;
@@ -46,6 +50,7 @@ export class SigninComponent implements OnInit, OnDestroy, AfterViewInit {
     showPassword: boolean;
     tenantValidating = false;
     tenantValidated = false;
+    private storefrontLogoUrl: string | null = null;
     private failedLogoUrl: string | null = null;
     private impersonationContext: { targetUserId: number; targetTenantId?: number | null } | null = null;
     private lastValidatedTenantName = '';
@@ -69,6 +74,7 @@ export class SigninComponent implements OnInit, OnDestroy, AfterViewInit {
         private activatedRoute: ActivatedRoute,
         private tenantService: TenantService,
         private customUserStoreService: CustomUserStoreService,
+        private restService: RestService,
     ) { }
 
     ngOnInit() {
@@ -104,6 +110,7 @@ export class SigninComponent implements OnInit, OnDestroy, AfterViewInit {
         this.setupTenantValidation();
 
         this.selectedLanguage();
+        this.loadBrandStorefrontLogo();
     }
 
     ngOnDestroy(): void {
@@ -231,16 +238,62 @@ export class SigninComponent implements OnInit, OnDestroy, AfterViewInit {
 
     get f() { return this.signinForm.controls; }
 
-    get logoUrl(): string | null {
-        const url = String(this.globalDataService.getLogoPicture() ?? '').trim();
+    get signinLogoUrl(): string | null {
+        const url = String(this.storefrontLogoUrl ?? '').trim();
         if (!url || url === this.failedLogoUrl) {
             return null;
         }
         return url;
     }
 
-    onLogoError(): void {
-        this.failedLogoUrl = this.logoUrl;
+    onSigninLogoError(): void {
+        if (this.storefrontLogoUrl) {
+            this.failedLogoUrl = this.storefrontLogoUrl;
+        }
+    }
+
+    /** Load the same uploaded storefront logo as the customer website (Sasta Khareedo). */
+    private loadBrandStorefrontLogo(): void {
+        const hostName = String(environment.onlineShopBrandHostName ?? '').trim();
+        if (!hostName) {
+            return;
+        }
+
+        this.restService.postWithOutSpinner(
+            environment.urls.WebsiteTenantResolver_ResolveTenantByDomain,
+            { hostName },
+        ).pipe(
+            map((response: { result?: Record<string, unknown> }) => {
+                const result = response?.result ?? {};
+                const state = Number(result.state ?? result.State ?? 0);
+                if (state !== SigninComponent.TENANT_RESOLUTION_AVAILABLE) {
+                    return 0;
+                }
+                return Number(result.tenantId ?? result.TenantId ?? 0);
+            }),
+            switchMap((tenantId) => {
+                if (!tenantId) {
+                    return of(null);
+                }
+                return this.fetchStorefrontLogo$(tenantId);
+            }),
+            catchError(() => of(null)),
+        ).subscribe((logoUrl) => {
+            if (logoUrl) {
+                this.storefrontLogoUrl = logoUrl;
+            }
+        });
+    }
+
+    private fetchStorefrontLogo$(tenantId: number): Observable<string | null> {
+        const path = `${environment.urls.OnlineShopStoreLogo_GetForStorefront}?TenantId=${tenantId}`;
+        return this.restService.getDirect(path).pipe(
+            map((response: { result?: { url?: string; Url?: string } }) => {
+                const raw = String(response?.result?.url ?? response?.result?.Url ?? '').trim();
+                return rewriteMediaUrl(raw) || null;
+            }),
+            catchError(() => of(null)),
+        );
     }
 
     get canSignIn(): boolean {

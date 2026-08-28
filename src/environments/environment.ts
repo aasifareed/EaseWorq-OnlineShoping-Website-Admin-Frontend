@@ -25,6 +25,8 @@ export const environment = {
   assetUrl: BACKEND_URL + 'SmartOfficerAttachment',
   /** Customer storefront base URL for page preview links, e.g. http://localhost:4200 */
   onlineShopStorefrontUrl: 'http://localhost:4200',
+  /** Store domain used to load the storefront logo on the sign-in page (same as customer website). */
+  onlineShopBrandHostName: 'sastakhareedo.com',
   production: false,
   /** Same key as POS Orders Map Dashboard / Store Working Area. */
   googleMapsApiKey: 'AIzaSyBiCLFWeI8W8gDzHKs5uQEBgnIlmih1DTs',

@@ -3,10 +3,10 @@ export const appServiceUrls = {
   // Auth & user
   USER_GETBYID: '/User/GetUserByIdForOnlineShopAdmin',
   get_User_Store_By_UserId: '/User/getUserStoreByUserIdForOnlineShopAdmin',
-  User_Reset_Password_Request: '/User/ResetPasswordRequest',
-  User_Check_OTP: '/User/CheckOTP',
-  User_Change_Password_ByOTP: '/User/ChangePasswordByOTP',
-  User_Expire_Old_OTP: '/User/ExpireOldOTP',
+  User_Reset_Password_Request: '/User/ResetPasswordRequestForOnlineShopAdmin',
+  User_Check_OTP: '/User/CheckOtpForOnlineShopAdmin',
+  User_Change_Password_ByOTP: '/User/ChangePasswordByOtpForOnlineShopAdmin',
+  User_Expire_Old_OTP: '/User/ExpireOldOtpForOnlineShopAdmin',
 
   // Tenant
   Is_Tenant_Available: '/Account/IsTenantAvailable',
@@ -156,6 +156,9 @@ export const appServiceUrls = {
   OnlineShopHomeBanner_UploadBanners: '/OnlineShopHomeBannerUpload/UploadBanners',
   OnlineShopHomeBanner_RemoveBanner: '/OnlineShopHomeBannerUpload/RemoveBanner',
   OnlineShopHomeBanner_GetForStorefront: '/OnlineShopHomeBanner/GetHomeBannersForStorefront',
+
+  // Website tenant resolution (anonymous — sign-in branding, storefront bootstrap)
+  WebsiteTenantResolver_ResolveTenantByDomain: '/WebsiteTenantResolver/ResolveTenantByDomain',
 
   // Store logo (OnlineShopStoreLogoUploadController / OnlineShopStoreLogoAppService)
   OnlineShopStoreLogo_GetLogo: '/OnlineShopStoreLogoUpload/GetLogo',

@@ -8,7 +8,8 @@
     background-repeat: no-repeat;
     background-position: center;
     .auth-content {
-        max-width: 660px;
+        max-width: 620px;
+        width: 100%;
         margin: auto;
     }
 }
@@ -31,7 +32,7 @@
 @media (min-width: 1024px) {
     .auth-layout-wrap {
         .auth-content {
-            min-width: 660px;
+            min-width: 620px;
         }
     }
 }

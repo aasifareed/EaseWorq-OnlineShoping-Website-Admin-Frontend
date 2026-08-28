@@ -1,163 +1,160 @@
 <div [dir]="globalDataService.getdir()">
+    <div class="card o-hidden loginTransparent signin-card"
+        [@animate]="{value:'*',params:{y:'120px',opacity:'0',delay:'100ms', duration: '400ms'}}">
+        <div class="signin-card-body">
+            <div class="auth-logo text-center signin-brand-logo">
+                <img
+                    *ngIf="signinLogoUrl"
+                    [src]="signinLogoUrl"
+                    alt="Sasta Khareedo"
+                    (error)="onSigninLogoError()" />
+                <p *ngIf="!signinLogoUrl" class="signin-brand-wordmark">
+                    Sasta <span>Khareedo</span>
+                </p>
+            </div>
 
-  <div class="card o-hidden loginTransparent"
-      [@animate]="{value:'*',params:{y:'120px',opacity:'0',delay:'100ms', duration: '400ms'}}">
-      <div class="row">
-          <div class="col-md-12">
-              <div class="p-5">
-                  <div style="margin-top: -10%;" class="auth-logo text-center">
-                      <img src="{{globalDataService.getLogoPicture()}}" alt="">
-                  </div>
-                  <div class="text-left">
-                      <h1 class="mb-2 text-25">{{"forgot_Password_Password_header" | translate}}</h1>
-                      <hr class="loginHr" />
-                  </div>
-  
-                  <form [formGroup]="form" class="loginForm">
-                    <div class="form-group">
-                      <label for="phoneNumber">Phone Number (with country code, e.g. +92XXXXXXXXXX)</label>
-                      <input id="phoneNumber" formControlName="phoneNumber" class="form-control" type="text" placeholder="+92XXXXXXXXXX">
+            <div class="text-left signin-header">
+                <h1 class="signin-title">Forgot Password</h1>
+                <div class="signin-title-accent"></div>
+            </div>
+
+            <p class="forgot-help" *ngIf="step === 'email'">Enter your company name and email. We will send a 5-digit code.</p>
+            <p class="forgot-help" *ngIf="step === 'otp'">Enter the 5-digit code we sent to {{ emailAddress }}.</p>
+            <p class="forgot-help" *ngIf="step === 'password'">Choose a new password for your account.</p>
+
+            <form *ngIf="step === 'email'" [formGroup]="emailForm" (ngSubmit)="submitEmail()" class="loginForm signin-form">
+                <div class="form-group">
+                    <label for="tenancyName">Company Name</label>
+                    <input id="tenancyName"
+                        class="form-control loginTransparent"
+                        formControlName="tenancyName"
+                        type="text"
+                        autocomplete="organization"
+                        (blur)="onTenantNameBlur()"
+                        [class.is-invalid]="(emailForm.get('tenancyName').touched || emailForm.get('tenancyName').dirty) && emailForm.get('tenancyName').errors" />
+                    <small class="form-text text-muted" *ngIf="tenantValidating">Validating company...</small>
+                    <small class="form-text text-success" *ngIf="tenantValidated && !tenantValidating">Company validated</small>
+                    <div class="invalid-feedback" *ngIf="emailForm.get('tenancyName').errors?.required">
+                        Company name is required
                     </div>
-                    <button (click)="onSubmit()" [disabled]="form.invalid" class="btn btn-primary btn-block btn-rounded mt-3 loginBtn">{{"forgot_Password_Get_Verification_Code_Button" | translate}}</button>                  
-                  </form>
-              </div>
-          </div>
-          <div class="col-md-6 text-center"></div>
-          <div class="col-md-6 text-center" style="padding-right: 10%;margin-bottom: 2%;margin-top: -5%;">
-              <a href="" class="btn btn-outline-primary btn-outline-google btn-block btn-icon-text btn-rounded" routerLink="/sessions/signin">
-                <i class="i-Mail-with-At-Sign"></i>
-                {{"forgot_Password_SignIn_Button" | translate}}
-              </a>
-          </div>
-              
-            
-  
-      </div>
-  </div>
-
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- 
-<div class="card o-hidden loginTransparent"
-[@animate]="{value:'*',params:{y:'120px',opacity:'0',delay:'100ms', duration: '400ms'}}">
-    <div class="row">
-      <div class="col-md-6">
-        <div class="p-4">
-          <div class="auth-logo text-center mb-4">
-            <img src="{{globalDataService.getLogoPicture()}}" alt="">
-          </div>
-          <div>
-
-            <h1 class="mb-3 text-18">Forgot Password</h1>
-            <form [formGroup]="form">
-              <div class="form-group">
-                <label for="email">Email address</label>
-                <input id="email" formControlName="emailAddress" class="form-control form-control-rounded" type="email">
-              </div>
-              <button (click)="onSubmit()" [disabled]="form.invalid" class="btn btn-primary btn-block btn-rounded mt-3">Get Verification Code</button>
-              
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input id="email"
+                        class="form-control loginTransparent"
+                        formControlName="email"
+                        type="email"
+                        autocomplete="email"
+                        placeholder="Enter your email"
+                        [class.is-invalid]="touchedInvalid(emailForm, 'email')" />
+                    <div class="invalid-feedback" *ngIf="touchedInvalid(emailForm, 'email') && hasError(emailForm, 'email', 'required')">
+                        Email is required
+                    </div>
+                    <div class="invalid-feedback" *ngIf="touchedInvalid(emailForm, 'email') && hasError(emailForm, 'email', 'email')">
+                        Enter a valid email
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block signin-submit-btn" [disabled]="!canSendCode || emailForm.invalid">
+                    {{ loading ? 'Sending…' : 'Send code' }}
+                </button>
             </form>
 
-          </div>
+            <form *ngIf="step === 'otp'" [formGroup]="otpForm" (ngSubmit)="submitOtp()" class="loginForm signin-form">
+                <div class="form-group">
+                    <label for="otpCode">Verification code</label>
+                    <input id="otpCode"
+                        class="form-control loginTransparent"
+                        formControlName="otpCode"
+                        type="text"
+                        maxlength="5"
+                        inputmode="numeric"
+                        autocomplete="one-time-code"
+                        placeholder="5-digit code"
+                        [class.is-invalid]="touchedInvalid(otpForm, 'otpCode')" />
+                    <div class="invalid-feedback" *ngIf="touchedInvalid(otpForm, 'otpCode')">
+                        Enter the 5-digit code
+                    </div>
+                </div>
 
+                <p class="forgot-timer" *ngIf="secondsLeft > 0">Time left: {{ secondsLeft }}s</p>
+
+                <button type="submit" class="btn btn-primary btn-block signin-submit-btn" [disabled]="loading || otpForm.invalid">
+                    {{ loading ? 'Checking…' : 'Verify code' }}
+                </button>
+
+                <button type="button" class="btn btn-outline-secondary btn-block forgot-resend-btn" [disabled]="!canResend" (click)="resendCode()">
+                    Resend code
+                </button>
+            </form>
+
+            <form *ngIf="step === 'password'" [formGroup]="passwordForm" (ngSubmit)="submitPassword()" class="loginForm signin-form">
+                <div class="form-group signin-password-group">
+                    <label for="newPassword">New password</label>
+                    <div class="signin-password-field">
+                        <input id="newPassword"
+                            class="form-control loginTransparent"
+                            formControlName="password"
+                            [type]="showPassword ? 'text' : 'password'"
+                            autocomplete="new-password"
+                            placeholder="At least 8 characters with upper, lower and number"
+                            [class.is-invalid]="touchedInvalid(passwordForm, 'password') || showPasswordMismatch()" />
+                        <button type="button"
+                            class="signin-password-toggle"
+                            (click)="togglePassword('password')"
+                            [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+                            [attr.aria-pressed]="showPassword">
+                            <i class="fa fontAwesome_Li_Class" [ngClass]="showPassword ? 'fa-eye' : 'fa-eye-slash'"></i>
+                        </button>
+                    </div>
+                    <div class="invalid-feedback" *ngIf="touchedInvalid(passwordForm, 'password') && hasError(passwordForm, 'password', 'required')">
+                        Password is required
+                    </div>
+                    <div class="invalid-feedback" *ngIf="touchedInvalid(passwordForm, 'password') && hasError(passwordForm, 'password', 'minlength')">
+                        Password must be at least 8 characters
+                    </div>
+                    <div class="invalid-feedback" *ngIf="touchedInvalid(passwordForm, 'password') && hasError(passwordForm, 'password', 'pattern')">
+                        Password must include uppercase, lowercase, and a number
+                    </div>
+                </div>
+
+                <div class="form-group signin-password-group">
+                    <label for="confirmPassword">Confirm password</label>
+                    <div class="signin-password-field">
+                        <input id="confirmPassword"
+                            class="form-control loginTransparent"
+                            formControlName="confirmPassword"
+                            [type]="showConfirmPassword ? 'text' : 'password'"
+                            autocomplete="new-password"
+                            placeholder="Confirm password"
+                            [class.is-invalid]="touchedInvalid(passwordForm, 'confirmPassword') || showPasswordMismatch()" />
+                        <button type="button"
+                            class="signin-password-toggle"
+                            (click)="togglePassword('confirm')"
+                            [attr.aria-label]="showConfirmPassword ? 'Hide password' : 'Show password'"
+                            [attr.aria-pressed]="showConfirmPassword">
+                            <i class="fa fontAwesome_Li_Class" [ngClass]="showConfirmPassword ? 'fa-eye' : 'fa-eye-slash'"></i>
+                        </button>
+                    </div>
+                    <div class="invalid-feedback" *ngIf="touchedInvalid(passwordForm, 'confirmPassword') && hasError(passwordForm, 'confirmPassword', 'required')">
+                        Confirm password is required
+                    </div>
+                    <div class="invalid-feedback" *ngIf="showPasswordMismatch()">
+                        Passwords do not match
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block signin-submit-btn" [disabled]="loading || passwordForm.invalid">
+                    {{ loading ? 'Saving…' : 'Change password' }}
+                </button>
+            </form>
+
+            <div class="signin-forgot-wrap">
+                <a class="btn btn-rounded btn-outline-danger btn-block btn-icon-text signin-forgot-btn" routerLink="/sessions/signin">
+                    Back to Sign In
+                </a>
+            </div>
         </div>
-      </div>
-      <div class="col-md-6 text-center " style="background-size: cover;background-image: url(./assets/images/photo-long-3.jpg)">
-        <div class="pr-3 auth-right">
-          <button class="btn btn-outline-primary btn-outline-google btn-block btn-icon-text btn-rounded" routerLink="/sessions/signin">
-            <i class="i-Mail-with-At-Sign"></i>
-            Sign in 
-          </button>
-          
-        </div>
-      </div>
     </div>
-  </div> -->
-
-      <!-- <button class="btn btn-outline-primary btn-outline-email btn-block btn-icon-text btn-rounded" routerLink="/sessions/signup">
-        <i class="i-Mail-with-At-Sign"></i>
-        Sign up 
-      </button> -->
+</div>
