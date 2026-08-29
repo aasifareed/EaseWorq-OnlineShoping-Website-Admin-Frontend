@@ -6,6 +6,7 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import * as moment from 'moment';
 import { ToastrService } from 'ngx-toastr';
@@ -51,17 +52,25 @@ export class LiveChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     'Your order has been updated. Please check your email.',
   ];
   private shouldScroll = false;
+  private pendingSelectUserId: string | null = null;
+  private pendingDraft: string | null = null;
   private readonly subs: Subscription[] = [];
   private readonly unread = new Map<string, number>();
 
   constructor(
     private chatApi: ChatApiService,
     private chatHub: ChatHubService,
+    private route: ActivatedRoute,
     private toastr: ToastrService,
     public globalDataService: GlobalDataService,
   ) {}
 
   ngOnInit(): void {
+    this.pendingSelectUserId = (this.route.snapshot.queryParamMap.get('userId') || '').trim() || null;
+    this.pendingDraft = (this.route.snapshot.queryParamMap.get('draft') || '').trim() || null;
+    if (this.pendingDraft) {
+      this.draft = this.pendingDraft;
+    }
     this.chatHub.startConnection();
     this.loadConversations();
     this.subs.push(
@@ -94,6 +103,7 @@ export class LiveChatComponent implements OnInit, OnDestroy, AfterViewChecked {
         }));
         this.applyFilter();
         this.loadingList = false;
+        this.selectPendingConversation();
       },
       error: () => {
         this.loadingList = false;
@@ -118,6 +128,26 @@ export class LiveChatComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.toastr.error('Could not load messages.');
       },
     });
+  }
+
+  private selectPendingConversation(): void {
+    if (!this.pendingSelectUserId) {
+      return;
+    }
+
+    const targetId = this.pendingSelectUserId.toLowerCase();
+    this.pendingSelectUserId = null;
+    this.listFilter = 'all';
+    this.applyFilter();
+
+    const conversation = this.conversations.find((item) => item.id.toLowerCase() === targetId);
+    if (conversation) {
+      this.selectConversation(conversation);
+      if (this.pendingDraft) {
+        this.draft = this.pendingDraft;
+        this.pendingDraft = null;
+      }
+    }
   }
 
   applyFilter(): void {

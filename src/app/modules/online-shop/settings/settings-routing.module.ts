@@ -10,6 +10,7 @@ const routes: Routes = [
   { path: 'working-area', component: SettingsShellComponent },
   { path: 'payment', component: SettingsShellComponent },
   { path: 'pricing', component: SettingsShellComponent },
+  { path: 'price-challenge', component: SettingsShellComponent },
   { path: 'invoice', component: SettingsShellComponent },
   { path: 'home-banners', component: SettingsShellComponent },
   { path: 'seo', component: SettingsShellComponent },

@@ -215,6 +215,14 @@ export class NavigationService {
         state: '/online-shop/live-chat',
       },
       {
+        name: 'Price Challenge Reviews',
+        title: 'Price Challenge Reviews',
+        type: 'link',
+        icon: 'fa fa-fire',
+        icontType: InconsTypeEnum.ICons_FontAwesome.toString(),
+        state: '/online-shop/price-challenge-reviews',
+      },
+      {
         name: 'Settings',
         title: 'Settings',
         type: 'link',

@@ -215,6 +215,87 @@ export class HeaderSidebarLargeComponent implements OnInit, OnDestroy {
 
   public sourceId = "";
   public isTaskGroup = false;
+  markingReadIds = new Set<number>();
+  clearingAllNotifications = false;
+
+  isMarkingNotificationRead(notificationId: number): boolean {
+    return this.markingReadIds.has(notificationId);
+  }
+
+  markNotificationAsRead(event: Event, notification: NotificationsDto): void {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const notificationId = notification?.id;
+    if (!notificationId || this.markingReadIds.has(notificationId)) {
+      return;
+    }
+
+    this.markingReadIds.add(notificationId);
+    this.restService.post(environment.urls.Notification_Update_Notification, { id: notificationId }).subscribe({
+      next: (res) => {
+        this.markingReadIds.delete(notificationId);
+        if (res?.result !== false) {
+          this.signalRService.removeNotification(notificationId);
+        }
+      },
+      error: () => {
+        this.markingReadIds.delete(notificationId);
+      },
+    });
+  }
+
+  clearAllNotifications(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const notifications = this.signalRService.signalrNotifications;
+    if (!notifications.length || this.clearingAllNotifications) {
+      return;
+    }
+
+    const fallbackIds = notifications.map((item) => item.id).filter((id) => id > 0);
+    this.clearingAllNotifications = true;
+
+    this.restService.post(environment.urls.Notification_Mark_All_As_Read, {}).subscribe({
+      next: (res) => {
+        if (res?.result !== false) {
+          this.signalRService.clearAllNotifications();
+        } else {
+          this.markEachNotificationAsRead(fallbackIds);
+        }
+        this.clearingAllNotifications = false;
+      },
+      error: () => {
+        this.markEachNotificationAsRead(fallbackIds);
+        this.clearingAllNotifications = false;
+      },
+    });
+  }
+
+  private markEachNotificationAsRead(notificationIds: number[]): void {
+    const ids = [...new Set(notificationIds.filter((id) => id > 0))];
+    if (!ids.length) {
+      return;
+    }
+
+    let completed = 0;
+    ids.forEach((id) => {
+      this.restService.post(environment.urls.Notification_Update_Notification, { id }).subscribe({
+        next: () => {
+          this.signalRService.removeNotification(id);
+          completed += 1;
+          if (completed === ids.length) {
+            this.signalRService.reloadOnlineShopNotifications();
+          }
+        },
+        error: () => {
+          completed += 1;
+        },
+      });
+    });
+  }
+
   readNotification(notification: NotificationsDto) {
     let url = environment.urls.Notification_Update_Notification;
     this.restService.post(url, notification).subscribe((res) => {

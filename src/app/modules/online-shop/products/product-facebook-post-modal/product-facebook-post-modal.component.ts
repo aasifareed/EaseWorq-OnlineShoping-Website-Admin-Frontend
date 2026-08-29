@@ -23,6 +23,8 @@ export class ProductFacebookPostModalComponent implements OnInit {
   loadError: string | null = null;
   draft: MetaPagePostDraft | null = null;
   caption = '';
+  baseCaption = '';
+  includePriceChallenge = false;
   showHistory = false;
   images: MetaPagePostImage[] = [];
   previewImage: MetaPagePostImage | null = null;
@@ -43,7 +45,17 @@ export class ProductFacebookPostModalComponent implements OnInit {
   }
 
   get selectedImages(): MetaPagePostImage[] {
-    return this.images.filter((img) => img.selected);
+    return this.images
+      .filter((img) => img.selected)
+      .sort((a, b) => (a.publishOrder ?? 0) - (b.publishOrder ?? 0));
+  }
+
+  get displayImages(): MetaPagePostImage[] {
+    const selected = this.selectedImages;
+    const unselected = this.images
+      .filter((img) => !img.selected)
+      .sort((a, b) => a.sortOrder - b.sortOrder);
+    return [...selected, ...unselected];
   }
 
   get selectedCount(): number {
@@ -85,6 +97,8 @@ export class ProductFacebookPostModalComponent implements OnInit {
     this.productsService.getFacebookPostDraft(this.product.productId).subscribe({
       next: (draft) => {
         this.draft = draft;
+        this.baseCaption = draft.baseCaption || draft.caption || '';
+        this.includePriceChallenge = !!draft.includePriceChallenge;
         this.caption = draft.caption || '';
         this.images = this.normalizeImages(draft.images || []);
         this.loading = false;
@@ -106,33 +120,55 @@ export class ProductFacebookPostModalComponent implements OnInit {
       return;
     }
     image.selected = !image.selected;
+    if (image.selected) {
+      image.publishOrder = this.nextPublishOrder();
+    } else {
+      image.publishOrder = undefined;
+      this.compactPublishOrders();
+    }
+    this.images = [...this.images];
+  }
+
+  canMoveSelected(image: MetaPagePostImage, direction: -1 | 1): boolean {
+    if (!image.selected || this.publishing) {
+      return false;
+    }
+    const index = this.selectedOrderIndex(image);
+    const target = index + direction;
+    return index >= 0 && target >= 0 && target < this.selectedCount;
   }
 
   moveSelected(image: MetaPagePostImage, direction: -1 | 1): void {
-    if (!image.selected || this.publishing) {
-      return;
-    }
-    const selected = this.selectedImages;
-    const index = selected.findIndex((x) => x.imageId === image.imageId);
-    const swapWith = index + direction;
-    if (index < 0 || swapWith < 0 || swapWith >= selected.length) {
+    if (!this.canMoveSelected(image, direction)) {
       return;
     }
 
+    const selected = this.selectedImages;
+    const index = this.selectedOrderIndex(image);
+    const swapWith = index + direction;
     const a = selected[index];
     const b = selected[swapWith];
-    const orderA = a.sortOrder;
-    a.sortOrder = b.sortOrder;
-    b.sortOrder = orderA;
-    this.images = [...this.images].sort((left, right) => left.sortOrder - right.sortOrder);
+    const orderA = a.publishOrder ?? index + 1;
+    const orderB = b.publishOrder ?? swapWith + 1;
+    a.publishOrder = orderB;
+    b.publishOrder = orderA;
+    this.images = [...this.images];
+  }
+
+  selectedOrderIndex(image: MetaPagePostImage): number {
+    return this.selectedImages.findIndex((x) => x.imageId === image.imageId);
   }
 
   selectedOrderLabel(image: MetaPagePostImage): string {
     if (!image.selected) {
       return '';
     }
-    const index = this.selectedImages.findIndex((x) => x.imageId === image.imageId);
+    const index = this.selectedOrderIndex(image);
     return index >= 0 ? String(index + 1) : '';
+  }
+
+  trackImageById(_index: number, image: MetaPagePostImage): string {
+    return image.imageId;
   }
 
   openImagePreview(image: MetaPagePostImage): void {
@@ -141,6 +177,11 @@ export class ProductFacebookPostModalComponent implements OnInit {
 
   closeImagePreview(): void {
     this.previewImage = null;
+  }
+
+  onIncludePriceChallengeChange(checked: boolean): void {
+    this.includePriceChallenge = checked;
+    this.caption = this.buildCaption(this.baseCaption, checked);
   }
 
   publish(): void {
@@ -162,6 +203,7 @@ export class ProductFacebookPostModalComponent implements OnInit {
           ? this.images.find((x) => x.imageId === selected[0].imageId)?.url
           : undefined,
         selectedImages: selected,
+        includePriceChallenge: this.includePriceChallenge,
       })
       .subscribe({
         next: (result) => {
@@ -217,7 +259,12 @@ export class ProductFacebookPostModalComponent implements OnInit {
       })
       .map((img, index) => ({
         ...img,
-        sortOrder: img.sortOrder || index + 1,
+        sortOrder: Number(img.sortOrder) > 0 ? Number(img.sortOrder) : index + 1,
+      }))
+      .sort((a, b) => a.sortOrder - b.sortOrder || a.imageId.localeCompare(b.imageId))
+      .map((img, index) => ({
+        ...img,
+        sortOrder: index + 1,
       }));
 
     if (cleaned.length && !cleaned.some((x) => x.selected)) {
@@ -225,6 +272,37 @@ export class ProductFacebookPostModalComponent implements OnInit {
       primary.selected = true;
     }
 
-    return cleaned.sort((a, b) => a.sortOrder - b.sortOrder);
+    let publishOrder = 0;
+    return cleaned.map((img) => {
+      if (!img.selected) {
+        return { ...img, publishOrder: undefined };
+      }
+      publishOrder += 1;
+      return { ...img, publishOrder };
+    });
+  }
+
+  private nextPublishOrder(): number {
+    const maxOrder = this.images
+      .filter((img) => img.selected && img.publishOrder != null)
+      .reduce((max, img) => Math.max(max, img.publishOrder ?? 0), 0);
+    return maxOrder + 1;
+  }
+
+  private compactPublishOrders(): void {
+    this.selectedImages.forEach((img, index) => {
+      img.publishOrder = index + 1;
+    });
+  }
+
+  private buildCaption(baseCaption: string, includePriceChallenge: boolean): string {
+    const base = (baseCaption || '').trimEnd();
+    const url = (this.draft?.priceChallengeUrl || '').trim();
+    if (!includePriceChallenge || !url) {
+      return base;
+    }
+
+    const block = `🔥 Found it cheaper?\nChallenge our price 👇\n\n${url}`;
+    return base ? `${base}\n\n${block}` : block;
   }
 }

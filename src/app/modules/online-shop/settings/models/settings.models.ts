@@ -58,6 +58,22 @@ export interface OnlineShopSettings {
    * quote the courier as if it weighed nothing. Absent means no assumption.
    */
   fallbackProductWeightKg?: number;
+
+  /** Sasta Price Challenge — uses minimumGrossMarginPercentage for floor when margin protection is on. */
+  isPriceChallengeEnabled?: boolean;
+  priceChallengeBeatByAmount?: number;
+  priceChallengeBeatByPercent?: number;
+  priceChallengeMaximumDiscountPercent?: number;
+  priceChallengeOfferExpiryMinutes?: number;
+  priceChallengeQuantityLimit?: number;
+  priceChallengeMaxPerCustomerPerDay?: number;
+  priceChallengeMaxPerGuestPerDay?: number;
+  priceChallengeMaxPerIpPerDay?: number;
+  /** Server stores 0–1; admin UI may edit as 0–100 percent. */
+  priceChallengeAutoApprovalConfidenceThreshold?: number;
+  priceChallengeCompareShipping?: boolean;
+  priceChallengeAllowCouponStacking?: boolean;
+  priceChallengeCannotBeatSafelyAction?: string;
 }
 
 export interface OnlineShopSettingsForEdit {

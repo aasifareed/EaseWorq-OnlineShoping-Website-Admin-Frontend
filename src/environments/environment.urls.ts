@@ -15,6 +15,7 @@ export const appServiceUrls = {
   // Header: notifications, language
   Notification_GET_ALL: '/Notification/GetNotifications',
   Notification_Update_Notification: '/Notification/UpdateNotification',
+  Notification_Mark_All_As_Read: '/Notification/MarkAllCustomerNotificationsAsRead',
   OFFICERTASK_GET: '/OfficerTask/GetTaskById',
   Get_AllLanguages: '/TenantLanguage/GetAllLanguages',
   Get_All_Language_Text: '/TenantLanguage/GetAllLanguageText',
@@ -106,6 +107,14 @@ export const appServiceUrls = {
   Chat_GetConversations: '/Chat/GetConversations',
   Chat_GetSupportStatus: '/Chat/GetSupportStatus',
   ChatImage_Upload: '/ChatImageUpload/Upload',
+
+  // Price challenge admin review (PriceChallengeAdminAppService)
+  PriceChallengeAdmin_GetReviewsForAdmin: '/PriceChallengeAdmin/GetReviewsForAdmin',
+  PriceChallengeAdmin_GetReviewDetailForAdmin: '/PriceChallengeAdmin/GetReviewDetailForAdmin',
+  PriceChallengeAdmin_ApproveManualReview: '/PriceChallengeAdmin/ApproveManualReview',
+  PriceChallengeAdmin_DeclineManualReview: '/PriceChallengeAdmin/DeclineManualReview',
+  PriceChallengeAdmin_SendCounterOfferForManualReview: '/PriceChallengeAdmin/SendCounterOfferForManualReview',
+  PriceChallengeAdmin_ResendApprovedOfferToCustomerChat: '/PriceChallengeAdmin/ResendApprovedOfferToCustomerChat',
 
   // Online shop settings (OnlineShopSettingsAppService)
   Settings_GetForEdit: '/OnlineShopSettings/GetForEdit',

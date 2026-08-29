@@ -289,6 +289,239 @@
                           </div>
                         </section>
 
+                        <!-- Sasta Price Challenge -->
+                        <section *ngIf="activeSectionId === 'price-challenge'" class="settings-panel">
+                          <div class="switches-row">
+                            <label class="switch-label">
+                              <input type="checkbox" formControlName="isPriceChallengeEnabled" />
+                              {{ 'Enable Sasta Price Challenge' | translate }}
+                            </label>
+                          </div>
+                          <div class="col-md-12 form-group mb-2">
+                            <small class="text-muted">
+                              {{ 'Customers can challenge your price via chat by sharing competitor evidence. Approved offers are locked at checkout. Minimum profit uses the margin settings under Pricing when margin protection is enabled.' | translate }}
+                            </small>
+                          </div>
+
+                          <ng-container *ngIf="state.form.get('isPriceChallengeEnabled').value">
+                            <h6 class="mt-3 mb-2">{{ 'Beat competitor price' | translate }}</h6>
+                            <div class="row">
+                              <div class="col-md-12 form-group">
+                                <label>{{ 'Pricing strategy' | translate }}</label>
+                                <select class="form-control" formControlName="priceChallengeBeatStrategy">
+                                  <option *ngFor="let option of priceChallengeBeatStrategies" [value]="option.value">
+                                    {{ option.label | translate }}
+                                  </option>
+                                </select>
+                                <small class="text-muted d-block mt-1">{{ priceChallengeBeatStrategyHelp() | translate }}</small>
+                              </div>
+                              <div
+                                class="col-md-6 form-group"
+                                *ngIf="state.form.get('priceChallengeBeatStrategy').value !== 'percent'"
+                              >
+                                <label>{{ 'Beat by amount' | translate }}</label>
+                                <div class="input-group">
+                                  <input
+                                    type="number"
+                                    class="form-control"
+                                    formControlName="priceChallengeBeatByAmount"
+                                    min="0.01"
+                                    step="1"
+                                  />
+                                  <div class="input-group-append">
+                                    <span class="input-group-text">{{ priceChallengeCurrencySymbol() }}</span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                class="col-md-6 form-group"
+                                *ngIf="state.form.get('priceChallengeBeatStrategy').value !== 'amount'"
+                              >
+                                <label>{{ 'Beat by percent' | translate }}</label>
+                                <div class="input-group">
+                                  <input
+                                    type="number"
+                                    class="form-control"
+                                    formControlName="priceChallengeBeatByPercent"
+                                    min="0.01"
+                                    max="100"
+                                    step="0.01"
+                                  />
+                                  <div class="input-group-append">
+                                    <span class="input-group-text">%</span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col-md-6 form-group">
+                                <label>{{ 'Maximum discount percent' | translate }}</label>
+                                <div class="input-group">
+                                  <input
+                                    type="number"
+                                    class="form-control"
+                                    formControlName="priceChallengeMaximumDiscountPercent"
+                                    min="0.01"
+                                    max="100"
+                                    step="0.01"
+                                  />
+                                  <div class="input-group-append">
+                                    <span class="input-group-text">%</span>
+                                  </div>
+                                </div>
+                                <small class="text-muted d-block">
+                                  {{ 'Extra protection before margin rules apply. Recommended 10–15% for launch.' | translate }}
+                                </small>
+                              </div>
+                            </div>
+
+                            <hr class="my-3" />
+
+                            <h6 class="mb-2">{{ 'Offer limits' | translate }}</h6>
+                            <div class="row">
+                              <div class="col-md-4 form-group">
+                                <label>{{ 'Offer expiry (minutes)' | translate }}</label>
+                                <input
+                                  type="number"
+                                  class="form-control"
+                                  formControlName="priceChallengeOfferExpiryMinutes"
+                                  min="1"
+                                  step="1"
+                                />
+                              </div>
+                              <div class="col-md-4 form-group">
+                                <label>{{ 'Quantity limit per offer' | translate }}</label>
+                                <input
+                                  type="number"
+                                  class="form-control"
+                                  formControlName="priceChallengeQuantityLimit"
+                                  min="1"
+                                  step="1"
+                                />
+                              </div>
+                            </div>
+
+                            <hr class="my-3" />
+
+                            <h6 class="mb-2">{{ 'Daily rate limits' | translate }}</h6>
+                            <div class="col-md-12 form-group mb-2">
+                              <small class="text-muted">
+                                {{ 'Opening chat or clicking Challenge this price does not consume these limits. A limit is used only when the first real evidence creates a new price challenge for that customer or guest today. Max per IP protects StartContext from request spam.' | translate }}
+                              </small>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-4 form-group">
+                                <label>{{ 'Max per logged-in customer' | translate }}</label>
+                                <input
+                                  type="number"
+                                  class="form-control"
+                                  formControlName="priceChallengeMaxPerCustomerPerDay"
+                                  min="1"
+                                  step="1"
+                                />
+                              </div>
+                              <div class="col-md-4 form-group">
+                                <label>{{ 'Max per guest' | translate }}</label>
+                                <input
+                                  type="number"
+                                  class="form-control"
+                                  formControlName="priceChallengeMaxPerGuestPerDay"
+                                  min="1"
+                                  step="1"
+                                />
+                              </div>
+                              <div class="col-md-4 form-group">
+                                <label>{{ 'Max per IP address' | translate }}</label>
+                                <input
+                                  type="number"
+                                  class="form-control"
+                                  formControlName="priceChallengeMaxPerIpPerDay"
+                                  min="1"
+                                  step="1"
+                                />
+                              </div>
+                            </div>
+
+                            <hr class="my-3" />
+
+                            <h6 class="mb-2">{{ 'Automatic approval' | translate }}</h6>
+                            <div class="row">
+                              <div class="col-md-6 form-group">
+                                <label>{{ 'Auto-approval confidence threshold' | translate }}</label>
+                                <div class="input-group">
+                                  <input
+                                    type="number"
+                                    class="form-control"
+                                    formControlName="priceChallengeAutoApprovalConfidencePercent"
+                                    min="0"
+                                    max="100"
+                                    step="1"
+                                  />
+                                  <div class="input-group-append">
+                                    <span class="input-group-text">%</span>
+                                  </div>
+                                </div>
+                                <small class="text-muted d-block">
+                                  {{ 'Evidence below this confidence is sent for manual review.' | translate }}
+                                </small>
+                              </div>
+                            </div>
+
+                            <hr class="my-3" />
+
+                            <h6 class="mb-2">{{ 'When competitor price cannot safely be beaten' | translate }}</h6>
+                            <div class="row">
+                              <div class="col-md-8 form-group">
+                                <select class="form-control" formControlName="priceChallengeCannotBeatSafelyAction">
+                                  <option *ngFor="let option of priceChallengeUnsafeBeatActions" [value]="option.value">
+                                    {{ option.label | translate }}
+                                  </option>
+                                </select>
+                                <small class="text-muted d-block mt-1">
+                                  {{ 'Applies when the offer would breach maximum discount or margin protection. Manual review lets you decide case by case.' | translate }}
+                                </small>
+                              </div>
+                            </div>
+
+                            <hr class="my-3" />
+
+                            <h6 class="mb-2">{{ 'Options' | translate }}</h6>
+                            <div class="switches-row">
+                              <label class="switch-label">
+                                <input type="checkbox" formControlName="priceChallengeCompareShipping" />
+                                {{ 'Include shipping when comparing competitor prices' | translate }}
+                              </label>
+                              <small class="text-muted d-block ml-4 pl-2">
+                                {{ 'Compare total delivered price only when competitor shipping is clearly available. Never assume shipping when AI cannot see it.' | translate }}
+                              </small>
+                            </div>
+                            <div class="switches-row">
+                              <label class="switch-label">
+                                <input type="checkbox" formControlName="priceChallengeAllowCouponStacking" />
+                                {{ 'Allow stacking with other coupons' | translate }}
+                              </label>
+                            </div>
+
+                            <div class="price-challenge-summary">
+                              <strong>{{ 'Example with current settings' | translate }}</strong>
+                              <ul class="price-challenge-summary__list mb-0">
+                                <li>
+                                  {{ 'Competitor price' | translate }}:
+                                  {{ priceChallengeCurrencySymbol() }} {{ formatPriceChallengeMoney(priceChallengeExampleCompetitorPrice) }}
+                                </li>
+                                <li>
+                                  {{ 'We beat by' | translate }}: {{ priceChallengeExampleBeatDescription() }}
+                                </li>
+                                <li>
+                                  {{ 'Customer offer' | translate }}:
+                                  {{ priceChallengeCurrencySymbol() }} {{ formatPriceChallengeMoney(priceChallengeExampleOfferPrice()) }}
+                                </li>
+                              </ul>
+                              <small class="text-muted d-block mt-2">
+                                {{ 'Subject to margin protection and maximum discount.' | translate }}
+                              </small>
+                            </div>
+                          </ng-container>
+                        </section>
+
                         <!-- Invoice -->
                         <section *ngIf="activeSectionId === 'invoice'" class="settings-panel">
                           <div class="row">

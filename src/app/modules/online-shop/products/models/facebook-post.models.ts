@@ -15,6 +15,8 @@ export interface MetaPagePostImage {
   selected: boolean;
   canPublishToMeta: boolean;
   sortOrder: number;
+  /** Client-side publish sequence for selected images (1 = first on Facebook). */
+  publishOrder?: number;
 }
 
 export interface MetaPagePostDraft {
@@ -32,6 +34,10 @@ export interface MetaPagePostDraft {
   canPublish: boolean;
   publishingEnabled: boolean;
   disabledReason?: string | null;
+  isPriceChallengeEnabled?: boolean;
+  includePriceChallenge?: boolean;
+  priceChallengeUrl?: string | null;
+  baseCaption?: string;
   images: MetaPagePostImage[];
   recentPosts: MetaPagePostHistoryItem[];
 }
@@ -46,6 +52,7 @@ export interface PublishMetaPagePostPayload {
   caption: string;
   imageUrl?: string;
   selectedImages: PublishMetaPageSelectedImage[];
+  includePriceChallenge?: boolean;
 }
 
 export interface PublishMetaPagePostResult {

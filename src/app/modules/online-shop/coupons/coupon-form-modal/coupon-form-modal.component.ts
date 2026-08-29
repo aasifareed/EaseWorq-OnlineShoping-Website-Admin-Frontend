@@ -28,6 +28,11 @@ const PRODUCT_OPTION_PAGE_SIZE = 500;
 })
 export class CouponFormModalComponent implements OnInit {
   @Input() couponId: string | null = null;
+  /** When opened from the products grid, pre-select this catalog product. */
+  @Input() prefillProductId: string | null = null;
+  @Input() prefillProductLabel: string | null = null;
+  /** Single-use defaults suited for sharing a code with one customer. */
+  @Input() customerOfferMode = false;
 
   form: FormGroup;
   submitted = false;
@@ -65,11 +70,22 @@ export class CouponFormModalComponent implements OnInit {
     this.buildForm();
     this.setupValueChanges();
     this.buildProductDropdownSettings();
+
+    if (this.prefillProductId) {
+      this.pendingIncludeIds = [this.prefillProductId];
+    }
+
+    if (this.customerOfferMode) {
+      this.applyCustomerOfferDefaults();
+    }
+
     this.loadProductOptions();
 
     if (this.couponId) {
       this.title = 'Edit Coupon';
       this.loadCoupon(this.couponId);
+    } else if (this.customerOfferMode) {
+      this.title = 'Customer coupon';
     }
   }
 
@@ -274,9 +290,54 @@ export class CouponFormModalComponent implements OnInit {
   }
 
   private toProductOptions(ids: string[]): CouponProductOption[] {
-    return (ids || []).map(
-      (id) => this.productOptions.find((option) => option.id === id) ?? { id, label: id },
-    );
+    return (ids || []).map((id) => {
+      const found = this.productOptions.find((option) => option.id === id);
+      if (found) {
+        return found;
+      }
+      if (id === this.prefillProductId && this.prefillProductLabel?.trim()) {
+        return { id, label: this.prefillProductLabel.trim() };
+      }
+      return { id, label: id };
+    });
+  }
+
+  private applyCustomerOfferDefaults(): void {
+    const label = this.prefillProductLabel?.trim() || this.translate.instant('product');
+    const today = new Date();
+    const end = new Date(today);
+    end.setDate(end.getDate() + 7);
+
+    this.form.patchValue({
+      title: this.translate.instant('Customer offer – {{product}}', { product: label }),
+      description: this.translate.instant(
+        'Special offer for {{product}}. Share the coupon code with your customer.',
+        { product: label },
+      ),
+      code: this.generateOfferCode(),
+      type: CouponTypeEnum.Fixed,
+      scope: DiscountScopeEnum.Product,
+      isUnlimited: false,
+      usagePerCoupon: 1,
+      usagePerCustomer: 1,
+      isExpired: true,
+      startDate: this.formatDateInput(today),
+      endDate: this.formatDateInput(end),
+      isActive: true,
+    });
+    this.syncProductTargeting();
+  }
+
+  private generateOfferCode(): string {
+    const suffix = Math.random().toString(36).slice(2, 8).toUpperCase();
+    return `OFFER-${suffix}`;
+  }
+
+  private formatDateInput(value: Date): string {
+    const year = value.getFullYear();
+    const month = String(value.getMonth() + 1).padStart(2, '0');
+    const day = String(value.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   private static parseProductIds(raw: unknown): string[] {

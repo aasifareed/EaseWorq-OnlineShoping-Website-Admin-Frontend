@@ -207,3 +207,20 @@
     border-top: 1px solid #e8eaed;
   }
 }
+
+.price-challenge-summary {
+  margin-top: 1.25rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid #e8eaed;
+  border-radius: 8px;
+  background: #f8f9fa;
+}
+
+.price-challenge-summary__list {
+  margin-top: 0.65rem;
+  padding-left: 1.1rem;
+}
+
+.price-challenge-summary__list li + li {
+  margin-top: 0.25rem;
+}

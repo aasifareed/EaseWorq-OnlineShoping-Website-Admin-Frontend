@@ -99,11 +99,21 @@
             <div ngbDropdownMenu class="header-alerts-dropdown">
                 <div class="header-alerts-dropdown__header">
                     <span class="header-alerts-dropdown__title">Alerts</span>
-                    <span
-                        *ngIf="signalRService.signalrNotifications?.length"
-                        class="header-alerts-dropdown__count">
-                        {{ signalRService.signalrNotifications.length }} new
-                    </span>
+                    <div class="header-alerts-dropdown__actions">
+                        <button
+                            type="button"
+                            class="header-alerts-dropdown__clear-all"
+                            *ngIf="signalRService.signalrNotifications?.length"
+                            [disabled]="clearingAllNotifications"
+                            (click)="clearAllNotifications($event)">
+                            {{ clearingAllNotifications ? 'Clearing…' : 'Clear all' }}
+                        </button>
+                        <span
+                            *ngIf="signalRService.signalrNotifications?.length"
+                            class="header-alerts-dropdown__count">
+                            {{ signalRService.signalrNotifications.length }} new
+                        </span>
+                    </div>
                 </div>
                 <div class="header-alerts-dropdown__body">
                     <div class="header-alerts-dropdown__empty" *ngIf="!signalRService.signalrNotifications?.length">
@@ -131,7 +141,16 @@
                                     class="header-alerts-item__badge header-alerts-item__badge--{{ item.status }}">
                                     {{ item.badge }}
                                 </span>
-                                <span class="header-alerts-item__action">View order</span>
+                                <div class="header-alerts-item__actions">
+                                    <span class="header-alerts-item__action">View order</span>
+                                    <button
+                                        type="button"
+                                        class="header-alerts-item__mark-read"
+                                        [disabled]="isMarkingNotificationRead(item.id)"
+                                        (click)="markNotificationAsRead($event, item)">
+                                        {{ isMarkingNotificationRead(item.id) ? 'Marking…' : 'Mark as read' }}
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </button>

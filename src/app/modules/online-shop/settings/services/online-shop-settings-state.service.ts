@@ -11,6 +11,12 @@ import {
   OnlineShopSettingsForEdit,
 } from '../models/settings.models';
 import { gramsToKilograms, kilogramsToGrams } from '../../shared/weight.util';
+import {
+  DEFAULT_PRICE_CHALLENGE_MAXIMUM_DISCOUNT_PERCENT,
+  inferPriceChallengeBeatStrategy,
+  PriceChallengeBeatStrategy,
+  PriceChallengeCannotBeatSafelyAction,
+} from '../models/price-challenge-settings.util';
 
 /** 100 kg per unit, mirroring the server bound. Catches kilograms typed into a gram field. */
 const MAX_FALLBACK_PRODUCT_WEIGHT_GRAMS = 100_000;
@@ -35,6 +41,7 @@ export class OnlineShopSettingsStateService {
   ) {
     this.form = this.buildForm();
     this.wireCodShippingAdvanceControl();
+    this.wirePriceChallengeControls();
   }
 
   get posInfo(): OnlineShopPosInfo | null {
@@ -135,6 +142,23 @@ export class OnlineShopSettingsStateService {
         null,
         [Validators.min(0), Validators.max(MAX_FALLBACK_PRODUCT_WEIGHT_GRAMS)],
       ],
+      isPriceChallengeEnabled: [false],
+      priceChallengeBeatStrategy: ['amount' as PriceChallengeBeatStrategy],
+      priceChallengeBeatByAmount: [20, [Validators.min(0)]],
+      priceChallengeBeatByPercent: [null, [Validators.min(0), Validators.max(100)]],
+      priceChallengeMaximumDiscountPercent: [
+        DEFAULT_PRICE_CHALLENGE_MAXIMUM_DISCOUNT_PERCENT,
+        [Validators.min(0.01), Validators.max(100)],
+      ],
+      priceChallengeOfferExpiryMinutes: [30, [Validators.min(1)]],
+      priceChallengeQuantityLimit: [1, [Validators.min(1)]],
+      priceChallengeMaxPerCustomerPerDay: [5, [Validators.min(1)]],
+      priceChallengeMaxPerGuestPerDay: [3, [Validators.min(1)]],
+      priceChallengeMaxPerIpPerDay: [10, [Validators.min(1)]],
+      priceChallengeAutoApprovalConfidencePercent: [90, [Validators.min(0), Validators.max(100)]],
+      priceChallengeCannotBeatSafelyAction: ['ManualReview' as PriceChallengeCannotBeatSafelyAction],
+      priceChallengeCompareShipping: [false],
+      priceChallengeAllowCouponStacking: [false],
     });
   }
 
@@ -171,9 +195,33 @@ export class OnlineShopSettingsStateService {
       minimumGrossMarginPercentage: s.minimumGrossMarginPercentage ?? null,
       // Blank rather than 0: "assume nothing" is the absence of a figure, not a weight of zero.
       fallbackProductWeightGrams: kilogramsToGrams(s.fallbackProductWeightKg) || null,
+      isPriceChallengeEnabled: !!s.isPriceChallengeEnabled,
+      priceChallengeBeatStrategy: inferPriceChallengeBeatStrategy(
+        s.priceChallengeBeatByAmount,
+        s.priceChallengeBeatByPercent,
+      ),
+      priceChallengeBeatByAmount: s.priceChallengeBeatByAmount ?? 20,
+      priceChallengeBeatByPercent: s.priceChallengeBeatByPercent ?? null,
+      priceChallengeMaximumDiscountPercent:
+        s.priceChallengeMaximumDiscountPercent ?? DEFAULT_PRICE_CHALLENGE_MAXIMUM_DISCOUNT_PERCENT,
+      priceChallengeOfferExpiryMinutes: s.priceChallengeOfferExpiryMinutes ?? 30,
+      priceChallengeQuantityLimit: s.priceChallengeQuantityLimit ?? 1,
+      priceChallengeMaxPerCustomerPerDay: s.priceChallengeMaxPerCustomerPerDay ?? 5,
+      priceChallengeMaxPerGuestPerDay: s.priceChallengeMaxPerGuestPerDay ?? 3,
+      priceChallengeMaxPerIpPerDay: s.priceChallengeMaxPerIpPerDay ?? 10,
+      priceChallengeAutoApprovalConfidencePercent: this.toConfidencePercent(
+        s.priceChallengeAutoApprovalConfidenceThreshold,
+      ),
+      priceChallengeCannotBeatSafelyAction: this.normalizeCannotBeatSafelyAction(
+        s.priceChallengeCannotBeatSafelyAction,
+      ),
+      priceChallengeCompareShipping: !!s.priceChallengeCompareShipping,
+      priceChallengeAllowCouponStacking: !!s.priceChallengeAllowCouponStacking,
     });
     this.syncCodShippingAdvanceControl();
     this.syncMarginFloorControl();
+    this.syncPriceChallengeControls();
+    this.syncBeatStrategyControls();
   }
 
   private wireCodShippingAdvanceControl(): void {
@@ -227,6 +275,98 @@ export class OnlineShopSettingsStateService {
     floorCtrl.updateValueAndValidity({ emitEvent: false });
   }
 
+  private wirePriceChallengeControls(): void {
+    this.form.get('isPriceChallengeEnabled')?.valueChanges.subscribe(() => {
+      this.syncPriceChallengeControls();
+    });
+    this.form.get('priceChallengeBeatStrategy')?.valueChanges.subscribe(() => {
+      this.syncBeatStrategyControls();
+    });
+    this.syncPriceChallengeControls();
+    this.syncBeatStrategyControls();
+  }
+
+  private syncPriceChallengeControls(): void {
+    const enabled = !!this.form.get('isPriceChallengeEnabled')?.value;
+    const fields = [
+      'priceChallengeBeatStrategy',
+      'priceChallengeBeatByAmount',
+      'priceChallengeBeatByPercent',
+      'priceChallengeMaximumDiscountPercent',
+      'priceChallengeOfferExpiryMinutes',
+      'priceChallengeQuantityLimit',
+      'priceChallengeMaxPerCustomerPerDay',
+      'priceChallengeMaxPerGuestPerDay',
+      'priceChallengeMaxPerIpPerDay',
+      'priceChallengeAutoApprovalConfidencePercent',
+      'priceChallengeCannotBeatSafelyAction',
+      'priceChallengeCompareShipping',
+      'priceChallengeAllowCouponStacking',
+    ];
+
+    fields.forEach((name) => {
+      const ctrl = this.form.get(name);
+      if (!ctrl) {
+        return;
+      }
+      if (enabled) {
+        ctrl.enable({ emitEvent: false });
+      } else {
+        ctrl.disable({ emitEvent: false });
+      }
+    });
+
+    const maxDiscountCtrl = this.form.get('priceChallengeMaximumDiscountPercent');
+    if (maxDiscountCtrl) {
+      if (enabled) {
+        maxDiscountCtrl.setValidators([Validators.required, Validators.min(0.01), Validators.max(100)]);
+      } else {
+        maxDiscountCtrl.clearValidators();
+      }
+      maxDiscountCtrl.updateValueAndValidity({ emitEvent: false });
+    }
+
+    if (enabled) {
+      this.syncBeatStrategyControls();
+    }
+  }
+
+  private syncBeatStrategyControls(): void {
+    if (!this.form.get('isPriceChallengeEnabled')?.value) {
+      return;
+    }
+
+    const strategy = this.form.get('priceChallengeBeatStrategy')?.value as PriceChallengeBeatStrategy;
+    const amountCtrl = this.form.get('priceChallengeBeatByAmount');
+    const percentCtrl = this.form.get('priceChallengeBeatByPercent');
+    if (!amountCtrl || !percentCtrl) {
+      return;
+    }
+
+    amountCtrl.clearValidators();
+    percentCtrl.clearValidators();
+
+    if (strategy === 'amount') {
+      amountCtrl.setValidators([Validators.required, Validators.min(0.01)]);
+      percentCtrl.setValue(null, { emitEvent: false });
+      percentCtrl.disable({ emitEvent: false });
+      amountCtrl.enable({ emitEvent: false });
+    } else if (strategy === 'percent') {
+      percentCtrl.setValidators([Validators.required, Validators.min(0.01), Validators.max(100)]);
+      amountCtrl.setValue(null, { emitEvent: false });
+      amountCtrl.disable({ emitEvent: false });
+      percentCtrl.enable({ emitEvent: false });
+    } else {
+      amountCtrl.setValidators([Validators.required, Validators.min(0.01)]);
+      percentCtrl.setValidators([Validators.required, Validators.min(0.01), Validators.max(100)]);
+      amountCtrl.enable({ emitEvent: false });
+      percentCtrl.enable({ emitEvent: false });
+    }
+
+    amountCtrl.updateValueAndValidity({ emitEvent: false });
+    percentCtrl.updateValueAndValidity({ emitEvent: false });
+  }
+
   private emptyPosInfo(): OnlineShopPosInfo {
     return { taxEnabled: false, taxes: [] };
   }
@@ -265,6 +405,66 @@ export class OnlineShopSettingsStateService {
         : undefined,
       fallbackProductWeightKg:
         gramsToKilograms(Number(v.fallbackProductWeightGrams)) || undefined,
+      isPriceChallengeEnabled: !!v.isPriceChallengeEnabled,
+      ...this.buildPriceChallengeBeatFields(v),
+      priceChallengeMaximumDiscountPercent: v.isPriceChallengeEnabled
+        ? this.toNumberOrUndefined(v.priceChallengeMaximumDiscountPercent)
+        : undefined,
+      priceChallengeOfferExpiryMinutes: v.isPriceChallengeEnabled
+        ? this.toNumberOrUndefined(v.priceChallengeOfferExpiryMinutes)
+        : undefined,
+      priceChallengeQuantityLimit: v.isPriceChallengeEnabled
+        ? this.toNumberOrUndefined(v.priceChallengeQuantityLimit)
+        : undefined,
+      priceChallengeMaxPerCustomerPerDay: v.isPriceChallengeEnabled
+        ? this.toNumberOrUndefined(v.priceChallengeMaxPerCustomerPerDay)
+        : undefined,
+      priceChallengeMaxPerGuestPerDay: v.isPriceChallengeEnabled
+        ? this.toNumberOrUndefined(v.priceChallengeMaxPerGuestPerDay)
+        : undefined,
+      priceChallengeMaxPerIpPerDay: v.isPriceChallengeEnabled
+        ? this.toNumberOrUndefined(v.priceChallengeMaxPerIpPerDay)
+        : undefined,
+      priceChallengeAutoApprovalConfidenceThreshold: v.isPriceChallengeEnabled
+        ? this.fromConfidencePercent(v.priceChallengeAutoApprovalConfidencePercent)
+        : undefined,
+      priceChallengeCannotBeatSafelyAction: v.isPriceChallengeEnabled
+        ? this.normalizeCannotBeatSafelyAction(v.priceChallengeCannotBeatSafelyAction)
+        : undefined,
+      priceChallengeCompareShipping: !!v.isPriceChallengeEnabled && !!v.priceChallengeCompareShipping,
+      priceChallengeAllowCouponStacking:
+        !!v.isPriceChallengeEnabled && !!v.priceChallengeAllowCouponStacking,
+    };
+  }
+
+  private buildPriceChallengeBeatFields(v: Record<string, unknown>): Pick<
+    OnlineShopSettings,
+    'priceChallengeBeatByAmount' | 'priceChallengeBeatByPercent'
+  > {
+    if (!v.isPriceChallengeEnabled) {
+      return {
+        priceChallengeBeatByAmount: undefined,
+        priceChallengeBeatByPercent: undefined,
+      };
+    }
+
+    const strategy = v.priceChallengeBeatStrategy as PriceChallengeBeatStrategy;
+    if (strategy === 'amount') {
+      return {
+        priceChallengeBeatByAmount: this.toNumberOrUndefined(v.priceChallengeBeatByAmount),
+        priceChallengeBeatByPercent: undefined,
+      };
+    }
+    if (strategy === 'percent') {
+      return {
+        priceChallengeBeatByAmount: undefined,
+        priceChallengeBeatByPercent: this.toNumberOrUndefined(v.priceChallengeBeatByPercent),
+      };
+    }
+
+    return {
+      priceChallengeBeatByAmount: this.toNumberOrUndefined(v.priceChallengeBeatByAmount),
+      priceChallengeBeatByPercent: this.toNumberOrUndefined(v.priceChallengeBeatByPercent),
     };
   }
 
@@ -332,6 +532,31 @@ export class OnlineShopSettingsStateService {
         s.MinimumGrossMarginPercentage) as number,
       fallbackProductWeightKg: (s.fallbackProductWeightKg ??
         s.FallbackProductWeightKg) as number,
+      isPriceChallengeEnabled: !!(s.isPriceChallengeEnabled ?? s.IsPriceChallengeEnabled),
+      priceChallengeBeatByAmount: (s.priceChallengeBeatByAmount ??
+        s.PriceChallengeBeatByAmount) as number,
+      priceChallengeBeatByPercent: (s.priceChallengeBeatByPercent ??
+        s.PriceChallengeBeatByPercent) as number,
+      priceChallengeMaximumDiscountPercent: (s.priceChallengeMaximumDiscountPercent ??
+        s.PriceChallengeMaximumDiscountPercent) as number,
+      priceChallengeOfferExpiryMinutes: (s.priceChallengeOfferExpiryMinutes ??
+        s.PriceChallengeOfferExpiryMinutes) as number,
+      priceChallengeQuantityLimit: (s.priceChallengeQuantityLimit ??
+        s.PriceChallengeQuantityLimit) as number,
+      priceChallengeMaxPerCustomerPerDay: (s.priceChallengeMaxPerCustomerPerDay ??
+        s.PriceChallengeMaxPerCustomerPerDay) as number,
+      priceChallengeMaxPerGuestPerDay: (s.priceChallengeMaxPerGuestPerDay ??
+        s.PriceChallengeMaxPerGuestPerDay) as number,
+      priceChallengeMaxPerIpPerDay: (s.priceChallengeMaxPerIpPerDay ??
+        s.PriceChallengeMaxPerIpPerDay) as number,
+      priceChallengeAutoApprovalConfidenceThreshold: (s.priceChallengeAutoApprovalConfidenceThreshold ??
+        s.PriceChallengeAutoApprovalConfidenceThreshold) as number,
+      priceChallengeCompareShipping: !!(s.priceChallengeCompareShipping ?? s.PriceChallengeCompareShipping),
+      priceChallengeAllowCouponStacking: !!(
+        s.priceChallengeAllowCouponStacking ?? s.PriceChallengeAllowCouponStacking
+      ),
+      priceChallengeCannotBeatSafelyAction: (s.priceChallengeCannotBeatSafelyAction ??
+        s.PriceChallengeCannotBeatSafelyAction) as string,
     };
   }
 
@@ -372,5 +597,27 @@ export class OnlineShopSettingsStateService {
     }
     const num = Number(value);
     return Number.isNaN(num) ? undefined : num;
+  }
+
+  private toConfidencePercent(threshold?: number | null): number {
+    if (threshold == null || Number.isNaN(Number(threshold))) {
+      return 90;
+    }
+    const value = Number(threshold);
+    return value <= 1 ? Math.round(value * 100) : Math.round(value);
+  }
+
+  private fromConfidencePercent(percent: unknown): number | undefined {
+    const value = this.toNumberOrUndefined(percent);
+    if (value == null) {
+      return undefined;
+    }
+    return Math.min(1, Math.max(0, value / 100));
+  }
+
+  private normalizeCannotBeatSafelyAction(
+    action?: string | null,
+  ): PriceChallengeCannotBeatSafelyAction {
+    return action === 'Decline' ? 'Decline' : 'ManualReview';
   }
 }

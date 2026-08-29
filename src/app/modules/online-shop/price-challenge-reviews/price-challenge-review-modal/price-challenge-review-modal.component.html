@@ -1,0 +1,343 @@
+<div class="pc-review-modal-inner">
+  <div class="modal-header">
+    <h4 class="modal-title">
+      <i class="i-Money-2 mr-2"></i>
+      {{ approvalResult ? ('Offer approved' | translate) : ('Review Price Challenge' | translate) }}
+    </h4>
+    <button type="button" class="close" [disabled]="saving" (click)="approvalResult ? closeAfterApproval() : activeModal.dismiss()" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body pc-review-modal-body" *ngIf="loading">
+    <div class="pc-review-modal__loading text-center py-5">
+      <i class="fa fa-spinner fa-spin fa-2x text-primary"></i>
+      <p class="mt-3 mb-0 text-muted">{{ 'Loading review…' | translate }}</p>
+    </div>
+  </div>
+
+  <div class="modal-body pc-review-modal-body" *ngIf="!loading && approvalResult">
+    <section class="pc-review-modal__success">
+      <div class="pc-review-modal__success-icon">
+        <i class="fa fa-check-circle fontAwesome_Li_Class"></i>
+      </div>
+      <h5 class="pc-review-modal__success-title">{{ 'Offer approved successfully' | translate }}</h5>
+      <p class="pc-review-modal__success-lead">
+        {{ 'The customer received your message with a Buy Now button in challenge chat. Internal reference below is admin-only — never share it with the customer.' | translate }}
+      </p>
+
+      <div class="pc-review-modal__coupon-card">
+        <span class="pc-review-modal__coupon-label">{{ 'Internal offer reference (admin only)' | translate }}</span>
+        <div class="pc-review-modal__coupon-row">
+          <code class="pc-review-modal__coupon-code">{{ approvalResult.couponCode }}</code>
+          <button type="button" class="btn btn-sm btn-outline-primary" (click)="copyCouponCode()">
+            <i class="fa fa-copy fontAwesome_Li_Class"></i> {{ 'Copy' | translate }}
+          </button>
+        </div>
+      </div>
+
+      <div class="pc-review-modal__success-meta">
+        <div>
+          <span>{{ 'Product' | translate }}</span>
+          <strong>{{ approvalResult.productName || detail?.productName }}</strong>
+        </div>
+        <div>
+          <span>{{ 'Approved price' | translate }}</span>
+          <strong>{{ formatMoney(approvalResult.approvedOfferPrice) }}</strong>
+        </div>
+        <div>
+          <span>{{ 'Qty limit' | translate }}</span>
+          <strong>{{ approvalResult.quantityLimit }}</strong>
+        </div>
+        <div *ngIf="approvalResult.offerExpiresAt">
+          <span>{{ 'Expires' | translate }}</span>
+          <strong>{{ formatDate(approvalResult.offerExpiresAt) }}</strong>
+        </div>
+      </div>
+
+      <div class="pc-review-modal__customer-message" *ngIf="approvalCustomerDraft">
+        <label>{{ 'Your message draft' | translate }}</label>
+        <textarea class="form-control" rows="3" readonly [value]="approvalCustomerDraft"></textarea>
+        <button type="button" class="btn btn-link btn-sm px-0 mt-1" (click)="copyCustomerMessage()">
+          <i class="fa fa-copy fontAwesome_Li_Class"></i> {{ 'Copy message' | translate }}
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal-body pc-review-modal-body" *ngIf="!loading && detail && !approvalResult">
+    <div class="pc-review-modal__top">
+    <div class="pc-review-modal__context">
+      <div class="pc-review-modal__product">
+        <span class="pc-review-modal__product-icon">
+          <i class="fa fa-shopping-bag fontAwesome_Li_Class" aria-hidden="true"></i>
+        </span>
+        <div class="pc-review-modal__product-text">
+          <strong>{{ detail.productName }}</strong>
+          <small *ngIf="detail.productSlug">{{ detail.productSlug }}</small>
+        </div>
+      </div>
+      <div class="pc-review-modal__badges" *ngIf="detail.aiConfidenceScore != null || detail.productMatchConfidence != null">
+        <span class="pc-review-modal__badge" *ngIf="detail.aiConfidenceScore != null">
+          <i class="fa fa-magic fontAwesome_Li_Class"></i>
+          {{ 'AI' | translate }} {{ formatPercent(detail.aiConfidenceScore) }}
+        </span>
+        <span class="pc-review-modal__badge" *ngIf="detail.productMatchConfidence != null">
+          <i class="fa fa-link fontAwesome_Li_Class"></i>
+          {{ 'Match' | translate }} {{ formatPercent(detail.productMatchConfidence) }}
+        </span>
+      </div>
+    </div>
+
+    <div class="pc-review-modal__pricing">
+      <article class="pc-review-modal__price-card pc-review-modal__price-card--ours">
+        <span class="pc-review-modal__price-label">{{ 'Our price' | translate }}</span>
+        <strong class="pc-review-modal__price-value">{{ formatMoney(detail.ourRegularPriceAtChallenge) }}</strong>
+      </article>
+
+      <div class="pc-review-modal__price-bridge" *ngIf="competitorGap != null">
+        <span class="pc-review-modal__price-bridge-line"></span>
+        <span class="pc-review-modal__price-bridge-chip">− {{ formatMoney(competitorGap) }}</span>
+        <span class="pc-review-modal__price-bridge-line"></span>
+      </div>
+
+      <article class="pc-review-modal__price-card pc-review-modal__price-card--competitor">
+        <span class="pc-review-modal__price-label">{{ 'Competitor price' | translate }}</span>
+        <strong class="pc-review-modal__price-value">{{ formatMoney(detail.competitorComparablePriceAtDecision) }}</strong>
+      </article>
+
+      <article class="pc-review-modal__price-card pc-review-modal__price-card--suggested">
+        <span class="pc-review-modal__price-label">{{ 'Suggested offer' | translate }}</span>
+        <strong class="pc-review-modal__price-value">{{ formatMoney(detail.suggestedOfferPrice) }}</strong>
+        <small *ngIf="suggestedSavings != null">{{ 'Save customer' | translate }} {{ formatMoney(suggestedSavings) }}</small>
+      </article>
+    </div>
+
+    <div class="pc-review-modal__alert">
+      <i class="fa fa-exclamation-triangle fontAwesome_Li_Class" aria-hidden="true"></i>
+      <div>
+        <strong>{{ decisionLabel }}</strong>
+        <span *ngIf="detail.decisionReason"> — {{ detail.decisionReason }}</span>
+      </div>
+    </div>
+
+    <div
+      class="pc-review-modal__grid pc-review-modal__grid--details"
+      *ngIf="(detail.competitorUrl || detail.competitorDomain || detail.competitorName) || detail.evidence?.length"
+    >
+      <section class="pc-review-modal__card" *ngIf="detail.competitorUrl || detail.competitorDomain || detail.competitorName">
+        <header class="pc-review-modal__card-head">
+          <i class="fa fa-external-link fontAwesome_Li_Class"></i>
+          <span>{{ 'Competitor' | translate }}</span>
+        </header>
+        <div class="pc-review-modal__card-body">
+          <div class="pc-review-modal__meta-line">
+            <span *ngIf="detail.competitorName">{{ detail.competitorName }}</span>
+            <span class="pc-review-modal__meta-dot" *ngIf="detail.competitorName && detail.competitorDomain">·</span>
+            <span *ngIf="detail.competitorDomain">{{ detail.competitorDomain }}</span>
+          </div>
+          <div class="pc-review-modal__link-row" *ngIf="detail.competitorUrl">
+            <code class="pc-review-modal__link-text" [title]="detail.competitorUrl">{{ truncateUrl(detail.competitorUrl, 90) }}</code>
+            <a class="btn btn-sm btn-outline-primary" [href]="detail.competitorUrl" target="_blank" rel="noopener noreferrer">
+              <i class="fa fa-external-link fontAwesome_Li_Class"></i> {{ 'Open' | translate }}
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="pc-review-modal__card" *ngIf="detail.evidence?.length">
+        <header class="pc-review-modal__card-head">
+          <i class="fa fa-file-image-o fontAwesome_Li_Class"></i>
+          <span>{{ 'Evidence' | translate }}</span>
+        </header>
+        <div class="pc-review-modal__card-body pc-review-modal__evidence-stack">
+          <article class="pc-review-modal__evidence" *ngFor="let item of detail.evidence">
+            <span class="pc-review-modal__evidence-type">{{ evidenceTypeLabel(item) }}</span>
+
+            <div class="pc-review-modal__evidence-image" *ngIf="isImageEvidence(item.evidenceType) && item.imageUrl">
+              <img [src]="item.imageUrl" alt="Evidence" />
+            </div>
+
+            <div class="pc-review-modal__link-row" *ngIf="isUrlEvidence(item.evidenceType) && item.competitorUrl">
+              <code class="pc-review-modal__link-text" [title]="item.competitorUrl">{{ truncateUrl(item.competitorUrl, 90) }}</code>
+              <a class="btn btn-sm btn-outline-primary" [href]="item.competitorUrl" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-external-link fontAwesome_Li_Class"></i> {{ 'Open' | translate }}
+              </a>
+            </div>
+
+            <div class="pc-review-modal__meta-line" *ngIf="item.manualCompetitorPrice != null">
+              <span>{{ 'Manual price' | translate }}</span>
+              <strong>{{ formatMoney(item.manualCompetitorPrice) }}</strong>
+            </div>
+
+            <time class="pc-review-modal__time">{{ formatDate(item.submittedAt) }}</time>
+          </article>
+        </div>
+      </section>
+    </div>
+    </div>
+
+    <div class="pc-review-modal__grid pc-review-modal__grid--action" [class.pc-review-modal__grid--solo]="!detail.chatMessages?.length">
+      <section class="pc-review-modal__card pc-review-modal__card--chat" *ngIf="detail.chatMessages?.length">
+        <header class="pc-review-modal__card-head pc-review-modal__card-head--split">
+          <div class="pc-review-modal__card-head-title">
+            <i class="fa fa-comments fontAwesome_Li_Class"></i>
+            <span>{{ 'Chat transcript' | translate }}</span>
+          </div>
+          <button type="button" class="btn btn-link btn-sm p-0" [disabled]="loading" (click)="loadDetail(true)">
+            <i class="fa fa-refresh fontAwesome_Li_Class"></i> {{ 'Refresh' | translate }}
+          </button>
+        </header>
+        <div class="pc-review-modal__chat">
+          <article
+            *ngFor="let msg of detail.chatMessages"
+            class="pc-review-modal__message"
+            [class.pc-review-modal__message--store]="msg.fromAdmin"
+          >
+            <div class="pc-review-modal__message-head">
+              <span>{{ msg.fromAdmin ? ('Store' | translate) : ('Customer' | translate) }}</span>
+              <time>{{ formatDate(msg.timestamp) }}</time>
+            </div>
+            <p class="pc-review-modal__message-text" *ngIf="!isLikelyUrl(msg.message)">{{ msg.message }}</p>
+            <div class="pc-review-modal__link-row" *ngIf="isLikelyUrl(msg.message)">
+              <code class="pc-review-modal__link-text" [title]="msg.message">{{ truncateUrl(msg.message, 90) }}</code>
+              <a class="btn btn-sm btn-outline-primary" [href]="msg.message" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-external-link fontAwesome_Li_Class"></i> {{ 'Open' | translate }}
+              </a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="pc-review-modal__card pc-review-modal__card--decision">
+        <header class="pc-review-modal__card-head">
+          <i class="fa fontAwesome_Li_Class" [ngClass]="showDeclineForm ? 'fa-times-circle' : 'fa-gavel'"></i>
+          <span>{{ showDeclineForm ? ('Decline challenge' | translate) : ('Your decision' | translate) }}</span>
+        </header>
+        <div class="pc-review-modal__card-body">
+          <ng-container *ngIf="!showDeclineForm">
+            <div class="pc-review-modal__decision-ref">
+              <div class="pc-review-modal__decision-ref-item">
+                <span>{{ 'Customer price' | translate }}</span>
+                <strong>{{ formatMoney(detail.competitorComparablePriceAtDecision) }}</strong>
+              </div>
+              <div class="pc-review-modal__decision-ref-item">
+                <span>{{ 'Safe offer (system)' | translate }}</span>
+                <strong>{{ formatMoney(detail.suggestedOfferPrice) }}</strong>
+              </div>
+            </div>
+
+            <p class="pc-review-modal__decision-hint">
+              {{ 'Send counter offer posts to the customer challenge chat. Message customer in chat opens live chat for general support.' | translate }}
+            </p>
+
+            <div class="form-group mb-3">
+              <label for="approvedOfferPrice">{{ 'Your counter offer price' | translate }}</label>
+              <div class="input-group">
+                <div class="input-group-prepend"><span class="input-group-text">{{ currencySymbol }}</span></div>
+                <input
+                  id="approvedOfferPrice"
+                  type="number"
+                  class="form-control"
+                  min="0"
+                  step="0.01"
+                  [(ngModel)]="approvedOfferPrice"
+                  [disabled]="saving || sendingCounterOffer"
+                />
+                <div class="input-group-append">
+                  <button type="button" class="btn btn-outline-secondary" [disabled]="saving || sendingCounterOffer || detail.suggestedOfferPrice == null" (click)="useSuggestedPrice()">
+                    {{ 'Use safe offer' | translate }}
+                  </button>
+                </div>
+              </div>
+              <div class="pc-review-modal__quick-fill">
+                <button
+                  type="button"
+                  class="btn btn-link btn-sm p-0"
+                  [disabled]="saving || sendingCounterOffer || detail.competitorComparablePriceAtDecision == null"
+                  (click)="useCustomerPrice()"
+                >
+                  {{ 'Fill customer price' | translate }}
+                </button>
+              </div>
+              <small class="form-text text-muted">
+                {{ 'Offer expires in' | translate }} {{ detail.offerExpiryMinutes }} {{ 'min' | translate }} ·
+                {{ 'Qty limit' | translate }}: {{ detail.quantityLimit }}
+              </small>
+            </div>
+            <div class="form-group mb-3">
+              <label for="adminNote">{{ 'Message to customer' | translate }}</label>
+              <textarea id="adminNote" class="form-control" rows="3" [(ngModel)]="adminNote" [disabled]="saving || sendingCounterOffer"></textarea>
+              <small class="form-text text-muted">
+                {{ 'Required for counter offer. On approve, sent with Buy Now button and offer price in challenge chat.' | translate }}
+              </small>
+            </div>
+            <div class="pc-review-modal__decision-actions">
+              <button
+                type="button"
+                class="btn btn-outline-primary btn-sm"
+                [disabled]="saving || sendingCounterOffer"
+                (click)="sendCounterOffer()"
+              >
+                <i *ngIf="sendingCounterOffer" class="fa fa-spinner fa-spin fontAwesome_Li_Class"></i>
+                <i *ngIf="!sendingCounterOffer" class="fa fa-paper-plane fontAwesome_Li_Class"></i>
+                {{ sendingCounterOffer ? ('Sending…' | translate) : ('Send counter offer' | translate) }}
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline-secondary btn-sm"
+                [disabled]="saving || sendingCounterOffer"
+                (click)="negotiateInChat()"
+              >
+                <i class="fa fa-comments fontAwesome_Li_Class"></i>
+                {{ 'Message customer in chat' | translate }}
+              </button>
+            </div>
+          </ng-container>
+
+          <div class="form-group mb-0" *ngIf="showDeclineForm">
+            <label for="declineReason">{{ 'Message to customer' | translate }}</label>
+            <textarea id="declineReason" class="form-control" rows="4" [(ngModel)]="declineReason" [disabled]="saving"></textarea>
+            <small class="form-text text-muted">{{ 'Required. Sent to the customer exactly as written when you confirm decline.' | translate }}</small>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="modal-footer pc-review-modal-footer" *ngIf="!loading && approvalResult">
+    <button type="button" class="btn btn-outline-primary" [disabled]="resendingOffer" (click)="resendBuyNowToChallengeChat()">
+      <i *ngIf="resendingOffer" class="fa fa-spinner fa-spin fontAwesome_Li_Class"></i>
+      <i *ngIf="!resendingOffer" class="fa fa-paper-plane fontAwesome_Li_Class"></i>
+      {{ resendingOffer ? ('Sending…' | translate) : ('Resend Buy Now to chat' | translate) }}
+    </button>
+    <button type="button" class="btn btn-outline-secondary" (click)="messageCustomerAfterApproval()">
+      <i class="fa fa-comments fontAwesome_Li_Class"></i>
+      {{ 'Open live chat' | translate }}
+    </button>
+    <button type="button" class="btn btn-primary" (click)="closeAfterApproval()">
+      <i class="i-Yes"></i>
+      {{ 'Done' | translate }}
+    </button>
+  </div>
+
+  <div class="modal-footer pc-review-modal-footer" *ngIf="!loading && detail && !approvalResult">
+    <button type="button" class="btn btn-outline-secondary" [disabled]="saving" (click)="activeModal.dismiss()">
+      <i class="i-Close-Window"></i>
+      {{ 'Cancel' | translate }}
+    </button>
+    <button type="button" class="btn btn-outline-danger" [disabled]="saving" (click)="showDeclineForm = !showDeclineForm">
+      <i class="fa fa-times fontAwesome_Li_Class"></i>
+      {{ showDeclineForm ? ('Back to approve' | translate) : ('Decline' | translate) }}
+    </button>
+    <button *ngIf="!showDeclineForm" type="button" class="btn btn-primary" [disabled]="saving || sendingCounterOffer" (click)="approve()">
+      <i *ngIf="saving" class="fa fa-spinner fa-spin fontAwesome_Li_Class"></i>
+      <i *ngIf="!saving" class="i-Yes"></i>
+      {{ saving ? ('Saving…' | translate) : ('Approve counter offer' | translate) }}
+    </button>
+    <button *ngIf="showDeclineForm" type="button" class="btn btn-danger" [disabled]="saving" (click)="decline()">
+      <i class="fa fa-times fontAwesome_Li_Class"></i>
+      {{ 'Confirm decline' | translate }}
+    </button>
+  </div>
+</div>

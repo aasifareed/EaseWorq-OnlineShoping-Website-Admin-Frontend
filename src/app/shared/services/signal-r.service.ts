@@ -216,6 +216,14 @@ export class SignalRService {
     }
   }
 
+  removeNotification(notificationId: number): void {
+    this.signalrNotifications = this.signalrNotifications.filter((n) => n.id !== notificationId);
+  }
+
+  clearAllNotifications(): void {
+    this.signalrNotifications = [];
+  }
+
   //   public addDataListener = () => {
 
   //       this.hubConnection.on('transferchartdata', (data) =>

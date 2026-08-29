@@ -25,6 +25,7 @@ import {
 } from '../shared/weight.util';
 import { ProductCategoriesComponent } from './product-categories/product-categories.component';
 import { ProductBrandsComponent } from './product-brands/product-brands.component';
+import { CouponFormModalComponent } from '../coupons/coupon-form-modal/coupon-form-modal.component';
 
 /** The inline-editable cells, each saved on its own so one slow save cannot block the others. */
 type EditableProductField = 'price' | 'discount' | 'slug' | 'weight' | 'showOnline' | 'showOnMeta' | 'available';
@@ -434,6 +435,25 @@ export class ProductsComponent implements OnInit {
       keyboard: false,
       windowClass: 'ew-app-modal',
     });
+  }
+
+  openCustomerCouponModal(row: AdminProductListItem): void {
+    const productId = String(row.productId || row.id || '').trim();
+    if (!productId) {
+      this.toastr.error(this.translate.instant('This product has no catalog id.'));
+      return;
+    }
+
+    const modalRef = this.modalService.open(CouponFormModalComponent, {
+      size: 'lg',
+      backdrop: 'static',
+      windowClass: 'addSectionModal couponFormModal',
+      scrollable: true,
+    });
+    modalRef.componentInstance.couponId = null;
+    modalRef.componentInstance.prefillProductId = productId;
+    modalRef.componentInstance.prefillProductLabel = row.productName || row.productIdTag || productId;
+    modalRef.componentInstance.customerOfferMode = true;
   }
 
   openImagesModal(row: AdminProductListItem): void {

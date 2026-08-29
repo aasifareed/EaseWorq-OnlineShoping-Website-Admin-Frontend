@@ -4,6 +4,12 @@ import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 import { GlobalDataService } from 'src/app/shared/services/globalData.service';
 import { OnlineShopSettingsStateService } from './services/online-shop-settings-state.service';
+import {
+  computePriceChallengeDesiredBeatPrice,
+  PRICE_CHALLENGE_BEAT_STRATEGIES,
+  PRICE_CHALLENGE_UNSAFE_BEAT_ACTIONS,
+  PriceChallengeBeatStrategy,
+} from './models/price-challenge-settings.util';
 
 export interface SettingsNavItem {
   id: string;
@@ -61,6 +67,12 @@ export class SettingsShellComponent implements OnInit, OnDestroy {
       route: '/online-shop/settings/pricing',
     },
     {
+      id: 'price-challenge',
+      label: 'Sasta Price Challenge',
+      icon: 'fa-comments',
+      route: '/online-shop/settings/price-challenge',
+    },
+    {
       id: 'invoice',
       label: 'Invoice / Receipt',
       icon: 'fa-file-invoice',
@@ -84,6 +96,10 @@ export class SettingsShellComponent implements OnInit, OnDestroy {
     { value: 'default', label: 'Default' },
     { value: 'multikart', label: 'Multikart' },
   ];
+
+  readonly priceChallengeBeatStrategies = PRICE_CHALLENGE_BEAT_STRATEGIES;
+  readonly priceChallengeUnsafeBeatActions = PRICE_CHALLENGE_UNSAFE_BEAT_ACTIONS;
+  readonly priceChallengeExampleCompetitorPrice = 2000;
 
   private readonly destroy$ = new Subject<void>();
 
@@ -145,6 +161,63 @@ export class SettingsShellComponent implements OnInit, OnDestroy {
 
   get isSaving(): boolean {
     return this.state.saving;
+  }
+
+  priceChallengeCurrencySymbol(): string {
+    return this.state.posInfo?.currencySymbol?.trim() || 'Rs';
+  }
+
+  priceChallengeBeatStrategyHelp(): string {
+    const strategy = this.state.form.get('priceChallengeBeatStrategy')?.value as PriceChallengeBeatStrategy;
+    return this.priceChallengeBeatStrategies.find((item) => item.value === strategy)?.help || '';
+  }
+
+  priceChallengeExampleBeatDescription(): string {
+    const strategy = this.state.form.get('priceChallengeBeatStrategy')?.value as PriceChallengeBeatStrategy;
+    const amount = Number(this.state.form.get('priceChallengeBeatByAmount')?.value);
+    const percent = Number(this.state.form.get('priceChallengeBeatByPercent')?.value);
+    const symbol = this.priceChallengeCurrencySymbol();
+
+    if (strategy === 'percent' && Number.isFinite(percent) && percent > 0) {
+      return `${percent}% below competitor`;
+    }
+    if (strategy === 'both') {
+      const parts: string[] = [];
+      if (Number.isFinite(amount) && amount > 0) {
+        parts.push(`${symbol} ${this.formatPriceChallengeMoney(amount)} below`);
+      }
+      if (Number.isFinite(percent) && percent > 0) {
+        parts.push(`${percent}% below`);
+      }
+      if (parts.length) {
+        return `${parts.join(' and ')} (we use whichever beats more)`;
+      }
+    }
+    if (Number.isFinite(amount) && amount > 0) {
+      return `${symbol} ${this.formatPriceChallengeMoney(amount)} below competitor`;
+    }
+    return `${symbol} 0 below competitor`;
+  }
+
+  priceChallengeExampleOfferPrice(): number {
+    const strategy = this.state.form.get('priceChallengeBeatStrategy')?.value as PriceChallengeBeatStrategy;
+    const amountRaw = this.state.form.get('priceChallengeBeatByAmount')?.value;
+    const percentRaw = this.state.form.get('priceChallengeBeatByPercent')?.value;
+    const amount = strategy === 'percent' ? null : Number(amountRaw);
+    const percent = strategy === 'amount' ? null : Number(percentRaw);
+
+    return computePriceChallengeDesiredBeatPrice(
+      this.priceChallengeExampleCompetitorPrice,
+      Number.isFinite(amount) && amount > 0 ? amount : null,
+      Number.isFinite(percent) && percent > 0 ? percent : null,
+    );
+  }
+
+  formatPriceChallengeMoney(value: number): string {
+    if (!Number.isFinite(value)) {
+      return '0';
+    }
+    return value.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 });
   }
 
   private syncFromUrl(url: string): void {

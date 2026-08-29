@@ -88,6 +88,14 @@ const routes: Routes = [
       import('./live-chat/live-chat.module').then((m) => m.LiveChatModule),
   },
   {
+    path: 'price-challenge-reviews',
+    canActivate: [AuthGaurd],
+    loadChildren: () =>
+      import('./price-challenge-reviews/price-challenge-reviews.module').then(
+        (m) => m.PriceChallengeReviewsModule,
+      ),
+  },
+  {
     path: 'settings',
     canActivate: [AuthGaurd],
     loadChildren: () =>

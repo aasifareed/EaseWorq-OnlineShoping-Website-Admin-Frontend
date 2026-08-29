@@ -6,9 +6,10 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { SharedDirectivesModule } from 'src/app/shared/directives/shared-directives.module';
 import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
-import { CouponsRoutingModule } from './coupons-routing.module';
-import { CouponsComponent } from './coupons.component';
-import { CouponFormModalModule } from './coupon-form-modal/coupon-form-modal.module';
+import { PriceChallengeReviewsRoutingModule } from './price-challenge-reviews-routing.module';
+import { PriceChallengeReviewsComponent } from './price-challenge-reviews.component';
+import { PriceChallengeReviewModalComponent } from './price-challenge-review-modal/price-challenge-review-modal.component';
+import { PriceChallengeReviewsService } from './services/price-challenge-reviews.service';
 
 @NgModule({
   imports: [
@@ -20,9 +21,9 @@ import { CouponFormModalModule } from './coupon-form-modal/coupon-form-modal.mod
     SharedModule,
     SharedDirectivesModule,
     SharedComponentsModule,
-    CouponsRoutingModule,
-    CouponFormModalModule,
+    PriceChallengeReviewsRoutingModule,
   ],
-  declarations: [CouponsComponent],
+  declarations: [PriceChallengeReviewsComponent, PriceChallengeReviewModalComponent],
+  providers: [PriceChallengeReviewsService],
 })
-export class CouponsModule {}
+export class PriceChallengeReviewsModule {}

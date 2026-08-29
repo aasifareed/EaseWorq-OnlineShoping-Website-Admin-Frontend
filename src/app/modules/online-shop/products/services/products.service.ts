@@ -162,6 +162,9 @@ export class ProductsService {
     if (payload.imageUrl) {
       body.ImageUrl = payload.imageUrl;
     }
+    if (payload.includePriceChallenge != null) {
+      body.IncludePriceChallenge = payload.includePriceChallenge;
+    }
     return this.restService.post(url, body).pipe(
       map((response) => this.mapPublishResult((response?.result ?? response) as Record<string, unknown>)),
     );
@@ -330,6 +333,15 @@ export class ProductsService {
           : row.DisabledReason != null
             ? String(row.DisabledReason)
             : null,
+      isPriceChallengeEnabled: Boolean(row.isPriceChallengeEnabled ?? row.IsPriceChallengeEnabled ?? false),
+      includePriceChallenge: Boolean(row.includePriceChallenge ?? row.IncludePriceChallenge ?? false),
+      priceChallengeUrl:
+        row.priceChallengeUrl != null
+          ? String(row.priceChallengeUrl)
+          : row.PriceChallengeUrl != null
+            ? String(row.PriceChallengeUrl)
+            : null,
+      baseCaption: String(row.baseCaption ?? row.BaseCaption ?? row.caption ?? row.Caption ?? ''),
       images,
       recentPosts: recent,
     };

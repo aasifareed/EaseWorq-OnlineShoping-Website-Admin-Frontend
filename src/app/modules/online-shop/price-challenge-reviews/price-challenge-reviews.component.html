@@ -1,0 +1,113 @@
+<div [dir]="globalDataService.getdir()">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body" style="padding: 0%;">
+          <div class="tabs">
+            <ul class="tabs__links">
+              <li>
+                <button type="button" class="tabs__link active" (click)="refreshTable()">
+                  <span class="tabs__link__text" data-text="0">
+                    <i class="fa fa-fire fontAwesome_Li_Class tabs__link-icon" aria-hidden="true"></i>
+                    <span>{{ 'Price Challenge Reviews' | translate }}</span>
+                  </span>
+                </button>
+              </li>
+            </ul>
+
+            <ul class="tabs__contents">
+              <li>
+                <div class="tabs__content active px-2 pb-2">
+                  <div class="separator-breadcrumb border-top" style="margin-bottom: 0.5rem !important;"></div>
+
+                  <div class="gridAboveHeight">
+                    <h1 style="margin-top: 0%;">{{ 'Price Challenge Reviews' | translate }}</h1>
+                    <p class="text-muted mb-2">
+                      {{ 'Review competitor price challenges that need a manual decision before an offer is sent to the customer.' | translate }}
+                    </p>
+                    <hr class="mt-0 mb-0" />
+                    <div class="row">
+                      <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                          <input
+                            style="margin-top: 7%;"
+                            [formControl]="searchControl"
+                            class="form-control form-control-rounded"
+                            type="text"
+                            [placeholder]="'Search product, reason, competitor…' | translate"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="card mb-3">
+                        <ngx-datatable
+                          [ngStyle]="{ height: gridHeight, 'box-shadow': 'none' }"
+                          class="material fullscreen"
+                          [columnMode]="ColumnMode.force"
+                          [headerHeight]="45"
+                          [footerHeight]="30"
+                          [rowHeight]="40"
+                          [rows]="filteredData"
+                          [scrollbarH]="true"
+                          [loadingIndicator]="loadingIndicator"
+                          [externalPaging]="true"
+                          [count]="page.totalElements"
+                          [offset]="page.pageNumber"
+                          [limit]="page.size"
+                          (page)="setPage($event)"
+                        >
+                          <ngx-datatable-column [name]="'Product' | translate" prop="productName" [minWidth]="180">
+                            <ng-template ngx-datatable-cell-template let-row="row">
+                              <span [title]="row.productName">{{ row.productName }}</span>
+                            </ng-template>
+                          </ngx-datatable-column>
+
+                          <ngx-datatable-column [name]="'Our price' | translate" [sortable]="false" [minWidth]="110">
+                            <ng-template ngx-datatable-cell-template let-row="row">
+                              {{ formatMoney(row, row.ourRegularPriceAtChallenge) }}
+                            </ng-template>
+                          </ngx-datatable-column>
+
+                          <ngx-datatable-column [name]="'Competitor' | translate" [sortable]="false" [minWidth]="110">
+                            <ng-template ngx-datatable-cell-template let-row="row">
+                              {{ formatMoney(row, row.competitorComparablePriceAtDecision) }}
+                            </ng-template>
+                          </ngx-datatable-column>
+
+                          <ngx-datatable-column [name]="'Reason' | translate" prop="decision" [minWidth]="130">
+                            <ng-template ngx-datatable-cell-template let-row="row">
+                              <span [title]="row.decisionReason">{{ decisionLabel(row.decision) }}</span>
+                            </ng-template>
+                          </ngx-datatable-column>
+
+                          <ngx-datatable-column [name]="'Submitted' | translate" prop="creationTime" [minWidth]="150">
+                            <ng-template ngx-datatable-cell-template let-row="row">
+                              {{ formatDate(row.creationTime) }}
+                            </ng-template>
+                          </ngx-datatable-column>
+
+                          <ngx-datatable-column [name]="'Actions' | translate" [sortable]="false" [minWidth]="110">
+                            <ng-template ngx-datatable-cell-template let-row="row">
+                              <button type="button" class="btn btn-primary btn-sm" (click)="openReview(row)">
+                                <i class="fa fa-eye fontAwesome_Li_Class"></i>
+                                {{ 'Review' | translate }}
+                              </button>
+                            </ng-template>
+                          </ngx-datatable-column>
+                        </ngx-datatable>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

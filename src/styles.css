@@ -2409,6 +2409,54 @@ app-new-product-list-cart-view .ngx-datatable .datatable-header{
   width: min(820px, 92vw);
 }
 
+/* Price challenge review — same viewport shell as Available Products (assign-products-modal) */
+.modal.pc-review-modal-window {
+  align-items: flex-start;
+  padding-top: 0;
+  padding-bottom: 0.5rem;
+  top: 3%;
+}
+
+.pc-review-modal-window .modal-dialog {
+  width: 96vw !important;
+  max-width: 96vw !important;
+  margin: 0 auto !important;
+}
+
+.pc-review-modal-window .modal-content {
+  height: 96vh !important;
+  max-height: 96vh;
+  display: flex;
+  flex-direction: column;
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 24px 48px rgba(30, 58, 95, 0.15), 0 8px 24px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.pc-review-modal-window .modal-content > * {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+}
+
+.pc-review-modal-window .modal-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none !important;
+  overflow-x: hidden;
+  overflow-y: auto !important;
+  padding: 1rem 1.25rem !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+.pc-review-modal-window .modal-header,
+.pc-review-modal-window .modal-footer {
+  flex-shrink: 0;
+}
+
 /* Heavy content — use most of the screen to reduce vertical scroll */
 .pageFormModal .modal-dialog,
 .pageViewModal .modal-dialog,
@@ -2441,7 +2489,8 @@ app-new-product-list-cart-view .ngx-datatable .datatable-header{
 .couponFormModal .modal-header,
 .UpdateStatusModal .modal-header,
 .shippingRuleModal .modal-header,
-.selectCountryModal .modal-header {
+.selectCountryModal .modal-header,
+.pc-review-modal-window .modal-header {
   flex-shrink: 0;
   padding: 0.9rem 1.25rem;
   /* Fareed-Mart NewTheme header gradient */
@@ -2459,7 +2508,8 @@ app-new-product-list-cart-view .ngx-datatable .datatable-header{
 .couponFormModal .modal-header .modal-title,
 .UpdateStatusModal .modal-header .modal-title,
 .shippingRuleModal .modal-header .modal-title,
-.selectCountryModal .modal-header .modal-title {
+.selectCountryModal .modal-header .modal-title,
+.pc-review-modal-window .modal-header .modal-title {
   margin: 0;
   font-size: 1.125rem;
   font-weight: 600;
@@ -2479,7 +2529,8 @@ app-new-product-list-cart-view .ngx-datatable .datatable-header{
 .couponFormModal .modal-header .close,
 .UpdateStatusModal .modal-header .close,
 .shippingRuleModal .modal-header .close,
-.selectCountryModal .modal-header .close {
+.selectCountryModal .modal-header .close,
+.pc-review-modal-window .modal-header .close {
   padding: 0;
   margin: 0 0 0 0.75rem;
   opacity: 1;
@@ -2505,7 +2556,8 @@ app-new-product-list-cart-view .ngx-datatable .datatable-header{
 .addSectionModal .modal-header .close span,
 .pageFormModal .modal-header .close span,
 .couponFormModal .modal-header .close span,
-.UpdateStatusModal .modal-header .close span {
+.UpdateStatusModal .modal-header .close span,
+.pc-review-modal-window .modal-header .close span {
   color: #fff !important;
 }
 
@@ -2536,7 +2588,8 @@ app-new-product-list-cart-view .ngx-datatable .datatable-header{
 .couponFormModal .modal-header .close:hover,
 .UpdateStatusModal .modal-header .close:hover,
 .shippingRuleModal .modal-header .close:hover,
-.selectCountryModal .modal-header .close:hover {
+.selectCountryModal .modal-header .close:hover,
+.pc-review-modal-window .modal-header .close:hover {
   background: rgba(255, 255, 255, 0.26);
   color: #fff;
   opacity: 1;
@@ -2554,6 +2607,13 @@ app-new-product-list-cart-view .ngx-datatable .datatable-header{
   overflow-y: auto;
   max-height: calc(92vh - 140px);
   padding: 1.25rem 1.5rem;
+}
+
+.pc-review-modal-window .modal-body {
+  max-height: none !important;
+  overflow-y: auto !important;
+  overflow-x: hidden;
+  padding: 1rem 1.25rem !important;
 }
 
 .ew-app-modal .modal-footer,
@@ -2578,7 +2638,8 @@ app-new-product-list-cart-view .ngx-datatable .datatable-header{
 .couponFormModal .modal-footer .btn-primary,
 .UpdateStatusModal .modal-footer .btn-primary,
 .shippingRuleModal .modal-footer .btn-primary,
-.selectCountryModal .modal-footer .btn-primary {
+.selectCountryModal .modal-footer .btn-primary,
+.pc-review-modal-window .modal-footer .btn-primary {
   background: linear-gradient(135deg, #1e284b 0%, #2c3e6e 55%, #4c5fd5 100%);
   border: none;
   color: #fff;
@@ -2648,6 +2709,11 @@ app-new-product-list-cart-view .ngx-datatable .datatable-header{
     max-width: 96vw !important;
     width: 96vw;
     margin: 0.75rem auto !important;
+  }
+
+  .pc-review-modal-window .modal-dialog {
+    width: 98vw !important;
+    max-width: 98vw !important;
   }
 }
 

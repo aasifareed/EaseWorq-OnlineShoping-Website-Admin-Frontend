@@ -23,6 +23,7 @@ import { ProductCategoriesService } from './services/product-categories.service'
 import { ProductBrandsService } from './services/product-brands.service';
 import { EditorModule } from 'primeng/editor';
 import { TranslateModule } from '@ngx-translate/core';
+import { CouponFormModalModule } from '../coupons/coupon-form-modal/coupon-form-modal.module';
 
 @NgModule({
   imports: [
@@ -37,6 +38,7 @@ import { TranslateModule } from '@ngx-translate/core';
     ProductsRoutingModule,
     EditorModule,
     TranslateModule,
+    CouponFormModalModule,
   ],
   declarations: [
     ProductsComponent,
