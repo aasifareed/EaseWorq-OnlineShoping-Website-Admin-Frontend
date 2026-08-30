@@ -56,6 +56,8 @@ export class LiveChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   private pendingDraft: string | null = null;
   private readonly subs: Subscription[] = [];
   private readonly unread = new Map<string, number>();
+  /** Realtime messages received before the admin opens that conversation or while history is loading. */
+  private readonly pendingRealtimeByUser = new Map<string, ChatHistoryItem[]>();
 
   constructor(
     private chatApi: ChatApiService,
@@ -117,9 +119,14 @@ export class LiveChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.unread.set(conversation.id, 0);
     conversation.unreadCount = 0;
     this.loadingMessages = true;
+    const conversationKey = this.normalizeUserId(conversation.id);
     this.chatApi.getChatHistory(conversation.id).subscribe({
       next: (history) => {
-        this.messages = history || [];
+        if (this.normalizeUserId(this.selected?.id) !== conversationKey) {
+          return;
+        }
+        const pending = this.consumePendingMessages(conversationKey);
+        this.messages = this.mergeChatHistory(history || [], pending);
         this.loadingMessages = false;
         this.shouldScroll = true;
       },
@@ -351,33 +358,34 @@ export class LiveChatComponent implements OnInit, OnDestroy, AfterViewChecked {
       return;
     }
 
-    const conversation = this.conversations.find((item) => item.id === payload.userId);
+    const userKey = this.normalizeUserId(payload.userId);
+    const item: ChatHistoryItem = {
+      message: payload.message,
+      fromAdmin: payload.fromAdmin,
+      timestamp: new Date().toISOString(),
+    };
+
+    const conversation = this.conversations.find((entry) => this.normalizeUserId(entry.id) === userKey);
     if (conversation) {
       conversation.lastMessage = payload.message;
-      conversation.lastTimestamp = new Date().toISOString();
+      conversation.lastTimestamp = item.timestamp;
       this.moveConversationToTop(conversation);
     }
 
-    if (this.selected?.id === payload.userId) {
-      const last = this.messages[this.messages.length - 1];
-      if (last && last.message === payload.message && !!last.fromAdmin === !!payload.fromAdmin) {
-        return;
+    const isSelected = this.isSelectedUser(payload.userId);
+    if (isSelected && !this.loadingMessages) {
+      if (!this.isDuplicateMessage(this.messages, item)) {
+        this.messages = [...this.messages, item];
+        this.shouldScroll = true;
       }
-      this.messages = [
-        ...this.messages,
-        {
-          message: payload.message,
-          fromAdmin: payload.fromAdmin,
-          timestamp: new Date().toISOString(),
-        },
-      ];
-      this.shouldScroll = true;
-      return;
+    } else {
+      this.queuePendingMessage(userKey, item);
     }
 
-    if (!payload.fromAdmin) {
-      const next = (this.unread.get(payload.userId) || 0) + 1;
+    if (!isSelected && !payload.fromAdmin) {
+      const next = (this.unread.get(payload.userId) || this.unread.get(userKey) || 0) + 1;
       this.unread.set(payload.userId, next);
+      this.unread.set(userKey, next);
       if (conversation) {
         conversation.unreadCount = next;
       }
@@ -385,9 +393,12 @@ export class LiveChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   private mergeUsers(users: ChatConversation[]): void {
-    const byId = new Map(this.conversations.map((item) => [item.id, item]));
+    const byId = new Map(
+      this.conversations.map((item) => [this.normalizeUserId(item.id), item]),
+    );
     users.forEach((user) => {
-      const existing = byId.get(user.id);
+      const userKey = this.normalizeUserId(user.id);
+      const existing = byId.get(userKey);
       if (existing) {
         existing.name = user.name || existing.name;
         existing.email = user.email || existing.email;
@@ -398,7 +409,7 @@ export class LiveChatComponent implements OnInit, OnDestroy, AfterViewChecked {
       } else {
         this.conversations.push({
           ...user,
-          unreadCount: this.unread.get(user.id) || 0,
+          unreadCount: this.unread.get(user.id) || this.unread.get(userKey) || 0,
         });
       }
     });
@@ -422,5 +433,57 @@ export class LiveChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     if (el) {
       el.scrollTop = el.scrollHeight;
     }
+  }
+
+  private normalizeUserId(userId?: string | null): string {
+    return (userId || '').trim().toLowerCase();
+  }
+
+  private isSelectedUser(userId?: string | null): boolean {
+    if (!userId || !this.selected?.id) {
+      return false;
+    }
+    return this.normalizeUserId(this.selected.id) === this.normalizeUserId(userId);
+  }
+
+  private queuePendingMessage(userKey: string, item: ChatHistoryItem): void {
+    const pending = this.pendingRealtimeByUser.get(userKey) || [];
+    if (this.isDuplicateMessage(pending, item)) {
+      return;
+    }
+    this.pendingRealtimeByUser.set(userKey, [...pending, item]);
+  }
+
+  private consumePendingMessages(userKey: string): ChatHistoryItem[] {
+    const pending = this.pendingRealtimeByUser.get(userKey) || [];
+    this.pendingRealtimeByUser.delete(userKey);
+    return pending;
+  }
+
+  private mergeChatHistory(history: ChatHistoryItem[], pending: ChatHistoryItem[]): ChatHistoryItem[] {
+    if (!pending.length) {
+      return history;
+    }
+
+    const merged = [...history];
+    for (const item of pending) {
+      if (!this.isDuplicateMessage(merged, item)) {
+        merged.push(item);
+      }
+    }
+
+    merged.sort(
+      (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
+    );
+    return merged;
+  }
+
+  private isDuplicateMessage(list: ChatHistoryItem[], item: ChatHistoryItem): boolean {
+    return list.some(
+      (existing) =>
+        existing.message === item.message
+        && !!existing.fromAdmin === !!item.fromAdmin
+        && Math.abs(new Date(existing.timestamp).getTime() - new Date(item.timestamp).getTime()) < 5000,
+    );
   }
 }

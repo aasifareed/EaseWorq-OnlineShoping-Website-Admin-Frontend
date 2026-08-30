@@ -91,7 +91,7 @@ export class ChatHubService {
           this.privateMessage.next({
             message,
             fromAdmin: !!fromAdmin,
-            userId,
+            userId: String(userId || ''),
           });
           if (!fromAdmin) {
             this.alertSound.play();

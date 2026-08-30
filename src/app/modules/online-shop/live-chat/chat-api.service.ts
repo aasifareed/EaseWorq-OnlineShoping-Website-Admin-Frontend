@@ -12,7 +12,15 @@ export class ChatApiService {
   getChatHistory(userId: string): Observable<ChatHistoryItem[]> {
     return this.restService
       .getWithoutLoader(`${environment.urls.Chat_GetChatHistory}?userId=${encodeURIComponent(userId)}`)
-      .pipe(map((response) => response?.result || []));
+      .pipe(
+        map((response) =>
+          (response?.result || []).map((item: any) => ({
+            message: item.message || item.Message || '',
+            fromAdmin: !!(item.fromAdmin ?? item.FromAdmin),
+            timestamp: item.timestamp || item.Timestamp,
+          })),
+        ),
+      );
   }
 
   uploadImage(file: File): Observable<string> {
