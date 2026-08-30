@@ -8,6 +8,7 @@ import { debounceTime } from 'rxjs/operators';
 import * as moment from 'moment';
 import { Page } from 'src/app/shared/models/page';
 import { GlobalDataService } from 'src/app/shared/services/globalData.service';
+import { OnlineShopHeaderNotificationsService } from 'src/app/shared/services/online-shop-header-notifications.service';
 import {
   PRICE_CHALLENGE_DECISION_LABELS,
   PriceChallengeReviewListItem,
@@ -36,6 +37,7 @@ export class PriceChallengeReviewsComponent implements OnInit {
     private toastr: ToastrService,
     private translate: TranslateService,
     public globalDataService: GlobalDataService,
+    private headerNotifications: OnlineShopHeaderNotificationsService,
   ) {
     this.page.pageNumber = 0;
   }
@@ -83,6 +85,7 @@ export class PriceChallengeReviewsComponent implements OnInit {
         this.data = response.items;
         this.filteredData = [...this.data];
         this.loadingIndicator = false;
+        this.headerNotifications.refreshPriceChallengeReviewCount();
       },
       error: (err) => {
         this.loadingIndicator = false;

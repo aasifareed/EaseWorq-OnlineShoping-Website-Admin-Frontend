@@ -9,6 +9,7 @@ import { debounceTime } from 'rxjs/operators';
 import * as moment from 'moment';
 import { Page } from 'src/app/shared/models/page';
 import { GlobalDataService } from 'src/app/shared/services/globalData.service';
+import { OnlineShopHeaderNotificationsService } from 'src/app/shared/services/online-shop-header-notifications.service';
 import { RestService } from 'src/app/shared/services/rest.service';
 import { environment } from 'src/environments/environment';
 import { EmailMailboxFormModalComponent } from './email-mailbox-form-modal/email-mailbox-form-modal.component';
@@ -70,6 +71,7 @@ export class CustomerSupportComponent implements OnInit {
     private toastr: ToastrService,
     private router: Router,
     public globalDataService: GlobalDataService,
+    private headerNotifications: OnlineShopHeaderNotificationsService,
   ) {
     this.page.pageNumber = 0;
     this.page.size = 25;
@@ -108,6 +110,7 @@ export class CustomerSupportComponent implements OnInit {
     this.restService.getWithoutLoader(environment.urls.EmailSupport_GetInboxSummary).subscribe({
       next: (response) => {
         this.summary = response?.result || this.summary;
+        this.headerNotifications.refreshEmailUnread();
       },
     });
   }

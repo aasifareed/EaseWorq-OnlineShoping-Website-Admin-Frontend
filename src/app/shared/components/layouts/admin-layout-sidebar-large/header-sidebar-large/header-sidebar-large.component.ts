@@ -26,6 +26,7 @@ import { CustomUserStoreService } from "src/app/shared/services/custom-user-stor
 import { Subscription } from "rxjs";
 import { ToastrService } from "ngx-toastr";
 import { GlobalDataService } from "src/app/shared/services/globalData.service";
+import { OnlineShopHeaderNotificationsService } from "src/app/shared/services/online-shop-header-notifications.service";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 
 @Component({
@@ -68,6 +69,7 @@ export class HeaderSidebarLargeComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private toastr: ToastrService,
     public globalDataService: GlobalDataService,
+    public headerNotifications: OnlineShopHeaderNotificationsService,
     private renderer: Renderer2
   ) {}
 
@@ -78,6 +80,7 @@ export class HeaderSidebarLargeComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.selectedStoreSubscription.unsubscribe();
+    this.headerNotificationSubs.forEach((sub) => sub.unsubscribe());
   }
 
   ngOnInit() {
@@ -125,6 +128,18 @@ export class HeaderSidebarLargeComponent implements OnInit, OnDestroy {
     if (!this.signalRService.signalRConnectionEnabled) {
       this.signalRService.startConnection();
     }
+    this.headerNotifications.start();
+    this.headerNotificationSubs.push(
+      this.headerNotifications.liveChatUnreadTotal$.subscribe((count) => {
+        this.liveChatUnread = count;
+      }),
+      this.headerNotifications.emailUnread$.subscribe((count) => {
+        this.emailUnread = count;
+      }),
+      this.headerNotifications.priceChallengeReviewCount$.subscribe((count) => {
+        this.priceChallengeReviewCount = count;
+      }),
+    );
     this.signalRService.reloadOnlineShopNotifications();
     this.href = this.router.url;
     console.log(this.router.url);
@@ -217,6 +232,10 @@ export class HeaderSidebarLargeComponent implements OnInit, OnDestroy {
   public isTaskGroup = false;
   markingReadIds = new Set<number>();
   clearingAllNotifications = false;
+  liveChatUnread = 0;
+  emailUnread = 0;
+  priceChallengeReviewCount = 0;
+  private headerNotificationSubs: Subscription[] = [];
 
   isMarkingNotificationRead(notificationId: number): boolean {
     return this.markingReadIds.has(notificationId);
@@ -490,6 +509,23 @@ export class HeaderSidebarLargeComponent implements OnInit, OnDestroy {
     this.router.navigate(['/online-shop/online-orders'], {
       queryParams: { openChat: phoneNumber }
     });
+  }
+
+  openLiveChat(userId?: string): void {
+    const queryParams = userId ? { userId } : undefined;
+    this.router.navigate(['/online-shop/live-chat'], { queryParams });
+  }
+
+  openCustomerSupport(): void {
+    this.router.navigate(['/online-shop/customer-support']);
+  }
+
+  openPriceChallengeReviews(): void {
+    this.router.navigate(['/online-shop/price-challenge-reviews']);
+  }
+
+  formatHeaderBadgeCount(count: number): string {
+    return count > 99 ? '99+' : String(count);
   }
 
   openSweetAlert(language): Promise<boolean> {

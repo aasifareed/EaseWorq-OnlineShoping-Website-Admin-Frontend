@@ -70,6 +70,66 @@
         </div> -->
         <!-- </div> -->
         <!-- <app-language-changer></app-language-changer> -->
+        <!-- Live Chat -->
+        <div ngbDropdown [placement]="'bottom-right'" class="d-inline-block header-live-chat">
+            <div class="header-quick-toggle header-quick-toggle--chat" ngbDropdownToggle role="button" title="Live Chat" aria-label="Live Chat">
+                <span class="badge badge-danger header-quick-badge" *ngIf="liveChatUnread > 0">
+                    {{ formatHeaderBadgeCount(liveChatUnread) }}
+                </span>
+                <i class="i-Speach-Bubble-3 header-quick-icon" aria-hidden="true"></i>
+            </div>
+            <div ngbDropdownMenu class="header-quick-dropdown">
+                <div class="dropdown-header" *ngIf="liveChatUnread > 0">{{ 'Live Chat' | translate }}</div>
+                <button
+                    type="button"
+                    class="dropdown-item"
+                    *ngFor="let item of headerNotifications.getLiveChatPreviews()"
+                    (click)="openLiveChat(item.userId)">
+                    <span class="text-truncate d-block">{{ item.name }}</span>
+                    <small class="text-muted" *ngIf="item.preview">{{ item.preview | excerpt:25 }}</small>
+                </button>
+                <a class="dropdown-item" routerLink="/online-shop/live-chat">
+                    {{ liveChatUnread > 0 ? ('Open Live Chat' | translate) : ('Live Chat' | translate) }}
+                </a>
+            </div>
+        </div>
+
+        <!-- Customer Support Email -->
+        <div ngbDropdown [placement]="'bottom-right'" class="d-inline-block header-email-support">
+            <div class="header-quick-toggle header-quick-toggle--email" ngbDropdownToggle role="button" title="Customer Support" aria-label="Customer Support">
+                <span class="badge badge-danger header-quick-badge" *ngIf="emailUnread > 0">
+                    {{ formatHeaderBadgeCount(emailUnread) }}
+                </span>
+                <i class="i-Mail-3 header-quick-icon" aria-hidden="true"></i>
+            </div>
+            <div ngbDropdownMenu class="header-quick-dropdown">
+                <a class="dropdown-item" routerLink="/online-shop/customer-support">
+                    <ng-container *ngIf="emailUnread > 0; else emailSupportLink">
+                        {{ emailUnread }} unread email(s)
+                    </ng-container>
+                    <ng-template #emailSupportLink>{{ 'Customer Support' | translate }}</ng-template>
+                </a>
+            </div>
+        </div>
+
+        <!-- Price Challenge Reviews -->
+        <div ngbDropdown [placement]="'bottom-right'" class="d-inline-block header-price-challenge">
+            <div class="header-quick-toggle header-quick-toggle--price-challenge" ngbDropdownToggle role="button" title="Price Challenge Reviews" aria-label="Price Challenge Reviews">
+                <span class="badge badge-danger header-quick-badge" *ngIf="priceChallengeReviewCount > 0">
+                    {{ formatHeaderBadgeCount(priceChallengeReviewCount) }}
+                </span>
+                <i class="fa fa-fire fontAwesome_Li_Class header-quick-icon" aria-hidden="true"></i>
+            </div>
+            <div ngbDropdownMenu class="header-quick-dropdown">
+                <a class="dropdown-item" routerLink="/online-shop/price-challenge-reviews">
+                    <ng-container *ngIf="priceChallengeReviewCount > 0; else priceChallengeLink">
+                        {{ priceChallengeReviewCount }} review(s) pending
+                    </ng-container>
+                    <ng-template #priceChallengeLink>{{ 'Price Challenge Reviews' | translate }}</ng-template>
+                </a>
+            </div>
+        </div>
+
         <!-- WhatsApp: icon with real-time notification badge -->
         <div ngbDropdown [placement]="'bottom-right'" class="d-inline-block header-whatsapp">
             <div class="header-whatsapp-toggle" ngbDropdownToggle role="button" title="WhatsApp" aria-label="WhatsApp">

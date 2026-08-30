@@ -13,6 +13,7 @@ import { ToastrService } from 'ngx-toastr';
 import { environment } from 'src/environments/environment';
 import { ChatHubService } from 'src/app/shared/services/chat-hub.service';
 import { GlobalDataService } from 'src/app/shared/services/globalData.service';
+import { OnlineShopHeaderNotificationsService } from 'src/app/shared/services/online-shop-header-notifications.service';
 import { ChatApiService } from './chat-api.service';
 import {
   ChatConversation,
@@ -55,13 +56,13 @@ export class LiveChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   private pendingSelectUserId: string | null = null;
   private pendingDraft: string | null = null;
   private readonly subs: Subscription[] = [];
-  private readonly unread = new Map<string, number>();
   /** Realtime messages received before the admin opens that conversation or while history is loading. */
   private readonly pendingRealtimeByUser = new Map<string, ChatHistoryItem[]>();
 
   constructor(
     private chatApi: ChatApiService,
     private chatHub: ChatHubService,
+    private headerNotifications: OnlineShopHeaderNotificationsService,
     private route: ActivatedRoute,
     private toastr: ToastrService,
     public globalDataService: GlobalDataService,
@@ -73,6 +74,7 @@ export class LiveChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     if (this.pendingDraft) {
       this.draft = this.pendingDraft;
     }
+    this.headerNotifications.setLiveChatPageActive(true);
     this.chatHub.startConnection();
     this.loadConversations();
     this.subs.push(
@@ -92,6 +94,7 @@ export class LiveChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   ngOnDestroy(): void {
+    this.headerNotifications.setLiveChatPageActive(false);
     this.subs.forEach((sub) => sub.unsubscribe());
   }
 
@@ -101,8 +104,15 @@ export class LiveChatComponent implements OnInit, OnDestroy, AfterViewChecked {
       next: (items) => {
         this.conversations = items.map((item) => ({
           ...item,
-          unreadCount: this.unread.get(item.id) || 0,
+          unreadCount: this.headerNotifications.getLiveChatUnread(item.id),
         }));
+        items.forEach((item) => {
+          this.headerNotifications.registerLiveChatConversation(
+            item.id,
+            item.name,
+            this.headerNotifications.getLiveChatUnread(item.id),
+          );
+        });
         this.applyFilter();
         this.loadingList = false;
         this.selectPendingConversation();
@@ -116,7 +126,7 @@ export class LiveChatComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   selectConversation(conversation: ChatConversation): void {
     this.selected = conversation;
-    this.unread.set(conversation.id, 0);
+    this.headerNotifications.setActiveLiveChatCustomer(conversation.id);
     conversation.unreadCount = 0;
     this.loadingMessages = true;
     const conversationKey = this.normalizeUserId(conversation.id);
@@ -193,7 +203,7 @@ export class LiveChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   get unreadTotal(): number {
-    return this.conversations.reduce((sum, item) => sum + (item.unreadCount || 0), 0);
+    return this.headerNotifications.getLiveChatUnreadTotal();
   }
 
   send(): void {
@@ -334,10 +344,22 @@ export class LiveChatComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.sending = false;
         this.shouldScroll = true;
       })
-      .catch(() => {
+      .catch((err) => {
         this.sending = false;
-        this.toastr.error('Could not send the message. Check the chat connection.');
+        const message = this.extractSendErrorMessage(err);
+        this.toastr.error(message);
       });
+  }
+
+  private extractSendErrorMessage(err: unknown): string {
+    const hubMessage =
+      (err as any)?.message
+      || (err as any)?.error?.message
+      || (err as any)?.error?.error?.message;
+    if (typeof hubMessage === 'string' && hubMessage.trim()) {
+      return hubMessage.trim();
+    }
+    return 'Could not send the message. Check the chat connection.';
   }
 
   private resolveMediaUrl(url: string): string {
@@ -370,6 +392,7 @@ export class LiveChatComponent implements OnInit, OnDestroy, AfterViewChecked {
       conversation.lastMessage = payload.message;
       conversation.lastTimestamp = item.timestamp;
       this.moveConversationToTop(conversation);
+      this.headerNotifications.registerLiveChatConversation(conversation.id, conversation.name);
     }
 
     const isSelected = this.isSelectedUser(payload.userId);
@@ -380,15 +403,10 @@ export class LiveChatComponent implements OnInit, OnDestroy, AfterViewChecked {
       }
     } else {
       this.queuePendingMessage(userKey, item);
+      this.headerNotifications.recordLiveChatCustomerMessage(payload.userId, payload.message);
     }
-
-    if (!isSelected && !payload.fromAdmin) {
-      const next = (this.unread.get(payload.userId) || this.unread.get(userKey) || 0) + 1;
-      this.unread.set(payload.userId, next);
-      this.unread.set(userKey, next);
-      if (conversation) {
-        conversation.unreadCount = next;
-      }
+    if (conversation) {
+      conversation.unreadCount = this.headerNotifications.getLiveChatUnread(payload.userId);
     }
   }
 
@@ -409,7 +427,7 @@ export class LiveChatComponent implements OnInit, OnDestroy, AfterViewChecked {
       } else {
         this.conversations.push({
           ...user,
-          unreadCount: this.unread.get(user.id) || this.unread.get(userKey) || 0,
+          unreadCount: this.headerNotifications.getLiveChatUnread(user.id),
         });
       }
     });

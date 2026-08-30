@@ -26,6 +26,7 @@ export class ChatHubService {
   private readonly privateMessage = new Subject<ChatPrivateMessage>();
   private readonly connectedSubject = new BehaviorSubject<boolean>(false);
   private startInProgress = false;
+  private registerInProgress: Promise<void> | null = null;
 
   readonly usersUpdated$ = this.usersUpdated.asObservable();
   readonly privateMessage$ = this.privateMessage.asObservable();
@@ -100,15 +101,26 @@ export class ChatHubService {
       },
     );
 
+    this.hubConnection.onreconnecting(() => {
+      this.ngZone.run(() => {
+        this.connected = false;
+        this.connectedSubject.next(false);
+      });
+    });
+
     this.hubConnection.onreconnected(() => {
-      this.connected = true;
-      this.connectedSubject.next(true);
-      void this.registerAdmin();
+      this.ngZone.run(() => {
+        this.connected = true;
+        this.connectedSubject.next(true);
+        void this.registerAdmin();
+      });
     });
 
     this.hubConnection.onclose(() => {
-      this.connected = false;
-      this.connectedSubject.next(false);
+      this.ngZone.run(() => {
+        this.connected = false;
+        this.connectedSubject.next(false);
+      });
     });
 
     void this.hubConnection
@@ -133,6 +145,7 @@ export class ChatHubService {
     this.connectedSubject.next(false);
     const conn = this.hubConnection;
     this.hubConnection = undefined;
+    this.registerInProgress = null;
     if (conn) {
       void conn.stop().catch(() => undefined);
     }
@@ -143,39 +156,130 @@ export class ChatHubService {
       return;
     }
 
+    if (this.registerInProgress) {
+      await this.registerInProgress;
+      return;
+    }
+
     const currentUser = this.authService.getcurrentUser();
     const name = currentUser?.fullName || currentUser?.name || 'Admin';
     const email = currentUser?.emailAddress || currentUser?.email || null;
-    await this.hubConnection.invoke(
-      'RegisterUser',
-      this.adminChatUserId,
-      name,
-      true,
-      email,
-    );
+
+    this.registerInProgress = this.hubConnection
+      .invoke('RegisterUser', this.adminChatUserId, name, true, email)
+      .catch((err) => {
+        console.warn('Admin chat register failed', err);
+        throw err;
+      })
+      .finally(() => {
+        this.registerInProgress = null;
+      });
+
+    await this.registerInProgress;
   }
 
   async sendToCustomer(message: string, customerId: string): Promise<void> {
-    if (!this.hubConnection || this.hubConnection.state !== signalR.HubConnectionState.Connected) {
-      throw new Error('Chat is not connected.');
+    const customerGuid = (customerId || '').trim();
+    if (!customerGuid) {
+      throw new Error('No customer selected.');
     }
-    await this.hubConnection.invoke('SendPrivateMessageToUser', message, true, customerId);
+
+    await this.ensureReady();
+    await this.invokeSend(message, customerGuid);
   }
 
   privateMessageListener(): Observable<ChatPrivateMessage> {
     return this.privateMessage$;
   }
 
+  private async ensureReady(): Promise<void> {
+    if (!this.authService.getEncryptedToken()) {
+      throw new Error('Please sign in again to use live chat.');
+    }
+
+    if (!this.hubConnection || this.hubConnection.state === signalR.HubConnectionState.Disconnected) {
+      this.startConnection();
+    }
+
+    const deadline = Date.now() + 15000;
+    while (Date.now() < deadline) {
+      const conn = this.hubConnection;
+      if (conn?.state === signalR.HubConnectionState.Connected) {
+        await this.registerAdmin();
+        return;
+      }
+      if (conn?.state === signalR.HubConnectionState.Disconnected && !this.startInProgress) {
+        this.startConnection();
+      }
+      await this.delay(200);
+    }
+
+    throw new Error('Unable to connect to chat. Please refresh and try again.');
+  }
+
+  private async invokeSend(message: string, customerGuid: string): Promise<void> {
+    if (!this.hubConnection || this.hubConnection.state !== signalR.HubConnectionState.Connected) {
+      throw new Error('Chat is not connected.');
+    }
+
+    try {
+      await this.hubConnection.invoke(
+        'SendPrivateMessageToUser',
+        message,
+        true,
+        customerGuid,
+        false,
+      );
+      return;
+    } catch (firstError) {
+      if (!this.isRecoverableSendError(firstError)) {
+        throw firstError;
+      }
+    }
+
+    this.startConnection();
+    await this.ensureReady();
+    await this.hubConnection!.invoke(
+      'SendPrivateMessageToUser',
+      message,
+      true,
+      customerGuid,
+      false,
+    );
+  }
+
+  private isRecoverableSendError(err: unknown): boolean {
+    const message = String((err as any)?.message || '').toLowerCase();
+    return message.includes('not connected')
+      || message.includes('connection')
+      || message.includes('negotiat')
+      || message.includes('401')
+      || message.includes('403')
+      || message.includes('timeout');
+  }
+
   private buildHubUrl(): string {
     const base = environment.baseUrl.endsWith('/') ? environment.baseUrl : `${environment.baseUrl}/`;
-    const tenantId = this.globalDataService.getCurrentTanantId();
+    const tenantId = this.resolveChatTenantId();
     const params = new URLSearchParams();
     if (tenantId) {
-      params.set('Abp.TenantId', String(tenantId));
-      params.set('tenantId', String(tenantId));
+      params.set('Abp.TenantId', tenantId);
+      params.set('tenantId', tenantId);
+      params.set('TenantId', tenantId);
     }
     const query = params.toString();
     return query ? `${base}signalr/chatHub?${query}` : `${base}signalr/chatHub`;
+  }
+
+  /** ABP tenant id when available; hub also resolves tenant from the admin auth token. */
+  private resolveChatTenantId(): string | null {
+    const tenantId = this.globalDataService.getCurrentTanantId();
+    if (tenantId == null) {
+      return null;
+    }
+
+    const normalized = String(tenantId).trim();
+    return normalized && normalized !== 'null' && normalized !== 'undefined' ? normalized : null;
   }
 
   private normalizeUsers(users: ChatConversation[] | null | undefined): ChatConversation[] {
@@ -189,5 +293,9 @@ export class ChatHubService {
       lastTimestamp: user.lastTimestamp || (user as any).LastTimestamp,
       unreadCount: 0,
     }));
+  }
+
+  private delay(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }
