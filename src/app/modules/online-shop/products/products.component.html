@@ -110,6 +110,54 @@
                             (page)="setPage($event)"
                           >
                             <ngx-datatable-column
+                              [name]="'Actions' | translate"
+                              [sortable]="false"
+                              [minWidth]="380"
+                              cellClass="products-datatable__center-col"
+                              headerClass="products-datatable__center-col"
+                            >
+                              <ng-template ngx-datatable-cell-template let-row="row">
+                                <div class="products-datatable__cell-center products-datatable__cell-actions">
+                                  <button
+                                    type="button"
+                                    class="btn btn-sm btn-primary"
+                                    (click)="openEditModal(row)"
+                                  >
+                                    <i class="fa fa-pencil fontAwesome_Li_Class"></i>
+                                    {{ 'Edit' | translate }}
+                                  </button>
+                                  <button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-success ml-1"
+                                    title="{{ 'Create a single-use coupon for this product' | translate }}"
+                                    (click)="openCustomerCouponModal(row)"
+                                  >
+                                    <i class="fa fa-ticket fontAwesome_Li_Class" aria-hidden="true"></i>
+                                    {{ 'Coupon' | translate }}
+                                  </button>
+                                  <button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-primary ml-1 products-datatable__fb-btn"
+                                    title="{{ 'Create Facebook Post' | translate }}"
+                                    (click)="openFacebookPostModal(row)"
+                                  >
+                                    <i class="fa fa-facebook fontAwesome_Li_Class" aria-hidden="true"></i>
+                                    {{ 'Facebook' | translate }}
+                                  </button>
+                                  <button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-info ml-1"
+                                    title="{{ 'Create Facebook Reel' | translate }}"
+                                    (click)="openReelModal(row)"
+                                  >
+                                    <i class="fa fa-film fontAwesome_Li_Class" aria-hidden="true"></i>
+                                    {{ 'Reel' | translate }}
+                                  </button>
+                                </div>
+                              </ng-template>
+                            </ngx-datatable-column>
+
+                            <ngx-datatable-column
                               [name]="'Images' | translate"
                               [sortable]="false"
                               [canAutoResize]="false"
@@ -373,45 +421,6 @@
                                     />
                                     <span class="status-switch__slider"></span>
                                   </label>
-                                </div>
-                              </ng-template>
-                            </ngx-datatable-column>
-
-                            <ngx-datatable-column
-                              [name]="'Actions' | translate"
-                              [sortable]="false"
-                              [minWidth]="290"
-                              cellClass="products-datatable__center-col"
-                              headerClass="products-datatable__center-col"
-                            >
-                              <ng-template ngx-datatable-cell-template let-row="row">
-                                <div class="products-datatable__cell-center products-datatable__cell-actions">
-                                  <button
-                                    type="button"
-                                    class="btn btn-sm btn-primary"
-                                    (click)="openEditModal(row)"
-                                  >
-                                    <i class="fa fa-pencil fontAwesome_Li_Class"></i>
-                                    {{ 'Edit' | translate }}
-                                  </button>
-                                  <button
-                                    type="button"
-                                    class="btn btn-sm btn-outline-success ml-1"
-                                    title="{{ 'Create a single-use coupon for this product' | translate }}"
-                                    (click)="openCustomerCouponModal(row)"
-                                  >
-                                    <i class="fa fa-ticket fontAwesome_Li_Class" aria-hidden="true"></i>
-                                    {{ 'Coupon' | translate }}
-                                  </button>
-                                  <button
-                                    type="button"
-                                    class="btn btn-sm btn-outline-primary ml-1 products-datatable__fb-btn"
-                                    title="{{ 'Create Facebook Post' | translate }}"
-                                    (click)="openFacebookPostModal(row)"
-                                  >
-                                    <i class="fa fa-facebook fontAwesome_Li_Class" aria-hidden="true"></i>
-                                    {{ 'Facebook' | translate }}
-                                  </button>
                                 </div>
                               </ng-template>
                             </ngx-datatable-column>

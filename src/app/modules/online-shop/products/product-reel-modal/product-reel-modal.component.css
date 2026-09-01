@@ -1,0 +1,33 @@
+.reel-preview-modal__player-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.reel-preview-modal__player {
+  width: 100%;
+  max-width: 280px;
+  aspect-ratio: 9 / 16;
+  border-radius: 12px;
+  background: #111;
+  object-fit: contain;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+.reel-preview-modal__caption {
+  white-space: pre-wrap;
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.reel-preview-modal__building {
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}

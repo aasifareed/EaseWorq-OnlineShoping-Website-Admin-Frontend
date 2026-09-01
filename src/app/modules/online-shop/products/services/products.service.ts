@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { HttpHeaders, HttpResponse } from '@angular/common/http';
+import { Observable, throwError, from } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { RestService } from 'src/app/shared/services/rest.service';
 import { appServiceUrls } from 'src/environments/environment.urls';
 import {
@@ -14,8 +15,11 @@ import {
   MetaPagePostDraft,
   MetaPagePostHistoryItem,
   MetaPagePostImage,
+  MetaPageReelDraft,
+  MetaPageReelPreview,
   PublishMetaPagePostPayload,
   PublishMetaPagePostResult,
+  PublishMetaPageReelPayload,
   PublishSimpleMetaPagePostPayload,
   SimpleMetaPagePostDraft,
 } from '../models/facebook-post.models';
@@ -151,6 +155,62 @@ export class ProductsService {
 
   publishFacebookPost(payload: PublishMetaPagePostPayload): Observable<PublishMetaPagePostResult> {
     const url = appServiceUrls.OnlineShopMetaPagePublish_Publish;
+    const body: Record<string, unknown> = {
+      ProductId: payload.productId,
+      Caption: payload.caption,
+      SelectedImages: (payload.selectedImages ?? []).map((img) => ({
+        ImageId: img.imageId,
+        Order: img.order,
+      })),
+    };
+    if (payload.imageUrl) {
+      body.ImageUrl = payload.imageUrl;
+    }
+    if (payload.includePriceChallenge != null) {
+      body.IncludePriceChallenge = payload.includePriceChallenge;
+    }
+    return this.restService.post(url, body).pipe(
+      map((response) => this.mapPublishResult((response?.result ?? response) as Record<string, unknown>)),
+    );
+  }
+
+  getFacebookReelDraft(productId: string): Observable<MetaPageReelDraft> {
+    const path =
+      appServiceUrls.OnlineShopMetaPagePublish_GetReelDraft ||
+      '/OnlineShopMetaPagePublish/GetFacebookReelDraft';
+    const url = `${path}?productId=${encodeURIComponent(productId)}`;
+    return this.restService.get(url).pipe(
+      map((response) => this.mapReelDraft((response?.result ?? response) as Record<string, unknown>)),
+    );
+  }
+
+  previewFacebookReel(payload: PublishMetaPageReelPayload): Observable<MetaPageReelPreview> {
+    const url =
+      appServiceUrls.OnlineShopMetaPagePublish_PreviewReel ||
+      '/OnlineShopMetaPagePublish/PreviewFacebookReel';
+    const body: Record<string, unknown> = {
+      ProductId: payload.productId,
+      Caption: payload.caption,
+      SelectedImages: (payload.selectedImages ?? []).map((img) => ({
+        ImageId: img.imageId,
+        Order: img.order,
+      })),
+    };
+    if (payload.imageUrl) {
+      body.ImageUrl = payload.imageUrl;
+    }
+    if (payload.includePriceChallenge != null) {
+      body.IncludePriceChallenge = payload.includePriceChallenge;
+    }
+    return this.restService.postBlob(url, body).pipe(
+      switchMap((response) => this.mapReelPreviewResponse(response)),
+    );
+  }
+
+  publishFacebookReel(payload: PublishMetaPageReelPayload): Observable<PublishMetaPagePostResult> {
+    const url =
+      appServiceUrls.OnlineShopMetaPagePublish_PublishReel ||
+      '/OnlineShopMetaPagePublish/PublishFacebookReel';
     const body: Record<string, unknown> = {
       ProductId: payload.productId,
       Caption: payload.caption,
@@ -345,6 +405,59 @@ export class ProductsService {
       images,
       recentPosts: recent,
     };
+  }
+
+  private mapReelDraft(row: Record<string, unknown>): MetaPageReelDraft {
+    const base = this.mapFacebookDraft(row);
+    return {
+      ...base,
+      reelSecondsPerSlide: Number(row.reelSecondsPerSlide ?? row.ReelSecondsPerSlide ?? 3.5),
+      reelEstimatedTotalSeconds: Number(
+        row.reelEstimatedTotalSeconds ?? row.ReelEstimatedTotalSeconds ?? 0,
+      ),
+      reelBuilderReady: Boolean(row.reelBuilderReady ?? row.ReelBuilderReady ?? false),
+      reelDisabledReason:
+        row.reelDisabledReason != null
+          ? String(row.reelDisabledReason)
+          : row.ReelDisabledReason != null
+            ? String(row.ReelDisabledReason)
+            : null,
+    };
+  }
+
+  private mapReelPreviewResponse(response: HttpResponse<Blob>): Observable<MetaPageReelPreview> {
+    const blob = response.body;
+    const contentType = response.headers.get('content-type') || 'video/mp4';
+    if (!blob || blob.size === 0) {
+      return throwError(() => ({ error: { error: { message: 'Could not build Reel preview.' } } }));
+    }
+
+    if (contentType.includes('application/json') || blob.type.includes('json')) {
+      return from(blob.text()).pipe(
+        switchMap((text) => {
+          let message = 'Could not build Reel preview.';
+          try {
+            const parsed = JSON.parse(text) as { error?: { message?: string } };
+            message = parsed?.error?.message || message;
+          } catch {
+            // Keep default message when the error body is not JSON.
+          }
+          return throwError(() => ({ error: { error: { message } } }));
+        }),
+      );
+    }
+
+    const durationHeader = response.headers.get('X-Reel-Duration-Seconds');
+    const durationSeconds = durationHeader ? Number(durationHeader) : 0;
+    const videoBlob = blob.type ? blob : new Blob([blob], { type: 'video/mp4' });
+
+    return from(
+      Promise.resolve({
+        blob: videoBlob,
+        durationSeconds: Number.isFinite(durationSeconds) ? durationSeconds : 0,
+        mimeType: videoBlob.type || 'video/mp4',
+      } as MetaPageReelPreview),
+    );
   }
 
   private mapFacebookImage(row: Record<string, unknown>): MetaPagePostImage {

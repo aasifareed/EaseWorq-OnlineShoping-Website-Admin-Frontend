@@ -74,6 +74,21 @@ export interface SimpleMetaPagePostDraft {
   recentPosts: MetaPagePostHistoryItem[];
 }
 
+export interface MetaPageReelDraft extends MetaPagePostDraft {
+  reelSecondsPerSlide?: number;
+  reelEstimatedTotalSeconds?: number;
+  reelBuilderReady?: boolean;
+  reelDisabledReason?: string | null;
+}
+
+export interface PublishMetaPageReelPayload extends PublishMetaPagePostPayload {}
+
+export interface MetaPageReelPreview {
+  blob: Blob;
+  durationSeconds: number;
+  mimeType: string;
+}
+
 export interface PublishSimpleMetaPagePostPayload {
   caption: string;
   linkUrl?: string;

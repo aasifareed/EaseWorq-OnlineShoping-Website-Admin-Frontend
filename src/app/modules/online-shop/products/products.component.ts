@@ -11,6 +11,7 @@ import { AdminProductListItem } from './models/product.models';
 import { ProductImagesModalComponent } from './product-images-modal/product-images-modal.component';
 import { ProductEditModalComponent } from './product-edit-modal/product-edit-modal.component';
 import { ProductFacebookPostModalComponent } from './product-facebook-post-modal/product-facebook-post-modal.component';
+import { ProductReelModalComponent } from './product-reel-modal/product-reel-modal.component';
 import { SimpleFacebookPostModalComponent } from './simple-facebook-post-modal/simple-facebook-post-modal.component';
 import { MetaCatalogSyncModalComponent } from './meta-catalog-sync-modal/meta-catalog-sync-modal.component';
 import { ProductsService } from './services/products.service';
@@ -397,6 +398,23 @@ export class ProductsComponent implements OnInit {
     );
   }
 
+  openReelModal(row: AdminProductListItem): void {
+    const modalRef = this.modalService.open(ProductReelModalComponent, {
+      centered: true,
+      backdrop: 'static',
+      size: 'lg',
+      windowClass: 'ew-app-modal',
+    });
+    modalRef.componentInstance.product = { ...row };
+
+    modalRef.result.then(
+      (result: PublishMetaPagePostResult) => {
+        this.handleFacebookPublishResult(result, 'Facebook Reel published successfully. Click here to view.');
+      },
+      () => undefined,
+    );
+  }
+
   openSimpleFacebookPostModal(): void {
     const modalRef = this.modalService.open(SimpleFacebookPostModalComponent, {
       centered: true,
@@ -413,10 +431,13 @@ export class ProductsComponent implements OnInit {
     );
   }
 
-  private handleFacebookPublishResult(result: PublishMetaPagePostResult): void {
+  private handleFacebookPublishResult(
+    result: PublishMetaPagePostResult,
+    successMessage = 'Facebook post published successfully. Click here to view.',
+  ): void {
     if (result?.permalink) {
       const toast = this.toastr.success(
-        this.translate.instant('Facebook post published successfully. Click here to view.'),
+        this.translate.instant(successMessage),
         '',
         { enableHtml: false, timeOut: 8000 },
       );

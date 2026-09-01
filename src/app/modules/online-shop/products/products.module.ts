@@ -11,6 +11,7 @@ import { ProductsComponent } from './products.component';
 import { ProductImagesModalComponent } from './product-images-modal/product-images-modal.component';
 import { ProductEditModalComponent } from './product-edit-modal/product-edit-modal.component';
 import { ProductFacebookPostModalComponent } from './product-facebook-post-modal/product-facebook-post-modal.component';
+import { ProductReelModalComponent } from './product-reel-modal/product-reel-modal.component';
 import { SimpleFacebookPostModalComponent } from './simple-facebook-post-modal/simple-facebook-post-modal.component';
 import { MetaCatalogSyncModalComponent } from './meta-catalog-sync-modal/meta-catalog-sync-modal.component';
 import { ProductCategoriesComponent } from './product-categories/product-categories.component';
@@ -45,6 +46,7 @@ import { CouponFormModalModule } from '../coupons/coupon-form-modal/coupon-form-
     ProductImagesModalComponent,
     ProductEditModalComponent,
     ProductFacebookPostModalComponent,
+    ProductReelModalComponent,
     SimpleFacebookPostModalComponent,
     MetaCatalogSyncModalComponent,
     ProductCategoriesComponent,
@@ -57,6 +59,7 @@ import { CouponFormModalModule } from '../coupons/coupon-form-modal/coupon-form-
     ProductImagesModalComponent,
     ProductEditModalComponent,
     ProductFacebookPostModalComponent,
+    ProductReelModalComponent,
     SimpleFacebookPostModalComponent,
     MetaCatalogSyncModalComponent,
     ProductCategoryEditModalComponent,

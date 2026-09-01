@@ -169,6 +169,24 @@ export class RestService {
         }));
     }
 
+    postBlob(url: string, body: any): Observable<HttpResponse<Blob>> {
+        this.loaderService.display(true);
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+        });
+        return this.http
+            .post(environment.apiBaseUrl + url, body, {
+                headers,
+                responseType: 'blob',
+                observe: 'response',
+            })
+            .pipe(
+                finalize(() => {
+                    this.loaderService.display(false);
+                }),
+            );
+    }
+
     postFormData(url: string, formData: FormData): Observable<any> {
         this.loaderService.display(true);
         return this.http.post(environment.apiBaseUrl + url, formData).pipe(

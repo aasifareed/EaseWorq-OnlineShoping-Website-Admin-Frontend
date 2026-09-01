@@ -151,10 +151,26 @@ export const appServiceUrls = {
   OnlineShopProduct_StartMetaCatalogSync: '/OnlineShopProduct/StartMetaCatalogSync',
   OnlineShopProduct_GetMetaCatalogSyncProgress: '/OnlineShopProduct/GetMetaCatalogSyncProgress',
 
+  // Marketing content dashboard (MarketingContentAppService)
+  MarketingContent_GetDashboardStats: '/MarketingContent/GetDashboardStats',
+  MarketingContent_GetAll: '/MarketingContent/GetAll',
+  MarketingContent_GetById: '/MarketingContent/GetById',
+  MarketingContent_Create: '/MarketingContent/Create',
+  MarketingContent_BulkCreate: '/MarketingContent/BulkCreate',
+  MarketingContent_Update: '/MarketingContent/Update',
+  MarketingContent_Generate: '/MarketingContent/Generate',
+  MarketingContent_Approve: '/MarketingContent/Approve',
+  MarketingContent_Reject: '/MarketingContent/Reject',
+  MarketingContent_Publish: '/MarketingContent/Publish',
+  MarketingContent_Delete: '/MarketingContent/Delete',
+
   // Facebook Page product publishing (OnlineShopMetaPagePublishAppService)
   OnlineShopMetaPagePublish_GetDraft: '/OnlineShopMetaPagePublish/GetFacebookPostDraft',
   OnlineShopMetaPagePublish_GetHistory: '/OnlineShopMetaPagePublish/GetFacebookPostHistory',
   OnlineShopMetaPagePublish_Publish: '/OnlineShopMetaPagePublish/PublishFacebookPost',
+  OnlineShopMetaPagePublish_GetReelDraft: '/OnlineShopMetaPagePublish/GetFacebookReelDraft',
+  OnlineShopMetaPagePublish_PreviewReel: '/OnlineShopMetaPagePublish/PreviewFacebookReel',
+  OnlineShopMetaPagePublish_PublishReel: '/OnlineShopMetaPagePublish/PublishFacebookReel',
   OnlineShopMetaPagePublish_GetSimpleDraft: '/OnlineShopMetaPagePublish/GetSimpleFacebookPostDraft',
   OnlineShopMetaPagePublish_GetSimpleHistory: '/OnlineShopMetaPagePublish/GetSimpleFacebookPostHistory',
   OnlineShopMetaPagePublish_PublishSimple: '/OnlineShopMetaPagePublish/PublishSimpleFacebookPost',
