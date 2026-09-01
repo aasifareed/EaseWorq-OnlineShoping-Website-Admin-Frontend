@@ -110,6 +110,25 @@ export class ProductReelModalComponent implements OnInit, OnDestroy {
     return this.step === 'preview' && !!this.previewVideoSafeUrl && !this.isBusy && !this.previewError;
   }
 
+  get willAppendProductLink(): boolean {
+    if (!this.draft?.productUrl) {
+      return false;
+    }
+    return !this.captionIncludesProductUrl(this.caption, this.draft.productUrl);
+  }
+
+  get effectivePublishCaption(): string {
+    return this.ensureProductLinkInCaption(this.caption, this.draft?.productUrl);
+  }
+
+  get shoppingHost(): string {
+    const host = (this.draft?.reelShoppingHost || '').trim();
+    if (host) {
+      return host;
+    }
+    return this.formatShoppingHost(this.draft?.productUrl);
+  }
+
   onPreviewImageError(event: Event): void {
     const img = event.target as HTMLImageElement;
     img.src = 'assets/images/logo.svg';
@@ -451,5 +470,58 @@ export class ProductReelModalComponent implements OnInit, OnDestroy {
 
     const block = `🔥 Found it cheaper?\nChallenge our price 👇\n\n${url}`;
     return base ? `${base}\n\n${block}` : block;
+  }
+
+  private captionIncludesProductUrl(caption: string, productUrl: string): boolean {
+    const text = (caption || '').trim();
+    const url = (productUrl || '').trim();
+    if (!url) {
+      return true;
+    }
+    if (text.toLowerCase().includes(url.toLowerCase())) {
+      return true;
+    }
+
+    const normalized = url.replace(/\/$/, '');
+    if (normalized !== url && text.toLowerCase().includes(normalized.toLowerCase())) {
+      return true;
+    }
+
+    try {
+      const parsed = new URL(url);
+      const path = `${parsed.pathname}${parsed.search}`;
+      if (path && path !== '/' && text.toLowerCase().includes(path.toLowerCase())) {
+        return true;
+      }
+    } catch {
+      return false;
+    }
+
+    return false;
+  }
+
+  private ensureProductLinkInCaption(caption: string, productUrl?: string | null): string {
+    const url = (productUrl || '').trim();
+    let text = (caption || '').trim();
+    if (!url || this.captionIncludesProductUrl(text, url)) {
+      return text;
+    }
+
+    const block = `🛒 Order online:\n${url}`;
+    return text ? `${text}\n\n${block}` : block;
+  }
+
+  private formatShoppingHost(productUrl?: string | null): string {
+    const url = (productUrl || '').trim();
+    if (!url) {
+      return 'Link in caption';
+    }
+
+    try {
+      const host = new URL(url).hostname.replace(/^www\./i, '');
+      return host || 'Link in caption';
+    } catch {
+      return 'Link in caption';
+    }
   }
 }

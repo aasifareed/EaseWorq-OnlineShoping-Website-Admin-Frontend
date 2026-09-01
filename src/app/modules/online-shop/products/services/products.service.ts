@@ -422,6 +422,15 @@ export class ProductsService {
           : row.ReelDisabledReason != null
             ? String(row.ReelDisabledReason)
             : null,
+      reelIncludesProductLink: Boolean(
+        row.reelIncludesProductLink ?? row.ReelIncludesProductLink ?? false,
+      ),
+      reelShoppingHost:
+        row.reelShoppingHost != null
+          ? String(row.reelShoppingHost)
+          : row.ReelShoppingHost != null
+            ? String(row.ReelShoppingHost)
+            : null,
     };
   }
 

@@ -135,13 +135,26 @@
         [disabled]="isBusy || !draft.canPublish"
         maxlength="8000"
       ></textarea>
+      <div class="reel-caption-hint text-muted small mt-2">
+        {{ 'Your product link is added to the Facebook caption when you publish. The Order Online button in the video is visual only — shoppers tap the link in the post caption on Facebook.' | translate }}
+      </div>
+      <div class="alert alert-info reel-caption-hint__append mt-2 mb-0 py-2 px-3 small" *ngIf="willAppendProductLink">
+        {{ 'This product link will be appended automatically on publish:' | translate }}
+        <a [href]="draft.productUrl" target="_blank" rel="noopener noreferrer" class="font-weight-bold">
+          {{ draft.productUrl }}
+        </a>
+      </div>
     </div>
 
-    <div class="form-group mb-3">
-      <label class="d-block">{{ 'Product link' | translate }}</label>
-      <a [href]="draft.productUrl" target="_blank" rel="noopener noreferrer" class="facebook-post-modal__link">
+    <div class="reel-shopping-link-card mb-3" *ngIf="draft.productUrl">
+      <div class="reel-shopping-link-card__label">{{ 'Tappable shopping link' | translate }}</div>
+      <a [href]="draft.productUrl" target="_blank" rel="noopener noreferrer" class="reel-shopping-link-card__url">
         {{ draft.productUrl }}
       </a>
+      <div class="reel-shopping-link-card__meta text-muted small mt-1">
+        {{ 'Storefront' | translate }}: <strong>{{ shoppingHost }}</strong>
+        · {{ 'Included in Facebook caption' | translate }}
+      </div>
     </div>
 
     <div *ngIf="loadError" class="alert alert-warning">
@@ -217,8 +230,21 @@
     </div>
 
     <div class="form-group mb-0" *ngIf="!buildingPreview && previewVideoSafeUrl">
-      <label class="d-block">{{ 'Caption' | translate }}</label>
-      <div class="reel-preview-modal__caption">{{ caption }}</div>
+      <div class="reel-shopping-link-card mb-3" *ngIf="draft.productUrl">
+        <div class="reel-shopping-link-card__label">{{ 'Tappable shopping link (Facebook caption)' | translate }}</div>
+        <a [href]="draft.productUrl" target="_blank" rel="noopener noreferrer" class="reel-shopping-link-card__url">
+          {{ draft.productUrl }}
+        </a>
+        <div class="reel-shopping-link-card__meta text-muted small mt-1">
+          {{ 'This is the link shoppers tap on Facebook. The in-video button is not clickable.' | translate }}
+        </div>
+      </div>
+
+      <label class="d-block">{{ 'Facebook caption' | translate }}</label>
+      <div class="reel-preview-modal__caption">{{ effectivePublishCaption }}</div>
+      <div class="text-muted small mt-2" *ngIf="willAppendProductLink">
+        {{ 'The product link above will be added automatically when you publish.' | translate }}
+      </div>
     </div>
   </ng-container>
 </div>

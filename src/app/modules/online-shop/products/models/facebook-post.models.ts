@@ -79,6 +79,8 @@ export interface MetaPageReelDraft extends MetaPagePostDraft {
   reelEstimatedTotalSeconds?: number;
   reelBuilderReady?: boolean;
   reelDisabledReason?: string | null;
+  reelIncludesProductLink?: boolean;
+  reelShoppingHost?: string | null;
 }
 
 export interface PublishMetaPageReelPayload extends PublishMetaPagePostPayload {}

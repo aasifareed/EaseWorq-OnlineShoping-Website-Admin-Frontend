@@ -3,7 +3,7 @@ import { Observable } from "rxjs/Observable";
 import { LoaderService } from "./loader.service";
 import { tap, catchError, map } from "rxjs/operators";
 import { of } from "rxjs";
-import { HttpClient, HttpHeaders, HttpErrorResponse } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpErrorResponse, HttpResponse } from "@angular/common/http";
 import { Router } from "@angular/router";
 import 'rxjs/add/operator/finally';
 import { take, finalize } from 'rxjs/operators';

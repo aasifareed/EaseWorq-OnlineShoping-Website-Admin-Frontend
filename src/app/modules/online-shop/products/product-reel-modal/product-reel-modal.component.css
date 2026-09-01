@@ -31,3 +31,30 @@
   align-items: center;
   justify-content: center;
 }
+
+.reel-shopping-link-card {
+  border: 1px solid #d8e2ef;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #f8fbff 0%, #f4f7fb 100%);
+  padding: 0.85rem 1rem;
+}
+
+.reel-shopping-link-card__label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #5c6b7a;
+  margin-bottom: 0.35rem;
+}
+
+.reel-shopping-link-card__url {
+  display: block;
+  word-break: break-all;
+  font-weight: 600;
+  color: #0b5ed7;
+}
+
+.reel-caption-hint__append {
+  border-left: 3px solid #0d6efd;
+}
