@@ -7,8 +7,14 @@ import {
   MetaPagePostDraft,
   MetaPagePostHistoryItem,
   MetaPagePostImage,
+  ReelVoiceLanguage,
 } from '../models/facebook-post.models';
 import { ProductsService } from '../services/products.service';
+import {
+  buildCaptionWithPriceChallenge,
+  normalizeUrduCaption,
+  usesUrduCaption,
+} from '../utils/meta-caption.util';
 
 @Component({
   selector: 'app-product-facebook-post-modal',
@@ -23,11 +29,13 @@ export class ProductFacebookPostModalComponent implements OnInit {
   loadError: string | null = null;
   draft: MetaPagePostDraft | null = null;
   caption = '';
-  baseCaption = '';
+  baseCaptionEn = '';
+  baseCaptionUrdu = '';
   includePriceChallenge = false;
   showHistory = false;
   images: MetaPagePostImage[] = [];
   previewImage: MetaPagePostImage | null = null;
+  captionLanguage: ReelVoiceLanguage = 'Urdu';
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -80,6 +88,34 @@ export class ProductFacebookPostModalComponent implements OnInit {
     return hasCaption || hasImages || hasLink;
   }
 
+  get captionLanguageLabel(): string {
+    if (this.captionLanguage === 'RomanUrdu') {
+      return 'Roman Urdu';
+    }
+    return this.captionLanguage;
+  }
+
+  get isCaptionRtl(): boolean {
+    return usesUrduCaption(this.captionLanguage);
+  }
+
+  get captionLanguageHint(): string {
+    if (this.captionLanguage === 'RomanUrdu') {
+      return 'Roman Urdu selection uses the Urdu caption below';
+    }
+    return usesUrduCaption(this.captionLanguage)
+      ? 'Urdu caption for Facebook post'
+      : 'English caption for Facebook post';
+  }
+
+  onCaptionLanguageChange(language: ReelVoiceLanguage): void {
+    if (this.publishing || this.captionLanguage === language) {
+      return;
+    }
+    this.captionLanguage = language;
+    this.applyCaptionForLanguage();
+  }
+
   onPreviewImageError(event: Event): void {
     const img = event.target as HTMLImageElement;
     img.src = 'assets/images/logo.svg';
@@ -97,9 +133,11 @@ export class ProductFacebookPostModalComponent implements OnInit {
     this.productsService.getFacebookPostDraft(this.product.productId).subscribe({
       next: (draft) => {
         this.draft = draft;
-        this.baseCaption = draft.baseCaption || draft.caption || '';
+        this.baseCaptionEn = draft.baseCaption || draft.caption || '';
+        this.baseCaptionUrdu = draft.baseCaptionUrdu || this.baseCaptionEn;
         this.includePriceChallenge = !!draft.includePriceChallenge;
-        this.caption = draft.caption || '';
+        this.captionLanguage = draft.defaultCaptionLanguage ?? 'Urdu';
+        this.applyCaptionForLanguage();
         this.images = this.normalizeImages(draft.images || []);
         this.loading = false;
         if (!draft.canPublish && draft.disabledReason) {
@@ -181,7 +219,7 @@ export class ProductFacebookPostModalComponent implements OnInit {
 
   onIncludePriceChallengeChange(checked: boolean): void {
     this.includePriceChallenge = checked;
-    this.caption = this.buildCaption(this.baseCaption, checked);
+    this.applyCaptionForLanguage();
   }
 
   publish(): void {
@@ -204,6 +242,7 @@ export class ProductFacebookPostModalComponent implements OnInit {
           : undefined,
         selectedImages: selected,
         includePriceChallenge: this.includePriceChallenge,
+        captionLanguage: this.captionLanguage,
       })
       .subscribe({
         next: (result) => {
@@ -243,6 +282,21 @@ export class ProductFacebookPostModalComponent implements OnInit {
       hour: '2-digit',
       minute: '2-digit',
     });
+  }
+
+  private applyCaptionForLanguage(): void {
+    const rawBase = usesUrduCaption(this.captionLanguage)
+      ? this.baseCaptionUrdu || this.draft?.baseCaptionUrdu || ''
+      : this.baseCaptionEn || this.draft?.baseCaption || '';
+    const base = usesUrduCaption(this.captionLanguage)
+      ? normalizeUrduCaption(rawBase, this.draft?.productName || this.product?.productName)
+      : rawBase;
+    this.caption = buildCaptionWithPriceChallenge(
+      base,
+      this.includePriceChallenge,
+      this.draft?.priceChallengeUrl,
+      this.captionLanguage,
+    );
   }
 
   private normalizeImages(images: MetaPagePostImage[]): MetaPagePostImage[] {
@@ -293,16 +347,5 @@ export class ProductFacebookPostModalComponent implements OnInit {
     this.selectedImages.forEach((img, index) => {
       img.publishOrder = index + 1;
     });
-  }
-
-  private buildCaption(baseCaption: string, includePriceChallenge: boolean): string {
-    const base = (baseCaption || '').trimEnd();
-    const url = (this.draft?.priceChallengeUrl || '').trim();
-    if (!includePriceChallenge || !url) {
-      return base;
-    }
-
-    const block = `🔥 Found it cheaper?\nChallenge our price 👇\n\n${url}`;
-    return base ? `${base}\n\n${block}` : block;
   }
 }

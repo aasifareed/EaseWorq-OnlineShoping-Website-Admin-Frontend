@@ -1,15 +1,15 @@
 <div class="modal-header">
   <h5 class="modal-title facebook-post-modal__title">
     <i class="fa fa-film fontAwesome_Li_Class" aria-hidden="true"></i>
-    {{ step === 'preview' ? ('Preview Facebook Reel' | translate) : ('Create Facebook Reel' | translate) }}
+    {{ 'Create Facebook Reel' | translate }}
   </h5>
   <button type="button" class="close" aria-label="Close" [disabled]="isBusy" (click)="activeModal.dismiss()">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
 
-<div class="modal-body facebook-post-modal">
-  <div *ngIf="loading" class="text-center py-4">
+<div class="modal-body facebook-post-modal reel-modal__body">
+  <div *ngIf="loading" class="text-center py-5">
     <i class="fa fa-spinner fa-spin"></i>
     <div class="mt-2">{{ 'Loading draft…' | translate }}</div>
   </div>
@@ -18,264 +18,325 @@
     {{ loadError }}
   </div>
 
-  <ng-container *ngIf="!loading && draft && step === 'edit'">
-    <div class="facebook-post-modal__eyebrow">{{ 'FACEBOOK REEL' | translate }}</div>
+  <div class="reel-modal__split" *ngIf="!loading && draft">
+    <!-- LEFT: Editor -->
+    <div class="reel-modal__editor">
+      <div class="reel-modal__header-row mb-3">
+        <div class="reel-modal__header-main">
+          <div class="facebook-post-modal__eyebrow">{{ 'FACEBOOK REEL' | translate }}</div>
+          <div class="facebook-post-modal__meta">
+            <div>
+              <span class="text-muted">{{ 'Publishing to' | translate }}:</span>
+              <strong> Facebook · {{ draft.pageName }}</strong>
+            </div>
+            <div class="font-weight-bold mt-2">{{ draft.productName || product?.productName }}</div>
+            <div class="text-muted small mt-1" *ngIf="draft.reelBuilderReady && selectedCount > 0">
+              {{ 'A vertical video with background audio will be built from your product images.' | translate }}
+              · {{ reelDurationHint }}
+            </div>
+          </div>
+        </div>
 
-    <div class="facebook-post-modal__meta mb-3">
-      <div>
-        <span class="text-muted">{{ 'Publishing to' | translate }}:</span>
-        <strong> Facebook · {{ draft.pageName }}</strong>
-      </div>
-      <div class="font-weight-bold mt-2">{{ draft.productName || product?.productName }}</div>
-      <div class="text-muted small mt-1" *ngIf="draft.reelBuilderReady && selectedCount > 0">
-        {{ 'A vertical video with background audio will be built from your product images.' | translate }}
-        · {{ reelDurationHint }}
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label class="d-block mb-2">{{ 'Product Images' | translate }}</label>
-      <div class="facebook-post-modal__images" *ngIf="images.length; else noImages">
-        <div
-          class="facebook-post-modal__image-card"
-          *ngFor="let image of displayImages; trackBy: trackImageById"
-          [class.is-selected]="image.selected"
-        >
-          <button
-            type="button"
-            class="facebook-post-modal__image-preview-btn"
-            (click)="openImagePreview(image)"
-            [attr.aria-label]="'Preview image' | translate"
-          >
-            <img
-              [src]="image.url"
-              [alt]="draft.productName"
-              (error)="onPreviewImageError($event)"
-            />
-            <span class="facebook-post-modal__order" *ngIf="image.selected">
-              {{ selectedOrderLabel(image) }}
-            </span>
-          </button>
-          <label class="facebook-post-modal__check">
-            <input
-              type="checkbox"
-              [checked]="image.selected"
+        <div class="reel-voice-language" *ngIf="draft.reelBuilderReady">
+          <div class="reel-voice-language__label">{{ 'Voiceover' | translate }}</div>
+          <div class="reel-voice-language__options" role="group" [attr.aria-label]="'Voiceover language' | translate">
+            <button
+              type="button"
+              class="reel-voice-language__option"
+              [class.is-active]="voiceLanguage === 'English'"
               [disabled]="isBusy || !draft.canPublish"
-              (change)="toggleImage(image)"
-            />
-            <span>{{ 'Include' | translate }}</span>
-          </label>
-          <div class="facebook-post-modal__reorder" *ngIf="image.selected && selectedCount > 1">
-            <button
-              type="button"
-              class="btn btn-sm facebook-post-modal__reorder-btn"
-              [disabled]="!canMoveSelected(image, -1)"
-              (click)="$event.stopPropagation(); moveSelected(image, -1)"
-              [attr.aria-label]="'Move earlier' | translate"
-              [attr.title]="'Move earlier' | translate"
+              (click)="onVoiceLanguageChange('English')"
             >
-              <i class="fa fa-chevron-left fontAwesome_Li_Class" aria-hidden="true"></i>
+              {{ 'English' | translate }}
             </button>
             <button
               type="button"
-              class="btn btn-sm facebook-post-modal__reorder-btn"
-              [disabled]="!canMoveSelected(image, 1)"
-              (click)="$event.stopPropagation(); moveSelected(image, 1)"
-              [attr.aria-label]="'Move later' | translate"
-              [attr.title]="'Move later' | translate"
+              class="reel-voice-language__option"
+              [class.is-active]="voiceLanguage === 'Urdu'"
+              [disabled]="isBusy || !draft.canPublish"
+              (click)="onVoiceLanguageChange('Urdu')"
             >
-              <i class="fa fa-chevron-right fontAwesome_Li_Class" aria-hidden="true"></i>
+              {{ 'Urdu' | translate }}
+            </button>
+            <button
+              type="button"
+              class="reel-voice-language__option"
+              [class.is-active]="voiceLanguage === 'RomanUrdu'"
+              [disabled]="isBusy || !draft.canPublish"
+              (click)="onVoiceLanguageChange('RomanUrdu')"
+            >
+              {{ 'Roman Urdu' | translate }}
             </button>
           </div>
+          <div class="reel-voice-language__hint text-muted small">{{ voiceLanguageHint }}</div>
         </div>
       </div>
-      <ng-template #noImages>
-        <div class="text-muted small">
-          {{ 'Add at least one product image to create a Reel.' | translate }}
-        </div>
-      </ng-template>
-      <div class="facebook-post-modal__selected-count mt-2" *ngIf="images.length">
-        {{ selectedCountLabel }}
-      </div>
-      <div class="text-muted small mt-1" *ngIf="selectedCount > 1">
-        {{ 'Use the arrows to set slide order in the Reel.' | translate }}
-      </div>
-    </div>
 
-    <div class="form-group mb-3" *ngIf="draft.isPriceChallengeEnabled">
-      <div class="custom-control custom-checkbox">
-        <input
-          type="checkbox"
-          class="custom-control-input"
-          id="includePriceChallengeReel"
-          [checked]="includePriceChallenge"
-          [disabled]="isBusy || !draft.canPublish"
-          (change)="onIncludePriceChallengeChange($any($event.target).checked)"
-        />
-        <label class="custom-control-label" for="includePriceChallengeReel">
-          {{ 'Include Price Challenge' | translate }}
-        </label>
-      </div>
-      <div class="text-muted small mt-1" *ngIf="includePriceChallenge && draft.priceChallengeUrl">
-        {{ 'Adds a challenge link that opens chat on the product page.' | translate }}
-        <a [href]="draft.priceChallengeUrl" target="_blank" rel="noopener noreferrer">
-          {{ draft.priceChallengeUrl }}
-        </a>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="reelCaption">{{ 'Caption' | translate }}</label>
-      <textarea
-        id="reelCaption"
-        class="form-control facebook-post-modal__caption"
-        rows="8"
-        [(ngModel)]="caption"
-        (ngModelChange)="onCaptionChange()"
-        [disabled]="isBusy || !draft.canPublish"
-        maxlength="8000"
-      ></textarea>
-      <div class="reel-caption-hint text-muted small mt-2">
-        {{ 'Your product link is added to the Facebook caption when you publish. The Order Online button in the video is visual only — shoppers tap the link in the post caption on Facebook.' | translate }}
-      </div>
-      <div class="alert alert-info reel-caption-hint__append mt-2 mb-0 py-2 px-3 small" *ngIf="willAppendProductLink">
-        {{ 'This product link will be appended automatically on publish:' | translate }}
-        <a [href]="draft.productUrl" target="_blank" rel="noopener noreferrer" class="font-weight-bold">
-          {{ draft.productUrl }}
-        </a>
-      </div>
-    </div>
-
-    <div class="reel-shopping-link-card mb-3" *ngIf="draft.productUrl">
-      <div class="reel-shopping-link-card__label">{{ 'Tappable shopping link' | translate }}</div>
-      <a [href]="draft.productUrl" target="_blank" rel="noopener noreferrer" class="reel-shopping-link-card__url">
-        {{ draft.productUrl }}
-      </a>
-      <div class="reel-shopping-link-card__meta text-muted small mt-1">
-        {{ 'Storefront' | translate }}: <strong>{{ shoppingHost }}</strong>
-        · {{ 'Included in Facebook caption' | translate }}
-      </div>
-    </div>
-
-    <div *ngIf="loadError" class="alert alert-warning">
-      {{ loadError }}
-    </div>
-
-    <div class="facebook-post-modal__history" *ngIf="history.length">
-      <button
-        type="button"
-        class="btn btn-link btn-sm px-0"
-        (click)="showHistory = !showHistory"
-      >
-        {{ 'View Facebook Publishing History' | translate }}
-        ({{ history.length }})
-      </button>
-      <ul class="list-unstyled mb-0" *ngIf="showHistory">
-        <li *ngFor="let item of history" class="facebook-post-modal__history-item">
-          <span class="font-weight-bold">Facebook</span>
-          ·
-          <span>{{ item.status }}</span>
-          ·
-          <span>{{ formatHistoryDate(item) }}</span>
-          <button
-            *ngIf="item.permalink"
-            type="button"
-            class="btn btn-link btn-sm py-0"
-            (click)="openPermalink(item.permalink)"
+      <div class="form-group">
+        <label class="d-block mb-2">{{ 'Product Images' | translate }}</label>
+        <div class="facebook-post-modal__images" *ngIf="images.length; else noImages">
+          <div
+            class="facebook-post-modal__image-card"
+            *ngFor="let image of displayImages; trackBy: trackImageById"
+            [class.is-selected]="image.selected"
           >
-            {{ 'View Post' | translate }}
-          </button>
-          <div class="text-danger small" *ngIf="item.status === 'Failed' && item.errorMessage">
-            {{ item.errorMessage }}
+            <button
+              type="button"
+              class="facebook-post-modal__image-preview-btn"
+              (click)="openImagePreview(image)"
+              [attr.aria-label]="'Preview image' | translate"
+            >
+              <img [src]="image.url" [alt]="draft.productName" (error)="onPreviewImageError($event)" />
+              <span class="facebook-post-modal__order" *ngIf="image.selected">
+                {{ selectedOrderLabel(image) }}
+              </span>
+            </button>
+            <label class="facebook-post-modal__check">
+              <input
+                type="checkbox"
+                [checked]="image.selected"
+                [disabled]="isBusy || !draft.canPublish"
+                (change)="toggleImage(image)"
+              />
+              <span>{{ 'Include' | translate }}</span>
+            </label>
+            <div class="facebook-post-modal__reorder" *ngIf="image.selected && selectedCount > 1">
+              <button
+                type="button"
+                class="btn btn-sm facebook-post-modal__reorder-btn"
+                [disabled]="!canMoveSelected(image, -1)"
+                (click)="$event.stopPropagation(); moveSelected(image, -1)"
+              >
+                <i class="fa fa-chevron-left fontAwesome_Li_Class" aria-hidden="true"></i>
+              </button>
+              <button
+                type="button"
+                class="btn btn-sm facebook-post-modal__reorder-btn"
+                [disabled]="!canMoveSelected(image, 1)"
+                (click)="$event.stopPropagation(); moveSelected(image, 1)"
+              >
+                <i class="fa fa-chevron-right fontAwesome_Li_Class" aria-hidden="true"></i>
+              </button>
+            </div>
           </div>
-        </li>
-      </ul>
-    </div>
-  </ng-container>
-
-  <ng-container *ngIf="!loading && draft && step === 'preview'">
-    <div class="facebook-post-modal__eyebrow">{{ 'REEL PREVIEW' | translate }}</div>
-
-    <div class="facebook-post-modal__meta mb-3">
-      <div class="font-weight-bold">{{ draft.productName || product?.productName }}</div>
-      <div class="text-muted small mt-1" *ngIf="previewDurationSeconds > 0">
-        {{ 'Duration' | translate }}: {{ previewDurationSeconds | number:'1.0-1' }}s
-      </div>
-      <div class="text-muted small mt-1">
-        {{ 'Review the video below. Unmute the player to hear the voiceover and music. Go back to edit or publish when ready.' | translate }}
-      </div>
-    </div>
-
-    <div *ngIf="buildingPreview" class="reel-preview-modal__building text-center py-4">
-      <i class="fa fa-spinner fa-spin fa-2x"></i>
-      <div class="mt-3 font-weight-bold">{{ 'Building Reel preview…' | translate }}</div>
-      <div class="text-muted small mt-1">{{ 'This may take a few seconds.' | translate }}</div>
-    </div>
-
-    <div *ngIf="!buildingPreview && previewError" class="alert alert-danger">
-      {{ previewError }}
-    </div>
-
-    <div *ngIf="!buildingPreview && previewVideoSafeUrl" class="reel-preview-modal__player-wrap">
-      <video
-        #previewVideo
-        class="reel-preview-modal__player"
-        [src]="previewVideoSafeUrl"
-        controls
-        playsinline
-        preload="auto"
-        (loadedmetadata)="onPreviewVideoLoaded($event)"
-        (error)="onPreviewVideoError()"
-      ></video>
-    </div>
-
-    <div class="form-group mb-0" *ngIf="!buildingPreview && previewVideoSafeUrl">
-      <div class="reel-shopping-link-card mb-3" *ngIf="draft.productUrl">
-        <div class="reel-shopping-link-card__label">{{ 'Tappable shopping link (Facebook caption)' | translate }}</div>
-        <a [href]="draft.productUrl" target="_blank" rel="noopener noreferrer" class="reel-shopping-link-card__url">
-          {{ draft.productUrl }}
-        </a>
-        <div class="reel-shopping-link-card__meta text-muted small mt-1">
-          {{ 'This is the link shoppers tap on Facebook. The in-video button is not clickable.' | translate }}
+        </div>
+        <ng-template #noImages>
+          <div class="text-muted small">{{ 'Add at least one product image to create a Reel.' | translate }}</div>
+        </ng-template>
+        <div class="facebook-post-modal__selected-count mt-2" *ngIf="images.length">
+          {{ selectedCountLabel }}
         </div>
       </div>
 
-      <label class="d-block">{{ 'Facebook caption' | translate }}</label>
-      <div class="reel-preview-modal__caption">{{ effectivePublishCaption }}</div>
-      <div class="text-muted small mt-2" *ngIf="willAppendProductLink">
-        {{ 'The product link above will be added automatically when you publish.' | translate }}
+      <div class="form-group" *ngIf="draft.reelBuilderReady">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <label for="reelVoiceover" class="mb-0">{{ 'Voiceover script' | translate }}</label>
+          <button
+            type="button"
+            class="btn btn-link btn-sm px-0"
+            [disabled]="isBusy || !draft.canPublish"
+            (click)="resetVoiceoverToDefault()"
+          >
+            {{ 'Reset to auto-generated' | translate }}
+          </button>
+        </div>
+        <textarea
+          id="reelVoiceover"
+          class="form-control reel-voiceover-text"
+          [class.reel-voiceover-text--rtl]="isVoiceoverRtl"
+          [attr.dir]="voiceoverTextDirection"
+          rows="4"
+          [(ngModel)]="voiceoverText"
+          (ngModelChange)="onVoiceoverChange()"
+          [disabled]="isBusy || !draft.canPublish"
+          maxlength="2000"
+          [placeholder]="voiceLanguage === 'RomanUrdu'
+            ? ('Example: Yeh product ab sirf 950 rupay mein dastiyab hai…' | translate)
+            : ('Write what the voice should say in the reel…' | translate)"
+        ></textarea>
+        <div class="text-muted small mt-2">
+          <ng-container *ngIf="voiceLanguage === 'RomanUrdu'">
+            {{ 'Type in Roman Urdu. Azure AI converts it to proper Urdu script before the voice is generated.' | translate }}
+          </ng-container>
+          <ng-container *ngIf="voiceLanguage !== 'RomanUrdu'">
+            {{ 'This text is spoken in the video. Edit it before previewing or publishing.' | translate }}
+          </ng-container>
+          · {{ voiceLanguageLabel }}
+        </div>
+      </div>
+
+      <div class="form-group mb-3" *ngIf="draft.isPriceChallengeEnabled">
+        <div class="custom-control custom-checkbox">
+          <input
+            type="checkbox"
+            class="custom-control-input"
+            id="includePriceChallengeReel"
+            [checked]="includePriceChallenge"
+            [disabled]="isBusy || !draft.canPublish"
+            (change)="onIncludePriceChallengeChange($any($event.target).checked)"
+          />
+          <label class="custom-control-label" for="includePriceChallengeReel">
+            {{ 'Include Price Challenge' | translate }}
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="reelCaption">{{ 'Caption' | translate }}</label>
+        <textarea
+          id="reelCaption"
+          class="form-control facebook-post-modal__caption"
+          [class.reel-caption-text--rtl]="isCaptionRtl"
+          rows="10"
+          [(ngModel)]="caption"
+          (ngModelChange)="onCaptionChange()"
+          [disabled]="isBusy || !draft.canPublish"
+          maxlength="8000"
+        ></textarea>
+        <div class="reel-caption-hint text-muted small mt-2">
+          {{ 'Shoppers tap the product link in this caption on Facebook.' | translate }}
+        </div>
+        <div class="alert alert-info reel-caption-hint__append mt-2 mb-0 py-2 px-3 small" *ngIf="willAppendProductLink">
+          {{ 'This product link will be appended automatically on publish:' | translate }}
+          <a [href]="draft.productUrl" target="_blank" rel="noopener noreferrer" class="font-weight-bold">
+            {{ draft.productUrl }}
+          </a>
+        </div>
+      </div>
+
+      <div *ngIf="loadError" class="alert alert-warning">{{ loadError }}</div>
+
+      <div class="facebook-post-modal__history" *ngIf="history.length">
+        <button type="button" class="btn btn-link btn-sm px-0" (click)="showHistory = !showHistory">
+          {{ 'View Facebook Publishing History' | translate }} ({{ history.length }})
+        </button>
+        <ul class="list-unstyled mb-0" *ngIf="showHistory">
+          <li *ngFor="let item of history" class="facebook-post-modal__history-item">
+            <span class="font-weight-bold">Facebook</span> · {{ item.status }} · {{ formatHistoryDate(item) }}
+          </li>
+        </ul>
       </div>
     </div>
-  </ng-container>
+
+    <!-- RIGHT: Meta preview -->
+    <aside class="reel-modal__meta-preview">
+      <div class="meta-reel-preview">
+        <div class="meta-reel-preview__heading">
+          <span class="meta-reel-preview__badge">Preview</span>
+          <span class="meta-reel-preview__subtitle">{{ 'How it will look on Facebook' | translate }}</span>
+        </div>
+
+        <div class="meta-reel-preview__card">
+          <div class="meta-reel-preview__post-header">
+            <div class="meta-reel-preview__avatar" aria-hidden="true">
+              {{ pageInitials }}
+            </div>
+            <div class="meta-reel-preview__post-meta">
+              <div class="meta-reel-preview__page-name">{{ draft.pageName }}</div>
+              <div class="meta-reel-preview__post-time">
+                {{ 'Just now' | translate }} · <i class="fa fa-globe" aria-hidden="true"></i>
+              </div>
+            </div>
+            <div class="meta-reel-preview__reels-tag">
+              <i class="fa fa-film" aria-hidden="true"></i> Reels
+            </div>
+          </div>
+
+          <div
+            class="meta-reel-preview__caption"
+            [class.is-expanded]="captionExpanded"
+            [class.meta-reel-preview__caption--rtl]="isCaptionRtl"
+          >
+            <span class="meta-reel-preview__caption-text">{{ effectivePublishCaption }}</span>
+            <button
+              type="button"
+              class="meta-reel-preview__see-more btn btn-link btn-sm p-0"
+              *ngIf="showCaptionSeeMore"
+              (click)="captionExpanded = !captionExpanded"
+            >
+              {{ captionExpanded ? ('See less' | translate) : ('See more' | translate) }}
+            </button>
+          </div>
+
+          <div class="meta-reel-preview__media">
+            <div *ngIf="buildingPreview" class="meta-reel-preview__media-state">
+              <i class="fa fa-spinner fa-spin fa-2x"></i>
+              <div class="mt-2 font-weight-bold">{{ 'Building Reel…' | translate }}</div>
+              <div class="text-muted small">{{ 'This may take a few seconds.' | translate }}</div>
+            </div>
+
+            <div *ngIf="!buildingPreview && previewError" class="meta-reel-preview__media-state is-error">
+              <i class="fa fa-exclamation-circle fa-2x" aria-hidden="true"></i>
+              <div class="mt-2">{{ previewError }}</div>
+            </div>
+
+            <video
+              *ngIf="!buildingPreview && previewVideoSafeUrl"
+              #previewVideo
+              class="meta-reel-preview__video"
+              [src]="previewVideoSafeUrl"
+              controls
+              playsinline
+              preload="auto"
+              (loadedmetadata)="onPreviewVideoLoaded($event)"
+              (error)="onPreviewVideoError()"
+            ></video>
+
+            <div
+              *ngIf="!buildingPreview && !previewVideoSafeUrl && !previewError && metaPreviewImageUrl"
+              class="meta-reel-preview__placeholder"
+            >
+              <img [src]="metaPreviewImageUrl" [alt]="draft.productName" (error)="onPreviewImageError($event)" />
+              <div class="meta-reel-preview__placeholder-overlay">
+                <i class="fa fa-play-circle" aria-hidden="true"></i>
+                <span>{{ 'Click Preview Reel to generate video' | translate }}</span>
+              </div>
+            </div>
+
+            <div
+              *ngIf="!buildingPreview && !previewVideoSafeUrl && !previewError && !metaPreviewImageUrl"
+              class="meta-reel-preview__media-state"
+            >
+              <i class="fa fa-image fa-2x text-muted" aria-hidden="true"></i>
+              <div class="mt-2 text-muted">{{ 'Select at least one product image.' | translate }}</div>
+            </div>
+          </div>
+
+          <div class="meta-reel-preview__stats" *ngIf="previewDurationSeconds > 0">
+            {{ 'Duration' | translate }}: {{ previewDurationSeconds | number:'1.0-1' }}s
+            · {{ voiceLanguageLabel }}
+          </div>
+
+          <div class="meta-reel-preview__actions" aria-hidden="true">
+            <span><i class="fa fa-thumbs-o-up"></i> Like</span>
+            <span><i class="fa fa-comment-o"></i> Comment</span>
+            <span><i class="fa fa-share"></i> Share</span>
+          </div>
+
+          <div class="meta-reel-preview__link-hint" *ngIf="draft.productUrl">
+            <i class="fa fa-link" aria-hidden="true"></i>
+            <span>{{ shoppingHost }}</span>
+          </div>
+        </div>
+
+        <div class="meta-reel-preview__note text-muted small" *ngIf="previewStale && !buildingPreview">
+          {{ 'Your changes are not reflected in the video yet. Click Refresh Preview.' | translate }}
+        </div>
+      </div>
+    </aside>
+  </div>
 </div>
 
-<div class="modal-footer" *ngIf="draft && step === 'edit'">
+<div class="modal-footer" *ngIf="draft && !loading">
   <button type="button" class="btn btn-secondary" [disabled]="isBusy" (click)="activeModal.dismiss()">
     <i class="fa fa-times fontAwesome_Li_Class" aria-hidden="true"></i>
     {{ 'Cancel' | translate }}
   </button>
-  <button
-    type="button"
-    class="btn btn-primary"
-    [disabled]="!canPreview"
-    (click)="buildPreview()"
-  >
-    <i class="fa fa-play fontAwesome_Li_Class" aria-hidden="true"></i>
-    {{ 'Preview Reel' | translate }}
+  <button type="button" class="btn btn-outline-primary" [disabled]="!canPreview" (click)="buildPreview()">
+    <i class="fa fontAwesome_Li_Class" [ngClass]="buildingPreview ? 'fa-spinner fa-spin' : previewVideoSafeUrl ? 'fa-refresh' : 'fa-play'" aria-hidden="true"></i>
+    {{ previewButtonLabel }}
   </button>
-</div>
-
-<div class="modal-footer" *ngIf="draft && step === 'preview'">
-  <button type="button" class="btn btn-secondary" [disabled]="isBusy" (click)="backToEdit()">
-    <i class="fa fa-arrow-left fontAwesome_Li_Class" aria-hidden="true"></i>
-    {{ 'Back to edit' | translate }}
-  </button>
-  <button
-    type="button"
-    class="btn btn-primary"
-    [disabled]="!canPublish"
-    (click)="publish()"
-  >
+  <button type="button" class="btn btn-primary" [disabled]="!canPublish" (click)="publish()">
     <i class="fa fontAwesome_Li_Class" [ngClass]="publishing ? 'fa-spinner fa-spin' : 'fa-film'" aria-hidden="true"></i>
     {{ publishing ? ('Publishing…' | translate) : ('Publish Reel' | translate) }}
   </button>

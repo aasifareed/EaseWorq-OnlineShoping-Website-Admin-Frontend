@@ -38,6 +38,8 @@ export interface MetaPagePostDraft {
   includePriceChallenge?: boolean;
   priceChallengeUrl?: string | null;
   baseCaption?: string;
+  baseCaptionUrdu?: string;
+  defaultCaptionLanguage?: ReelVoiceLanguage;
   images: MetaPagePostImage[];
   recentPosts: MetaPagePostHistoryItem[];
 }
@@ -53,6 +55,7 @@ export interface PublishMetaPagePostPayload {
   imageUrl?: string;
   selectedImages: PublishMetaPageSelectedImage[];
   includePriceChallenge?: boolean;
+  captionLanguage?: ReelVoiceLanguage;
 }
 
 export interface PublishMetaPagePostResult {
@@ -74,6 +77,8 @@ export interface SimpleMetaPagePostDraft {
   recentPosts: MetaPagePostHistoryItem[];
 }
 
+export type ReelVoiceLanguage = 'English' | 'Urdu' | 'RomanUrdu';
+
 export interface MetaPageReelDraft extends MetaPagePostDraft {
   reelSecondsPerSlide?: number;
   reelEstimatedTotalSeconds?: number;
@@ -81,9 +86,16 @@ export interface MetaPageReelDraft extends MetaPagePostDraft {
   reelDisabledReason?: string | null;
   reelIncludesProductLink?: boolean;
   reelShoppingHost?: string | null;
+  defaultReelVoiceLanguage?: ReelVoiceLanguage;
+  defaultVoiceoverTextEn?: string;
+  defaultVoiceoverTextUrdu?: string;
+  defaultVoiceoverTextRomanUrdu?: string;
 }
 
-export interface PublishMetaPageReelPayload extends PublishMetaPagePostPayload {}
+export interface PublishMetaPageReelPayload extends PublishMetaPagePostPayload {
+  voiceLanguage?: ReelVoiceLanguage;
+  voiceoverText?: string;
+}
 
 export interface MetaPageReelPreview {
   blob: Blob;

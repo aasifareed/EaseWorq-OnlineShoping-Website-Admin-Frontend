@@ -9,10 +9,15 @@ import {
   MetaPagePostImage,
   MetaPageReelDraft,
   PublishMetaPageReelPayload,
+  ReelVoiceLanguage,
 } from '../models/facebook-post.models';
 import { ProductsService } from '../services/products.service';
-
-type ReelModalStep = 'edit' | 'preview';
+import {
+  buildCaptionWithPriceChallenge,
+  ensureProductLinkInCaption,
+  normalizeUrduCaption,
+  usesUrduCaption,
+} from '../utils/meta-caption.util';
 
 @Component({
   selector: 'app-product-reel-modal',
@@ -33,15 +38,22 @@ export class ProductReelModalComponent implements OnInit, OnDestroy {
   previewError: string | null = null;
   draft: MetaPageReelDraft | null = null;
   caption = '';
-  baseCaption = '';
+  baseCaptionEn = '';
+  baseCaptionUrdu = '';
   includePriceChallenge = false;
   showHistory = false;
   images: MetaPagePostImage[] = [];
   previewImage: MetaPagePostImage | null = null;
-  step: ReelModalStep = 'edit';
+  previewStale = false;
+  captionExpanded = false;
   previewVideoUrl: string | null = null;
   previewVideoSafeUrl: SafeResourceUrl | null = null;
   previewDurationSeconds = 0;
+  voiceLanguage: ReelVoiceLanguage = 'Urdu';
+  voiceoverText = '';
+  defaultVoiceoverEn = '';
+  defaultVoiceoverUrdu = '';
+  defaultVoiceoverRomanUrdu = '';
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -107,7 +119,45 @@ export class ProductReelModalComponent implements OnInit, OnDestroy {
   }
 
   get canPublish(): boolean {
-    return this.step === 'preview' && !!this.previewVideoSafeUrl && !this.isBusy && !this.previewError;
+    return (
+      !!this.draft?.canPublish &&
+      !!this.previewVideoSafeUrl &&
+      !this.isBusy &&
+      !this.previewError &&
+      !this.previewStale
+    );
+  }
+
+  get previewButtonLabel(): string {
+    if (this.buildingPreview) {
+      return this.translate.instant('Building…');
+    }
+    if (this.previewVideoSafeUrl) {
+      return this.translate.instant('Refresh Preview');
+    }
+    return this.translate.instant('Preview Reel');
+  }
+
+  get pageInitials(): string {
+    const name = (this.draft?.pageName || '').trim();
+    if (!name) {
+      return 'FB';
+    }
+    const parts = name.split(/\s+/).filter(Boolean);
+    if (parts.length >= 2) {
+      return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+    }
+    return name.slice(0, 2).toUpperCase();
+  }
+
+  get metaPreviewImageUrl(): string | null {
+    const first = this.selectedImages[0];
+    return first?.url?.trim() || null;
+  }
+
+  get showCaptionSeeMore(): boolean {
+    const text = this.effectivePublishCaption || '';
+    return text.length > 220 || text.split('\n').length > 4;
   }
 
   get willAppendProductLink(): boolean {
@@ -118,7 +168,12 @@ export class ProductReelModalComponent implements OnInit, OnDestroy {
   }
 
   get effectivePublishCaption(): string {
-    return this.ensureProductLinkInCaption(this.caption, this.draft?.productUrl);
+    return ensureProductLinkInCaption(
+      this.caption,
+      this.draft?.productUrl,
+      this.voiceLanguage,
+      (captionText, url) => this.captionIncludesProductUrl(captionText, url),
+    );
   }
 
   get shoppingHost(): string {
@@ -127,6 +182,81 @@ export class ProductReelModalComponent implements OnInit, OnDestroy {
       return host;
     }
     return this.formatShoppingHost(this.draft?.productUrl);
+  }
+
+  get voiceLanguageLabel(): string {
+    if (this.voiceLanguage === 'RomanUrdu') {
+      return 'Roman Urdu';
+    }
+    return this.voiceLanguage;
+  }
+
+  get isVoiceoverRtl(): boolean {
+    return this.voiceLanguage === 'Urdu';
+  }
+
+  get isCaptionRtl(): boolean {
+    return usesUrduCaption(this.voiceLanguage);
+  }
+
+  get voiceoverTextDirection(): 'rtl' | 'ltr' {
+    return this.isVoiceoverRtl ? 'rtl' : 'ltr';
+  }
+
+  get voiceLanguageHint(): string {
+    if (this.voiceLanguage === 'RomanUrdu') {
+      return 'Type in Roman Urdu — Azure AI converts to Urdu script for voice';
+    }
+    return usesUrduCaption(this.voiceLanguage)
+      ? 'Urdu caption — Roman Urdu voice uses Urdu script after conversion'
+      : 'English caption and voiceover';
+  }
+
+  onVoiceLanguageChange(language: ReelVoiceLanguage): void {
+    if (this.isBusy || this.voiceLanguage === language) {
+      return;
+    }
+    this.invalidateVideoPreview();
+    this.voiceLanguage = language;
+    this.applyCaptionForLanguage();
+    this.applyVoiceoverForLanguage();
+  }
+
+  resetVoiceoverToDefault(): void {
+    this.invalidateVideoPreview();
+    this.applyVoiceoverForLanguage();
+  }
+
+  onVoiceoverChange(): void {
+    this.invalidateVideoPreview();
+  }
+
+  private applyVoiceoverForLanguage(): void {
+    if (this.voiceLanguage === 'RomanUrdu') {
+      this.voiceoverText =
+        this.defaultVoiceoverRomanUrdu || this.draft?.defaultVoiceoverTextRomanUrdu || '';
+      return;
+    }
+
+    this.voiceoverText =
+      this.voiceLanguage === 'Urdu'
+        ? this.defaultVoiceoverUrdu || this.draft?.defaultVoiceoverTextUrdu || ''
+        : this.defaultVoiceoverEn || this.draft?.defaultVoiceoverTextEn || '';
+  }
+
+  private applyCaptionForLanguage(): void {
+    const rawBase = usesUrduCaption(this.voiceLanguage)
+      ? this.baseCaptionUrdu || this.draft?.baseCaptionUrdu || ''
+      : this.baseCaptionEn || this.draft?.baseCaption || '';
+    const base = usesUrduCaption(this.voiceLanguage)
+      ? normalizeUrduCaption(rawBase, this.draft?.productName || this.product?.productName)
+      : rawBase;
+    this.caption = buildCaptionWithPriceChallenge(
+      base,
+      this.includePriceChallenge,
+      this.draft?.priceChallengeUrl,
+      this.voiceLanguage,
+    );
   }
 
   onPreviewImageError(event: Event): void {
@@ -146,9 +276,15 @@ export class ProductReelModalComponent implements OnInit, OnDestroy {
     this.productsService.getFacebookReelDraft(this.product.productId).subscribe({
       next: (draft) => {
         this.draft = draft;
-        this.baseCaption = draft.baseCaption || draft.caption || '';
+        this.baseCaptionEn = draft.baseCaption || draft.caption || '';
+        this.baseCaptionUrdu = draft.baseCaptionUrdu || this.baseCaptionEn;
         this.includePriceChallenge = !!draft.includePriceChallenge;
-        this.caption = draft.caption || '';
+        this.voiceLanguage = draft.defaultReelVoiceLanguage ?? 'Urdu';
+        this.defaultVoiceoverEn = draft.defaultVoiceoverTextEn || '';
+        this.defaultVoiceoverUrdu = draft.defaultVoiceoverTextUrdu || '';
+        this.defaultVoiceoverRomanUrdu = draft.defaultVoiceoverTextRomanUrdu || '';
+        this.applyCaptionForLanguage();
+        this.applyVoiceoverForLanguage();
         this.images = this.normalizeImages(draft.images || []);
         this.loading = false;
         if (!draft.reelBuilderReady && draft.reelDisabledReason) {
@@ -167,10 +303,10 @@ export class ProductReelModalComponent implements OnInit, OnDestroy {
   }
 
   toggleImage(image: MetaPagePostImage): void {
-    if (this.isBusy || !this.draft?.canPublish || this.step !== 'edit') {
+    if (this.isBusy || !this.draft?.canPublish) {
       return;
     }
-    this.invalidatePreview();
+    this.invalidateVideoPreview();
     image.selected = !image.selected;
     if (image.selected) {
       image.publishOrder = this.nextPublishOrder();
@@ -182,7 +318,7 @@ export class ProductReelModalComponent implements OnInit, OnDestroy {
   }
 
   canMoveSelected(image: MetaPagePostImage, direction: -1 | 1): boolean {
-    if (!image.selected || this.isBusy || this.step !== 'edit') {
+    if (!image.selected || this.isBusy) {
       return false;
     }
     const index = this.selectedOrderIndex(image);
@@ -195,7 +331,7 @@ export class ProductReelModalComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.invalidatePreview();
+    this.invalidateVideoPreview();
     const selected = this.selectedImages;
     const index = this.selectedOrderIndex(image);
     const swapWith = index + direction;
@@ -233,18 +369,13 @@ export class ProductReelModalComponent implements OnInit, OnDestroy {
   }
 
   onIncludePriceChallengeChange(checked: boolean): void {
-    if (this.step !== 'edit') {
-      return;
-    }
-    this.invalidatePreview();
+    this.invalidateVideoPreview();
     this.includePriceChallenge = checked;
-    this.caption = this.buildCaption(this.baseCaption, checked);
+    this.applyCaptionForLanguage();
   }
 
   onCaptionChange(): void {
-    if (this.step === 'edit') {
-      this.invalidatePreview();
-    }
+    // Caption updates live in the Meta preview panel.
   }
 
   buildPreview(): void {
@@ -254,8 +385,8 @@ export class ProductReelModalComponent implements OnInit, OnDestroy {
 
     this.buildingPreview = true;
     this.previewError = null;
+    this.previewStale = false;
     this.clearPreviewVideo();
-    this.step = 'preview';
 
     this.productsService.previewFacebookReel(this.buildReelPayload()).subscribe({
       next: (preview) => {
@@ -269,6 +400,7 @@ export class ProductReelModalComponent implements OnInit, OnDestroy {
         this.previewVideoUrl = URL.createObjectURL(preview.blob);
         this.previewVideoSafeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.previewVideoUrl);
         this.previewDurationSeconds = preview.durationSeconds;
+        this.previewStale = false;
         this.queueVideoReload();
       },
       error: (err) => {
@@ -278,15 +410,6 @@ export class ProductReelModalComponent implements OnInit, OnDestroy {
           this.translate.instant('Could not build Reel preview.');
       },
     });
-  }
-
-  backToEdit(): void {
-    if (this.isBusy) {
-      return;
-    }
-    this.step = 'edit';
-    this.previewError = null;
-    this.clearPreviewVideo();
   }
 
   publish(): void {
@@ -377,15 +500,19 @@ export class ProductReelModalComponent implements OnInit, OnDestroy {
         : undefined,
       selectedImages: selected,
       includePriceChallenge: this.includePriceChallenge,
+      voiceLanguage: this.voiceLanguage,
+      voiceoverText: this.voiceoverText.trim(),
     };
   }
 
-  private invalidatePreview(): void {
-    if (this.step === 'preview' || this.previewVideoUrl) {
-      this.step = 'edit';
-      this.previewError = null;
-      this.clearPreviewVideo();
+  private invalidateVideoPreview(): void {
+    this.previewError = null;
+    if (this.previewVideoSafeUrl) {
+      this.previewStale = true;
+      return;
     }
+    this.previewStale = false;
+    this.clearPreviewVideo();
   }
 
   private clearPreviewVideo(): void {
@@ -461,17 +588,6 @@ export class ProductReelModalComponent implements OnInit, OnDestroy {
     });
   }
 
-  private buildCaption(baseCaption: string, includePriceChallenge: boolean): string {
-    const base = (baseCaption || '').trimEnd();
-    const url = (this.draft?.priceChallengeUrl || '').trim();
-    if (!includePriceChallenge || !url) {
-      return base;
-    }
-
-    const block = `🔥 Found it cheaper?\nChallenge our price 👇\n\n${url}`;
-    return base ? `${base}\n\n${block}` : block;
-  }
-
   private captionIncludesProductUrl(caption: string, productUrl: string): boolean {
     const text = (caption || '').trim();
     const url = (productUrl || '').trim();
@@ -498,17 +614,6 @@ export class ProductReelModalComponent implements OnInit, OnDestroy {
     }
 
     return false;
-  }
-
-  private ensureProductLinkInCaption(caption: string, productUrl?: string | null): string {
-    const url = (productUrl || '').trim();
-    let text = (caption || '').trim();
-    if (!url || this.captionIncludesProductUrl(text, url)) {
-      return text;
-    }
-
-    const block = `🛒 Order online:\n${url}`;
-    return text ? `${text}\n\n${block}` : block;
   }
 
   private formatShoppingHost(productUrl?: string | null): string {

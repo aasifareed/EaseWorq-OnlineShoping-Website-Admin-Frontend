@@ -402,8 +402,7 @@ export class ProductsComponent implements OnInit {
     const modalRef = this.modalService.open(ProductReelModalComponent, {
       centered: true,
       backdrop: 'static',
-      size: 'lg',
-      windowClass: 'ew-app-modal',
+      windowClass: 'ew-app-modal ew-app-modal--wide',
     });
     modalRef.componentInstance.product = { ...row };
 

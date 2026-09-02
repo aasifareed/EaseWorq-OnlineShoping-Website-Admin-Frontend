@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Observable, throwError, from } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, catchError } from 'rxjs/operators';
 import { RestService } from 'src/app/shared/services/rest.service';
 import { appServiceUrls } from 'src/environments/environment.urls';
 import {
@@ -21,6 +21,7 @@ import {
   PublishMetaPagePostResult,
   PublishMetaPageReelPayload,
   PublishSimpleMetaPagePostPayload,
+  ReelVoiceLanguage,
   SimpleMetaPagePostDraft,
 } from '../models/facebook-post.models';
 
@@ -169,6 +170,9 @@ export class ProductsService {
     if (payload.includePriceChallenge != null) {
       body.IncludePriceChallenge = payload.includePriceChallenge;
     }
+    if (payload.captionLanguage) {
+      body.VoiceLanguage = payload.captionLanguage;
+    }
     return this.restService.post(url, body).pipe(
       map((response) => this.mapPublishResult((response?.result ?? response) as Record<string, unknown>)),
     );
@@ -202,8 +206,15 @@ export class ProductsService {
     if (payload.includePriceChallenge != null) {
       body.IncludePriceChallenge = payload.includePriceChallenge;
     }
+    if (payload.voiceLanguage) {
+      body.VoiceLanguage = payload.voiceLanguage;
+    }
+    if (payload.voiceoverText != null && payload.voiceoverText.trim()) {
+      body.VoiceoverText = payload.voiceoverText.trim();
+    }
     return this.restService.postBlob(url, body).pipe(
       switchMap((response) => this.mapReelPreviewResponse(response)),
+      catchError((err) => this.mapReelPreviewHttpError(err)),
     );
   }
 
@@ -224,6 +235,12 @@ export class ProductsService {
     }
     if (payload.includePriceChallenge != null) {
       body.IncludePriceChallenge = payload.includePriceChallenge;
+    }
+    if (payload.voiceLanguage) {
+      body.VoiceLanguage = payload.voiceLanguage;
+    }
+    if (payload.voiceoverText != null && payload.voiceoverText.trim()) {
+      body.VoiceoverText = payload.voiceoverText.trim();
     }
     return this.restService.post(url, body).pipe(
       map((response) => this.mapPublishResult((response?.result ?? response) as Record<string, unknown>)),
@@ -402,6 +419,10 @@ export class ProductsService {
             ? String(row.PriceChallengeUrl)
             : null,
       baseCaption: String(row.baseCaption ?? row.BaseCaption ?? row.caption ?? row.Caption ?? ''),
+      baseCaptionUrdu: String(row.baseCaptionUrdu ?? row.BaseCaptionUrdu ?? ''),
+      defaultCaptionLanguage: this.mapReelVoiceLanguage(
+        row.defaultCaptionLanguage ?? row.DefaultCaptionLanguage,
+      ),
       images,
       recentPosts: recent,
     };
@@ -431,7 +452,50 @@ export class ProductsService {
           : row.ReelShoppingHost != null
             ? String(row.ReelShoppingHost)
             : null,
+      defaultReelVoiceLanguage: this.mapReelVoiceLanguage(
+        row.defaultReelVoiceLanguage ?? row.DefaultReelVoiceLanguage,
+      ),
+      defaultVoiceoverTextEn: String(
+        row.defaultVoiceoverTextEn ?? row.DefaultVoiceoverTextEn ?? '',
+      ),
+      defaultVoiceoverTextUrdu: String(
+        row.defaultVoiceoverTextUrdu ?? row.DefaultVoiceoverTextUrdu ?? '',
+      ),
+      defaultVoiceoverTextRomanUrdu: String(
+        row.defaultVoiceoverTextRomanUrdu ?? row.DefaultVoiceoverTextRomanUrdu ?? '',
+      ),
     };
+  }
+
+  private mapReelVoiceLanguage(value: unknown): ReelVoiceLanguage {
+    const raw = String(value ?? '').trim().toLowerCase();
+    if (raw === 'english' || raw === 'en') {
+      return 'English';
+    }
+    if (raw === 'romanurdu' || raw === 'roman urdu' || raw === 'roman') {
+      return 'RomanUrdu';
+    }
+    return 'Urdu';
+  }
+
+  private mapReelPreviewHttpError(err: unknown): Observable<never> {
+    const body = (err as { error?: unknown })?.error;
+    if (body instanceof Blob) {
+      return from(body.text()).pipe(
+        switchMap((text) => {
+          let message = 'Could not build Reel preview.';
+          try {
+            const parsed = JSON.parse(text) as { error?: { message?: string } };
+            message = parsed?.error?.message || message;
+          } catch {
+            // Keep default when the error body is not JSON.
+          }
+          return throwError(() => ({ error: { error: { message } } }));
+        }),
+      );
+    }
+
+    return throwError(() => err);
   }
 
   private mapReelPreviewResponse(response: HttpResponse<Blob>): Observable<MetaPageReelPreview> {

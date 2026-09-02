@@ -16,6 +16,74 @@
   margin-bottom: 0.5rem;
 }
 
+.facebook-post-modal__header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.facebook-post-modal__header-main {
+  flex: 1 1 280px;
+  min-width: 0;
+}
+
+.post-caption-language {
+  flex: 0 0 auto;
+  min-width: 180px;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid #d8e2ef;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.post-caption-language__label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #5c6b7a;
+  margin-bottom: 0.5rem;
+}
+
+.post-caption-language__options {
+  display: inline-flex;
+  flex-wrap: wrap;
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  overflow: hidden;
+  max-width: 100%;
+}
+
+.post-caption-language__option {
+  border: 0;
+  background: #f8f9fa;
+  color: #495057;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.post-caption-language__option + .post-caption-language__option {
+  border-left: 1px solid #ced4da;
+}
+
+.post-caption-language__option.is-active {
+  background: #1f2937;
+  color: #fff;
+}
+
+.post-caption-language__option:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.post-caption-language__hint {
+  margin-top: 0.45rem;
+}
+
 .facebook-post-modal__images {
   display: flex;
   flex-wrap: wrap;
@@ -131,6 +199,12 @@
   font-family: Consolas, 'Courier New', monospace;
   font-size: 0.875rem;
   white-space: pre-wrap;
+}
+
+.facebook-post-modal__caption--rtl {
+  direction: rtl;
+  text-align: right;
+  unicode-bidi: embed;
 }
 
 .facebook-post-modal__link {
