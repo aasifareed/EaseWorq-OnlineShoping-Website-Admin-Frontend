@@ -287,6 +287,35 @@
                               </small>
                             </div>
                           </div>
+
+                          <hr class="my-3" />
+
+                          <div class="row">
+                            <div class="col-md-12 form-group mb-2">
+                              <label class="mb-1">{{ 'Package / packing weight' | translate }}</label>
+                              <small class="text-muted d-block">
+                                {{ 'Added on top of product weights when calculating courier shipping. Use this for the empty parcel, bubble wrap, or box weight so quotes match the real consignment. Leave empty for no packaging allowance.' | translate }}
+                              </small>
+                            </div>
+                            <div class="col-md-6 form-group mb-0">
+                              <div class="input-group">
+                                <input
+                                  type="number"
+                                  class="form-control"
+                                  formControlName="packageWeightGrams"
+                                  min="0"
+                                  step="1"
+                                  [placeholder]="'No packaging weight' | translate"
+                                />
+                                <div class="input-group-append">
+                                  <span class="input-group-text">{{ 'g' | translate }}</span>
+                                </div>
+                              </div>
+                              <small class="text-danger" *ngIf="state.form.get('packageWeightGrams').invalid && state.form.get('packageWeightGrams').touched">
+                                {{ 'Enter a weight in grams, up to 100000 g.' | translate }}
+                              </small>
+                            </div>
+                          </div>
                         </section>
 
                         <!-- Sasta Price Challenge -->

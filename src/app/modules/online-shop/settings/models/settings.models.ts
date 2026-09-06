@@ -59,6 +59,11 @@ export interface OnlineShopSettings {
    */
   fallbackProductWeightKg?: number;
 
+  /**
+   * Packaging / parcel tare weight in kilograms. Added on top of product weights for courier quotes.
+   */
+  packageWeightKg?: number;
+
   /** Sasta Price Challenge — uses minimumGrossMarginPercentage for floor when margin protection is on. */
   isPriceChallengeEnabled?: boolean;
   priceChallengeBeatByAmount?: number;

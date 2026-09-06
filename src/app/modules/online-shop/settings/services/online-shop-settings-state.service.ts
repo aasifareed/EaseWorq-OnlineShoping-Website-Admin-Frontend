@@ -20,6 +20,7 @@ import {
 
 /** 100 kg per unit, mirroring the server bound. Catches kilograms typed into a gram field. */
 const MAX_FALLBACK_PRODUCT_WEIGHT_GRAMS = 100_000;
+const MAX_PACKAGE_WEIGHT_GRAMS = 100_000;
 
 @Injectable()
 export class OnlineShopSettingsStateService {
@@ -81,7 +82,15 @@ export class OnlineShopSettingsStateService {
 
   save(): Observable<boolean> {
     return new Observable((observer) => {
-      const payload = { settings: this.buildPayload() };
+      const settings = this.buildPayload();
+      // Send both casings so PackageWeightKg always binds on ABP (camelCase or PascalCase).
+      const payload = {
+        settings: {
+          ...settings,
+          PackageWeightKg: settings.packageWeightKg,
+          FallbackProductWeightKg: settings.fallbackProductWeightKg,
+        },
+      };
       this.savingSubject.next(true);
       this.restService.postWithOutSpinner(environment.urls.Settings_Save, payload).subscribe({
         next: () => {
@@ -142,6 +151,10 @@ export class OnlineShopSettingsStateService {
         null,
         [Validators.min(0), Validators.max(MAX_FALLBACK_PRODUCT_WEIGHT_GRAMS)],
       ],
+      packageWeightGrams: [
+        null,
+        [Validators.min(0), Validators.max(MAX_PACKAGE_WEIGHT_GRAMS)],
+      ],
       isPriceChallengeEnabled: [false],
       priceChallengeBeatStrategy: ['amount' as PriceChallengeBeatStrategy],
       priceChallengeBeatByAmount: [20, [Validators.min(0)]],
@@ -195,6 +208,7 @@ export class OnlineShopSettingsStateService {
       minimumGrossMarginPercentage: s.minimumGrossMarginPercentage ?? null,
       // Blank rather than 0: "assume nothing" is the absence of a figure, not a weight of zero.
       fallbackProductWeightGrams: kilogramsToGrams(s.fallbackProductWeightKg) || null,
+      packageWeightGrams: kilogramsToGrams(s.packageWeightKg) || null,
       isPriceChallengeEnabled: !!s.isPriceChallengeEnabled,
       priceChallengeBeatStrategy: inferPriceChallengeBeatStrategy(
         s.priceChallengeBeatByAmount,
@@ -405,6 +419,8 @@ export class OnlineShopSettingsStateService {
         : undefined,
       fallbackProductWeightKg:
         gramsToKilograms(Number(v.fallbackProductWeightGrams)) || undefined,
+      packageWeightKg:
+        gramsToKilograms(Number(v.packageWeightGrams)) || undefined,
       isPriceChallengeEnabled: !!v.isPriceChallengeEnabled,
       ...this.buildPriceChallengeBeatFields(v),
       priceChallengeMaximumDiscountPercent: v.isPriceChallengeEnabled
@@ -532,6 +548,7 @@ export class OnlineShopSettingsStateService {
         s.MinimumGrossMarginPercentage) as number,
       fallbackProductWeightKg: (s.fallbackProductWeightKg ??
         s.FallbackProductWeightKg) as number,
+      packageWeightKg: (s.packageWeightKg ?? s.PackageWeightKg) as number,
       isPriceChallengeEnabled: !!(s.isPriceChallengeEnabled ?? s.IsPriceChallengeEnabled),
       priceChallengeBeatByAmount: (s.priceChallengeBeatByAmount ??
         s.PriceChallengeBeatByAmount) as number,
