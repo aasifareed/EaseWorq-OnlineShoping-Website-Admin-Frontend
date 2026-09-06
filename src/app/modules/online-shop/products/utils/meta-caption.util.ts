@@ -2,7 +2,11 @@ import { ReelVoiceLanguage } from '../models/facebook-post.models';
 
 const RTL = '\u200F';
 const LTR = '\u200E';
+const LRI = '\u2066';
+const PDI = '\u2069';
 const urduScriptPattern = /[\u0600-\u06FF]/;
+const hashtagTokenPattern = /#[\p{L}\p{Nd}_]+/gu;
+const bidiMarkPattern = /[\u200E\u200F\u202A-\u202E\u2066-\u2069]/g;
 
 export function usesUrduCaption(language: ReelVoiceLanguage): boolean {
   return language === 'Urdu' || language === 'RomanUrdu';
@@ -14,6 +18,15 @@ export function urduLine(text: string): string {
 
 export function latin(text: string): string {
   return `${LTR}${text.trim()}${LTR}`;
+}
+
+export function ltrIsolate(text: string): string {
+  const cleaned = stripBidiMarks(text).trim();
+  return cleaned ? `${LRI}${cleaned}${PDI}` : '';
+}
+
+export function stripBidiMarks(text: string): string {
+  return (text || '').replace(bidiMarkPattern, '');
 }
 
 export function normalizeUrduCaption(caption: string, productName?: string | null): string {
@@ -33,25 +46,58 @@ function normalizeUrduCaptionLine(line: string, productName?: string | null): st
     return line;
   }
 
-  if (/^https?:\/\//i.test(trimmed)) {
-    return line;
+  const plain = stripBidiMarks(trimmed).trim();
+  if (!plain) {
+    return '';
+  }
+
+  if (/^https?:\/\//i.test(plain)) {
+    return ltrIsolate(plain);
+  }
+
+  if (isHashtagLine(plain)) {
+    return ltrIsolate(normalizeHashtagLine(plain));
   }
 
   if (trimmed.startsWith(RTL)) {
-    return urduLine(fixKnownUrduLinePatterns(trimmed.slice(1), productName));
+    return urduLine(fixKnownUrduLinePatterns(plain, productName));
   }
 
-  if (urduScriptPattern.test(trimmed)) {
-    return urduLine(fixKnownUrduLinePatterns(trimmed, productName));
+  if (urduScriptPattern.test(plain)) {
+    return urduLine(fixKnownUrduLinePatterns(plain, productName));
   }
 
-  const titleMatch = /^🔥\s*(.+)$/.exec(trimmed);
+  const titleMatch = /^🔥\s*(.+)$/.exec(plain);
   if (titleMatch && !urduScriptPattern.test(titleMatch[1])) {
     const compactName = titleMatch[1].replace(/\s/g, '');
     return urduLine(`🔥 ${latin(compactName)}`);
   }
 
-  return line;
+  return plain;
+}
+
+function isHashtagLine(line: string): boolean {
+  const plain = stripBidiMarks(line).trim();
+  if (!plain.includes('#')) {
+    return false;
+  }
+  if (urduScriptPattern.test(plain)) {
+    return false;
+  }
+  const withoutTags = plain.replace(hashtagTokenPattern, ' ').replace(/[\s,_-]+/g, '');
+  return !withoutTags || plain.startsWith('#');
+}
+
+function normalizeHashtagLine(line: string): string {
+  const plain = stripBidiMarks(line).trim();
+  const tags = plain.match(hashtagTokenPattern) || [];
+  const unique: string[] = [];
+  for (const tag of tags) {
+    if (!unique.some((t) => t.toLowerCase() === tag.toLowerCase())) {
+      unique.push(tag);
+    }
+  }
+  return unique.length ? unique.join(' ') : plain;
 }
 
 function fixKnownUrduLinePatterns(line: string, productName?: string | null): string {
@@ -84,13 +130,14 @@ export function buildCaptionWithPriceChallenge(
   const base = (baseCaption || '').trimEnd();
   const url = (priceChallengeUrl || '').trim();
   if (!includePriceChallenge || !url) {
-    return base;
+    return usesUrduCaption(language) ? normalizeUrduCaption(base) : base;
   }
 
   const block = usesUrduCaption(language)
-    ? `${urduLine('🔥 کہیں اور سستا مل رہا ہے؟')}\n${urduLine('ہماری قیمت چیلنج کریں 👇')}\n\n${url}`
+    ? `${urduLine('🔥 کہیں اور سستا مل رہا ہے؟')}\n${urduLine('ہماری قیمت چیلنج کریں 👇')}\n\n${ltrIsolate(url)}`
     : `🔥 Found it cheaper?\nChallenge our price 👇\n\n${url}`;
-  return base ? `${base}\n\n${block}` : block;
+  const merged = base ? `${base}\n\n${block}` : block;
+  return usesUrduCaption(language) ? normalizeUrduCaption(merged) : merged;
 }
 
 export function ensureProductLinkInCaption(
@@ -101,12 +148,12 @@ export function ensureProductLinkInCaption(
 ): string {
   const url = (productUrl || '').trim();
   const text = (caption || '').trim();
-  if (!url || includesProductUrl(text, url)) {
+  if (!url || includesProductUrl(stripBidiMarks(text), url)) {
     return usesUrduCaption(language) ? normalizeUrduCaption(text) : text;
   }
 
   const block = usesUrduCaption(language)
-    ? `${urduLine('🛒 آرڈر کریں:')}\n${url}`
+    ? `${urduLine('🛒 آرڈر کریں:')}\n${ltrIsolate(url)}`
     : `🛒 Order online:\n${url}`;
   const merged = text ? `${text}\n\n${block}` : block;
   return usesUrduCaption(language) ? normalizeUrduCaption(merged) : merged;

@@ -8,8 +8,8 @@
   </button>
 </div>
 
-<div class="modal-body facebook-post-modal">
-  <div *ngIf="loading" class="text-center py-4">
+<div class="modal-body facebook-post-modal post-modal__body">
+  <div *ngIf="loading" class="text-center py-5">
     <i class="fa fa-spinner fa-spin"></i>
     <div class="mt-2">{{ 'Loading draft…' | translate }}</div>
   </div>
@@ -18,201 +18,304 @@
     {{ loadError }}
   </div>
 
-  <ng-container *ngIf="!loading && draft">
-    <div class="facebook-post-modal__eyebrow">{{ 'FACEBOOK POST' | translate }}</div>
-
-    <div class="facebook-post-modal__header-row mb-3">
-      <div class="facebook-post-modal__header-main">
-        <div class="facebook-post-modal__meta">
-          <div>
-            <span class="text-muted">{{ 'Publishing to' | translate }}:</span>
-            <strong> Facebook · {{ draft.pageName }}</strong>
+  <div class="post-modal__split" *ngIf="!loading && draft">
+    <!-- LEFT: Editor -->
+    <div class="post-modal__editor">
+      <div class="facebook-post-modal__header-row mb-3">
+        <div class="facebook-post-modal__header-main">
+          <div class="facebook-post-modal__eyebrow">{{ 'FACEBOOK POST' | translate }}</div>
+          <div class="facebook-post-modal__meta">
+            <div>
+              <span class="text-muted">{{ 'Publishing to' | translate }}:</span>
+              <strong> Facebook · {{ draft.pageName }}</strong>
+            </div>
+            <div class="font-weight-bold mt-2">{{ draft.productName || product?.productName }}</div>
+            <div class="text-muted small mt-1">
+              {{ 'Images are fitted to Meta feed size (1080×1350, 4:5) before publishing.' | translate }}
+            </div>
           </div>
-          <div class="font-weight-bold mt-2">{{ draft.productName || product?.productName }}</div>
         </div>
-      </div>
 
-      <div class="post-caption-language">
-        <div class="post-caption-language__label">{{ 'Caption' | translate }}</div>
-        <div class="post-caption-language__options" role="group" [attr.aria-label]="'Caption language' | translate">
-          <button
-            type="button"
-            class="post-caption-language__option"
-            [class.is-active]="captionLanguage === 'English'"
-            [disabled]="publishing || !draft.canPublish"
-            (click)="onCaptionLanguageChange('English')"
-          >
-            {{ 'English' | translate }}
-          </button>
-          <button
-            type="button"
-            class="post-caption-language__option"
-            [class.is-active]="captionLanguage === 'Urdu'"
-            [disabled]="publishing || !draft.canPublish"
-            (click)="onCaptionLanguageChange('Urdu')"
-          >
-            {{ 'Urdu' | translate }}
-          </button>
-          <button
-            type="button"
-            class="post-caption-language__option"
-            [class.is-active]="captionLanguage === 'RomanUrdu'"
-            [disabled]="publishing || !draft.canPublish"
-            (click)="onCaptionLanguageChange('RomanUrdu')"
-          >
-            {{ 'Roman Urdu' | translate }}
-          </button>
-        </div>
-        <div class="post-caption-language__hint text-muted small">{{ captionLanguageHint }}</div>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label class="d-block mb-2">{{ 'Product Images' | translate }}</label>
-      <div class="facebook-post-modal__images" *ngIf="images.length; else noImages">
-        <div
-          class="facebook-post-modal__image-card"
-          *ngFor="let image of displayImages; trackBy: trackImageById"
-          [class.is-selected]="image.selected"
-        >
-          <button
-            type="button"
-            class="facebook-post-modal__image-preview-btn"
-            (click)="openImagePreview(image)"
-            [attr.aria-label]="'Preview image' | translate"
-          >
-            <img
-              [src]="image.url"
-              [alt]="draft.productName"
-              (error)="onPreviewImageError($event)"
-            />
-            <span class="facebook-post-modal__order" *ngIf="image.selected">
-              {{ selectedOrderLabel(image) }}
-            </span>
-          </button>
-          <label class="facebook-post-modal__check">
-            <input
-              type="checkbox"
-              [checked]="image.selected"
+        <div class="post-caption-language">
+          <div class="post-caption-language__label">{{ 'Caption' | translate }}</div>
+          <div class="post-caption-language__options" role="group" [attr.aria-label]="'Caption language' | translate">
+            <button
+              type="button"
+              class="post-caption-language__option"
+              [class.is-active]="captionLanguage === 'English'"
               [disabled]="publishing || !draft.canPublish"
-              (change)="toggleImage(image)"
-            />
-            <span>{{ 'Include' | translate }}</span>
-          </label>
-          <div class="facebook-post-modal__reorder" *ngIf="image.selected && selectedCount > 1">
-            <button
-              type="button"
-              class="btn btn-sm facebook-post-modal__reorder-btn"
-              [disabled]="!canMoveSelected(image, -1)"
-              (click)="$event.stopPropagation(); moveSelected(image, -1)"
-              [attr.aria-label]="'Move earlier' | translate"
-              [attr.title]="'Move earlier' | translate"
+              (click)="onCaptionLanguageChange('English')"
             >
-              <i class="fa fa-chevron-left fontAwesome_Li_Class" aria-hidden="true"></i>
+              {{ 'English' | translate }}
             </button>
             <button
               type="button"
-              class="btn btn-sm facebook-post-modal__reorder-btn"
-              [disabled]="!canMoveSelected(image, 1)"
-              (click)="$event.stopPropagation(); moveSelected(image, 1)"
-              [attr.aria-label]="'Move later' | translate"
-              [attr.title]="'Move later' | translate"
+              class="post-caption-language__option"
+              [class.is-active]="captionLanguage === 'Urdu'"
+              [disabled]="publishing || !draft.canPublish"
+              (click)="onCaptionLanguageChange('Urdu')"
             >
-              <i class="fa fa-chevron-right fontAwesome_Li_Class" aria-hidden="true"></i>
+              {{ 'Urdu' | translate }}
+            </button>
+            <button
+              type="button"
+              class="post-caption-language__option"
+              [class.is-active]="captionLanguage === 'RomanUrdu'"
+              [disabled]="publishing || !draft.canPublish"
+              (click)="onCaptionLanguageChange('RomanUrdu')"
+            >
+              {{ 'Roman Urdu' | translate }}
             </button>
           </div>
+          <div class="post-caption-language__hint text-muted small">{{ captionLanguageHint }}</div>
         </div>
       </div>
-      <ng-template #noImages>
-        <div class="text-muted small">
-          {{ 'No product image — a text/link post will be published.' | translate }}
-        </div>
-      </ng-template>
-      <div class="facebook-post-modal__selected-count mt-2" *ngIf="images.length">
-        {{ selectedCountLabel }}
-      </div>
-      <div class="text-muted small mt-1" *ngIf="selectedCount > 1">
-        {{ 'Use the arrows to set image order. The first selected image appears first on Facebook.' | translate }}
-      </div>
-    </div>
 
-    <div class="form-group mb-3" *ngIf="draft.isPriceChallengeEnabled">
-      <div class="custom-control custom-checkbox">
-        <input
-          type="checkbox"
-          class="custom-control-input"
-          id="includePriceChallenge"
-          [checked]="includePriceChallenge"
-          [disabled]="publishing || !draft.canPublish"
-          (change)="onIncludePriceChallengeChange($any($event.target).checked)"
-        />
-        <label class="custom-control-label" for="includePriceChallenge">
-          {{ 'Include Price Challenge' | translate }}
-        </label>
+      <div class="form-group">
+        <label class="d-block mb-2">{{ 'Product Images' | translate }}</label>
+        <div class="facebook-post-modal__images" *ngIf="images.length; else noImages">
+          <div
+            class="facebook-post-modal__image-card"
+            *ngFor="let image of displayImages; trackBy: trackImageById"
+            [class.is-selected]="image.selected"
+          >
+            <button
+              type="button"
+              class="facebook-post-modal__image-preview-btn"
+              (click)="openImagePreview(image)"
+              [attr.aria-label]="'Preview image' | translate"
+            >
+              <img
+                [src]="image.url"
+                [alt]="draft.productName"
+                (error)="onPreviewImageError($event)"
+              />
+              <span class="facebook-post-modal__order" *ngIf="image.selected">
+                {{ selectedOrderLabel(image) }}
+              </span>
+            </button>
+            <label class="facebook-post-modal__check">
+              <input
+                type="checkbox"
+                [checked]="image.selected"
+                [disabled]="publishing || !draft.canPublish"
+                (change)="toggleImage(image)"
+              />
+              <span>{{ 'Include' | translate }}</span>
+            </label>
+            <div class="facebook-post-modal__reorder" *ngIf="image.selected && selectedCount > 1">
+              <button
+                type="button"
+                class="btn btn-sm facebook-post-modal__reorder-btn"
+                [disabled]="!canMoveSelected(image, -1)"
+                (click)="$event.stopPropagation(); moveSelected(image, -1)"
+                [attr.aria-label]="'Move earlier' | translate"
+                [attr.title]="'Move earlier' | translate"
+              >
+                <i class="fa fa-chevron-left fontAwesome_Li_Class" aria-hidden="true"></i>
+              </button>
+              <button
+                type="button"
+                class="btn btn-sm facebook-post-modal__reorder-btn"
+                [disabled]="!canMoveSelected(image, 1)"
+                (click)="$event.stopPropagation(); moveSelected(image, 1)"
+                [attr.aria-label]="'Move later' | translate"
+                [attr.title]="'Move later' | translate"
+              >
+                <i class="fa fa-chevron-right fontAwesome_Li_Class" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <ng-template #noImages>
+          <div class="text-muted small">
+            {{ 'No product image — a text/link post will be published.' | translate }}
+          </div>
+        </ng-template>
+        <div class="facebook-post-modal__selected-count mt-2" *ngIf="images.length">
+          {{ selectedCountLabel }}
+        </div>
+        <div class="text-muted small mt-1" *ngIf="selectedCount > 1">
+          {{ 'Use the arrows to set image order. The first selected image appears first on Facebook.' | translate }}
+        </div>
       </div>
-      <div class="text-muted small mt-1" *ngIf="includePriceChallenge && draft.priceChallengeUrl">
-        {{ 'Adds a challenge link that opens chat on the product page.' | translate }}
-        <a [href]="draft.priceChallengeUrl" target="_blank" rel="noopener noreferrer">
-          {{ draft.priceChallengeUrl }}
+
+      <div class="form-group mb-3" *ngIf="draft.isPriceChallengeEnabled">
+        <div class="custom-control custom-checkbox">
+          <input
+            type="checkbox"
+            class="custom-control-input"
+            id="includePriceChallenge"
+            [checked]="includePriceChallenge"
+            [disabled]="publishing || !draft.canPublish"
+            (change)="onIncludePriceChallengeChange($any($event.target).checked)"
+          />
+          <label class="custom-control-label" for="includePriceChallenge">
+            {{ 'Include Price Challenge' | translate }}
+          </label>
+        </div>
+        <div class="text-muted small mt-1" *ngIf="includePriceChallenge && draft.priceChallengeUrl">
+          {{ 'Adds a challenge link that opens chat on the product page.' | translate }}
+          <a [href]="draft.priceChallengeUrl" target="_blank" rel="noopener noreferrer">
+            {{ draft.priceChallengeUrl }}
+          </a>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="fbCaption">{{ 'Caption' | translate }}</label>
+        <textarea
+          id="fbCaption"
+          class="form-control facebook-post-modal__caption"
+          [class.facebook-post-modal__caption--rtl]="isCaptionRtl"
+          rows="10"
+          [(ngModel)]="caption"
+          [disabled]="publishing || !draft.canPublish"
+          maxlength="8000"
+        ></textarea>
+      </div>
+
+      <div class="form-group mb-3">
+        <label class="d-block">{{ 'Product link' | translate }}</label>
+        <a [href]="draft.productUrl" target="_blank" rel="noopener noreferrer" class="facebook-post-modal__link">
+          {{ draft.productUrl }}
         </a>
       </div>
+
+      <div *ngIf="loadError" class="alert alert-warning">
+        {{ loadError }}
+      </div>
+
+      <div class="facebook-post-modal__history" *ngIf="history.length">
+        <button
+          type="button"
+          class="btn btn-link btn-sm px-0"
+          (click)="showHistory = !showHistory"
+        >
+          {{ 'View Facebook Publishing History' | translate }}
+          ({{ history.length }})
+        </button>
+        <ul class="list-unstyled mb-0" *ngIf="showHistory">
+          <li *ngFor="let item of history" class="facebook-post-modal__history-item">
+            <span class="font-weight-bold">Facebook</span>
+            ·
+            <span>{{ item.status }}</span>
+            ·
+            <span>{{ formatHistoryDate(item) }}</span>
+            <button
+              *ngIf="item.permalink"
+              type="button"
+              class="btn btn-link btn-sm py-0"
+              (click)="openPermalink(item.permalink)"
+            >
+              {{ 'View Post' | translate }}
+            </button>
+            <div class="text-danger small" *ngIf="item.status === 'Failed' && item.errorMessage">
+              {{ item.errorMessage }}
+            </div>
+          </li>
+        </ul>
+      </div>
     </div>
 
-    <div class="form-group">
-      <label for="fbCaption">{{ 'Caption' | translate }}</label>
-      <textarea
-        id="fbCaption"
-        class="form-control facebook-post-modal__caption"
-        [class.facebook-post-modal__caption--rtl]="isCaptionRtl"
-        rows="10"
-        [(ngModel)]="caption"
-        [disabled]="publishing || !draft.canPublish"
-        maxlength="8000"
-      ></textarea>
-    </div>
+    <!-- RIGHT: Live Meta preview -->
+    <aside class="post-modal__meta-preview">
+      <div class="meta-post-preview">
+        <div class="meta-post-preview__heading">
+          <span class="meta-post-preview__badge">Preview</span>
+          <span class="meta-post-preview__subtitle">{{ 'How it will look on Facebook' | translate }}</span>
+        </div>
 
-    <div class="form-group mb-3">
-      <label class="d-block">{{ 'Product link' | translate }}</label>
-      <a [href]="draft.productUrl" target="_blank" rel="noopener noreferrer" class="facebook-post-modal__link">
-        {{ draft.productUrl }}
-      </a>
-    </div>
-
-    <div *ngIf="loadError" class="alert alert-warning">
-      {{ loadError }}
-    </div>
-
-    <div class="facebook-post-modal__history" *ngIf="history.length">
-      <button
-        type="button"
-        class="btn btn-link btn-sm px-0"
-        (click)="showHistory = !showHistory"
-      >
-        {{ 'View Facebook Publishing History' | translate }}
-        ({{ history.length }})
-      </button>
-      <ul class="list-unstyled mb-0" *ngIf="showHistory">
-        <li *ngFor="let item of history" class="facebook-post-modal__history-item">
-          <span class="font-weight-bold">Facebook</span>
-          ·
-          <span>{{ item.status }}</span>
-          ·
-          <span>{{ formatHistoryDate(item) }}</span>
-          <button
-            *ngIf="item.permalink"
-            type="button"
-            class="btn btn-link btn-sm py-0"
-            (click)="openPermalink(item.permalink)"
-          >
-            {{ 'View Post' | translate }}
-          </button>
-          <div class="text-danger small" *ngIf="item.status === 'Failed' && item.errorMessage">
-            {{ item.errorMessage }}
+        <div class="meta-post-preview__card">
+          <div class="meta-post-preview__post-header">
+            <div class="meta-post-preview__avatar" aria-hidden="true">{{ pageInitials }}</div>
+            <div class="meta-post-preview__post-meta">
+              <div class="meta-post-preview__page-name">{{ draft.pageName }}</div>
+              <div class="meta-post-preview__post-time">
+                {{ 'Just now' | translate }} · <i class="fa fa-globe" aria-hidden="true"></i>
+              </div>
+            </div>
+            <div class="meta-post-preview__feed-tag">
+              <i class="fa fa-image" aria-hidden="true"></i> Feed
+            </div>
           </div>
-        </li>
-      </ul>
-    </div>
-  </ng-container>
+
+          <div
+            class="meta-post-preview__caption"
+            [class.is-expanded]="captionExpanded"
+            [class.meta-post-preview__caption--rtl]="isCaptionRtl"
+          >
+            <span class="meta-post-preview__caption-text">{{ caption || ('Add a caption…' | translate) }}</span>
+            <button
+              type="button"
+              class="meta-post-preview__see-more btn btn-link btn-sm p-0"
+              *ngIf="showCaptionSeeMore"
+              (click)="captionExpanded = !captionExpanded"
+            >
+              {{ captionExpanded ? ('See less' | translate) : ('See more' | translate) }}
+            </button>
+          </div>
+
+          <div class="meta-post-preview__media" *ngIf="selectedCount > 0; else noMediaPreview">
+            <div class="meta-post-preview__frame">
+              <img
+                [src]="previewCarouselImage?.url"
+                [alt]="draft.productName"
+                (error)="onPreviewImageError($event)"
+              />
+              <div class="meta-post-preview__frame-chip">{{ draft.pageName }}</div>
+              <div class="meta-post-preview__size-badge">1080 × 1350 · 4:5</div>
+            </div>
+
+            <div class="meta-post-preview__carousel" *ngIf="selectedCount > 1">
+              <button
+                type="button"
+                class="meta-post-preview__nav"
+                (click)="prevPreviewImage()"
+                [attr.aria-label]="'Previous image' | translate"
+              >
+                <i class="fa fa-chevron-left" aria-hidden="true"></i>
+              </button>
+              <div class="meta-post-preview__dots">
+                <span
+                  class="meta-post-preview__dot"
+                  *ngFor="let img of selectedImages; let i = index"
+                  [class.is-active]="i === previewImageIndex"
+                  (click)="previewImageIndex = i"
+                ></span>
+              </div>
+              <button
+                type="button"
+                class="meta-post-preview__nav"
+                (click)="nextPreviewImage()"
+                [attr.aria-label]="'Next image' | translate"
+              >
+                <i class="fa fa-chevron-right" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+          <ng-template #noMediaPreview>
+            <div class="meta-post-preview__media meta-post-preview__media--empty">
+              <div class="text-muted small px-3 text-center">
+                {{ 'Select images to preview the Meta feed layout.' | translate }}
+              </div>
+            </div>
+          </ng-template>
+
+          <div class="meta-post-preview__link" *ngIf="draft.productUrl">
+            <div class="meta-post-preview__link-label">{{ 'Product link' | translate }}</div>
+            <div class="meta-post-preview__link-url">{{ draft.productUrl }}</div>
+          </div>
+
+          <div class="meta-post-preview__actions" aria-hidden="true">
+            <span><i class="fa fa-thumbs-o-up"></i> Like</span>
+            <span><i class="fa fa-comment-o"></i> Comment</span>
+            <span><i class="fa fa-share"></i> Share</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
 </div>
 
 <div class="modal-footer" *ngIf="draft">

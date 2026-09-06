@@ -36,6 +36,8 @@ export class ProductFacebookPostModalComponent implements OnInit {
   images: MetaPagePostImage[] = [];
   previewImage: MetaPagePostImage | null = null;
   captionLanguage: ReelVoiceLanguage = 'Urdu';
+  captionExpanded = false;
+  previewImageIndex = 0;
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -56,6 +58,28 @@ export class ProductFacebookPostModalComponent implements OnInit {
     return this.images
       .filter((img) => img.selected)
       .sort((a, b) => (a.publishOrder ?? 0) - (b.publishOrder ?? 0));
+  }
+
+  get previewCarouselImage(): MetaPagePostImage | null {
+    const selected = this.selectedImages;
+    if (!selected.length) {
+      return null;
+    }
+    const index = Math.min(Math.max(this.previewImageIndex, 0), selected.length - 1);
+    return selected[index];
+  }
+
+  get pageInitials(): string {
+    const name = (this.draft?.pageName || 'SK').trim();
+    const parts = name.split(/\s+/).filter(Boolean);
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return name.slice(0, 2).toUpperCase();
+  }
+
+  get showCaptionSeeMore(): boolean {
+    return (this.caption || '').length > 180;
   }
 
   get displayImages(): MetaPagePostImage[] {
@@ -139,6 +163,8 @@ export class ProductFacebookPostModalComponent implements OnInit {
         this.captionLanguage = draft.defaultCaptionLanguage ?? 'Urdu';
         this.applyCaptionForLanguage();
         this.images = this.normalizeImages(draft.images || []);
+        this.previewImageIndex = 0;
+        this.captionExpanded = false;
         this.loading = false;
         if (!draft.canPublish && draft.disabledReason) {
           this.loadError = draft.disabledReason;
@@ -165,6 +191,7 @@ export class ProductFacebookPostModalComponent implements OnInit {
       this.compactPublishOrders();
     }
     this.images = [...this.images];
+    this.clampPreviewImageIndex();
   }
 
   canMoveSelected(image: MetaPagePostImage, direction: -1 | 1): boolean {
@@ -191,6 +218,37 @@ export class ProductFacebookPostModalComponent implements OnInit {
     a.publishOrder = orderB;
     b.publishOrder = orderA;
     this.images = [...this.images];
+    this.clampPreviewImageIndex();
+  }
+
+  prevPreviewImage(): void {
+    const count = this.selectedCount;
+    if (count <= 1) {
+      return;
+    }
+    this.previewImageIndex = (this.previewImageIndex - 1 + count) % count;
+  }
+
+  nextPreviewImage(): void {
+    const count = this.selectedCount;
+    if (count <= 1) {
+      return;
+    }
+    this.previewImageIndex = (this.previewImageIndex + 1) % count;
+  }
+
+  private clampPreviewImageIndex(): void {
+    const count = this.selectedCount;
+    if (count <= 0) {
+      this.previewImageIndex = 0;
+      return;
+    }
+    if (this.previewImageIndex >= count) {
+      this.previewImageIndex = count - 1;
+    }
+    if (this.previewImageIndex < 0) {
+      this.previewImageIndex = 0;
+    }
   }
 
   selectedOrderIndex(image: MetaPagePostImage): number {
