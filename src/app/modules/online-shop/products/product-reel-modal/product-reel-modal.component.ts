@@ -474,13 +474,14 @@ export class ProductReelModalComponent implements OnInit, OnDestroy {
     configuredPerSlide = 3.5,
   ): { total: number; perSlide: number } {
     const count = Math.max(1, slideCount);
+    // Scene-based reels target ~12–18s regardless of raw image count.
     const base = configuredPerSlide > 0 ? configuredPerSlide : 3.5;
-    let total = Math.max(10, Math.min(15, count * base));
+    let total = Math.max(12, Math.min(18, Math.max(count * base, 14)));
     let perSlide = total / count;
     perSlide = Math.max(2, Math.min(15, perSlide));
     total = perSlide * count;
-    if (total < 10) {
-      perSlide = 10 / count;
+    if (total < 12) {
+      perSlide = 12 / count;
       total = perSlide * count;
     }
     return { total, perSlide };
