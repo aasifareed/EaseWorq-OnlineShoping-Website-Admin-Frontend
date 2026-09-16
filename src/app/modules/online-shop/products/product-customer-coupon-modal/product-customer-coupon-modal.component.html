@@ -1,0 +1,127 @@
+<div class="modal-header">
+  <h5 class="modal-title">
+    <i class="fa fa-ticket fontAwesome_Li_Class" aria-hidden="true"></i>
+    {{ isGenerated ? ('Coupon ready' | translate) : ('Create customer coupon' | translate) }}
+  </h5>
+  <button type="button" class="close" aria-label="Close" [disabled]="submitting" (click)="activeModal.dismiss()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body product-customer-coupon-modal">
+  <div class="product-customer-coupon-modal__product">
+    <span class="text-muted">{{ 'Product' | translate }}</span>
+    <strong>{{ productName || productId }}</strong>
+    <span class="text-muted" *ngIf="sellPrice != null"> · {{ 'Sell price' | translate }}: Rs {{ sellPrice | number:'1.0-0' }}</span>
+  </div>
+
+  <ng-container *ngIf="!isGenerated">
+    <p class="text-muted small mb-3">
+      {{
+        'Create a one-time coupon for this product only. After the customer uses it once at checkout, it becomes invalid.'
+          | translate
+      }}
+    </p>
+
+    <form [formGroup]="form" (ngSubmit)="generate()">
+      <div class="form-group">
+        <label>{{ 'Discount type' | translate }}</label>
+        <div class="btn-group btn-group-toggle d-flex" data-toggle="buttons">
+          <label
+            class="btn btn-outline-primary flex-fill"
+            [class.active]="form.get('type').value === 'fixed'"
+          >
+            <input type="radio" formControlName="type" value="fixed" />
+            {{ 'Fixed amount (Rs)' | translate }}
+          </label>
+          <label
+            class="btn btn-outline-primary flex-fill"
+            [class.active]="form.get('type').value === 'percentage'"
+          >
+            <input type="radio" formControlName="type" value="percentage" />
+            {{ 'Percentage (%)' | translate }}
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="customerCouponAmount">
+          {{ form.get('type').value === 'percentage' ? ('Discount percent' | translate) : ('Discount amount (Rs)' | translate) }}
+        </label>
+        <input
+          id="customerCouponAmount"
+          type="number"
+          class="form-control"
+          formControlName="amount"
+          min="0.01"
+          step="1"
+          [placeholder]="form.get('type').value === 'percentage' ? 'e.g. 10' : 'e.g. 100'"
+        />
+        <small class="text-danger" *ngIf="form.get('amount').touched && form.get('amount').invalid">
+          {{ 'Enter a discount greater than zero.' | translate }}
+        </small>
+      </div>
+
+      <div class="form-group mb-0">
+        <label for="customerCouponDays">{{ 'Valid for (days)' | translate }}</label>
+        <input
+          id="customerCouponDays"
+          type="number"
+          class="form-control"
+          formControlName="validDays"
+          min="0"
+          max="365"
+          step="1"
+        />
+        <small class="form-text text-muted">
+          {{ 'How long the customer can redeem the code. Use 0 for no expiry date (still one use only).' | translate }}
+        </small>
+      </div>
+    </form>
+  </ng-container>
+
+  <ng-container *ngIf="isGenerated">
+    <div class="alert alert-success mb-3">
+      {{ generated.message || ('Coupon created. Copy the code and send it to your customer.' | translate) }}
+    </div>
+
+    <div class="product-customer-coupon-modal__code-box">
+      <div class="product-customer-coupon-modal__code-label">{{ 'Coupon code' | translate }}</div>
+      <div class="product-customer-coupon-modal__code">{{ generated.code }}</div>
+      <button type="button" class="btn btn-primary btn-sm mt-2" (click)="copyCode()">
+        <i class="fa fontAwesome_Li_Class" [ngClass]="copied ? 'fa-check' : 'fa-copy'" aria-hidden="true"></i>
+        {{ copied ? ('Copied' | translate) : ('Copy code' | translate) }}
+      </button>
+    </div>
+
+    <ul class="product-customer-coupon-modal__facts mt-3 mb-0">
+      <li>{{ 'Discount' | translate }}: <strong>{{ discountSummary }}</strong></li>
+      <li>{{ 'Applies to' | translate }}: <strong>{{ generated.productName || productName }}</strong> {{ 'only' | translate }}</li>
+      <li>{{ 'Uses allowed' | translate }}: <strong>{{ '1 time only' | translate }}</strong></li>
+      <li *ngIf="generated.endDate">
+        {{ 'Valid until' | translate }}:
+        <strong>{{ generated.endDate | date:'mediumDate' }}</strong>
+      </li>
+    </ul>
+  </ng-container>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" [disabled]="submitting" (click)="isGenerated ? done() : activeModal.dismiss()">
+    {{ isGenerated ? ('Done' | translate) : ('Cancel' | translate) }}
+  </button>
+  <button
+    *ngIf="!isGenerated"
+    type="button"
+    class="btn btn-success"
+    [disabled]="submitting || form.invalid"
+    (click)="generate()"
+  >
+    <i class="fa fontAwesome_Li_Class" [ngClass]="submitting ? 'fa-spinner fa-spin' : 'fa-ticket'" aria-hidden="true"></i>
+    {{ submitting ? ('Creating…' | translate) : ('Generate coupon' | translate) }}
+  </button>
+  <button *ngIf="isGenerated" type="button" class="btn btn-primary" (click)="copyCode()">
+    <i class="fa fa-copy fontAwesome_Li_Class" aria-hidden="true"></i>
+    {{ 'Copy code' | translate }}
+  </button>
+</div>

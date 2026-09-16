@@ -151,7 +151,6 @@ export class SettingsShellComponent implements OnInit, OnDestroy {
     return this.activeSectionId !== 'store-information'
       && this.activeSectionId !== 'payment'
       && this.activeSectionId !== 'home-banners'
-      && this.activeSectionId !== 'delivery'
       && this.activeSectionId !== 'working-area';
   }
 

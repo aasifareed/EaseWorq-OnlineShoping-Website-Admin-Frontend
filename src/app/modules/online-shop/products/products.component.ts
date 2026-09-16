@@ -20,7 +20,7 @@ import {
 import { ProductCategoriesComponent } from './product-categories/product-categories.component';
 import { ProductBrandsComponent } from './product-brands/product-brands.component';
 import { ProductSocialMediaComponent } from './product-social-media/product-social-media.component';
-import { CouponFormModalComponent } from '../coupons/coupon-form-modal/coupon-form-modal.component';
+import { ProductCustomerCouponModalComponent } from './product-customer-coupon-modal/product-customer-coupon-modal.component';
 
 /** The inline-editable cells, each saved on its own so one slow save cannot block the others. */
 type EditableProductField = 'price' | 'discount' | 'slug' | 'weight' | 'showOnline' | 'available';
@@ -377,16 +377,16 @@ export class ProductsComponent implements OnInit {
       return;
     }
 
-    const modalRef = this.modalService.open(CouponFormModalComponent, {
-      size: 'lg',
+    const modalRef = this.modalService.open(ProductCustomerCouponModalComponent, {
+      size: 'md',
       backdrop: 'static',
-      windowClass: 'addSectionModal couponFormModal',
-      scrollable: true,
+      centered: true,
+      windowClass: 'addSectionModal',
     });
-    modalRef.componentInstance.couponId = null;
-    modalRef.componentInstance.prefillProductId = productId;
-    modalRef.componentInstance.prefillProductLabel = row.productName || row.productIdTag || productId;
-    modalRef.componentInstance.customerOfferMode = true;
+    modalRef.componentInstance.productId = productId;
+    modalRef.componentInstance.productName = row.productName || row.productIdTag || productId;
+    modalRef.componentInstance.sellPrice =
+      row.actualSellPrice != null ? Number(row.actualSellPrice) : null;
   }
 
   openImagesModal(row: AdminProductListItem): void {

@@ -1,0 +1,58 @@
+.product-customer-coupon-modal__product {
+  margin-bottom: 1rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 8px;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+}
+
+.product-customer-coupon-modal__product strong {
+  display: inline;
+  margin-left: 0.35rem;
+}
+
+.product-customer-coupon-modal .btn-group-toggle .btn {
+  cursor: pointer;
+}
+
+.product-customer-coupon-modal .btn-group-toggle .btn.active {
+  color: #fff;
+  background-color: #1e284b;
+  border-color: #1e284b;
+}
+
+.product-customer-coupon-modal__code-box {
+  text-align: center;
+  padding: 1.25rem 1rem;
+  border-radius: 10px;
+  border: 1px dashed #1e284b;
+  background: #eef1f7;
+}
+
+.product-customer-coupon-modal__code-label {
+  font-size: 0.8rem;
+  color: #5f6368;
+  margin-bottom: 0.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+
+.product-customer-coupon-modal__code {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #1e284b;
+  word-break: break-all;
+  user-select: all;
+}
+
+.product-customer-coupon-modal__facts {
+  padding-left: 1.1rem;
+  font-size: 0.9rem;
+  color: #374151;
+}
+
+.product-customer-coupon-modal__facts li + li {
+  margin-top: 0.35rem;
+}

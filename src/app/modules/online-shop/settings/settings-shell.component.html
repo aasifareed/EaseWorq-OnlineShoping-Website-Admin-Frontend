@@ -209,6 +209,53 @@
 
                         <!-- Delivery -->
                         <section *ngIf="activeSectionId === 'delivery'" class="settings-panel">
+                          <div class="row mb-3">
+                            <div class="col-md-12 form-group mb-2">
+                              <label class="mb-1">{{ 'Local Delivery fees' | translate }}</label>
+                              <small class="text-muted d-block">
+                                {{ 'Charged when the customer chooses Local Delivery inside a working area. Courier shipping rules are separate. Use Save Settings (top of page) after changing these values.' | translate }}
+                              </small>
+                            </div>
+                            <div class="col-md-6 form-group">
+                              <label>{{ 'Local delivery charge' | translate }}</label>
+                              <div class="input-group">
+                                <input
+                                  type="number"
+                                  class="form-control"
+                                  formControlName="defaultDeliveryCharges"
+                                  min="0"
+                                  step="1"
+                                  [placeholder]="'e.g. 100' | translate"
+                                />
+                                <div class="input-group-append">
+                                  <span class="input-group-text">{{ 'PKR' | translate }}</span>
+                                </div>
+                              </div>
+                              <small class="text-muted">
+                                {{ 'Applied when the order is below the free threshold. Leave empty for no local delivery fee.' | translate }}
+                              </small>
+                            </div>
+                            <div class="col-md-6 form-group">
+                              <label>{{ 'Free local delivery from' | translate }}</label>
+                              <div class="input-group">
+                                <input
+                                  type="number"
+                                  class="form-control"
+                                  formControlName="freeDeliveryMinimumOrderAmount"
+                                  min="0"
+                                  step="1"
+                                  [placeholder]="'e.g. 2000' | translate"
+                                />
+                                <div class="input-group-append">
+                                  <span class="input-group-text">{{ 'PKR' | translate }}</span>
+                                </div>
+                              </div>
+                              <small class="text-muted">
+                                {{ 'Orders at or above this merchandise total get free local delivery. Leave empty to always charge the fee above.' | translate }}
+                              </small>
+                            </div>
+                          </div>
+                          <hr class="my-3" />
                           <app-courier-providers></app-courier-providers>
                           <app-checkout-courier-visibility></app-checkout-courier-visibility>
                         </section>

@@ -73,6 +73,7 @@ export const appServiceUrls = {
   Coupon_GetAll: '/OnlineShopCoupon/GetAll',
   Coupon_GetForEdit: '/OnlineShopCoupon/GetForEdit',
   Coupon_CreateOrUpdate: '/OnlineShopCoupon/CreateOrUpdate',
+  Coupon_GenerateSingleUseProduct: '/OnlineShopCoupon/GenerateSingleUseProductCoupon',
   Coupon_Delete: '/OnlineShopCoupon/Delete',
   Coupon_UpdateStatus: '/OnlineShopCoupon/UpdateStatus',
 

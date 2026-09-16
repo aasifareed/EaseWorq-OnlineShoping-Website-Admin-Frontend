@@ -26,7 +26,7 @@ import { ProductCategoriesService } from './services/product-categories.service'
 import { ProductBrandsService } from './services/product-brands.service';
 import { EditorModule } from 'primeng/editor';
 import { TranslateModule } from '@ngx-translate/core';
-import { CouponFormModalModule } from '../coupons/coupon-form-modal/coupon-form-modal.module';
+import { ProductCustomerCouponModalComponent } from './product-customer-coupon-modal/product-customer-coupon-modal.component';
 
 @NgModule({
   imports: [
@@ -41,7 +41,6 @@ import { CouponFormModalModule } from '../coupons/coupon-form-modal/coupon-form-
     ProductsRoutingModule,
     EditorModule,
     TranslateModule,
-    CouponFormModalModule,
   ],
   declarations: [
     ProductsComponent,
@@ -58,6 +57,7 @@ import { CouponFormModalModule } from '../coupons/coupon-form-modal/coupon-form-
     ProductBrandsComponent,
     BrandImageModalComponent,
     ProductSocialMediaComponent,
+    ProductCustomerCouponModalComponent,
   ],
   entryComponents: [
     ProductImagesModalComponent,
@@ -70,6 +70,7 @@ import { CouponFormModalModule } from '../coupons/coupon-form-modal/coupon-form-
     ProductCategoryEditModalComponent,
     CategoryImageModalComponent,
     BrandImageModalComponent,
+    ProductCustomerCouponModalComponent,
   ],
   providers: [ProductsService, ProductCategoriesService, ProductBrandsService],
 })

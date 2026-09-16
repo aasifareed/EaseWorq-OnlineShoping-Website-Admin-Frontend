@@ -42,9 +42,7 @@ export class CheckoutCourierVisibilityComponent implements OnInit {
       error: (err) => {
         this.loading = false;
         this.couriers = [];
-        this.loadError =
-          err?.error?.error?.message
-          || this.translate.instant('Failed to load Flaship courier list. Ensure Flaship is configured above.');
+        this.loadError = this.friendlyLoadError(err);
         this.toastr.error(this.loadError);
       },
     });
@@ -117,5 +115,23 @@ export class CheckoutCourierVisibilityComponent implements OnInit {
         courierName: courier.courierName,
         courierCode: courier.courierCode,
       }));
+  }
+
+  private friendlyLoadError(err: any): string {
+    const raw = String(err?.error?.error?.message || err?.message || '').trim();
+    if (!raw) {
+      return this.translate.instant(
+        'Failed to load Flaship courier list. Ensure Flaship is configured above.',
+      );
+    }
+
+    // Never dump Flaship HTML 404 pages into the settings UI.
+    if (/<!DOCTYPE|<html[\s>]/i.test(raw) || raw.length > 400) {
+      return this.translate.instant(
+        'Could not load Flaship couriers. Check the Flaship API URL and key above, then retry.',
+      );
+    }
+
+    return raw;
   }
 }
