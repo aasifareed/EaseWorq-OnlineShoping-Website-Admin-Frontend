@@ -1,0 +1,162 @@
+<div class="modal-header">
+  <h5 class="modal-title simple-fb-post-modal__title">
+    <i class="fa fa-film fontAwesome_Li_Class" aria-hidden="true"></i>
+    {{ 'Create Facebook Reel' | translate }}
+  </h5>
+  <button type="button" class="close" aria-label="Close" [disabled]="isBusy" (click)="activeModal.dismiss()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body simple-fb-post-modal simple-fb-reel-modal">
+  <div *ngIf="loading" class="text-center py-4">
+    <i class="fa fa-spinner fa-spin"></i>
+    <div class="mt-2">{{ 'Loading draft…' | translate }}</div>
+  </div>
+
+  <div *ngIf="!loading && loadError && !draft" class="alert alert-danger mb-0">
+    {{ loadError }}
+  </div>
+
+  <ng-container *ngIf="!loading && draft">
+    <div class="simple-fb-post-modal__eyebrow">{{ 'FACEBOOK REEL' | translate }}</div>
+
+    <div class="simple-fb-post-modal__meta mb-3">
+      <span class="text-muted">{{ 'Publishing to' | translate }}:</span>
+      <strong> Facebook · {{ draft.pageName }}</strong>
+    </div>
+
+    <p class="text-muted small mb-3">
+      {{
+        'Create a general Facebook Reel (not linked to a product). Upload a video from your device — for example one made with AI tools.'
+          | translate
+      }}
+    </p>
+
+    <div class="form-group">
+      <label for="simpleFbReelVideo">{{ 'Video file' | translate }}</label>
+      <div class="simple-fb-reel-modal__upload">
+        <input
+          #videoInput
+          id="simpleFbReelVideo"
+          type="file"
+          class="form-control-file"
+          accept="video/mp4,video/quicktime,video/webm,.mp4,.mov,.webm,.m4v"
+          [disabled]="isBusy || !draft.canPublish"
+          (change)="onVideoSelected($event)"
+        />
+        <small class="form-text text-muted" *ngIf="!videoFileName">
+          {{ 'MP4, MOV, or WebM · max 100 MB' | translate }}
+        </small>
+        <div class="simple-fb-reel-modal__file-name mt-1" *ngIf="videoFileName">
+          <i class="fa fa-check-circle text-success" aria-hidden="true"></i>
+          {{ videoFileName }}
+          <button
+            type="button"
+            class="btn btn-link btn-sm py-0"
+            [disabled]="isBusy"
+            (click)="clearVideoSelection()"
+          >
+            {{ 'Remove' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="simple-fb-reel-modal__preview mb-3" *ngIf="previewVideoSafeUrl">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <strong>{{ 'Preview' | translate }}</strong>
+      </div>
+      <video
+        class="simple-fb-reel-modal__video"
+        [src]="previewVideoSafeUrl"
+        controls
+        playsinline
+      ></video>
+    </div>
+
+    <div class="form-group">
+      <label for="simpleFbReelCaption">{{ 'Caption' | translate }}</label>
+      <textarea
+        id="simpleFbReelCaption"
+        class="form-control simple-fb-post-modal__caption"
+        rows="6"
+        [(ngModel)]="caption"
+        [disabled]="isBusy || !draft.canPublish"
+        maxlength="8000"
+        [placeholder]="'Write your Facebook Reel caption…' | translate"
+      ></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="simpleFbReelLink">{{ 'Link (optional)' | translate }}</label>
+      <input
+        id="simpleFbReelLink"
+        type="url"
+        class="form-control"
+        [(ngModel)]="linkUrl"
+        [disabled]="isBusy || !draft.canPublish"
+        placeholder="https://…"
+      />
+    </div>
+
+    <div *ngIf="loadError" class="alert alert-warning">
+      {{ loadError }}
+    </div>
+
+    <div *ngIf="uploadError" class="alert alert-danger">
+      {{ uploadError }}
+    </div>
+
+    <div class="simple-fb-post-modal__history" *ngIf="history.length">
+      <button
+        type="button"
+        class="btn btn-link btn-sm px-0"
+        (click)="showHistory = !showHistory"
+      >
+        {{ 'View Facebook Publishing History' | translate }}
+        ({{ history.length }})
+      </button>
+      <ul class="list-unstyled mb-0" *ngIf="showHistory">
+        <li *ngFor="let item of history" class="simple-fb-post-modal__history-item">
+          <span class="font-weight-bold">Facebook</span>
+          ·
+          <span>{{ item.status }}</span>
+          ·
+          <span>{{ formatHistoryDate(item) }}</span>
+          <button
+            *ngIf="item.permalink"
+            type="button"
+            class="btn btn-link btn-sm py-0"
+            (click)="openPermalink(item.permalink)"
+          >
+            {{ 'View' | translate }}
+          </button>
+          <div class="text-danger small" *ngIf="item.status === 'Failed' && item.errorMessage">
+            {{ item.errorMessage }}
+          </div>
+        </li>
+      </ul>
+    </div>
+  </ng-container>
+</div>
+
+<div class="modal-footer" *ngIf="draft">
+  <button type="button" class="btn btn-secondary" [disabled]="isBusy" (click)="activeModal.dismiss()">
+    <i class="fa fa-times fontAwesome_Li_Class" aria-hidden="true"></i>
+    {{ 'Cancel' | translate }}
+  </button>
+  <button
+    type="button"
+    class="btn btn-primary"
+    [disabled]="!canPublish"
+    (click)="publish()"
+  >
+    <i
+      class="fa fontAwesome_Li_Class"
+      [ngClass]="publishing ? 'fa-spinner fa-spin' : 'fa-share-square-o'"
+      aria-hidden="true"
+    ></i>
+    {{ publishing ? ('Publishing…' | translate) : ('Publish Reel' | translate) }}
+  </button>
+</div>

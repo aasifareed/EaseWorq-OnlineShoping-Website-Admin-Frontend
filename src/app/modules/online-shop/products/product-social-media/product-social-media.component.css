@@ -1,0 +1,27 @@
+.product-social-media {
+  display: block;
+}
+
+.product-social-media .os-filter-toolbar__field:not(.os-filter-toolbar__field--search) {
+  min-width: 150px;
+  max-width: 180px;
+}
+
+.products-datatable__social-age {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  line-height: 1.25;
+  white-space: normal;
+}
+
+.products-datatable__social-age-line {
+  display: block;
+  font-size: 12px;
+  color: #495057;
+}
+
+.products-datatable__social-age-label {
+  font-weight: 600;
+  margin-right: 4px;
+}

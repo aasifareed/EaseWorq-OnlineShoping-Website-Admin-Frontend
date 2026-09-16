@@ -10,14 +10,7 @@ import { GlobalDataService } from 'src/app/shared/services/globalData.service';
 import { AdminProductListItem } from './models/product.models';
 import { ProductImagesModalComponent } from './product-images-modal/product-images-modal.component';
 import { ProductEditModalComponent } from './product-edit-modal/product-edit-modal.component';
-import { ProductFacebookPostModalComponent } from './product-facebook-post-modal/product-facebook-post-modal.component';
-import { ProductReelModalComponent } from './product-reel-modal/product-reel-modal.component';
-import { SimpleFacebookPostModalComponent } from './simple-facebook-post-modal/simple-facebook-post-modal.component';
-import { MetaCatalogSyncModalComponent } from './meta-catalog-sync-modal/meta-catalog-sync-modal.component';
 import { ProductsService } from './services/products.service';
-import {
-  PublishMetaPagePostResult,
-} from './models/facebook-post.models';
 import { calculateProductsGridLayout } from './utils/products-grid-layout.util';
 import {
   MAX_PRODUCT_WEIGHT_GRAMS,
@@ -26,10 +19,11 @@ import {
 } from '../shared/weight.util';
 import { ProductCategoriesComponent } from './product-categories/product-categories.component';
 import { ProductBrandsComponent } from './product-brands/product-brands.component';
+import { ProductSocialMediaComponent } from './product-social-media/product-social-media.component';
 import { CouponFormModalComponent } from '../coupons/coupon-form-modal/coupon-form-modal.component';
 
 /** The inline-editable cells, each saved on its own so one slow save cannot block the others. */
-type EditableProductField = 'price' | 'discount' | 'slug' | 'weight' | 'showOnline' | 'showOnMeta' | 'available';
+type EditableProductField = 'price' | 'discount' | 'slug' | 'weight' | 'showOnline' | 'available';
 
 @Component({
   selector: 'app-products',
@@ -54,6 +48,9 @@ export class ProductsComponent implements OnInit {
 
   @ViewChild(ProductBrandsComponent)
   private brandsTab?: ProductBrandsComponent;
+
+  @ViewChild(ProductSocialMediaComponent)
+  private socialMediaTab?: ProductSocialMediaComponent;
 
   constructor(
     private productsService: ProductsService,
@@ -82,6 +79,10 @@ export class ProductsComponent implements OnInit {
     }
     if (index === 2) {
       this.brandsTab?.onTabActivated();
+      return;
+    }
+    if (index === 3) {
+      this.socialMediaTab?.onTabActivated();
     }
   }
 
@@ -268,15 +269,6 @@ export class ProductsComponent implements OnInit {
     this.saveProductField(row, 'showOnline', { showProductOnline: input.checked }, input);
   }
 
-  onShowOnMetaToggle(row: AdminProductListItem, event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (this.isSaving(row, 'showOnMeta')) {
-      input.checked = row.showOnMeta;
-      return;
-    }
-    this.saveProductField(row, 'showOnMeta', { showOnMeta: input.checked }, input);
-  }
-
   onAvailableToggle(row: AdminProductListItem, event: Event): void {
     const input = event.target as HTMLInputElement;
     if (this.isSaving(row, 'available')) {
@@ -296,7 +288,6 @@ export class ProductsComponent implements OnInit {
       productWeightKg?: number;
       isAvailable?: boolean;
       showProductOnline?: boolean;
-      showOnMeta?: boolean;
     },
     toggleInput?: HTMLInputElement,
   ): void {
@@ -320,8 +311,6 @@ export class ProductsComponent implements OnInit {
           if (toggleInput) {
             if (field === 'showOnline') {
               toggleInput.checked = row.showProductOnline;
-            } else if (field === 'showOnMeta') {
-              toggleInput.checked = row.showOnMeta;
             } else if (field === 'available') {
               toggleInput.checked = row.isAvailable;
             }
@@ -379,81 +368,6 @@ export class ProductsComponent implements OnInit {
       },
       () => undefined,
     );
-  }
-
-  openFacebookPostModal(row: AdminProductListItem): void {
-    const modalRef = this.modalService.open(ProductFacebookPostModalComponent, {
-      centered: true,
-      backdrop: 'static',
-      windowClass: 'ew-app-modal ew-app-modal--wide',
-    });
-    modalRef.componentInstance.product = { ...row };
-
-    modalRef.result.then(
-      (result: PublishMetaPagePostResult) => {
-        this.handleFacebookPublishResult(result);
-      },
-      () => undefined,
-    );
-  }
-
-  openReelModal(row: AdminProductListItem): void {
-    const modalRef = this.modalService.open(ProductReelModalComponent, {
-      centered: true,
-      backdrop: 'static',
-      windowClass: 'ew-app-modal ew-app-modal--wide',
-    });
-    modalRef.componentInstance.product = { ...row };
-
-    modalRef.result.then(
-      (result: PublishMetaPagePostResult) => {
-        this.handleFacebookPublishResult(result, 'Facebook Reel published successfully. Click here to view.');
-      },
-      () => undefined,
-    );
-  }
-
-  openSimpleFacebookPostModal(): void {
-    const modalRef = this.modalService.open(SimpleFacebookPostModalComponent, {
-      centered: true,
-      backdrop: 'static',
-      size: 'lg',
-      windowClass: 'ew-app-modal',
-    });
-
-    modalRef.result.then(
-      (result: PublishMetaPagePostResult) => {
-        this.handleFacebookPublishResult(result);
-      },
-      () => undefined,
-    );
-  }
-
-  private handleFacebookPublishResult(
-    result: PublishMetaPagePostResult,
-    successMessage = 'Facebook post published successfully. Click here to view.',
-  ): void {
-    if (result?.permalink) {
-      const toast = this.toastr.success(
-        this.translate.instant(successMessage),
-        '',
-        { enableHtml: false, timeOut: 8000 },
-      );
-      toast.onTap.subscribe(() => {
-        window.open(result.permalink, '_blank', 'noopener,noreferrer');
-      });
-    } else if (result?.success) {
-      this.toastr.success(this.translate.instant('Facebook post published successfully.'));
-    }
-  }
-
-  openMetaCatalogSyncModal(): void {
-    this.modalService.open(MetaCatalogSyncModalComponent, {
-      centered: true,
-      backdrop: 'static',
-      keyboard: false,
-      windowClass: 'ew-app-modal',
-    });
   }
 
   openCustomerCouponModal(row: AdminProductListItem): void {

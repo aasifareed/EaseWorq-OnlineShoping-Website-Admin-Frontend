@@ -8,5 +8,6 @@ export enum MapState {
     Attendance,
     TrafficCountsRadars,
     AccidentList,
-    AccidentLocation
+    AccidentLocation,
+    OrderLocation
 }

@@ -25,6 +25,10 @@ export interface AdminProductListItem {
   showProductOnline: boolean;
   /** When true, product is pushed to the Meta catalog. */
   showOnMeta: boolean;
+  /** ISO UTC of last successful Facebook product post (not reel). */
+  lastPostPublishedAt?: string | null;
+  /** ISO UTC of last successful Facebook product reel. */
+  lastReelPublishedAt?: string | null;
   pictureUrl: string;
   pictureUrls: string[];
 }
@@ -61,4 +65,11 @@ export interface AdminProductsQuery {
   maxResultCount: number;
   keyword?: string;
   sorting?: string;
+  /** post | reel — which last-publish date SocialMinDaysAgo uses. */
+  socialPublishKind?: 'post' | 'reel';
+  /**
+   * Social Media days filter:
+   * -1 = never, 0 = today, N>0 = at least N days ago.
+   */
+  socialMinDaysAgo?: number;
 }

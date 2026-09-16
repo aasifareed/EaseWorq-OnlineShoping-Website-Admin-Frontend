@@ -2,53 +2,171 @@
   <div class="settings-panel__intro">
     <h2 class="settings-panel__title">{{ 'Working Area' | translate }}</h2>
     <p class="text-muted mb-0">
-      {{ 'Draw the store delivery / working area polygon on the map. Click to add points, then double-click (or click near the first point) to close.' | translate }}
+      {{ 'Create main zones and sub zones, draw each zone polygon on the map, and set delivery days. The storefront shows delivery days for the matched customer zone.' | translate }}
     </p>
   </div>
 
-  <div class="working-area__toolbar">
-    <button
-      type="button"
-      class="btn btn-success"
-      (click)="addPolygon()"
-      [disabled]="isDrawingMode || polygons.length > 0 || loading"
-      *ngIf="polygons.length === 0"
-    >
-      <i class="fa fa-plus fontAwesome_Li_Class mr-1"></i>
-      {{ 'Add Polygon' | translate }}
-    </button>
+  <div class="working-area__layout">
+    <aside class="working-area__sidebar">
+      <div class="working-area__sidebar-header">
+        <h3>{{ 'Delivery Zones' | translate }}</h3>
+        <button type="button" class="btn btn-sm btn-primary" (click)="addMainZone()" [disabled]="loading || isDrawingMode">
+          <i class="fa fa-plus fontAwesome_Li_Class mr-1"></i>
+          {{ 'Main Zone' | translate }}
+        </button>
+      </div>
 
-    <button
-      type="button"
-      class="btn btn-primary"
-      (click)="savePolygon()"
-      [disabled]="saving || isDrawingMode || polygons.length === 0"
-      *ngIf="polygons.length > 0 && !isDrawingMode"
-    >
-      <i class="fa fa-save fontAwesome_Li_Class mr-1"></i>
-      {{ saving ? ('Saving...' | translate) : ('Save Polygon' | translate) }}
-    </button>
+      <div class="working-area__zone-list" *ngIf="zones.length; else noZones">
+        <div class="working-area__main-zone" *ngFor="let main of zones">
+          <button
+            type="button"
+            class="working-area__zone-item"
+            [class.is-selected]="selectedZoneId === main.id"
+            (click)="selectZone(main)">
+            <span class="working-area__zone-name">{{ main.name }}</span>
+            <span class="working-area__zone-meta">{{ dayLabels(main.deliveryDays) }}</span>
+          </button>
+          <div class="working-area__sub-zones">
+            <button
+              type="button"
+              class="working-area__zone-item working-area__zone-item--sub"
+              *ngFor="let sub of main.subZones"
+              [class.is-selected]="selectedZoneId === sub.id"
+              (click)="selectZone(sub)">
+              <span class="working-area__zone-name">{{ sub.name }}</span>
+              <span class="working-area__zone-meta">{{ dayLabels(sub.deliveryDays) }}</span>
+            </button>
+            <button
+              type="button"
+              class="btn btn-link btn-sm working-area__add-sub"
+              (click)="addSubZone(main)"
+              [disabled]="loading || isDrawingMode">
+              <i class="fa fa-plus fontAwesome_Li_Class mr-1"></i>
+              {{ 'Add Sub Zone' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+      <ng-template #noZones>
+        <p class="text-muted working-area__empty">
+          {{ 'No zones yet. Add a main zone to get started.' | translate }}
+        </p>
+      </ng-template>
+    </aside>
 
-    <button
-      type="button"
-      class="btn btn-danger"
-      (click)="removePolygon()"
-      [disabled]="polygons.length === 0 || saving"
-    >
-      <i class="fa fa-trash fontAwesome_Li_Class mr-1"></i>
-      {{ 'Remove Polygon' | translate }}
-    </button>
+    <div class="working-area__main">
+      <div class="working-area__editor" *ngIf="selectedZone; else pickZone">
+        <div class="working-area__editor-row">
+          <div class="form-group mb-2 flex-grow-1">
+            <label>{{ 'Zone Name' | translate }}</label>
+            <input class="form-control" type="text" [(ngModel)]="zoneNameDraft" [disabled]="saving || isDrawingMode" />
+          </div>
+          <div class="working-area__editor-actions">
+            <button type="button" class="btn btn-primary btn-sm" (click)="saveZoneDetails()" [disabled]="saving || isDrawingMode">
+              <i class="fa fa-save fontAwesome_Li_Class mr-1"></i>
+              {{ saving ? ('Saving...' | translate) : ('Save Zone' | translate) }}
+            </button>
+            <button type="button" class="btn btn-danger btn-sm" (click)="deleteSelectedZone()" [disabled]="saving || isDrawingMode">
+              <i class="fa fa-trash fontAwesome_Li_Class mr-1"></i>
+              {{ 'Delete' | translate }}
+            </button>
+          </div>
+        </div>
 
-    <span class="working-area__hint text-muted" *ngIf="isDrawingMode">
-      {{ 'Click map to add points. Double-click to finish.' | translate }}
-    </span>
-  </div>
+        <div class="working-area__days">
+          <label class="working-area__days-label">{{ 'Delivery Days' | translate }}</label>
+          <div class="working-area__day-chips">
+            <button
+              type="button"
+              class="working-area__day-chip"
+              *ngFor="let day of weekDays"
+              [class.is-on]="isDaySelected(day.value)"
+              (click)="toggleDay(day.value)"
+              [disabled]="saving || isDrawingMode">
+              {{ day.short }}
+            </button>
+          </div>
+        </div>
 
-  <div class="working-area__map-wrap">
-    <div #mapViewNode class="working-area__map"></div>
-    <div class="working-area__loading" *ngIf="loading">
-      <i class="fa fa-spinner fa-spin fontAwesome_Li_Class"></i>
-      {{ 'Loading working area...' | translate }}
+        <div class="working-area__toolbar">
+          <button
+            type="button"
+            class="btn btn-success btn-sm"
+            (click)="addPolygon()"
+            [disabled]="isDrawingMode || isEditingPolygon || selectedHasPolygon || loading || saving"
+            *ngIf="!selectedHasPolygon">
+            <i class="fa fa-plus fontAwesome_Li_Class mr-1"></i>
+            {{ 'Draw Polygon' | translate }}
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-info btn-sm"
+            (click)="editPolygon()"
+            [disabled]="saving || isDrawingMode || isEditingPolygon"
+            *ngIf="selectedHasPolygon && !isDrawingMode && !isEditingPolygon">
+            <i class="fa fa-edit fontAwesome_Li_Class mr-1"></i>
+            {{ 'Edit Polygon' | translate }}
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-primary btn-sm"
+            (click)="savePolygon()"
+            [disabled]="saving || isDrawingMode || !selectedHasPolygon"
+            *ngIf="selectedHasPolygon && !isDrawingMode && isEditingPolygon">
+            <i class="fa fa-save fontAwesome_Li_Class mr-1"></i>
+            {{ saving ? ('Saving...' | translate) : ('Save Polygon' | translate) }}
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-default btn-sm"
+            (click)="cancelEditPolygon()"
+            [disabled]="saving"
+            *ngIf="isEditingPolygon">
+            <i class="fa fa-times fontAwesome_Li_Class mr-1"></i>
+            {{ 'Cancel Edit' | translate }}
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-warning btn-sm"
+            (click)="undoLastDrawingPoint()"
+            [disabled]="!canUndoDrawing || saving"
+            *ngIf="isDrawingMode">
+            <i class="fa fa-undo fontAwesome_Li_Class mr-1"></i>
+            {{ 'Undo' | translate }}
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-danger btn-sm"
+            (click)="removePolygon()"
+            [disabled]="(!selectedHasPolygon && !isDrawingMode) || saving || isEditingPolygon">
+            <i class="fa fa-trash fontAwesome_Li_Class mr-1"></i>
+            {{ isDrawingMode ? ('Cancel Drawing' | translate) : ('Remove Polygon' | translate) }}
+          </button>
+
+          <span class="working-area__hint text-muted" *ngIf="isDrawingMode">
+            {{ 'Click map to add points. Use Undo to go back. Double-click to finish.' | translate }}
+          </span>
+          <span class="working-area__hint text-muted" *ngIf="isEditingPolygon">
+            {{ 'Drag handles to reshape, then Save Polygon.' | translate }}
+          </span>
+        </div>
+      </div>
+      <ng-template #pickZone>
+        <p class="text-muted mb-2">{{ 'Select or create a zone to edit delivery days and draw its area.' | translate }}</p>
+      </ng-template>
+
+      <div class="working-area__map-wrap">
+        <div #mapViewNode class="working-area__map"></div>
+        <div class="working-area__loading" *ngIf="loading">
+          <i class="fa fa-spinner fa-spin fontAwesome_Li_Class"></i>
+          {{ 'Loading delivery zones...' | translate }}
+        </div>
+      </div>
     </div>
   </div>
 </div>

@@ -77,6 +77,25 @@ export interface SimpleMetaPagePostDraft {
   recentPosts: MetaPagePostHistoryItem[];
 }
 
+export interface SimpleMetaPageReelDraft extends SimpleMetaPagePostDraft {
+  reelSecondsPerSlide: number;
+  reelEstimatedTotalSeconds: number;
+  reelBuilderReady: boolean;
+  reelDisabledReason?: string | null;
+  reelShoppingHost?: string | null;
+  defaultReelVoiceLanguage?: ReelVoiceLanguage;
+  defaultVoiceoverTextEn?: string;
+  defaultVoiceoverTextUrdu?: string;
+  defaultVoiceoverTextRomanUrdu?: string;
+}
+
+export interface PublishSimpleMetaPageReelPayload {
+  caption: string;
+  linkUrl?: string;
+  /** Uploaded video from the device (e.g. AI-generated MP4). */
+  videoFile: File;
+}
+
 export type ReelVoiceLanguage = 'English' | 'Urdu' | 'RomanUrdu';
 
 export interface MetaPageReelDraft extends MetaPagePostDraft {

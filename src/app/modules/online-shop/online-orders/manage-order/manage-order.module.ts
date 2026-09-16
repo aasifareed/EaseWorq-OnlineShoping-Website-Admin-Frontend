@@ -8,6 +8,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
 import { ManageOrderComponent } from './manage-order.component';
 import { ManageOrderRoutingModule } from './manage-order-routing.module';
+import { EsriOrderMapComponent } from './esri-order-map/esri-order-map.component';
 
 @NgModule({
   imports: [
@@ -21,6 +22,6 @@ import { ManageOrderRoutingModule } from './manage-order-routing.module';
     SharedComponentsModule,
     ManageOrderRoutingModule,
   ],
-  declarations: [ManageOrderComponent],
+  declarations: [ManageOrderComponent, EsriOrderMapComponent],
 })
 export class ManageOrderModule {}

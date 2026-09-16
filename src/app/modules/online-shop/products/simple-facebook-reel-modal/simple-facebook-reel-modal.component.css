@@ -1,0 +1,26 @@
+.simple-fb-reel-modal__upload {
+  padding: 0.75rem;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.simple-fb-reel-modal__file-name {
+  font-size: 0.9rem;
+  word-break: break-all;
+}
+
+.simple-fb-reel-modal__preview {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 0.75rem;
+  background: #f8fafc;
+}
+
+.simple-fb-reel-modal__video {
+  display: block;
+  width: 100%;
+  max-height: 420px;
+  background: #111;
+  border-radius: 6px;
+}

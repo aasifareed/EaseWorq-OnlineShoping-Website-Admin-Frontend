@@ -20,9 +20,11 @@ import {
   PublishMetaPagePostPayload,
   PublishMetaPagePostResult,
   PublishMetaPageReelPayload,
-  PublishSimpleMetaPagePostPayload,
-  ReelVoiceLanguage,
   SimpleMetaPagePostDraft,
+  PublishSimpleMetaPagePostPayload,
+  SimpleMetaPageReelDraft,
+  PublishSimpleMetaPageReelPayload,
+  ReelVoiceLanguage,
 } from '../models/facebook-post.models';
 
 @Injectable()
@@ -38,6 +40,12 @@ export class ProductsService {
     }
     if (query.sorting) {
       params.set('Sorting', query.sorting);
+    }
+    if (query.socialPublishKind) {
+      params.set('SocialPublishKind', query.socialPublishKind);
+    }
+    if (query.socialMinDaysAgo != null && Number.isFinite(query.socialMinDaysAgo)) {
+      params.set('SocialMinDaysAgo', String(query.socialMinDaysAgo));
     }
 
     const url = `${appServiceUrls.OnlineShopProduct_GetAllForAdmin}?${params.toString()}`;
@@ -254,6 +262,30 @@ export class ProductsService {
     );
   }
 
+  getSimpleFacebookReelDraft(): Observable<SimpleMetaPageReelDraft> {
+    const url =
+      appServiceUrls.OnlineShopMetaPagePublish_GetSimpleReelDraft ||
+      '/OnlineShopMetaPagePublish/GetSimpleFacebookReelDraft';
+    return this.restService.get(url).pipe(
+      map((response) => this.mapSimpleFacebookReelDraft((response?.result ?? response) as Record<string, unknown>)),
+    );
+  }
+
+  publishSimpleFacebookReel(payload: PublishSimpleMetaPageReelPayload): Observable<PublishMetaPagePostResult> {
+    const url =
+      appServiceUrls.OnlineShopMetaPagePublish_PublishSimpleReel ||
+      '/OnlineShopMetaPagePublish/PublishSimpleFacebookReel';
+    const form = new FormData();
+    form.append('Video', payload.videoFile, payload.videoFile.name);
+    form.append('Caption', payload.caption ?? '');
+    if (payload.linkUrl) {
+      form.append('LinkUrl', payload.linkUrl);
+    }
+    return this.restService.postFormData(url, form).pipe(
+      map((response) => this.mapPublishResult((response?.result ?? response) as Record<string, unknown>)),
+    );
+  }
+
   publishSimpleFacebookPost(payload: PublishSimpleMetaPagePostPayload): Observable<PublishMetaPagePostResult> {
     const url = appServiceUrls.OnlineShopMetaPagePublish_PublishSimple;
     const body: Record<string, unknown> = {
@@ -321,6 +353,49 @@ export class ProductsService {
             ? String(row.DisabledReason)
             : null,
       recentPosts: recent,
+    };
+  }
+
+  private mapSimpleFacebookReelDraft(row: Record<string, unknown>): SimpleMetaPageReelDraft {
+    const base = this.mapSimpleFacebookDraft(row);
+    return {
+      pageName: base.pageName,
+      pageId: base.pageId,
+      caption: base.caption,
+      linkUrl: base.linkUrl,
+      canPublish: base.canPublish,
+      publishingEnabled: base.publishingEnabled,
+      disabledReason: base.disabledReason,
+      recentPosts: base.recentPosts,
+      reelSecondsPerSlide: Number(row.reelSecondsPerSlide ?? row.ReelSecondsPerSlide ?? 3.5),
+      reelEstimatedTotalSeconds: Number(
+        row.reelEstimatedTotalSeconds ?? row.ReelEstimatedTotalSeconds ?? 0,
+      ),
+      reelBuilderReady: Boolean(row.reelBuilderReady ?? row.ReelBuilderReady ?? false),
+      reelDisabledReason:
+        row.reelDisabledReason != null
+          ? String(row.reelDisabledReason)
+          : row.ReelDisabledReason != null
+            ? String(row.ReelDisabledReason)
+            : null,
+      reelShoppingHost:
+        row.reelShoppingHost != null
+          ? String(row.reelShoppingHost)
+          : row.ReelShoppingHost != null
+            ? String(row.ReelShoppingHost)
+            : null,
+      defaultReelVoiceLanguage: this.mapReelVoiceLanguage(
+        row.defaultReelVoiceLanguage ?? row.DefaultReelVoiceLanguage,
+      ),
+      defaultVoiceoverTextEn: String(
+        row.defaultVoiceoverTextEn ?? row.DefaultVoiceoverTextEn ?? '',
+      ),
+      defaultVoiceoverTextUrdu: String(
+        row.defaultVoiceoverTextUrdu ?? row.DefaultVoiceoverTextUrdu ?? '',
+      ),
+      defaultVoiceoverTextRomanUrdu: String(
+        row.defaultVoiceoverTextRomanUrdu ?? row.DefaultVoiceoverTextRomanUrdu ?? '',
+      ),
     };
   }
 
@@ -626,9 +701,19 @@ export class ProductsService {
       isAvailable: Boolean(row.isAvailable ?? row.IsAvailable ?? false),
       showProductOnline: Boolean(row.showProductOnline ?? row.ShowProductOnline ?? false),
       showOnMeta: Boolean(row.showOnMeta ?? row.ShowOnMeta ?? false),
+      lastPostPublishedAt: this.mapOptionalDate(row.lastPostPublishedAt ?? row.LastPostPublishedAt),
+      lastReelPublishedAt: this.mapOptionalDate(row.lastReelPublishedAt ?? row.LastReelPublishedAt),
       pictureUrl,
       pictureUrls: pictureUrls.length > 0 ? pictureUrls : pictureUrl ? [pictureUrl] : [],
     };
+  }
+
+  private mapOptionalDate(value: unknown): string | null {
+    if (value == null || value === '') {
+      return null;
+    }
+    const text = String(value).trim();
+    return text.length > 0 ? text : null;
   }
 
   private mapOptionalText(value: unknown): string | null {

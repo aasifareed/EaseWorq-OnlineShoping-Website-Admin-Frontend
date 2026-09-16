@@ -1,9 +1,142 @@
+.working-area__layout {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 16px;
+  margin-top: 1rem;
+  align-items: start;
+}
+
+.working-area__sidebar {
+  background: #fafbfc;
+  border: 1px solid #e3e8ef;
+  border-radius: 6px;
+  padding: 12px;
+  min-height: 520px;
+}
+
+.working-area__sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+
+  h3 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+  }
+}
+
+.working-area__zone-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.working-area__zone-item {
+  width: 100%;
+  text-align: left;
+  border: 1px solid #e3e8ef;
+  background: #fff;
+  border-radius: 4px;
+  padding: 8px 10px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  &.is-selected {
+    border-color: #1565c0;
+    box-shadow: 0 0 0 1px #1565c0;
+  }
+
+  &--sub {
+    margin-left: 12px;
+    width: calc(100% - 12px);
+    background: #f8fafc;
+  }
+}
+
+.working-area__zone-name {
+  font-weight: 600;
+  font-size: 13px;
+  color: #1e293b;
+}
+
+.working-area__zone-meta {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.working-area__add-sub {
+  padding-left: 12px;
+}
+
+.working-area__empty {
+  font-size: 13px;
+  margin: 8px 0 0;
+}
+
+.working-area__editor-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.working-area__editor-actions {
+  display: flex;
+  gap: 6px;
+  padding-bottom: 0.5rem;
+}
+
+.working-area__days {
+  margin-bottom: 10px;
+}
+
+.working-area__days-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 6px;
+}
+
+.working-area__day-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.working-area__day-chip {
+  border: 1px solid #cfd8e3;
+  background: #fff;
+  color: #334155;
+  border-radius: 16px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &.is-on {
+    background: #1565c0;
+    border-color: #1565c0;
+    color: #fff;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
 .working-area__toolbar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem;
-  margin: 1rem 0;
+  margin: 0.25rem 0 0.75rem;
 }
 
 .working-area__hint {
@@ -35,4 +168,14 @@
   color: #333;
   font-size: 0.95rem;
   pointer-events: none;
+}
+
+@media (max-width: 991px) {
+  .working-area__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .working-area__sidebar {
+    min-height: 0;
+  }
 }

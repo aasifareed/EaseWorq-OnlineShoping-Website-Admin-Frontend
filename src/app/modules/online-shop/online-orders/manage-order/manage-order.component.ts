@@ -7,6 +7,7 @@ import { ConfirmationDialogService } from 'src/app/shared/services/confirmation-
 import { RestService } from 'src/app/shared/services/rest.service';
 import { environment } from 'src/environments/environment';
 import { describeWeight } from '../../shared/weight.util';
+import { EsriMapPoint } from './esri-order-map/esri-order-map.component';
 
 interface StatusOption {
   value: string;
@@ -44,6 +45,7 @@ export class ManageOrderComponent implements OnInit {
 
   detail: any = null;
   shipment: any = null;
+  orderMapPoint: EsriMapPoint | null = null;
 
   statusOptions: StatusOption[] = [];
   statusOptionsLoading = false;
@@ -202,7 +204,7 @@ export class ManageOrderComponent implements OnInit {
     if (option?.eventName === 'CancelOnlineOrder') {
       return 'Cancellation reason';
     }
-    return 'Remarks';
+    return 'Note to customer';
   }
 
   get selectedStatusRemarksPlaceholder(): string {
@@ -213,7 +215,7 @@ export class ManageOrderComponent implements OnInit {
     if (option?.eventName === 'CancelOnlineOrder') {
       return 'Required — explain why this order is being cancelled';
     }
-    return 'Optional note for order history';
+    return 'Optional — message shown to the customer with this status update';
   }
 
   get isCodRefundAction(): boolean {
@@ -277,6 +279,11 @@ export class ManageOrderComponent implements OnInit {
     return legacyDiscount > 0
       ? [{ description: 'Discount', discountAmount: legacyDiscount }]
       : [];
+  }
+
+  /** Sum of all discount rows for the metric card. */
+  get orderDiscountTotal(): number {
+    return this.orderDiscountRows.reduce((sum, row) => sum + Number(row.discountAmount || 0), 0);
   }
 
   get remainingAmount(): number {
@@ -394,12 +401,34 @@ export class ManageOrderComponent implements OnInit {
     return this.detail?.shippingAddress ?? this.detail?.ShippingAddress;
   }
 
+  get orderMapAddressQuery(): string {
+    const address = this.shippingAddress || this.billingAddress;
+    if (!address) {
+      return '';
+    }
+
+    return [
+      address.address,
+      address.townCity,
+      address.stateCounty,
+      address.postalCode,
+      'Pakistan',
+    ]
+      .map((part) => String(part || '').trim())
+      .filter((part) => !!part)
+      .join(', ');
+  }
+
   get customerOrderNote(): string {
     return String(this.detail?.customerNote ?? '').trim();
   }
 
   goBack(): void {
     this.router.navigate(['/online-shop/order-board']);
+  }
+
+  changeTab(tabId: number): void {
+    this.goToTab(tabId);
   }
 
   goToTab(tabId: number): void {
@@ -1065,9 +1094,10 @@ export class ManageOrderComponent implements OnInit {
 
   private normalizeDetail(raw: any): any {
     if (!raw) {
+      this.orderMapPoint = null;
       return null;
     }
-    return {
+    const normalized = {
       onlineShopSaleOrderId: raw.onlineShopSaleOrderId ?? raw.OnlineShopSaleOrderId,
       onlineOrderNumber: raw.onlineOrderNumber ?? raw.OnlineOrderNumber,
       orderDate: raw.orderDate ?? raw.OrderDate,
@@ -1116,6 +1146,21 @@ export class ManageOrderComponent implements OnInit {
       billingAddress: this.normalizeAddress(raw.billingAddress ?? raw.BillingAddress),
       shippingAddress: this.normalizeAddress(raw.shippingAddress ?? raw.ShippingAddress),
     };
+
+    this.orderMapPoint = this.resolveOrderMapPoint(normalized.shippingAddress, normalized.billingAddress);
+    return normalized;
+  }
+
+  private resolveOrderMapPoint(shipping: any, billing: any): EsriMapPoint | null {
+    const candidates = [shipping, billing];
+    for (const address of candidates) {
+      const lat = Number(address?.latitude);
+      const lng = Number(address?.longitude);
+      if (Number.isFinite(lat) && Number.isFinite(lng) && !(lat === 0 && lng === 0)) {
+        return { latitude: lat, longitude: lng };
+      }
+    }
+    return null;
   }
 
   private normalizeShipmentSummary(raw: any): any {
@@ -1177,11 +1222,24 @@ export class ManageOrderComponent implements OnInit {
       customerName: addr.customerName ?? addr.CustomerName,
       phone: addr.phone ?? addr.Phone,
       emailAddress: addr.emailAddress ?? addr.EmailAddress,
-      address: addr.address ?? addr.Address,
+      address: this.cleanDisplayAddress(addr.address ?? addr.Address),
       townCity: addr.townCity ?? addr.TownCity,
       stateCounty: addr.stateCounty ?? addr.StateCounty,
       postalCode: addr.postalCode ?? addr.PostalCode,
+      latitude: addr.latitude ?? addr.Latitude ?? null,
+      longitude: addr.longitude ?? addr.Longitude ?? null,
     };
+  }
+
+  /** Google reverse-geocode placeholders that should not appear in admin address fields. */
+  private cleanDisplayAddress(value: unknown): string {
+    return String(value ?? '')
+      .replace(/\bunnamed(\s+road|\s+street|\s+rd\.?|\s+st\.?)?\b/gi, '')
+      .replace(/\b[2-9CFGHJMPQRVWX]{4,8}\+[2-9CFGHJMPQRVWX]{2,3}\b/gi, '')
+      .replace(/\s*,\s*,/g, ',')
+      .replace(/^\s*,\s*|\s*,\s*$/g, '')
+      .replace(/\s{2,}/g, ' ')
+      .trim();
   }
 
   private syncDeliveryStatusText(): void {

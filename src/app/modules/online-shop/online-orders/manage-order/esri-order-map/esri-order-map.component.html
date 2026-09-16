@@ -1,0 +1,16 @@
+<div class="esri-order-map">
+  <div class="esri-order-map__title">
+    <i class="fa fa-map-marker fontAwesome_Li_Class"></i>
+    Order Location
+  </div>
+  <div class="esri-order-map__body">
+    <div #mapViewNode class="esri-order-map__host"></div>
+    <div class="esri-order-map__overlay" *ngIf="isLoading">Loading map…</div>
+    <div class="esri-order-map__overlay esri-order-map__overlay--error" *ngIf="!isLoading && loadError">
+      {{ loadError }}
+    </div>
+    <div class="esri-order-map__overlay" *ngIf="!isLoading && !loadError && statusMessage">
+      {{ statusMessage }}
+    </div>
+  </div>
+</div>

@@ -29,7 +29,11 @@ export const environment = {
   onlineShopBrandHostName: 'sastakhareedo.com',
   production: false,
   /** Same key as POS Orders Map Dashboard / Store Working Area. */
-  googleMapsApiKey: 'AIzaSyBiCLFWeI8W8gDzHKs5uQEBgnIlmih1DTs',
+  googleMapsApiKey: 'AIzaSyBrkUdsOFG3lK22UBRk_Zu1BBee8YyS8RY',
+  /** Online ArcGIS JS API (Esri CDN). Used by Manage Order location map. */
+  esriMapUrlDomain: 'https://js.arcgis.com',
+  esriMapUrlPath: '/4.18/',
+  esriMapCssUrlPath: '/4.18/esri/themes/light/main.css',
   oauth: oauthConfig,
   impersonateOauth: {
     ...oauthConfig,

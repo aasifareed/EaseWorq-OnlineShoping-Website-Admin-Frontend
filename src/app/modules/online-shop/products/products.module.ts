@@ -13,12 +13,14 @@ import { ProductEditModalComponent } from './product-edit-modal/product-edit-mod
 import { ProductFacebookPostModalComponent } from './product-facebook-post-modal/product-facebook-post-modal.component';
 import { ProductReelModalComponent } from './product-reel-modal/product-reel-modal.component';
 import { SimpleFacebookPostModalComponent } from './simple-facebook-post-modal/simple-facebook-post-modal.component';
+import { SimpleFacebookReelModalComponent } from './simple-facebook-reel-modal/simple-facebook-reel-modal.component';
 import { MetaCatalogSyncModalComponent } from './meta-catalog-sync-modal/meta-catalog-sync-modal.component';
 import { ProductCategoriesComponent } from './product-categories/product-categories.component';
 import { ProductCategoryEditModalComponent } from './product-category-edit-modal/product-category-edit-modal.component';
 import { CategoryImageModalComponent } from './category-image-modal/category-image-modal.component';
 import { ProductBrandsComponent } from './product-brands/product-brands.component';
 import { BrandImageModalComponent } from './brand-image-modal/brand-image-modal.component';
+import { ProductSocialMediaComponent } from './product-social-media/product-social-media.component';
 import { ProductsService } from './services/products.service';
 import { ProductCategoriesService } from './services/product-categories.service';
 import { ProductBrandsService } from './services/product-brands.service';
@@ -48,12 +50,14 @@ import { CouponFormModalModule } from '../coupons/coupon-form-modal/coupon-form-
     ProductFacebookPostModalComponent,
     ProductReelModalComponent,
     SimpleFacebookPostModalComponent,
+    SimpleFacebookReelModalComponent,
     MetaCatalogSyncModalComponent,
     ProductCategoriesComponent,
     ProductCategoryEditModalComponent,
     CategoryImageModalComponent,
     ProductBrandsComponent,
     BrandImageModalComponent,
+    ProductSocialMediaComponent,
   ],
   entryComponents: [
     ProductImagesModalComponent,
@@ -61,6 +65,7 @@ import { CouponFormModalModule } from '../coupons/coupon-form-modal/coupon-form-
     ProductFacebookPostModalComponent,
     ProductReelModalComponent,
     SimpleFacebookPostModalComponent,
+    SimpleFacebookReelModalComponent,
     MetaCatalogSyncModalComponent,
     ProductCategoryEditModalComponent,
     CategoryImageModalComponent,

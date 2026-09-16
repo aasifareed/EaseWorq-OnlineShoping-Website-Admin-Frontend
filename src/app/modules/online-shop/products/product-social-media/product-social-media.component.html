@@ -1,0 +1,264 @@
+<div class="product-social-media">
+  <div class="separator-breadcrumb border-top products-tab-separator"></div>
+
+  <div [dir]="globalDataService.getdir()" class="gridAboveHeightInSaleOrderHistory">
+    <div *ngIf="loadError" class="alert alert-warning mb-2" role="alert">
+      {{ loadError }}
+    </div>
+
+    <div class="os-filter-toolbar">
+      <div class="os-filter-toolbar__field os-filter-toolbar__field--search">
+        <label class="os-filter-toolbar__label" for="socialMediaProductSearch">
+          {{ 'Search' | translate }}
+        </label>
+        <input
+          id="socialMediaProductSearch"
+          [formControl]="searchControl"
+          class="form-control form-control-rounded"
+          type="text"
+          [placeholder]="'Search products' | translate"
+        />
+      </div>
+      <div class="os-filter-toolbar__field">
+        <label class="os-filter-toolbar__label" for="socialPublishKindFilter">
+          {{ 'Filter by' | translate }}
+        </label>
+        <select
+          id="socialPublishKindFilter"
+          class="form-control form-control-rounded"
+          [formControl]="publishKindControl"
+        >
+          <option value="post">{{ 'Post' | translate }}</option>
+          <option value="reel">{{ 'Reel' | translate }}</option>
+        </select>
+      </div>
+      <div class="os-filter-toolbar__field">
+        <label class="os-filter-toolbar__label" for="socialDaysFilter">
+          {{ 'Last posted' | translate }}
+        </label>
+        <select
+          id="socialDaysFilter"
+          class="form-control form-control-rounded"
+          [formControl]="daysFilterControl"
+        >
+          <option *ngFor="let option of daysFilterOptions" [value]="option.value">
+            {{ option.labelKey | translate }}
+          </option>
+        </select>
+      </div>
+      <div class="os-filter-toolbar__actions os-filter-toolbar__actions--end">
+        <button
+          type="button"
+          class="btn btn-outline-primary mr-2"
+          (click)="openSimpleFacebookPostModal()"
+        >
+          <i class="fa fa-facebook fontAwesome_Li_Class" aria-hidden="true"></i>
+          {{ 'Create Facebook Post' | translate }}
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline-info mr-2"
+          (click)="openSimpleFacebookReelModal()"
+        >
+          <i class="fa fa-film fontAwesome_Li_Class" aria-hidden="true"></i>
+          {{ 'Create Facebook Reel' | translate }}
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="openMetaCatalogSyncModal()"
+        >
+          <i class="fa fa-cloud-upload fontAwesome_Li_Class" aria-hidden="true"></i>
+          {{ 'Sync products to Meta' | translate }}
+        </button>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card mb-3">
+          <ngx-datatable
+            [ngStyle]="{ height: gridHeight, 'box-shadow': 'none' }"
+            class="material fullscreen products-datatable"
+            [columnMode]="ColumnMode.force"
+            [headerHeight]="48"
+            [footerHeight]="30"
+            [rowHeight]="64"
+            [rows]="filteredData"
+            [scrollbarH]="true"
+            [loadingIndicator]="loadingIndicator"
+            [externalPaging]="true"
+            [count]="page.totalElements"
+            [offset]="page.pageNumber"
+            [limit]="page.size"
+            (page)="setPage($event)"
+          >
+            <ngx-datatable-column
+              [name]="'Actions' | translate"
+              [sortable]="false"
+              [minWidth]="200"
+              cellClass="products-datatable__center-col"
+              headerClass="products-datatable__center-col"
+            >
+              <ng-template ngx-datatable-cell-template let-row="row">
+                <div class="products-datatable__cell-center products-datatable__cell-actions">
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-primary products-datatable__fb-btn"
+                    title="{{ 'Create Facebook Post' | translate }}"
+                    (click)="openFacebookPostModal(row)"
+                  >
+                    <i class="fa fa-facebook fontAwesome_Li_Class" aria-hidden="true"></i>
+                    {{ 'Post' | translate }}
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-info ml-1"
+                    title="{{ 'Create Facebook Reel' | translate }}"
+                    (click)="openReelModal(row)"
+                  >
+                    <i class="fa fa-film fontAwesome_Li_Class" aria-hidden="true"></i>
+                    {{ 'Reel' | translate }}
+                  </button>
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column
+              [name]="'Last posted' | translate"
+              [sortable]="false"
+              [minWidth]="140"
+              [canAutoResize]="false"
+              [width]="150"
+              cellClass="products-datatable__text-col"
+              headerClass="products-datatable__text-col"
+            >
+              <ng-template ngx-datatable-cell-template let-row="row">
+                <div
+                  class="products-datatable__text-cell products-datatable__social-age"
+                  [title]="getSocialAgeTitle(row)"
+                >
+                  <span class="products-datatable__social-age-line">
+                    <span class="products-datatable__social-age-label">{{ 'Post' | translate }}:</span>
+                    {{ formatDaysSince(row.lastPostPublishedAt) }}
+                  </span>
+                  <span class="products-datatable__social-age-line">
+                    <span class="products-datatable__social-age-label">{{ 'Reel' | translate }}:</span>
+                    {{ formatDaysSince(row.lastReelPublishedAt) }}
+                  </span>
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column
+              [name]="'Images' | translate"
+              [sortable]="false"
+              [canAutoResize]="false"
+              [width]="108"
+              [minWidth]="108"
+              cellClass="products-datatable__image-col"
+              headerClass="products-datatable__image-col"
+            >
+              <ng-template ngx-datatable-cell-template let-row="row">
+                <div class="products-datatable__image-cell">
+                  <button
+                    type="button"
+                    class="products-datatable__thumb-btn"
+                    (click)="openImagesModal(row)"
+                    [title]="'Manage images' | translate"
+                  >
+                    <span class="products-datatable__thumb-frame">
+                      <img
+                        class="products-datatable__thumb"
+                        [src]="row.pictureUrl || 'assets/images/logo.svg'"
+                        [alt]="row.productName"
+                        (error)="onImageError($event)"
+                      />
+                    </span>
+                    <span class="products-datatable__thumb-badge">
+                      {{ getImageCount(row) > 0 ? getImageCount(row) : '+' }}
+                    </span>
+                  </button>
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column
+              [name]="'Product Name' | translate"
+              prop="productName"
+              [minWidth]="260"
+              [flexGrow]="3"
+              cellClass="products-datatable__text-col"
+              headerClass="products-datatable__text-col"
+            >
+              <ng-template ngx-datatable-cell-template let-row="row">
+                <div class="products-datatable__text-cell" [title]="getProductNameTitle(row)">
+                  <span class="products-datatable__text-primary">{{ getDisplayLabel(row) }}</span>
+                  <span *ngIf="row.displayName" class="products-datatable__text-secondary">
+                    {{ row.productName }}
+                  </span>
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column
+              [name]="'Category' | translate"
+              prop="categoryName"
+              [minWidth]="200"
+              [flexGrow]="2"
+              cellClass="products-datatable__text-col"
+              headerClass="products-datatable__text-col"
+            >
+              <ng-template ngx-datatable-cell-template let-row="row">
+                <div class="products-datatable__text-cell" [title]="row.categoryName">
+                  <span class="products-datatable__text-primary">{{ row.categoryName }}</span>
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column
+              [name]="'Brand' | translate"
+              prop="brandName"
+              [minWidth]="120"
+              [flexGrow]="1"
+              cellClass="products-datatable__text-col"
+              headerClass="products-datatable__text-col"
+            >
+              <ng-template ngx-datatable-cell-template let-row="row">
+                <div class="products-datatable__text-cell" [title]="row.brandName">
+                  <span class="products-datatable__text-primary">{{ row.brandName }}</span>
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column
+              [name]="'Show On Meta' | translate"
+              [sortable]="false"
+              [minWidth]="130"
+              cellClass="products-datatable__center-col"
+              headerClass="products-datatable__center-col"
+            >
+              <ng-template ngx-datatable-cell-template let-row="row">
+                <div class="products-datatable__cell-center products-datatable__cell-actions">
+                  <label
+                    class="status-switch mb-0"
+                    [class.status-switch--disabled]="isSavingShowOnMeta(row)"
+                    [title]="row.showOnMeta ? ('Enabled' | translate) : ('Disabled' | translate)"
+                  >
+                    <input
+                      type="checkbox"
+                      [checked]="row.showOnMeta"
+                      [disabled]="isSavingShowOnMeta(row)"
+                      (change)="onShowOnMetaToggle(row, $event)"
+                    />
+                    <span class="status-switch__slider"></span>
+                  </label>
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+          </ngx-datatable>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

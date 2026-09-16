@@ -23,7 +23,10 @@ export const environment = {
   baseUrl: BACKEND_URL,
   assetUrl: BACKEND_URL + 'SmartOfficerAttachment',
   production: true,
-  googleMapsApiKey: 'AIzaSyBiCLFWeI8W8gDzHKs5uQEBgnIlmih1DTs',
+  googleMapsApiKey: 'AIzaSyBrkUdsOFG3lK22UBRk_Zu1BBee8YyS8RY',
+  esriMapUrlDomain: 'https://js.arcgis.com',
+  esriMapUrlPath: '/4.18/',
+  esriMapCssUrlPath: '/4.18/esri/themes/light/main.css',
   oauth: oauthConfig,
   impersonateOauth: {
     ...oauthConfig,

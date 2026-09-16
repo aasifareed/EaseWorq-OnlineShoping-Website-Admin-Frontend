@@ -174,6 +174,9 @@ export const appServiceUrls = {
   OnlineShopMetaPagePublish_GetSimpleDraft: '/OnlineShopMetaPagePublish/GetSimpleFacebookPostDraft',
   OnlineShopMetaPagePublish_GetSimpleHistory: '/OnlineShopMetaPagePublish/GetSimpleFacebookPostHistory',
   OnlineShopMetaPagePublish_PublishSimple: '/OnlineShopMetaPagePublish/PublishSimpleFacebookPost',
+  OnlineShopMetaPagePublish_GetSimpleReelDraft: '/OnlineShopMetaPagePublish/GetSimpleFacebookReelDraft',
+  OnlineShopMetaPagePublish_PreviewSimpleReel: '/OnlineShopMetaPagePublish/PreviewSimpleFacebookReel',
+  OnlineShopMetaPagePublish_PublishSimpleReel: '/OnlineShopMetaPagePublish/PublishSimpleFacebookReel',
   OnlineShopMetaPagePublish_CheckConnection: '/OnlineShopMetaPagePublish/CheckMetaPagePublishingConnection',
 
   // Home page banners (OnlineShopHomeBannerUploadController)
@@ -207,9 +210,15 @@ export const appServiceUrls = {
   OnlineShopBrandImage_Upload: '/OnlineShopBrandImageUpload/UploadImage',
   OnlineShopBrandImage_Remove: '/OnlineShopBrandImageUpload/RemoveImage',
 
-  // Store working area polygon (OnlineShopStoreWorkingLocationAppService)
+  // Store working area / delivery zones (OnlineShopStoreWorkingLocationAppService)
   WorkingArea_CreateLocation: '/OnlineShopStoreWorkingLocation/CreateLocation',
   WorkingArea_GetCurrentStoreLocations: '/OnlineShopStoreWorkingLocation/GetCurrentStoreLocations',
+  WorkingArea_GetZones: '/OnlineShopStoreWorkingLocation/GetZones',
+  WorkingArea_CreateZone: '/OnlineShopStoreWorkingLocation/CreateZone',
+  WorkingArea_UpdateZone: '/OnlineShopStoreWorkingLocation/UpdateZone',
+  WorkingArea_DeleteZone: '/OnlineShopStoreWorkingLocation/DeleteZone',
+  WorkingArea_SaveZonePolygon: '/OnlineShopStoreWorkingLocation/SaveZonePolygon',
+  WorkingArea_ClearZonePolygon: '/OnlineShopStoreWorkingLocation/ClearZonePolygon',
 
   // Online shop reports (OnlineShopReportingAppService)
   OnlineShopReporting_GetSaleOrdersReport: '/OnlineShopReporting/GetSaleOrdersReport',
